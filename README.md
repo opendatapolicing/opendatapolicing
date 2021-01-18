@@ -100,7 +100,38 @@ ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendat
 ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
 ```
 
+
+## For End-to-End deployment
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_openshift_complete.yml --ask-vault-pass
+```
+
+
+## To step thru deployment
+**Run redhat_sso_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/redhat_sso_openshift.yml --ask-vault-pass
+```
+
+**Run project_postgres_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_postgres_openshift.yml --ask-vault-pass
+```
+
+**Run project_zookeeper_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_zookeeper_openshift.yml --ask-vault-pass
+```
+
+**Run project_solr_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_solr_openshift.yml --ask-vault-pass
+```
+
 **Run project_openshift.yml**
 ```
 ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_openshift.yml --ask-vault-pass
 ```
+
+
+
