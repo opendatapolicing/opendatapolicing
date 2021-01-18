@@ -1,0 +1,16 @@
+---
+# Label: ansible_project_zookeeper_service
+# Title: create the Ansible template for the Apache Zookeeper service in OpenShift
+# Mission: create the Ansible template for the Apache Zookeeper service in OpenShift
+# Milestone: Automate Cluster Manager Deployment
+# Column: Automate Cluster Manager Deployment
+
+apiVersion: v1
+kind: Service
+spec:
+  ports:
+    - name: 2181-tcp
+      port: 2181
+  selector:
+    app: computate-zookeeper
+    deploymentconfig: computate-zookeeper
