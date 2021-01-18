@@ -1,0 +1,104 @@
+---
+# Label: ansible_redhat_sso_postgres_deployment_config
+# Title: create the Ansible template for the Red Hat SSO database deployment config in OpenShift
+# Mission: create the Ansible defaults for the Red Hat SSO database deployment config in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    deploymentConfig: sso-postgresql
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: sso73
+        application: sso
+        deploymentConfig: sso-postgresql
+      name: sso-postgresql
+    spec:
+      containers:
+        - env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  key: DB_USERNAME
+                  name: sso-secret
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PASSWORD
+                  name: sso-secret
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: DB_DATABASE
+                  name: sso-secret
+          image: >-
+            docker-registry.default.svc:5000/openshift/postgresql@sha256:0cf19c73fb1ed0784a5092edd42ce662d7328dac529f56b6bfc3d85b24552ed4
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 5432
+            timeoutSeconds: 1
+          name: sso-postgresql
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-i'
+                - '-c'
+                - >-
+                  psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d
+                  $POSTGRESQL_DATABASE -c 'SELECT 1'
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/lib/pgsql/data
+              name: sso-postgresql-pvol
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: sso-postgresql-pvol
+          persistentVolumeClaim:
+            claimName: sso-postgresql
+  test: false
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - sso-postgresql
+        from:
+          kind: ImageStreamTag
+          name: 'postgresql:10'
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange

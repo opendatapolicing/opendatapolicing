@@ -1,0 +1,18 @@
+---
+# Label: ansible_redhat_sso_secure_service
+# Title: create the Ansible template for the Red Hat SSO secure service in OpenShift
+# Mission: create the Ansible defaults for the Red Hat SSO secure service in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+apiVersion: v1
+kind: Service
+spec:
+  ports:
+    - port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    deploymentconfig: sso
+  sessionAffinity: None
+  type: ClusterIP

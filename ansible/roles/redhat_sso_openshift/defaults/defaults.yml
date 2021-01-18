@@ -1,0 +1,8 @@
+---
+# Label: redhat_sso_openshift_defaults
+# Title: create the Ansible defaults for Red Hat SSO in OpenShift
+# Mission: create the Ansible defaults for Red Hat SSO in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+REDHAT_OPENSHIFT_STORAGE_CLASS_NAME: gp2

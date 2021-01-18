@@ -1,2 +1,128 @@
 ---
-# tasks file for redhat_sso_openshift
+# Label: redhat_sso_openshift_tasks_main
+# Title: create the Ansible tasks for Red Hat SSO in OpenShift
+# Mission: create the Ansible tasks for Red Hat SSO in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+
+- name: Install sso secret on OpenShift
+  k8s: 
+    state: present
+    name: sso-secret
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_secret.yml') }}"
+    validate_certs: false
+- name: Install sso keystore secret on OpenShift
+  k8s: 
+    state: present
+    name: sso-keystore
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_keystore.yml') }}"
+    validate_certs: false
+- name: Install sso persistent volume claim on OpenShift
+  k8s: 
+    state: present
+    name: sso-postgresql
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_persistent_volume_claim.yml') }}"
+    validate_certs: false
+- name: Install sso-postgresql deployment config on OpenShift
+  k8s: 
+    state: present
+    name: sso-postgresql
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_postgres_deployment_config.yml') }}"
+    validate_certs: false
+- name: Install sso-postgresql service on OpenShift
+  k8s: 
+    state: present
+    name: sso-postgresql
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_postgres_service.yml') }}"
+    validate_certs: false
+- name: Install sso deployment config on OpenShift
+  k8s: 
+    state: present
+    name: sso
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_deployment_config.yml') }}"
+    validate_certs: false
+- name: Install sso service on OpenShift
+  k8s: 
+    state: present
+    name: sso
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_service.yml') }}"
+    validate_certs: false
+- name: Install sso secure service on OpenShift
+  k8s: 
+    state: present
+    name: secure-sso
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_secure_service.yml') }}"
+    validate_certs: false
+- name: "Install sso route on OpenShift: {{ SSO_SITE_BASE_URL }}"
+  k8s: 
+    state: present
+    name: sso
+    host: "{{SSO_HOST}}"
+    api_key: "{{SSO_TOKEN}}"
+    namespace: "{{SSO_NAMESPACE}}"
+    definition: "{{ lookup('template', 'redhat_sso_route.yml') }}"
+    validate_certs: false
+- name: "Create Token for SSO"
+  uri:
+    url: "{{ SSO_SITE_BASE_URL }}/auth/realms/master/protocol/openid-connect/token"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      username: "{{ SSO_ADMIN_USERNAME }}"
+      password: "{{ SSO_ADMIN_PASSWORD }}"
+      grant_type: "password"
+      client_id: "admin-cli"
+  register: SSO_TOKEN
+- name: "Update SSO Realm"
+  uri:
+    url: "{{ SSO_SITE_BASE_URL }}/auth/admin/realms/{{ AUTH_REALM }}"
+    method: PUT
+    body_format: json
+    body: "{{ lookup('template', 'redhat_sso_realm.json') }}"
+    status_code:
+     - 204
+    headers:
+      Content-type: "application/json"
+      Accept: "application/json"
+      Authorization: "Bearer {{ SSO_TOKEN.json.access_token }}"
+  register: SSO_REALM_CREATE
+- name: Create or update SSO client
+  keycloak_client:
+    auth_client_id: admin-cli
+    auth_keycloak_url: "{{ SSO_SITE_BASE_URL }}/auth"
+    auth_realm: "master"
+    realm: "{{ AUTH_REALM }}"
+    auth_username: "{{ SSO_ADMIN_USERNAME }}"
+    auth_password: "{{ SSO_ADMIN_PASSWORD }}"
+    client_id: "{{ AUTH_RESOURCE }}"
+    secret: "{{ AUTH_SECRET }}"
+    service_accounts_enabled: true
+    redirect_uris: 
+      - "{{ PROJECT_SITE_BASE_URL_ENUS }}/callback"
+      - "{{ PROJECT_SITE_BASE_URL_ENUS }}/logout"
+    state: present

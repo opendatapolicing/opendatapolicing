@@ -1,0 +1,26 @@
+---
+# Label: ansible_redhat_sso_route
+# Title: create the Ansible template for the Red Hat SSO route in OpenShift
+# Mission: create the Ansible defaults for the Red Hat SSO route in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+apiVersion: route.openshift.io/v1
+kind: Route
+spec:
+  host: "{{SSO_SITE_HOST_NAME}}"
+{% if SSO_SITE_BASE_URL is match('^https://*') %}
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: passthrough
+  to:
+    kind: Service
+    name: secure-sso
+    weight: 100
+{% else %}
+  to:
+    kind: Service
+    name: sso
+    weight: 100
+{% endif %}
+  wildcardPolicy: None
