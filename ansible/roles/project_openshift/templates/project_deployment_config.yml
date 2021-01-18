@@ -1,0 +1,193 @@
+---
+# Label: ansible_project_deployment_config
+# Title: create the Ansible template for the project deployment config in OpenShift
+# Mission: create the Ansible template for the project deployment config in OpenShift
+# Milestone: Automate Project Deployment
+# Column: Automate Project Deployment
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+spec:
+  replicas: 1
+  selector:
+    app: opendatapolicing
+    deploymentconfig: opendatapolicing
+  template:
+    metadata:
+      labels:
+        app: opendatapolicing
+        deploymentconfig: opendatapolicing
+    spec:
+      containers:
+        - imagePullPolicy: Always
+          name: opendatapolicing
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 8081
+              name: cluster
+              protocol: TCP
+            - containerPort: 9779
+              name: prometheus
+              protocol: TCP
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - mountPath: /opt/keystore
+              name: volume-keystore
+              readOnly: true
+          env:
+            - name: authRealm
+              valueFrom:
+                secretKeyRef:
+                  key: authRealm
+                  name: opendatapolicing-secret
+            - name: authResource
+              valueFrom:
+                secretKeyRef:
+                  key: authResource
+                  name: opendatapolicing-secret
+            - name: authSecret
+              valueFrom:
+                secretKeyRef:
+                  key: authSecret
+                  name: opendatapolicing-secret
+            - name: authUrl
+              valueFrom:
+                secretKeyRef:
+                  key: authUrl
+                  name: opendatapolicing-secret
+            - name: emailAuth
+              valueFrom:
+                secretKeyRef:
+                  key: emailAuth
+                  name: opendatapolicing-secret
+            - name: emailFrom
+              valueFrom:
+                secretKeyRef:
+                  key: emailFrom
+                  name: opendatapolicing-secret
+            - name: emailHost
+              valueFrom:
+                secretKeyRef:
+                  key: emailHost
+                  name: opendatapolicing-secret
+            - name: emailPassword
+              valueFrom:
+                secretKeyRef:
+                  key: emailPassword
+                  name: opendatapolicing-secret
+            - name: emailPort
+              valueFrom:
+                secretKeyRef:
+                  key: emailPort
+                  name: opendatapolicing-secret
+            - name: emailSsl
+              valueFrom:
+                secretKeyRef:
+                  key: emailSsl
+                  name: opendatapolicing-secret
+            - name: emailUsername
+              valueFrom:
+                secretKeyRef:
+                  key: emailUsername
+                  name: opendatapolicing-secret
+            - name: jdbcHost
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcHost
+                  name: opendatapolicing-secret
+            - name: jdbcPort
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcPort
+                  name: opendatapolicing-secret
+            - name: jdbcDatabase
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcDatabase
+                  name: opendatapolicing-secret
+            - name: jdbcUsername
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcUsername
+                  name: opendatapolicing-secret
+            - name: jdbcPassword
+              valueFrom:
+                secretKeyRef:
+                  key: jdbcPassword
+                  name: opendatapolicing-secret
+            - name: sslPassthrough
+              valueFrom:
+                secretKeyRef:
+                  key: sslPassthrough
+                  name: opendatapolicing-secret
+            - name: sslAlias
+              valueFrom:
+                secretKeyRef:
+                  key: sslAlias
+                  name: opendatapolicing-secret
+            - name: sslJksPassword
+              valueFrom:
+                secretKeyRef:
+                  key: sslJksPassword
+                  name: opendatapolicing-secret
+            - name: sslJksPath
+              valueFrom:
+                secretKeyRef:
+                  key: sslJksPath
+                  name: opendatapolicing-secret
+            - name: sslKeystorePath
+              valueFrom:
+                secretKeyRef:
+                  key: sslKeystorePath
+                  name: opendatapolicing-secret
+            - name: openshiftService
+              value: "opendatapolicing"
+            - name: clusterPort
+              value: "8081"
+            - name: zookeeperHostName
+              value: "{{ZOOKEEPER_HOST_NAME}}"
+            - name: zookeeperPort
+              value: "{{ZOOKEEPER_PORT}}"
+            - name: solrHostName
+              value: "{{SOLR_HOST_NAME}}"
+            - name: solrPort
+              value: "{{SOLR_PORT}}"
+            - name: solrUrl
+              value: "http://{{SOLR_HOST_NAME}}:{{SOLR_PORT}}/solr/{{PROJECT_SOLR_COLLECTION}}"
+            - name: siteHostName
+              value: "{{PROJECT_SITE_HOST_NAME_ENUS}}"
+            - name: sitePort
+              value: "{{PROJECT_SITE_PORT}}"
+            - name: siteBaseUrl
+              value: "{{PROJECT_SITE_BASE_URL_ENUS}}"
+            - name: numberExecutors
+              value: "{{PROJECT_NUMBER_EXECUTORS}}"
+            - name: staticBaseUrl
+              value: "{{PROJECT_STATIC_BASE_URL}}"
+            - name: siteZone
+              value: "{{PROJECT_SITE_ZONE}}"
+            - name: JAVA_MAIN_CLASS
+              value: "{{PROJECT_JAVA_MAIN_CLASS_ENUS}}"
+      volumes:
+        - name: volume-keystore
+          secret:
+            defaultMode: 420
+            secretName: opendatapolicing-keystore
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - opendatapolicing
+        from:
+          kind: ImageStreamTag
+          name: 'opendatapolicing:latest'
+          namespace: {{PROJECT_NAMESPACE}}
+      type: ImageChange
+    - type: ConfigChange
