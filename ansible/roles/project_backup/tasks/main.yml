@@ -1,2 +1,35 @@
 ---
-# tasks file for project_backup
+# Label: project_backup_tasks
+# Title: create the Ansible tasks for backing up all opendatapolicing data
+# Mission: create the Ansible tasks for backing up all opendatapolicing data
+# Milestone: Data Backup/Restore
+# Column: Data Backup/Restore
+
+- name: Create the data backup directory
+  file: 
+    path: "{{PROJECT_BACKUP_DIR_ENUS}}"
+    state: directory
+
+- name: Delete previous {{DATA_NAME_VAR}} backups
+  file: 
+    path: "{{item}}"
+    state: absent
+  with_fileglob: "{{PROJECT_BACKUP_DIR_ENUS}}/{{DATA_NAME_VAR}}*"
+
+- name: Get restore site access token
+  shell: curl -X POST -u "{{AUTH_RESOURCE}}:{{AUTH_SECRET}}" -d "grant_type=client_credentials" "{{AUTH_URL}}/realms/{{AUTH_REALM}}/protocol/openid-connect/token"
+  register: AUTH_TOKEN
+
+- name: Request {{DATA_NAME_VAR}} data
+  shell: "curl -X GET -H 'Authorization: Bearer {{(AUTH_TOKEN.stdout | from_json).access_token}}' '{{PROJECT_SITE_BASE_URL_ENUS}}{{DATA_URI}}?rows=0'"
+  register: REQUEST_DATA
+
+- debug: 
+    var: AUTH_TOKEN
+
+- debug: 
+    var: REQUEST_DATA
+
+- name: Request and encrypt the {{DATA_NAME_VAR}} response data
+  shell: "curl -X GET -H 'Authorization: Bearer {{(AUTH_TOKEN.stdout | from_json).access_token}}' '{{PROJECT_SITE_BASE_URL_ENUS}}{{DATA_URI}}?fl=saves&rows={{DATA_ROWS}}&start={{item}}' > '{{PROJECT_BACKUP_DIR_ENUS}}/{{DATA_NAME_VAR}}{{item}}.json'"
+  with_sequence: "start=0 end={{(REQUEST_DATA.stdout | from_json).foundNum}} stride={{DATA_ROWS}}"
