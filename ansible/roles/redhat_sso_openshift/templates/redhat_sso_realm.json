@@ -1,0 +1,25 @@
+{
+  "id": "{{ AUTH_REALM }}",
+  "realm": "{{ AUTH_REALM }}",
+  "displayName": "{{ AUTH_REALM }}",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "verifyEmail": true,
+  "rememberMe": true,
+  "resetPasswordAllowed": true,
+  "bruteForceProtected": true,
+  "smtpServer": {
+    "host" : "{{ EMAIL_HOST_NAME }}",
+    "port" : "{{ EMAIL_PORT }}",
+    "user" : "{{ EMAIL_USER }}",
+    "password" : "{{ EMAIL_PASSWORD }}",
+    "from" : "{{ EMAIL_FROM }}",
+    "auth" : "{{ EMAIL_AUTH | lower }}",
+    "ssl" : "{{ EMAIL_SSL | lower }}"
+  }
+}

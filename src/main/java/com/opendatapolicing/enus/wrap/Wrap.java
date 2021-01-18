@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- *  **/
+ * Keyword: classSimpleNameWrap
+ **/  
 
 public class Wrap<DEV> implements Serializable {
 

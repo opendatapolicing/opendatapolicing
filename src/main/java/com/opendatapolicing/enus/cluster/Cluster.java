@@ -6,9 +6,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+
 import com.opendatapolicing.enus.page.PageLayout;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -17,24 +19,33 @@ import com.opendatapolicing.enus.xml.UtilXml;
 
 /**
  * Model: true
- * Stored: true
+ * Api: true
  * Indexed: true
- * Saved: true
-
- * ApiUri.enUS: /api/cluster
+ * 
  * ApiTag.enUS: Cluster
-
+ * ApiUri.enUS: /api/cluster
+ * 
  * ApiMethod: POST
-
  * ApiMethod: PUT
-
  * ApiMethod: PATCH
-
- * ApiMethod: GET.enUS
- * ApiUriGET.enUS: /api/cluster/{id}
-
- * ApiMethod: Search
- **/
+ * ApiMethod: GET
+ * ApiMethod.enUS: Search
+ * 
+ * ApiMethode.enUS: SearchPage
+ * PageSearchPage.enUS: ClusterPage
+ * ApiUriSearchPage.enUS: /cluster
+ * 
+ * AName.enUS: a cluster
+ * Color: gray
+ * IconGroup: regular
+ * IconName: fort-awesome
+ * Keyword: classSimpleNameCluster
+ * 
+ * RoleUser: true
+ * Role.frFR: SiteAdmin
+ * Role.enUS: SiteAdmin
+ * RoleRead.enUS: User
+ **/  
 
 public class Cluster extends ClusterGen<Object> {
 	
