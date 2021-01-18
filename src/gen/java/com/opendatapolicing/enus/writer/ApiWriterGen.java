@@ -3446,6 +3446,28 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/////////////////
 
 	public void siteRequestApiWriter(SiteRequestEnUS siteRequest_) {
+		if(wPaths != null)
+			wPaths.setSiteRequest_(siteRequest_);
+		if(wRequestBodies != null)
+			wRequestBodies.setSiteRequest_(siteRequest_);
+		if(wSchemas != null)
+			wSchemas.setSiteRequest_(siteRequest_);
+		if(wRequestHeaders != null)
+			wRequestHeaders.setSiteRequest_(siteRequest_);
+		if(wRequestDescription != null)
+			wRequestDescription.setSiteRequest_(siteRequest_);
+		if(wResponseDescription != null)
+			wResponseDescription.setSiteRequest_(siteRequest_);
+		if(wRequestBody != null)
+			wRequestBody.setSiteRequest_(siteRequest_);
+		if(wResponseBody != null)
+			wResponseBody.setSiteRequest_(siteRequest_);
+		if(wRequestSchema != null)
+			wRequestSchema.setSiteRequest_(siteRequest_);
+		if(wResponseSchema != null)
+			wResponseSchema.setSiteRequest_(siteRequest_);
+		if(writers != null)
+			writers.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {

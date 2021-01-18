@@ -42,8 +42,8 @@ import org.apache.solr.client.solrj.SolrQuery.SortClause;
  **/
 public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 
-	public static final List<String> ROLES = Arrays.asList();
-	public static final List<String> ROLE_READS = Arrays.asList();
+	public static final List<String> ROLES = Arrays.asList("SiteAdmin", "SiteAdmin");
+	public static final List<String> ROLE_READS = Arrays.asList("");
 
 	/**
 	 * {@inheritDoc}
@@ -79,11 +79,11 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageUri(Wrap<String> c) {
-		c.o("/api/user");
+		c.o("/user");
 	}
 
 	@Override protected void _pageImageUri(Wrap<String> c) {
-			c.o("/png/api/user-999.png");
+			c.o("/png/user-999.png");
 	}
 
 	@Override protected void _contextIconGroup(Wrap<String> c) {
@@ -171,7 +171,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		if(listSiteUser == null || listSiteUser.size() == 0) {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/user").a("class", "w3-bar-item w3-btn w3-center w3-block w3-IconGroup: regular w3-hover-IconGroup: regular ").f();
+				{ e("a").a("href", "/user").a("class", "w3-bar-item w3-btn w3-center w3-block w3- w3-hover- ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx("site users").g("span");
@@ -179,7 +179,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			} g("h1");
 			e("div").a("class", "w3-padding-16 w3-card-4 w3-light-grey ").f();
 			{ e("h2").f();
-				{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-IconGroup: regular ").f();
+				{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3- ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx("no site user found").g("span");
@@ -190,7 +190,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			siteRequest_.setRequest(o.get());
 			if(StringUtils.isNotEmpty(pageH1)) {
 				{ e("h1").f();
-					{ e("a").a("href", "/api/user").a("class", "w3-bar-item w3-btn w3-center w3-block w3-IconGroup: regular w3-hover-IconGroup: regular ").f();
+					{ e("a").a("href", "/user").a("class", "w3-bar-item w3-btn w3-center w3-block w3- w3-hover- ").f();
 						if(contextIconCssClasses != null)
 							e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 						e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -200,14 +200,14 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			e("div").a("class", "w3-padding-16 w3-card-4 w3-light-grey ").f();
 			if(StringUtils.isNotEmpty(pageH2)) {
 				{ e("h2").f();
-					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-IconGroup: regular ").f();
+					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3- ").f();
 						e("span").a("class", " ").f().sx(pageH2).g("span");
 					} g("span");
 				} g("h2");
 			}
 			if(StringUtils.isNotEmpty(pageH3)) {
 				{ e("h3").f();
-					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3-IconGroup: regular ").f();
+					{ e("span").a("class", "w3-bar-item w3-padding w3-center w3-block w3- ").f();
 						e("span").a("class", " ").f().sx(pageH3).g("span");
 					} g("span");
 				} g("h3");
@@ -215,7 +215,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		} else {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/user").a("class", "w3-bar-item w3-btn w3-center w3-block w3-IconGroup: regular w3-hover-IconGroup: regular ").f();
+				{ e("a").a("href", "/user").a("class", "w3-bar-item w3-btn w3-center w3-block w3- w3-hover- ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -276,7 +276,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 					if(start1 == 0) {
 						e("i").a("class", "fas fa-arrow-square-left w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/user?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
+						{ e("a").a("href", "/user?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-left ").f().g("i");
 						} g("a");
 					}
@@ -284,19 +284,19 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 					if(rows1 <= 1) {
 						e("i").a("class", "fas fa-minus-square w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/user?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
+						{ e("a").a("href", "/user?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
 							e("i").a("class", "fas fa-minus-square ").f().g("i");
 						} g("a");
 					}
 
-					{ e("a").a("href", "/api/user?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
+					{ e("a").a("href", "/user?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
 						e("i").a("class", "fas fa-plus-square ").f().g("i");
 					} g("a");
 
 					if(start3 >= num) {
 						e("i").a("class", "fas fa-arrow-square-right w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/user?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
+						{ e("a").a("href", "/user?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-right ").f().g("i");
 						} g("a");
 					}
@@ -330,7 +330,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 	}
 
 	public void thead1SiteUserGenPage() {
-		{ e("thead").a("class", "w3-IconGroup: regular w3-hover-IconGroup: regular ").f();
+		{ e("thead").a("class", "w3- w3-hover- ").f();
 			thead2SiteUserGenPage();
 		} g("thead");
 	}
@@ -352,14 +352,14 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			SiteUser o = listSiteUser.getList().get(i);
 			Map<String, List<String>> highlights = highlighting == null ? null : highlighting.get(o.getId());
 			List<String> highlightList = highlights == null ? null : highlights.get(highlights.keySet().stream().findFirst().orElse(null));
-			String uri = "/api/user/" + o.getnull();
+			String uri = "/user/" + o.getnull();
 			{ e("tr").f();
 			} g("tr");
 		}
 	}
 
 	public void tfoot1SiteUserGenPage() {
-		{ e("tfoot").a("class", "w3-IconGroup: regular w3-hover-IconGroup: regular ").f();
+		{ e("tfoot").a("class", "w3- w3-hover- ").f();
 			tfoot2SiteUserGenPage();
 		} g("tfoot");
 	}
@@ -379,7 +379,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 
 			if(listSiteUser != null && listSiteUser.size() == 1) {
 				{ e("button")
-					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-IconGroup: regular ")
+					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3- ")
 						.a("id", "refreshThisSiteUserGenPage")
 						.a("onclick", "patchSiteUserVals( [ {name: 'fq', value: ':' + " + siteRequest_.getRequest() + " } ], {}, function() { addGlow($('#refreshThisSiteUserGenPage')); }, function() { addError($('#refreshThisSiteUserGenPage')); }); return false; ").f();
 						e("i").a("class", "fas fa-sync-alt ").f().g("i");
@@ -393,7 +393,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 				) {
 
 			{ e("button")
-				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-IconGroup: regular ")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3- ")
 				.a("onclick", "$('#patchSiteUserModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-edit ").f().g("i");
@@ -402,7 +402,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			{ e("div").a("id", "patchSiteUserModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
-						{ e("header").a("class", "w3-container w3-IconGroup: regular ").f();
+						{ e("header").a("class", "w3-container w3- ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#patchSiteUserModal').hide(); ").f().sx("×").g("span");
 							e("h2").a("class", "w3-padding ").f().sx("Modify site users").g("h2");
 						} g("header");
@@ -412,7 +412,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 
 							htmlFormPATCHSiteUser(o);
 							e("button")
-								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-IconGroup: regular ")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3- ")
 								.a("onclick", "patchSiteUser(null, $('#patchSiteUserFormValues'), ", Optional.ofNullable(siteUser_).map(SiteUser::get).map(a -> a.toString()).orElse("null"), ", function() {}, function() {}); ")
 								.f().sx("Modify site users")
 							.g("button");
@@ -424,7 +424,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 
 
 			{ e("button")
-				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-IconGroup: regular ")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3- ")
 				.a("onclick", "$('#postSiteUserModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-file-plus ").f().g("i");
@@ -433,7 +433,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			{ e("div").a("id", "postSiteUserModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
-						{ e("header").a("class", "w3-container w3-IconGroup: regular ").f();
+						{ e("header").a("class", "w3-container w3- ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#postSiteUserModal').hide(); ").f().sx("×").g("span");
 							e("h2").a("class", "w3-padding ").f().sx("Create a site user").g("h2");
 						} g("header");
@@ -446,7 +446,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 								htmlFormPOSTSiteUser(o);
 							} g("div");
 							e("button")
-								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-IconGroup: regular ")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3- ")
 								.a("onclick", "postSiteUser($('#postSiteUserForm')); ")
 								.f().sx("Create a site user")
 							.g("button");
@@ -519,7 +519,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), SiteUserGenPage.ROLES)
 					) {
 					{ p.e("div").a("class", "").f();
-						{ p.e("button").a("id", "refreshAllSiteUserGenPage", id).a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-IconGroup: regular ").a("onclick", "patchSiteUserVals([], {}, function() { addGlow($('#refreshAllSiteUserGenPage", id, "')); }, function() { addError($('#refreshAllSiteUserGenPage", id, "')); }); ").f();
+						{ p.e("button").a("id", "refreshAllSiteUserGenPage", id).a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3- ").a("onclick", "patchSiteUserVals([], {}, function() { addGlow($('#refreshAllSiteUserGenPage", id, "')); }, function() { addError($('#refreshAllSiteUserGenPage", id, "')); }); ").f();
 							p.e("i").a("class", "fas fa-sync-alt ").f().g("i");
 							p.sx("refresh all the site users");
 						} p.g("button");
@@ -541,13 +541,13 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 					.a("id", "suggestSiteUser", id)
 					.a("autocomplete", "off")
 					.a("oninput", "suggestSiteUser( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': '' } ], $('#suggestListSiteUser", id, "'), ", p.getSiteRequest_().getRequest(), "); ")
-					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/api/user?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
+					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/user?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listSiteUser != null)
 					p.a("value", query2);
 				p.fg();
 				{ p.e("button")
-					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-IconGroup: regular ")
-					.a("onclick", "window.location.href = '/api/user?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
+					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+					.a("onclick", "window.location.href = '/user?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
 					.f();
 					p.e("i").a("class", "fas fa-search ").f().g("i");
 				} p.g("button");
@@ -560,7 +560,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 				} p.g("div");
 			} p.g("div");
 			{ p.e("div").a("class", "").f();
-				{ p.e("a").a("href", "/api/user").a("class", "").f();
+				{ p.e("a").a("href", "/user").a("class", "").f();
 					p.e("i").a("class", "far fa-user-cog ").f().g("i");
 					p.sx("see all the site users");
 				} p.g("a");

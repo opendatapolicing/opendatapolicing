@@ -22,6 +22,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
 import java.math.MathContext;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import java.util.Set;
+import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -51,6 +52,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 public abstract class SiteUserGen<DEV> extends Cluster {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteUser.class);
 
+	public static final List<String> ROLES = Arrays.asList("SiteAdmin", "SiteAdmin");
+	public static final List<String> ROLE_READS = Arrays.asList("");
+
 	public static final String SiteUser_AName = "a site user";
 	public static final String SiteUser_This = "this ";
 	public static final String SiteUser_ThisName = "this site user";
@@ -69,7 +73,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public static final String SiteUser_ANameAdjective = "a site user";
 	public static final String SiteUser_NameAdjectiveSingular = "site user";
 	public static final String SiteUser_NameAdjectivePlural = "site users";
-	public static final String SiteUser_Color = "IconGroup: regular";
 	public static final String SiteUser_IconGroup = "regular";
 	public static final String SiteUser_IconName = "user-cog";
 

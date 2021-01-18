@@ -3,7 +3,9 @@ package com.opendatapolicing.enus.cluster;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
+import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
+import com.opendatapolicing.enus.search.SearchResult;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.ext.mail.MailClient;
 import io.vertx.ext.mail.MailMessage;
@@ -77,7 +79,9 @@ import java.time.ZonedDateTime;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import com.opendatapolicing.enus.user.SiteUserEnUSApiServiceImpl;
 import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.writer.AllWriter;
 
 
 /**
@@ -873,4 +877,813 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 		if(!eNoWrap && !tabs.isEmpty())
 			w.s(tabs);
 		w.s("</");
-		w.s(loc
+		w.s(localName);
+		w.s(">");
+		
+		return this;
+	}
+
+	ClusterGen(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ s.e("div").a("class", "w3-padding ").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3- ").f();
+							s.e("label").a("class", "").f().sx("primary key").g("label");
+						} s.g("div");
+						{ s.e("div").a("class", "w3-cell-row  ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+								{ s.e("div").a("class", "w3-rest ").f();
+									s.e("a").a("href", StringUtils.substringBeforeLast(pageUrlApi, "/"), "?fq=pk:", pk).a("class", "varCluster", pk, "Pk ").f().sx(strPk()).g("a");
+								} s.g("div");
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			}
+		} s.g("div");
+	}
+
+	// General //
+
+	public Future<Cluster> defineIndexCluster(Cluster cluster, Handler<AsyncResult<Cluster>> eventHandler) {
+		Promise<Cluster> promise = Promise.promise();
+		SiteRequestEnUS siteRequest = cluster.getSiteRequest_();
+		defineCluster(cluster, c -> {
+			if(c.succeeded()) {
+				attributeCluster(cluster, d -> {
+					if(d.succeeded()) {
+						indexCluster(cluster, e -> {
+							if(e.succeeded()) {
+								sqlCommitCluster(siteRequest, f -> {
+									if(f.succeeded()) {
+										sqlCloseCluster(siteRequest, g -> {
+											if(g.succeeded()) {
+												refreshCluster(cluster, h -> {
+													if(h.succeeded()) {
+														eventHandler.handle(Future.succeededFuture(cluster));
+														promise.complete(cluster);
+													} else {
+														LOGGER.error(String.format("refreshCluster failed. ", h.cause()));
+														errorCluster(siteRequest, null, h);
+													}
+												});
+											} else {
+												LOGGER.error(String.format("defineIndexCluster failed. ", g.cause()));
+												errorCluster(siteRequest, null, g);
+											}
+										});
+									} else {
+										LOGGER.error(String.format("defineIndexCluster failed. ", f.cause()));
+										errorCluster(siteRequest, null, f);
+									}
+								});
+							} else {
+								LOGGER.error(String.format("defineIndexCluster failed. ", e.cause()));
+								errorCluster(siteRequest, null, e);
+							}
+						});
+					} else {
+						LOGGER.error(String.format("defineIndexCluster failed. ", d.cause()));
+						errorCluster(siteRequest, null, d);
+					}
+				});
+			} else {
+				LOGGER.error(String.format("defineIndexCluster failed. ", c.cause()));
+				errorCluster(siteRequest, null, c);
+			}
+		});
+		return promise.future();
+	}
+
+	public void createCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<Cluster>> eventHandler) {
+		try {
+			Transaction tx = siteRequest.getTx();
+			String userId = siteRequest.getUserId();
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
+
+			tx.preparedQuery(
+					SiteContextEnUS.SQL_create
+					, Tuple.of(Cluster.class.getCanonicalName(), userId, created.toOffsetDateTime())
+					, Collectors.toList()
+					, createAsync
+			-> {
+				if(createAsync.succeeded()) {
+					Row createLine = createAsync.result().value().stream().findFirst().orElseGet(() -> null);
+					Long  = createLine.getLong(0);
+					Cluster o = new Cluster();
+					o.set();
+					o.setSiteRequest_(siteRequest);
+					eventHandler.handle(Future.succeededFuture(o));
+				} else {
+					LOGGER.error(String.format("createCluster failed. ", createAsync.cause()));
+					eventHandler.handle(Future.failedFuture(createAsync.cause()));
+				}
+			});
+		} catch(Exception e) {
+			LOGGER.error(String.format("createCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void errorCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler, AsyncResult<?> resultAsync) {
+		Throwable e = resultAsync.cause();
+		JsonObject json = new JsonObject()
+				.put("error", new JsonObject()
+				.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null))
+				.put("userName", siteRequest.getUserName())
+				.put("userFullName", siteRequest.getUserFullName())
+				.put("requestUri", siteRequest.getRequestUri())
+				.put("requestMethod", siteRequest.getRequestMethod())
+				.put("params", Optional.ofNullable(siteRequest.getOperationRequest()).map(o -> o.getParams()).orElse(null))
+				);
+		ExceptionUtils.printRootCauseStackTrace(e);
+		OperationResponse responseOperation = new OperationResponse(400, "BAD REQUEST", 
+				Buffer.buffer().appendString(json.encodePrettily())
+				, new CaseInsensitiveHeaders().add("Content-Type", "application/json")
+		);
+		SiteConfig siteConfig = siteRequest.getSiteConfig_();
+		SiteContextEnUS siteContext = siteRequest.getSiteContext_();
+		MailClient mailClient = siteContext.getMailClient();
+		MailMessage message = new MailMessage();
+		message.setFrom(siteConfig.getEmailFrom());
+		message.setTo(siteConfig.getEmailAdmin());
+		if(e != null)
+			message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+		message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+		WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+		workerExecutor.executeBlocking(
+			blockingCodeHandler -> {
+				mailClient.sendMail(message, result -> {
+					if (result.succeeded()) {
+						LOGGER.info(result.result());
+					} else {
+						LOGGER.error(result.cause());
+					}
+				});
+			}, resultHandler -> {
+			}
+		);
+		sqlRollbackCluster(siteRequest, a -> {
+			if(a.succeeded()) {
+				LOGGER.info(String.format("sql rollback. "));
+				sqlCloseCluster(siteRequest, b -> {
+					if(b.succeeded()) {
+						LOGGER.info(String.format("sql close. "));
+						if(eventHandler != null)
+							eventHandler.handle(Future.succeededFuture(responseOperation));
+					} else {
+						if(eventHandler != null)
+							eventHandler.handle(Future.succeededFuture(responseOperation));
+					}
+				});
+			} else {
+				if(eventHandler != null)
+					eventHandler.handle(Future.succeededFuture(responseOperation));
+			}
+		});
+	}
+
+	public void sqlConnectionCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
+
+			if(pgPool == null) {
+				eventHandler.handle(Future.succeededFuture());
+			} else {
+				pgPool.getConnection(a -> {
+					if(a.succeeded()) {
+						SqlConnection sqlConnection = a.result();
+						siteRequest.setSqlConnection(sqlConnection);
+						eventHandler.handle(Future.succeededFuture());
+					} else {
+						LOGGER.error(String.format("sqlConnectionCluster failed. ", a.cause()));
+						eventHandler.handle(Future.failedFuture(a.cause()));
+					}
+				});
+			}
+		} catch(Exception e) {
+			LOGGER.error(String.format("sqlCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void sqlTransactionCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
+
+			if(sqlConnection == null) {
+				eventHandler.handle(Future.succeededFuture());
+			} else {
+				Transaction tx = sqlConnection.begin();
+				siteRequest.setTx(tx);
+				eventHandler.handle(Future.succeededFuture());
+			}
+		} catch(Exception e) {
+			LOGGER.error(String.format("sqlTransactionCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void sqlCommitCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			Transaction tx = siteRequest.getTx();
+
+			if(tx == null) {
+				eventHandler.handle(Future.succeededFuture());
+			} else {
+				tx.commit(a -> {
+					if(a.succeeded()) {
+						siteRequest.setTx(null);
+						eventHandler.handle(Future.succeededFuture());
+					} else if("Transaction already completed".equals(a.cause().getMessage())) {
+						siteRequest.setTx(null);
+						eventHandler.handle(Future.succeededFuture());
+					} else {
+						LOGGER.error(String.format("sqlCommitCluster failed. ", a.cause()));
+						eventHandler.handle(Future.failedFuture(a.cause()));
+					}
+				});
+			}
+		} catch(Exception e) {
+			LOGGER.error(String.format("sqlCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void sqlRollbackCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			Transaction tx = siteRequest.getTx();
+
+			if(tx == null) {
+				eventHandler.handle(Future.succeededFuture());
+			} else {
+				tx.rollback(a -> {
+					if(a.succeeded()) {
+						siteRequest.setTx(null);
+						eventHandler.handle(Future.succeededFuture());
+					} else if("Transaction already completed".equals(a.cause().getMessage())) {
+						siteRequest.setTx(null);
+						eventHandler.handle(Future.succeededFuture());
+					} else {
+						LOGGER.error(String.format("sqlRollbackCluster failed. ", a.cause()));
+						eventHandler.handle(Future.failedFuture(a.cause()));
+					}
+				});
+			}
+		} catch(Exception e) {
+			LOGGER.error(String.format("sqlCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void sqlCloseCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
+
+			if(sqlConnection == null) {
+				eventHandler.handle(Future.succeededFuture());
+			} else {
+				sqlConnection.close();
+				siteRequest.setSqlConnection(null);
+				eventHandler.handle(Future.succeededFuture());
+			}
+		} catch(Exception e) {
+			LOGGER.error(String.format("sqlCloseCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public SiteRequestEnUS generateSiteRequestEnUSForCluster(SiteContextEnUS siteContext, OperationRequest operationRequest) {
+		return generateSiteRequestEnUSForCluster(siteContext, operationRequest, null);
+	}
+
+	public SiteRequestEnUS generateSiteRequestEnUSForCluster(SiteContextEnUS siteContext, OperationRequest operationRequest, JsonObject body) {
+		Vertx vertx = siteContext.getVertx();
+		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+		siteRequest.setJsonObject(body);
+		siteRequest.setVertx(vertx);
+		siteRequest.setSiteContext_(siteContext);
+		siteRequest.setSiteConfig_(siteContext.getSiteConfig());
+		siteRequest.setOperationRequest(operationRequest);
+		siteRequest.initDeepSiteRequestEnUS(siteRequest);
+
+		return siteRequest;
+	}
+
+	public void userCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			String userId = siteRequest.getUserId();
+			if(userId == null) {
+				eventHandler.handle(Future.succeededFuture());
+			} else {
+				sqlConnectionCluster(siteRequest, a -> {
+					if(a.succeeded()) {
+						sqlTransactionCluster(siteRequest, b -> {
+							if(b.succeeded()) {
+								Transaction tx = siteRequest.getTx();
+								tx.preparedQuery(
+										SiteContextEnUS.SQL_selectC
+										, Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
+										, Collectors.toList()
+										, selectCAsync
+								-> {
+									if(selectCAsync.succeeded()) {
+										try {
+											Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
+											SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
+											if(userValues == null) {
+												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
+												JsonObject jsonPrincipal = KeycloakHelper.parseToken(userVertx.getString("access_token"));
+
+												JsonObject jsonObject = new JsonObject();
+												jsonObject.put("userName", jsonPrincipal.getString("preferred_username"));
+												jsonObject.put("userFirstName", jsonPrincipal.getString("given_name"));
+												jsonObject.put("userLastName", jsonPrincipal.getString("family_name"));
+												jsonObject.put("userCompleteName", jsonPrincipal.getString("name"));
+												jsonObject.put("userId", jsonPrincipal.getString("sub"));
+												jsonObject.put("userEmail", jsonPrincipal.getString("email"));
+												userClusterDefine(siteRequest, jsonObject, false);
+
+												SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+												siteRequest2.setTx(siteRequest.getTx());
+												siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+												siteRequest2.setJsonObject(jsonObject);
+												siteRequest2.setVertx(siteRequest.getVertx());
+												siteRequest2.setSiteContext_(siteContext);
+												siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+												siteRequest2.setUserId(siteRequest.getUserId());
+												siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+
+												ApiRequest apiRequest = new ApiRequest();
+												apiRequest.setRows(1);
+												apiRequest.setNumFound(1L);
+												apiRequest.setNumPATCH(0L);
+												apiRequest.initDeepApiRequest(siteRequest2);
+												siteRequest2.setApiRequest_(apiRequest);
+
+												userService.createSiteUser(siteRequest2, c -> {
+													if(c.succeeded()) {
+														SiteUser siteUser = c.result();
+														userService.sqlPOSTSiteUser(siteUser, false, d -> {
+															if(d.succeeded()) {
+																userService.defineIndexSiteUser(siteUser, e -> {
+																	if(e.succeeded()) {
+																		siteRequest.setSiteUser(siteUser);
+																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
+																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
+																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
+																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
+																		siteRequest.setUserKey(siteUser.get());
+																		eventHandler.handle(Future.succeededFuture());
+																	} else {
+																		errorCluster(siteRequest, eventHandler, e);
+																	}
+																});
+															} else {
+																errorCluster(siteRequest, eventHandler, d);
+															}
+														});
+													} else {
+														errorCluster(siteRequest, eventHandler, c);
+													}
+												});
+											} else {
+												Long User = userValues.getLong(0);
+												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+												searchList.setQuery("*:*");
+												searchList.setStore(true);
+												searchList.setC(SiteUser.class);
+												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+												searchList.addFilterQuery("pk_indexed_long:" + User);
+												searchList.initDeepSearchList(siteRequest);
+												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+
+												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
+												JsonObject jsonPrincipal = KeycloakHelper.parseToken(userVertx.getString("access_token"));
+
+												JsonObject jsonObject = new JsonObject();
+												jsonObject.put("setUserName", jsonPrincipal.getString("preferred_username"));
+												jsonObject.put("setUserFirstName", jsonPrincipal.getString("given_name"));
+												jsonObject.put("setUserLastName", jsonPrincipal.getString("family_name"));
+												jsonObject.put("setUserCompleteName", jsonPrincipal.getString("name"));
+												jsonObject.put("setUserId", jsonPrincipal.getString("sub"));
+												jsonObject.put("setUserEmail", jsonPrincipal.getString("email"));
+												Boolean define = userClusterDefine(siteRequest, jsonObject, true);
+												if(define) {
+													SiteUser siteUser;
+													if(siteUser1 == null) {
+														siteUser = new SiteUser();
+														siteUser.set(User);
+														siteUser.setSiteRequest_(siteRequest);
+													} else {
+														siteUser = siteUser1;
+													}
+
+													SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+													siteRequest2.setTx(siteRequest.getTx());
+													siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+													siteRequest2.setJsonObject(jsonObject);
+													siteRequest2.setVertx(siteRequest.getVertx());
+													siteRequest2.setSiteContext_(siteContext);
+													siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+													siteRequest2.setUserId(siteRequest.getUserId());
+													siteRequest2.setUserKey(siteRequest.getUserKey());
+													siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+													siteUser.setSiteRequest_(siteRequest2);
+
+													ApiRequest apiRequest = new ApiRequest();
+													apiRequest.setRows(1);
+													apiRequest.setNumFound(1L);
+													apiRequest.setNumPATCH(0L);
+													apiRequest.initDeepApiRequest(siteRequest2);
+													siteRequest2.setApiRequest_(apiRequest);
+
+													userService.sqlPATCHSiteUser(siteUser, false, d -> {
+														if(d.succeeded()) {
+															SiteUser siteUser2 = d.result();
+															userService.defineIndexSiteUser(siteUser2, e -> {
+																if(e.succeeded()) {
+																	siteRequest.setSiteUser(siteUser2);
+																	siteRequest.setUserName(siteUser2.getUserName());
+																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+																	siteRequest.setUserLastName(siteUser2.getUserLastName());
+																	siteRequest.setUserId(siteUser2.getUserId());
+																	siteRequest.setUserKey(siteUser2.get());
+																	eventHandler.handle(Future.succeededFuture());
+																} else {
+																	errorCluster(siteRequest, eventHandler, e);
+																}
+															});
+														} else {
+															errorCluster(siteRequest, eventHandler, d);
+														}
+													});
+												} else {
+													siteRequest.setSiteUser(siteUser1);
+													siteRequest.setUserName(siteUser1.getUserName());
+													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
+													siteRequest.setUserLastName(siteUser1.getUserLastName());
+													siteRequest.setUserId(siteUser1.getUserId());
+													siteRequest.setUserKey(siteUser1.get());
+													sqlRollbackCluster(siteRequest, c -> {
+														if(c.succeeded()) {
+															eventHandler.handle(Future.succeededFuture());
+														} else {
+															eventHandler.handle(Future.failedFuture(c.cause()));
+															errorCluster(siteRequest, eventHandler, c);
+														}
+													});
+												}
+											}
+										} catch(Exception e) {
+											LOGGER.error(String.format("userCluster failed. ", e));
+											eventHandler.handle(Future.failedFuture(e));
+										}
+									} else {
+										LOGGER.error(String.format("userCluster failed. ", selectCAsync.cause()));
+										eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
+									}
+								});
+							} else {
+								LOGGER.error(String.format("userCluster failed. ", b.cause()));
+								eventHandler.handle(Future.failedFuture(b.cause()));
+							}
+						});
+					} else {
+						LOGGER.error(String.format("userCluster failed. ", a.cause()));
+						eventHandler.handle(Future.failedFuture(a.cause()));
+					}
+				});
+			}
+		} catch(Exception e) {
+			LOGGER.error(String.format("userCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public Boolean userClusterDefine(SiteRequestEnUS siteRequest, JsonObject jsonObject, Boolean patch) {
+		if(patch) {
+			return false;
+		} else {
+			return false;
+		}
+	}
+
+	public void aSearchClusterQ(String uri, String apiMethod, SearchList<Cluster> searchList, String entityVar, String valueIndexed, String varIndexed) {
+		searchList.setQuery(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : ClientUtils.escapeQueryChars(valueIndexed)));
+		if(!"*".equals(entityVar)) {
+		}
+	}
+
+	public void aSearchClusterFq(String uri, String apiMethod, SearchList<Cluster> searchList, String entityVar, String valueIndexed, String varIndexed) {
+		if(varIndexed == null)
+			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
+		if(StringUtils.startsWith(valueIndexed, "[")) {
+			String[] fqs = StringUtils.substringBefore(StringUtils.substringAfter(valueIndexed, "["), "]").split(" TO ");
+			if(fqs.length != 2)
+				throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
+			String fq1 = fqs[0].equals("*") ? fqs[0] : Cluster.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[0]);
+			String fq2 = fqs[1].equals("*") ? fqs[1] : Cluster.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
+			searchList.addFilterQuery(varIndexed + ":[" + fq1 + " TO " + fq2 + "]");
+		} else {
+			searchList.addFilterQuery(varIndexed + ":" + Cluster.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed));
+		}
+	}
+
+	public void aSearchClusterSort(String uri, String apiMethod, SearchList<Cluster> searchList, String entityVar, String valueIndexed, String varIndexed) {
+		if(varIndexed == null)
+			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
+		searchList.addSort(varIndexed, ORDER.valueOf(valueIndexed));
+	}
+
+	public void aSearchClusterRows(String uri, String apiMethod, SearchList<Cluster> searchList, Integer valueRows) {
+			searchList.setRows(apiMethod != null && apiMethod.contains("Search") ? valueRows : 10);
+	}
+
+	public void aSearchClusterStart(String uri, String apiMethod, SearchList<Cluster> searchList, Integer valueStart) {
+		searchList.setStart(valueStart);
+	}
+
+	public void aSearchClusterVar(String uri, String apiMethod, SearchList<Cluster> searchList, String var, String value) {
+		searchList.getSiteRequest_().getRequestVars().put(var, value);
+	}
+
+	public void aSearchClusterUri(String uri, String apiMethod, SearchList<Cluster> searchList) {
+	}
+
+	public void varsCluster(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<OperationResponse>>> eventHandler) {
+		try {
+			OperationRequest operationRequest = siteRequest.getOperationRequest();
+
+			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+				String entityVar = null;
+				String valueIndexed = null;
+				String paramName = paramRequest.getKey();
+				Object paramValuesObject = paramRequest.getValue();
+				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+				try {
+					for(Object paramObject : paramObjects) {
+						switch(paramName) {
+							case "var":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+								siteRequest.getRequestVars().put(entityVar, valueIndexed);
+								break;
+						}
+					}
+				} catch(Exception e) {
+					LOGGER.error(String.format("aSearchCluster failed. ", e));
+					eventHandler.handle(Future.failedFuture(e));
+				}
+			});
+			eventHandler.handle(Future.succeededFuture());
+		} catch(Exception e) {
+			LOGGER.error(String.format("aSearchCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void aSearchCluster(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<Cluster>>> eventHandler) {
+		try {
+			OperationRequest operationRequest = siteRequest.getOperationRequest();
+			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
+			String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
+			SearchList<Cluster> searchList = new SearchList<Cluster>();
+			searchList.setPopulate(populate);
+			searchList.setStore(store);
+			searchList.setQuery("*:*");
+			searchList.setC(Cluster.class);
+			searchList.setSiteRequest_(siteRequest);
+			if(entityList != null)
+				searchList.addFields(entityList);
+
+			String id = operationRequest.getParams().getJsonObject("path").getString("id");
+			if( != null) {
+				searchList.addFilterQuery("(:" + ClientUtils.escapeQueryChars(id) + " OR _indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+			}
+
+			List<String> roles = Arrays.asList("SiteAdmin");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					) {
+				searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
+						+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
+			}
+
+			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+				String entityVar = null;
+				String valueIndexed = null;
+				String varIndexed = null;
+				String valueSort = null;
+				Integer valueStart = null;
+				Integer valueRows = null;
+				String paramName = paramRequest.getKey();
+				Object paramValuesObject = paramRequest.getValue();
+				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+				try {
+					for(Object paramObject : paramObjects) {
+						switch(paramName) {
+							case "q":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+								varIndexed = "*".equals(entityVar) ? entityVar : Cluster.varSearchCluster(entityVar);
+								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+								valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+								aSearchClusterQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								break;
+							case "fq":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+								varIndexed = Cluster.varIndexedCluster(entityVar);
+								aSearchClusterFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								break;
+							case "sort":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+								valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+								varIndexed = Cluster.varIndexedCluster(entityVar);
+								aSearchClusterSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								break;
+							case "start":
+								valueStart = (Integer)paramObject;
+								aSearchClusterStart(uri, apiMethod, searchList, valueStart);
+								break;
+							case "rows":
+								valueRows = (Integer)paramObject;
+								aSearchClusterRows(uri, apiMethod, searchList, valueRows);
+								break;
+							case "var":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+								aSearchClusterVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+								break;
+						}
+					}
+					aSearchClusterUri(uri, apiMethod, searchList);
+				} catch(Exception e) {
+					LOGGER.error(String.format("aSearchCluster failed. ", e));
+					eventHandler.handle(Future.failedFuture(e));
+				}
+			});
+			searchList.initDeepForClass(siteRequest);
+			eventHandler.handle(Future.succeededFuture(searchList));
+		} catch(Exception e) {
+			LOGGER.error(String.format("aSearchCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void defineCluster(Cluster o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
+			Transaction tx = siteRequest.getTx();
+			Long  = o.get();
+			tx.preparedQuery(
+					SiteContextEnUS.SQL_define
+					, Tuple.of()
+					, Collectors.toList()
+					, defineAsync
+			-> {
+				if(defineAsync.succeeded()) {
+					try {
+						for(Row definition : defineAsync.result().value()) {
+							try {
+								o.defineForClass(definition.getString(0), definition.getString(1));
+							} catch(Exception e) {
+								LOGGER.error(String.format("defineCluster failed. ", e));
+								LOGGER.error(e);
+							}
+						}
+						eventHandler.handle(Future.succeededFuture());
+					} catch(Exception e) {
+						LOGGER.error(String.format("defineCluster failed. ", e));
+						eventHandler.handle(Future.failedFuture(e));
+					}
+				} else {
+					LOGGER.error(String.format("defineCluster failed. ", defineAsync.cause()));
+					eventHandler.handle(Future.failedFuture(defineAsync.cause()));
+				}
+			});
+		} catch(Exception e) {
+			LOGGER.error(String.format("defineCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void attributeCluster(Cluster o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
+			Transaction tx = siteRequest.getTx();
+			Long  = o.get();
+			tx.preparedQuery(
+					SiteContextEnUS.SQL_attribute
+					, Tuple.of(, )
+					, Collectors.toList()
+					, attributeAsync
+			-> {
+				try {
+					if(attributeAsync.succeeded()) {
+						if(attributeAsync.result() != null) {
+							for(Row definition : attributeAsync.result().value()) {
+								if(pk.equals(definition.getLong(0)))
+									o.attributeForClass(definition.getString(2), definition.getLong(1));
+								else
+									o.attributeForClass(definition.getString(3), definition.getLong(0));
+							}
+						}
+						eventHandler.handle(Future.succeededFuture());
+					} else {
+						LOGGER.error(String.format("attributeCluster failed. ", attributeAsync.cause()));
+						eventHandler.handle(Future.failedFuture(attributeAsync.cause()));
+					}
+				} catch(Exception e) {
+					LOGGER.error(String.format("attributeCluster failed. ", e));
+					eventHandler.handle(Future.failedFuture(e));
+				}
+			});
+		} catch(Exception e) {
+			LOGGER.error(String.format("attributeCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void indexCluster(Cluster o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+		try {
+			ApiRequest apiRequest = siteRequest.getApiRequest_();
+			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
+			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
+			o.initDeepForClass(siteRequest);
+			o.indexForClass();
+			eventHandler.handle(Future.succeededFuture());
+		} catch(Exception e) {
+			LOGGER.error(String.format("indexCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void refreshCluster(Cluster o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+		try {
+			ApiRequest apiRequest = siteRequest.getApiRequest_();
+			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
+			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
+			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
+			if(refresh && BooleanUtils.isFalse(Optional.ofNullable(siteRequest.getApiRequest_()).map(ApiRequest::getEmpty).orElse(true))) {
+				SearchList<Cluster> searchList = new SearchList<Cluster>();
+				searchList.setStore(true);
+				searchList.setQuery("*:*");
+				searchList.setC(Cluster.class);
+				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
+				searchList.setRows(1000);
+				searchList.initDeepSearchList(siteRequest);
+				List<Future> futures = new ArrayList<>();
+
+				for(int i=0; i < pks.size(); i++) {
+					Long 2 = pks.get(i);
+					String classSimpleName2 = classes.get(i);
+				}
+
+				CompositeFuture.all(futures).setHandler(a -> {
+					if(a.succeeded()) {
+						ClusterEnUSApiServiceImpl service = new ClusterEnUSApiServiceImpl(siteRequest.getSiteContext_());
+						List<Future> futures2 = new ArrayList<>();
+						for(Cluster o2 : searchList.getList()) {
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForCluster(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							o2.setSiteRequest_(siteRequest2);
+							futures2.add(
+								service.patchClusterFuture(o2, false, b -> {
+									if(b.succeeded()) {
+									} else {
+										LOGGER.info(String.format("Cluster %s failed. ", o2.get()));
+										eventHandler.handle(Future.failedFuture(b.cause()));
+									}
+								})
+							);
+						}
+
+						CompositeFuture.all(futures2).setHandler(b -> {
+							if(b.succeeded()) {
+								eventHandler.handle(Future.succeededFuture());
+							} else {
+								LOGGER.error("Refresh relations failed. ", b.cause());
+								errorCluster(siteRequest, eventHandler, b);
+							}
+						});
+					} else {
+						LOGGER.error("Refresh relations failed. ", a.cause());
+						errorCluster(siteRequest, eventHandler, a);
+					}
+				});
+			} else {
+				eventHandler.handle(Future.succeededFuture());
+			}
+		} catch(Exception e) {
+			LOGGER.error(String.format("refreshCluster failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+}

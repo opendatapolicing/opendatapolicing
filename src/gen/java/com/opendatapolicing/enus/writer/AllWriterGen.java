@@ -19,6 +19,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
 import java.io.PrintWriter;
 import java.math.MathContext;
 import java.io.StringWriter;
+import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -108,7 +109,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return tabStr;
 	}
 	public void setTabStr(String o) {
-		this.tabStr = AllWriter.staticSetTabStr(null, o);
+		this.tabStr = AllWriter.staticSetTabStr(siteRequest_, o);
 		this.tabStrWrap.alreadyInitialized = true;
 	}
 	public static String staticSetTabStr(SiteRequestEnUS siteRequest_, String o) {
@@ -124,16 +125,40 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return (AllWriter)this;
 	}
 
-	public static Object staticSolrTabStr(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrTabStr(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrTabStr(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrTabStr(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqTabStr(SiteRequestEnUS siteRequest_, String o) {
 		return AllWriter.staticSolrStrTabStr(siteRequest_, AllWriter.staticSolrTabStr(siteRequest_, AllWriter.staticSetTabStr(siteRequest_, o)));
+	}
+
+	public String solrTabStr() {
+		return AllWriter.staticSolrTabStr(siteRequest_, tabStr);
+	}
+
+	public String strTabStr() {
+		return tabStr == null ? "" : tabStr;
+	}
+
+	public String jsonTabStr() {
+		return tabStr == null ? "" : tabStr;
+	}
+
+	public String nomAffichageTabStr() {
+		return null;
+	}
+
+	public String htmTooltipTabStr() {
+		return null;
+	}
+
+	public String htmTabStr() {
+		return tabStr == null ? "" : StringEscapeUtils.escapeHtml4(strTabStr());
 	}
 
 	//////////
@@ -329,7 +354,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 		this.emptyWrap.alreadyInitialized = true;
 	}
 	public void setEmpty(String o) {
-		this.empty = AllWriter.staticSetEmpty(null, o);
+		this.empty = AllWriter.staticSetEmpty(siteRequest_, o);
 		this.emptyWrap.alreadyInitialized = true;
 	}
 	public static Boolean staticSetEmpty(SiteRequestEnUS siteRequest_, String o) {
@@ -345,16 +370,40 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return (AllWriter)this;
 	}
 
-	public static Object staticSolrEmpty(SiteRequestEnUS siteRequest_, Boolean o) {
-		return null;
+	public static Boolean staticSolrEmpty(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
 	}
 
-	public static String staticSolrStrEmpty(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrEmpty(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqEmpty(SiteRequestEnUS siteRequest_, String o) {
 		return AllWriter.staticSolrStrEmpty(siteRequest_, AllWriter.staticSolrEmpty(siteRequest_, AllWriter.staticSetEmpty(siteRequest_, o)));
+	}
+
+	public Boolean solrEmpty() {
+		return AllWriter.staticSolrEmpty(siteRequest_, empty);
+	}
+
+	public String strEmpty() {
+		return empty == null ? "" : empty.toString();
+	}
+
+	public String jsonEmpty() {
+		return empty == null ? "" : empty.toString();
+	}
+
+	public String nomAffichageEmpty() {
+		return null;
+	}
+
+	public String htmTooltipEmpty() {
+		return null;
+	}
+
+	public String htmEmpty() {
+		return empty == null ? "" : StringEscapeUtils.escapeHtml4(strEmpty());
 	}
 
 	//////////////
@@ -364,6 +413,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	protected boolean alreadyInitializedAllWriter = false;
 
 	public AllWriter initDeepAllWriter(SiteRequestEnUS siteRequest_) {
+		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedAllWriter) {
 			alreadyInitializedAllWriter = true;
 			initDeepAllWriter();
@@ -387,6 +437,17 @@ public abstract class AllWriterGen<DEV> extends Object {
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
 		initDeepAllWriter(siteRequest_);
+	}
+
+	/////////////////
+	// siteRequest //
+	/////////////////
+
+	public void siteRequestAllWriter(SiteRequestEnUS siteRequest_) {
+	}
+
+	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
+		siteRequestAllWriter(siteRequest_);
 	}
 
 	/////////////
@@ -548,6 +609,18 @@ public abstract class AllWriterGen<DEV> extends Object {
 		switch(var) {
 			default:
 				return null;
+		}
+	}
+
+	//////////////////
+	// apiRequest //
+	//////////////////
+
+	public void apiRequestAllWriter() {
+		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
+		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
+		if(o != null && o instanceof AllWriter) {
+			AllWriter original = (AllWriter)o;
 		}
 	}
 

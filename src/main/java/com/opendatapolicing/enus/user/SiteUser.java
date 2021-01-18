@@ -6,30 +6,34 @@ import com.opendatapolicing.enus.wrap.Wrap;
 
 /**
  * Model: true
- * Stored: true
+ * Api: true
  * Indexed: true
- * Saved: true
-
- * ApiUri.enUS: /api/user
+ * 
  * ApiTag.enUS: User
-
- * ApiMethod: Search
-
+ * ApiUri.enUS: /api/user
+ * 
+ * ApiMethod.enUS: Search
  * ApiMethod: PATCH
-
  * ApiMethod: POST
-
- * Keyword: classSimpleNameSiteUser
- * ApiMethod: SearchPage.enUS
- * ApiUriSearchPage.enUS: /user
+ * 
+ * ApiMethod.enUS: SearchPage
  * PageSearchPage.enUS: SiteUserPage
- * PageSuperSearchPage.enUS: SiteUserPage
-
+ * SuperPageSearchPage.enUS: ClusterPage
+ * ApiUriSearchPage.enUS: /user
+ * 
+ * Keyword: classSimpleNameSiteUser
+ * Role.enUS: SiteAdmin
+ * Filter: utilisateurId
+ * Saves: true
+ * 
  * AName.enUS: a site user
- * Color:
+ * Coulor: gray
  * IconGroup: regular
  * IconName: user-cog
- * NameVar: siteUser
+ * 
+ * RoleUser: true
+ * Role.frFR: SiteAdmin
+ * Role.enUS: SiteAdmin
  **/
 public class SiteUser extends SiteUserGen<Cluster> {
     protected void _userKeys(List<Long> l) {

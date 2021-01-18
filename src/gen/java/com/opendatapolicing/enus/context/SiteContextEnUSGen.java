@@ -21,6 +21,7 @@ import java.math.MathContext;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.pgclient.PgPool;
+import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -23,9 +23,9 @@ import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import java.math.MathContext;
+import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.opendatapolicing.enus.writer.AllWriter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
 import com.opendatapolicing.enus.request.api.ApiRequest;
@@ -323,6 +323,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 			if(w == null)
 				setW(wWrap.o);
 		}
+		if(w != null)
+			w.initDeepForClass(siteRequest_);
 		wWrap.alreadyInitialized(true);
 		return (PageLayout)this;
 	}
@@ -2822,6 +2824,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	/////////////////
 
 	public void siteRequestPageLayout(SiteRequestEnUS siteRequest_) {
+		if(w != null)
+			w.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {

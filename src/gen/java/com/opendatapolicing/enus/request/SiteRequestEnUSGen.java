@@ -504,6 +504,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			if(w == null)
 				setW(wWrap.o);
 		}
+		if(w != null)
+			w.initDeepForClass(siteRequest_);
 		wWrap.alreadyInitialized(true);
 		return (SiteRequestEnUS)this;
 	}

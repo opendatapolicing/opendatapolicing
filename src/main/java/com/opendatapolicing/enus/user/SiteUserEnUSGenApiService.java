@@ -35,6 +35,6 @@ public interface SiteUserEnUSGenApiService {
 	public void searchSiteUser(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void patchSiteUser(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void postSiteUser(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusSiteUserId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusSiteUser(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageSiteUserId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageSiteUser(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 }
