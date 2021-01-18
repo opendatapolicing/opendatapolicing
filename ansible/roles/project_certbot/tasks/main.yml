@@ -1,0 +1,20 @@
+---
+# Label: project_certbot_tasks
+# Title: create the Ansible tasks for creating SSL/TLS certificate keystores
+# Mission: create the Ansible tasks for creating SSL/TLS certificate keystores
+# Milestone: Setup Tasks
+# Column: Setup Tasks
+
+- name: Concat root certificate, CA certificates and server certificate into one merged certificate
+  shell: cat {{SSL_KEYSTORE_PATH}}/root.crt {{SSL_KEYSTORE_PATH}}/ca1.crt {{SSL_KEYSTORE_PATH}}/{{COMPUTATE_CERTBOT_DOMAIN_NAME}}.crt > {{SSL_KEYSTORE_PATH}}/{{COMPUTATE_CERTBOT_DOMAIN_NAME}}-merged.crt
+
+- name: Create p12 keystore
+  shell: openssl pkcs12 -export -in {{SSL_KEYSTORE_PATH}}/{{COMPUTATE_CERTBOT_DOMAIN_NAME}}-merged.crt -inkey {{SSL_KEYSTORE_PATH}}/{{COMPUTATE_CERTBOT_DOMAIN_NAME}}.key -out {{SSL_KEYSTORE_PATH}}/{{COMPUTATE_CERTBOT_DOMAIN_NAME}}.p12 -name {{SSL_ALIAS}} -password 'pass:{{SSL_P12_PASSWORD}}'
+
+- name: Remove existing jceks keystore
+  file: 
+    path: "{{SSL_KEYSTORE_PATH}}/{{COMPUTATE_CERTBOT_DOMAIN_NAME}}.jks"
+    state: absent
+
+- name: Create jceks keystore
+  shell: keytool -genseckey -alias {{SSL_ALIAS}} -storetype JCEKS -keystore {{SSL_KEYSTORE_PATH}}/{{COMPUTATE_CERTBOT_DOMAIN_NAME}}.jceks -storepass '{{SSL_JKS_PASSWORD}}' -noprompt
