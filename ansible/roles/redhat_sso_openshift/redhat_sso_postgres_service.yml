@@ -1,0 +1,18 @@
+---
+# Label: ansible_redhat_sso_postgres_service
+# Title: create the Ansible template for the Red Hat SSO database service in OpenShift
+# Mission: create the Ansible defaults for the Red Hat SSO database service in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+apiVersion: v1
+kind: Service
+spec:
+  ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    deploymentConfig: sso-postgresql
+  sessionAffinity: None
+  type: ClusterIP
