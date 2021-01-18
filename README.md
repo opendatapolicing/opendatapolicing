@@ -43,6 +43,44 @@ cd /usr/local/src/opendatapolicing && ansible-playbook opendatapolicing_install_
  ```
 
 # OpenShift Deployment
+**Create OpenShift Hosts file**
+```
+echo "
+
+localhost
+
+[redhat_sso_openshift]
+localhost
+
+[postgres_openshift]
+localhost
+
+[project_zookeeper_openshift]
+localhost
+
+[project_solr_openshift]
+localhost
+
+[project_certbot]
+localhost
+
+[project_openshift_enUS]
+localhost
+
+[project_login]
+localhost
+
+[project_refresh]
+localhost
+
+[project_backup]
+localhost
+
+[project_restore]
+localhost
+" > /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts
+```
+
 **Configure vault file**  
 *see [opendatapolicing-ansible](https://github.com/opendatapolicing/opendatapolicing-ansible/tree/main/vaults) for sample*
 ```
