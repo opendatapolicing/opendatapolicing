@@ -1,0 +1,71 @@
+---
+# Title: create the Ansible tasks for setting up an OpenShift token
+# Mission: create the Ansible tasks for setting up an OpenShift token
+# Milestone: Ansible OpenShift Deployment
+# Column: Ansible OpenShift Deployment
+
+
+- name: Configure A Service Account and token to use on OCP
+  hosts: project_login
+  connection: local
+  vars:
+    openshift_cli: "oc"
+    ocp_cluster_user_user: ""
+    ocp_cluster_user_password: ""
+    project_robot_sa: "scrobot"
+  vars_files:
+    - /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
+  pre_tasks:
+    - name: Install necessary requirement for k8s
+      pip:
+        name: openshift
+        extra_args: '--upgrade --user'
+        executable: pip3
+
+    - name: Authenticate with the API
+      command: >
+        {{ openshift_cli }} login \
+          -u {{ ocp_cluster_user_user }} \
+          -p {{ ocp_cluster_user_password }} \
+          --insecure-skip-tls-verify=true {{ REDHAT_OPENSHIFT_HOST }}
+      register: login_out
+  tasks:
+    - name: Create opendatapolicing dev namespace
+      command: "{{ openshift_cli }} new-project '{{ REDHAT_OPENSHIFT_NAMESPACE }}' --display-name='{{ REDHAT_OPENSHIFT_NAMESPACE }}' --description='{{ REDHAT_OPENSHIFT_NAMESPACE }}'"
+      failed_when: "ns_created.rc >=1 and not ' already exists' in ns_created.stderr"
+      register: ns_created
+
+    - name: Create Southerncoalition Robot Service Account
+      command: "{{ openshift_cli }} create serviceaccount {{ project_robot_sa }} -n {{ REDHAT_OPENSHIFT_NAMESPACE }}"
+      failed_when: "robotsa_created.rc >=1 and not 'AlreadyExists' in robotsa_created.stderr"
+      register: robotsa_created
+      
+    - name: Grant Project Admin right to the robot Service Account created above
+      command:  "{{ openshift_cli }} adm policy add-role-to-user admin system:serviceaccount:{{ REDHAT_OPENSHIFT_NAMESPACE }}:{{ project_robot_sa }} -n {{ REDHAT_OPENSHIFT_NAMESPACE }}"
+      failed_when: "robotsa_admin_granted.rc >=1 and not 'AlreadyExists' in robotsa_admin_granted.stderr"
+      register: robotsa_admin_granted
+    
+    - name: Find the right token to use forthe robot Service Account created above
+      shell: "{{ openshift_cli }} get secret --no-headers | grep {{ project_robot_sa }}-token | awk '{print $1}' | head -n 1"
+      register: robotsa_token_name
+
+    - name: Retrieve robotsa token to use  
+      shell: "{{ openshift_cli }} describe secret {{ robotsa_token_name.stdout }} | grep 'token:' | awk '{print $2}'"
+      when:
+        - robotsa_token_name is defined
+        - robotsa_token_name.stdout is defined
+        - robotsa_token_name.rc == 0
+      register: robotsa_token
+
+
+    #################################################################
+    # Copy the printed token string and update the vault value of the 
+    # REDHAT_OPENSHIFT_TOKEN: 
+    - name: Print retrieved robotsa token to use  
+      debug:
+        var: robotsa_token.stdout
+      when:
+        - robotsa_token is defined
+        - robotsa_token.stdout is defined
+        - robotsa_token.rc == 0
+
