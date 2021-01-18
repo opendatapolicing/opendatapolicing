@@ -1,0 +1,8 @@
+---
+# Label: project_login_defaults
+# Title: create the Ansible defaults for logging into the application with a service account
+# Mission: create the Ansible defaults for logging into the application with a service account
+# Milestone: Data Backup/Restore
+# Column: Data Backup/Restore
+
+target: project_login
