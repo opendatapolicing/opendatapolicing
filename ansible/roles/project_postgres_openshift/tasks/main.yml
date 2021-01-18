@@ -1,0 +1,37 @@
+- name: Install postgres persistent volume claim on OpenShift
+  k8s: 
+    state: present
+    name: postgresql-data
+    host: "{{POSTGRES_HOST}}"
+    api_key: "{{POSTGRES_TOKEN}}"
+    namespace: "{{POSTGRES_NAMESPACE}}"
+    definition: "{{ lookup('template', 'postgres_persistent_volume_claim.yml.j2') }}"
+    validate_certs: false
+- name: Install postgres secret on OpenShift
+  k8s: 
+    state: present
+    name: postgres-secret
+    host: "{{POSTGRES_HOST}}"
+    api_key: "{{POSTGRES_TOKEN}}"
+    namespace: "{{POSTGRES_NAMESPACE}}"
+    definition: "{{ lookup('template', 'postgres_secret.j2') }}"
+    validate_certs: false
+- name: Install postgres deployment config on OpenShift
+  k8s: 
+    state: present
+    name: postgres
+    host: "{{POSTGRES_HOST}}"
+    api_key: "{{POSTGRES_TOKEN}}"
+    namespace: "{{POSTGRES_NAMESPACE}}"
+    definition: "{{ lookup('template', 'postgres_deployment_config.yml.j2') }}"
+    validate_certs: false
+- name: Install postgres service on OpenShift
+  k8s: 
+    state: present
+    name: postgres
+    host: "{{POSTGRES_HOST}}"
+    api_key: "{{POSTGRES_TOKEN}}"
+    namespace: "{{POSTGRES_NAMESPACE}}"
+    definition: "{{ lookup('template', 'postgres_service.yml.j2') }}"
+    validate_certs: false
+
