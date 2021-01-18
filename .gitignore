@@ -24,6 +24,8 @@ src/main/fabric8/*.yml
 .index
 ansible/*.retry
 ansible/inventories/**
+.idea
+*.iml
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
