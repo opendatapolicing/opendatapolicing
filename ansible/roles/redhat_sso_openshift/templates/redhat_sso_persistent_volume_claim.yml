@@ -1,0 +1,16 @@
+---
+# Label: ansible_redhat_sso_persistent_volume_claim
+# Title: create the Ansible template for the Red Hat SSO persistent volume claim in OpenShift
+# Mission: create the Ansible defaults for the Red Hat SSO persistent volume claim in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{SSO_VOLUME_SIZE}}
+  storageClassName: "{{ REDHAT_OPENSHIFT_STORAGE_CLASS_NAME }}"
