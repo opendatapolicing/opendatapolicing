@@ -1,2 +1,8 @@
 ---
-# defaults file for project_certbot
+# Label: project_certbot_defaults
+# Title: create the Ansible defaults for creating SSL/TLS certificate keystores
+# Mission: create the Ansible defaults for creating SSL/TLS certificate keystores
+# Milestone: Setup Tasks
+# Column: Setup Tasks
+
+target: project_certbot
