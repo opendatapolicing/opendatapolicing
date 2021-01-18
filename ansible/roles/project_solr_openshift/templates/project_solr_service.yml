@@ -1,0 +1,20 @@
+---
+# Label: ansible_project_solr_service
+# Title: create the Ansible template for the Apache Solr service in OpenShift
+# Mission: create the Ansible template for the Apache Solr service in OpenShift
+# Milestone: Automate Search Engine Deployment
+# Column: Automate Search Engine Deployment
+
+apiVersion: v1
+kind: Service
+spec:
+  ports:
+    - name: 8983-tcp
+      port: 8983
+      protocol: TCP
+      targetPort: 8983
+  selector:
+    app: computate-solr
+    deploymentconfig: computate-solr
+  sessionAffinity: None
+  type: ClusterIP
