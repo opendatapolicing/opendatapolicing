@@ -2286,6 +2286,23 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	}
 
+	public void unindexTrafficStop() {
+		try {
+		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+			siteRequest.initDeepSiteRequestEnUS();
+			SiteContextEnUS siteContext = new SiteContextEnUS();
+			siteContext.initDeepSiteContextEnUS();
+			siteRequest.setSiteContext_(siteContext);
+			siteRequest.setSiteConfig_(siteContext.getSiteConfig());
+			initDeepTrafficStop(siteRequest);
+			SolrClient solrClient = siteContext.getSolrClient();
+			solrClient.deleteById(id.toString());
+			solrClient.commit(false, false, true);
+		} catch(Exception e) {
+			ExceptionUtils.rethrow(e);
+		}
+	}
+
 	public static String varIndexedTrafficStop(String entityVar) {
 		switch(entityVar) {
 			default:

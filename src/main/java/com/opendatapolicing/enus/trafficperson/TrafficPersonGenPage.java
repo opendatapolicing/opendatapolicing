@@ -70,7 +70,9 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficPerson_ != null)
+		if(trafficPerson_ != null && trafficPerson_.getObjectTitle() != null)
+			c.o(trafficPerson_.getObjectTitle());
+		else if(trafficPerson_ != null)
 			c.o("persons");
 		else if(listTrafficPerson == null || listTrafficPerson.size() == 0)
 			c.o("no person found");
@@ -118,7 +120,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 		tl(2, "}");
 		tl(1, "};");
 		tl(1, "window.eventBus = new EventBus('/eventbus');");
-		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequest()).map(l -> l.toString()).orElse("null"), ";");
+		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequestPk()).map(l -> l.toString()).orElse("null"), ";");
 		tl(1, "if(pk != null) {");
 		tl(1, "}");
 		tl(1, "websocketTrafficPerson(websocketTrafficPersonInner);");
@@ -126,9 +128,29 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	}
 
 	public void htmlFormPageTrafficPerson(TrafficPerson o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("Page");
+			o.htmCreated("Page");
+			o.htmModified("Page");
+			o.htmObjectId("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Page");
+			o.htmDeleted("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTTrafficPerson(TrafficPerson o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("POST");
+			o.htmCreated("POST");
+			o.htmModified("POST");
+			o.htmObjectId("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("POST");
+			o.htmDeleted("POST");
+		} g("div");
 	}
 
 	public void htmlFormPUTImportTrafficPerson(TrafficPerson o) {
@@ -156,12 +178,44 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	}
 
 	public void htmlFormPUTCopyTrafficPerson(TrafficPerson o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmCreated("PUTCopy");
+			o.htmModified("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PUTCopy");
+			o.htmDeleted("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHTrafficPerson(TrafficPerson o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmCreated("PATCH");
+			o.htmModified("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PATCH");
+			o.htmDeleted("PATCH");
+		} g("div");
 	}
 
 	public void htmlFormSearchTrafficPerson(TrafficPerson o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("Search");
+			o.htmCreated("Search");
+			o.htmModified("Search");
+			o.htmObjectId("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmInheritPk("Search");
+			o.htmUserId("Search");
+			o.htmUserKey("Search");
+			o.htmObjectTitle("Search");
+		} g("div");
 	}
 
 	@Override public void htmlBodyTrafficPersonGenPage() {
@@ -187,7 +241,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			} g("h2");
 		} else if(listTrafficPerson != null && listTrafficPerson.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
 			TrafficPerson o = listTrafficPerson.get(0);
-			siteRequest_.setRequest(o.get());
+			siteRequest_.setRequestPk(o.getPk());
 			if(StringUtils.isNotEmpty(pageH1)) {
 				{ e("h1").f();
 					{ e("a").a("href", "/api/person").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
@@ -226,7 +280,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficPerson.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "";
+					String query1 = "objectText";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -310,6 +364,22 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 
 			{ e("div").a("class", "").f();
 
+				if(o.getPk() != null) {
+					{ e("form").a("action", "").a("id", "TrafficPersonForm").a("style", "display: inline-block; width: 100%; ").a("onsubmit", "event.preventDefault(); return false; ").f();
+						e("input")
+						.a("name", "pk")
+						.a("class", "valuePk")
+						.a("type", "hidden")
+						.a("value", o.getPk())
+						.fg();
+						e("input")
+						.a("name", "focusId")
+						.a("type", "hidden")
+						.fg();
+					} g("form");
+					htmlFormPageTrafficPerson(o);
+				}
+
 			} g("div");
 
 		}
@@ -337,6 +407,12 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 
 	public void thead2TrafficPersonGenPage() {
 			{ e("tr").f();
+			if(getColumnCreated()) {
+				e("th").f().sx("created").g("th");
+			}
+			if(getColumnObjectTitle()) {
+				e("th").f().sx("").g("th");
+			}
 			} g("tr");
 	}
 
@@ -352,8 +428,27 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			TrafficPerson o = listTrafficPerson.getList().get(i);
 			Map<String, List<String>> highlights = highlighting == null ? null : highlighting.get(o.getId());
 			List<String> highlightList = highlights == null ? null : highlights.get(highlights.keySet().stream().findFirst().orElse(null));
-			String uri = "/api/person/" + o.getnull();
+			String uri = "/api/person/" + o.getPk();
 			{ e("tr").f();
+				if(getColumnCreated()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							{ e("span").f();
+								sx(o.strCreated());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
+				if(getColumnObjectTitle()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							e("i").a("class", "far fa-newspaper ").f().g("i");
+							{ e("span").f();
+								sx(o.strObjectTitle());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
 			} g("tr");
 		}
 	}
@@ -367,7 +462,23 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	public void tfoot2TrafficPersonGenPage() {
 		{ e("tr").f();
 			SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listTrafficPerson.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(new SimpleOrderedMap());
+			if(getColumnCreated()) {
+				e("td").f();
+				g("td");
+			}
+			if(getColumnObjectTitle()) {
+				e("td").f();
+				g("td");
+			}
 		} g("tr");
+	}
+
+	public Boolean getColumnCreated() {
+		return true;
+	}
+
+	public Boolean getColumnObjectTitle() {
+		return true;
 	}
 
 	public void htmlBodyFormsTrafficPersonGenPage() {
@@ -381,7 +492,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 				{ e("button")
 					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
 						.a("id", "refreshThisTrafficPersonGenPage")
-						.a("onclick", "patchTrafficPersonVals( [ {name: 'fq', value: ':' + " + siteRequest_.getRequest() + " } ], {}, function() { addGlow($('#refreshThisTrafficPersonGenPage')); }, function() { addError($('#refreshThisTrafficPersonGenPage')); }); return false; ").f();
+						.a("onclick", "patchTrafficPersonVals( [ {name: 'fq', value: 'pk:' + " + siteRequest_.getRequestPk() + " } ], {}, function() { addGlow($('#refreshThisTrafficPersonGenPage')); }, function() { addError($('#refreshThisTrafficPersonGenPage')); }); return false; ").f();
 						e("i").a("class", "fas fa-sync-alt ").f().g("i");
 					sx("refresh this person");
 				} g("button");
@@ -447,7 +558,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 							htmlFormPATCHTrafficPerson(o);
 							e("button")
 								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
-								.a("onclick", "patchTrafficPerson(null, $('#patchTrafficPersonFormValues'), ", Optional.ofNullable(trafficPerson_).map(TrafficPerson::get).map(a -> a.toString()).orElse("null"), ", function() {}, function() {}); ")
+								.a("onclick", "patchTrafficPerson(null, $('#patchTrafficPersonFormValues'), ", Optional.ofNullable(trafficPerson_).map(TrafficPerson::getPk).map(a -> a.toString()).orElse("null"), ", function() {}, function() {}); ")
 								.f().sx("Modify persons")
 							.g("button");
 
@@ -469,7 +580,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			OperationRequest operationRequest = siteRequest_.getOperationRequest();
 			JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "";
+			String query1 = "objectText";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -540,7 +651,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficPerson")
 					.a("id", "suggestTrafficPerson", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficPerson( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': '' } ], $('#suggestListTrafficPerson", id, "'), ", p.getSiteRequest_().getRequest(), "); ")
+					.a("oninput", "suggestTrafficPersonObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListTrafficPerson", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/api/person?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficPerson != null)
 					p.a("value", query2);

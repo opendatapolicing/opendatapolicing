@@ -71,6 +71,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
@@ -178,7 +179,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public String nomAffichagePk() {
-		return null;
+		return "primary key";
 	}
 
 	public String htmTooltipPk() {
@@ -187,6 +188,33 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmPk() {
 		return pk == null ? "" : StringEscapeUtils.escapeHtml4(strPk());
+	}
+
+	public void inputPk(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		s.e("span").a("class", "varCluster", pk, "Pk ").f().sx(htmPk()).g("span");
+	}
+
+	public void htmPk(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ s.e("div").a("class", "w3-padding ").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3- ").f();
+							s.e("label").a("class", "").f().sx("primary key").g("label");
+						} s.g("div");
+						{ s.e("div").a("class", "w3-cell-row  ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+								{ s.e("div").a("class", "w3-rest ").f();
+									s.e("span").a("class", "varCluster", pk, "Pk ").f().sx(strPk()).g("span");
+								} s.g("div");
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			}
+		} s.g("div");
 	}
 
 	///////////////
@@ -271,6 +299,75 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmInheritPk() {
 		return inheritPk == null ? "" : StringEscapeUtils.escapeHtml4(strInheritPk());
+	}
+
+	public void inputInheritPk(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			s.e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_inheritPk");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					s.a("class", "setInheritPk classCluster inputCluster", pk, "InheritPk w3-input w3-border ");
+					s.a("name", "setInheritPk");
+				} else {
+					s.a("class", "valueInheritPk w3-input w3-border classCluster inputCluster", pk, "InheritPk w3-input w3-border ");
+					s.a("name", "inheritPk");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					s.a("onclick", "removeGlow($(this)); ");
+					s.a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setInheritPk', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_inheritPk')); }, function() { addError($('#", classApiMethodMethod, "_inheritPk')); }); ");
+				}
+				s.a("value", strInheritPk())
+			.fg();
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLE_READS)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLE_READS)
+					) {
+				s.e("span").a("class", "varCluster", pk, "InheritPk ").f().sx(htmInheritPk()).g("span");
+			}
+		}
+	}
+
+	public void htmInheritPk(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterInheritPk").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+
+								inputInheritPk(classApiMethodMethod);
+							} s.g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ s.e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ s.e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_inheritPk')); $('#", classApiMethodMethod, "_inheritPk').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#ClusterForm :input[name=pk]').val() }], 'setInheritPk', null, function() { addGlow($('#", classApiMethodMethod, "_inheritPk')); }, function() { addError($('#", classApiMethodMethod, "_inheritPk')); }); ")
+											.f();
+											s.e("i").a("class", "far fa-eraser ").f().g("i");
+										} s.g("button");
+									} s.g("div");
+								}
+							}
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
 	}
 
 	////////
@@ -429,7 +526,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public String nomAffichageCreated() {
-		return null;
+		return "created";
 	}
 
 	public String htmTooltipCreated() {
@@ -438,6 +535,31 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmCreated() {
 		return created == null ? "" : StringEscapeUtils.escapeHtml4(strCreated());
+	}
+
+	public void inputCreated(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		s.e("span").a("class", "varCluster", pk, "Created ").f().sx(htmCreated()).g("span");
+	}
+
+	public void htmCreated(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterCreated").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3- ").f();
+							s.e("label").a("for", classApiMethodMethod, "_created").a("class", "").f().sx("created").g("label");
+						} s.g("div");
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+								inputCreated(classApiMethodMethod);
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
 	}
 
 	//////////////
@@ -520,7 +642,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public String nomAffichageModified() {
-		return null;
+		return "modified";
 	}
 
 	public String htmTooltipModified() {
@@ -529,6 +651,31 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmModified() {
 		return modified == null ? "" : StringEscapeUtils.escapeHtml4(strModified());
+	}
+
+	public void inputModified(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		s.e("span").a("class", "varCluster", pk, "Modified ").f().sx(htmModified()).g("span");
+	}
+
+	public void htmModified(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterModified").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3- ").f();
+							s.e("label").a("for", classApiMethodMethod, "_modified").a("class", "").f().sx("modified").g("label");
+						} s.g("div");
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+								inputModified(classApiMethodMethod);
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
 	}
 
 	///////////////////////////////
@@ -677,7 +824,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public String nomAffichageArchived() {
-		return null;
+		return "archived";
 	}
 
 	public String htmTooltipArchived() {
@@ -686,6 +833,76 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmArchived() {
 		return archived == null ? "" : StringEscapeUtils.escapeHtml4(strArchived());
+	}
+
+	public void inputArchived(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				s.e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_archived")
+					.a("value", "true");
+			} else {
+				s.e("select")
+					.a("id", classApiMethodMethod, "_archived");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				s.a("class", "setArchived classCluster inputCluster", pk, "Archived w3-input w3-border ");
+				s.a("name", "setArchived");
+			} else {
+				s.a("class", "valueArchived classCluster inputCluster", pk, "Archived w3-input w3-border ");
+				s.a("name", "archived");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				s.a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setArchived', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_archived')); }, function() { addError($('#", classApiMethodMethod, "_archived')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getArchived() != null && getArchived())
+					s.a("checked", "checked");
+				s.fg();
+			} else {
+				s.f();
+				s.e("option").a("value", "").a("selected", "selected").f().g("option");
+				s.e("option").a("value", "true").f().sx("true").g("option");
+				s.e("option").a("value", "false").f().sx("false").g("option");
+				s.g("select");
+			}
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLE_READS)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLE_READS)
+					) {
+				s.e("span").a("class", "varCluster", pk, "Archived ").f().sx(htmArchived()).g("span");
+			}
+		}
+	}
+
+	public void htmArchived(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterArchived").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3- ").f();
+							s.e("label").a("for", classApiMethodMethod, "_archived").a("class", "").f().sx("archived").g("label");
+						} s.g("div");
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+
+								inputArchived(classApiMethodMethod);
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
 	}
 
 	/////////////
@@ -758,7 +975,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public String nomAffichageDeleted() {
-		return null;
+		return "deleted";
 	}
 
 	public String htmTooltipDeleted() {
@@ -767,6 +984,76 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmDeleted() {
 		return deleted == null ? "" : StringEscapeUtils.escapeHtml4(strDeleted());
+	}
+
+	public void inputDeleted(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				s.e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_deleted")
+					.a("value", "true");
+			} else {
+				s.e("select")
+					.a("id", classApiMethodMethod, "_deleted");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				s.a("class", "setDeleted classCluster inputCluster", pk, "Deleted w3-input w3-border ");
+				s.a("name", "setDeleted");
+			} else {
+				s.a("class", "valueDeleted classCluster inputCluster", pk, "Deleted w3-input w3-border ");
+				s.a("name", "deleted");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				s.a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setDeleted', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_deleted')); }, function() { addError($('#", classApiMethodMethod, "_deleted')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getDeleted() != null && getDeleted())
+					s.a("checked", "checked");
+				s.fg();
+			} else {
+				s.f();
+				s.e("option").a("value", "").a("selected", "selected").f().g("option");
+				s.e("option").a("value", "true").f().sx("true").g("option");
+				s.e("option").a("value", "false").f().sx("false").g("option");
+				s.g("select");
+			}
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLE_READS)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLE_READS)
+					) {
+				s.e("span").a("class", "varCluster", pk, "Deleted ").f().sx(htmDeleted()).g("span");
+			}
+		}
+	}
+
+	public void htmDeleted(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterDeleted").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3- ").f();
+							s.e("label").a("for", classApiMethodMethod, "_deleted").a("class", "").f().sx("deleted").g("label");
+						} s.g("div");
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+
+								inputDeleted(classApiMethodMethod);
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
 	}
 
 	////////////////////////
@@ -1170,6 +1457,29 @@ public abstract class ClusterGen<DEV> extends Object {
 		return userId == null ? "" : StringEscapeUtils.escapeHtml4(strUserId());
 	}
 
+	public void inputUserId(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		s.e("span").a("class", "varCluster", pk, "UserId ").f().sx(htmUserId()).g("span");
+	}
+
+	public void htmUserId(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterUserId").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+
+								inputUserId(classApiMethodMethod);
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
+	}
+
 	/////////////
 	// userKey //
 	/////////////
@@ -1252,6 +1562,29 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmUserKey() {
 		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
+	}
+
+	public void inputUserKey(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		s.e("span").a("class", "varCluster", pk, "UserKey ").f().sx(htmUserKey()).g("span");
+	}
+
+	public void htmUserKey(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ s.e("div").a("class", "w3-padding ").f();
+				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterUserKey").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+
+								inputUserKey(classApiMethodMethod);
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			} s.g("div");
+		} s.g("div");
 	}
 
 	///////////
@@ -1427,6 +1760,29 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectTitle == null ? "" : StringEscapeUtils.escapeHtml4(strObjectTitle());
 	}
 
+	public void inputObjectTitle(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+	}
+
+	public void htmObjectTitle(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ s.e("div").a("class", "w3-padding ").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row  ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+								{ s.e("div").a("class", "w3-rest ").f();
+									s.e("span").a("class", "varCluster", pk, "ObjectTitle ").f().sx(strObjectTitle()).g("span");
+								} s.g("div");
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			}
+		} s.g("div");
+	}
+
 	//////////////
 	// objectId //
 	//////////////
@@ -1492,7 +1848,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public String nomAffichageObjectId() {
-		return null;
+		return "ID";
 	}
 
 	public String htmTooltipObjectId() {
@@ -1501,6 +1857,32 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmObjectId() {
 		return objectId == null ? "" : StringEscapeUtils.escapeHtml4(strObjectId());
+	}
+
+	public void inputObjectId(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+	}
+
+	public void htmObjectId(String classApiMethodMethod) {
+		Cluster s = (Cluster)this;
+		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ s.e("div").a("class", "w3-padding ").f();
+					{ s.e("div").a("class", "w3-card ").f();
+						{ s.e("div").a("class", "w3-cell-row w3- ").f();
+							s.e("label").a("class", "").f().sx("ID").g("label");
+						} s.g("div");
+						{ s.e("div").a("class", "w3-cell-row  ").f();
+							{ s.e("div").a("class", "w3-cell ").f();
+								{ s.e("div").a("class", "w3-rest ").f();
+									s.e("span").a("class", "varCluster", pk, "ObjectId ").f().sx(strObjectId()).g("span");
+								} s.g("div");
+							} s.g("div");
+						} s.g("div");
+					} s.g("div");
+				} s.g("div");
+			}
+		} s.g("div");
 	}
 
 	///////////////////
@@ -2466,6 +2848,41 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 	public Object defineCluster(String var, String val) {
 		switch(var) {
+			case "inheritPk":
+				if(val != null)
+					setInheritPk(val);
+				saves.add(var);
+				return val;
+			case "created":
+				if(val != null)
+					setCreated(val);
+				saves.add(var);
+				return val;
+			case "modified":
+				if(val != null)
+					setModified(val);
+				saves.add(var);
+				return val;
+			case "archived":
+				if(val != null)
+					setArchived(val);
+				saves.add(var);
+				return val;
+			case "deleted":
+				if(val != null)
+					setDeleted(val);
+				saves.add(var);
+				return val;
+			case "userId":
+				if(val != null)
+					setUserId(val);
+				saves.add(var);
+				return val;
+			case "userKey":
+				if(val != null)
+					setUserKey(val);
+				saves.add(var);
+				return val;
 			default:
 				return null;
 		}
@@ -2482,6 +2899,119 @@ public abstract class ClusterGen<DEV> extends Object {
 		Cluster oCluster = (Cluster)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
+
+			Long pk = (Long)solrDocument.get("pk_stored_long");
+			oCluster.setPk(pk);
+
+			if(saves.contains("inheritPk")) {
+				Long inheritPk = (Long)solrDocument.get("inheritPk_stored_long");
+				if(inheritPk != null)
+					oCluster.setInheritPk(inheritPk);
+			}
+
+			String id = (String)solrDocument.get("id");
+			oCluster.setId(id);
+
+			if(saves.contains("created")) {
+				Date created = (Date)solrDocument.get("created_stored_date");
+				if(created != null)
+					oCluster.setCreated(created);
+			}
+
+			if(saves.contains("modified")) {
+				Date modified = (Date)solrDocument.get("modified_stored_date");
+				if(modified != null)
+					oCluster.setModified(modified);
+			}
+
+			if(saves.contains("modifiedIsoOffsetDateTime")) {
+				String modifiedIsoOffsetDateTime = (String)solrDocument.get("modifiedIsoOffsetDateTime_stored_string");
+				if(modifiedIsoOffsetDateTime != null)
+					oCluster.setModifiedIsoOffsetDateTime(modifiedIsoOffsetDateTime);
+			}
+
+			if(saves.contains("archived")) {
+				Boolean archived = (Boolean)solrDocument.get("archived_stored_boolean");
+				if(archived != null)
+					oCluster.setArchived(archived);
+			}
+
+			if(saves.contains("deleted")) {
+				Boolean deleted = (Boolean)solrDocument.get("deleted_stored_boolean");
+				if(deleted != null)
+					oCluster.setDeleted(deleted);
+			}
+
+			if(saves.contains("classCanonicalName")) {
+				String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
+				if(classCanonicalName != null)
+					oCluster.setClassCanonicalName(classCanonicalName);
+			}
+
+			if(saves.contains("classSimpleName")) {
+				String classSimpleName = (String)solrDocument.get("classSimpleName_stored_string");
+				if(classSimpleName != null)
+					oCluster.setClassSimpleName(classSimpleName);
+			}
+
+			if(saves.contains("classCanonicalNames")) {
+				List<String> classCanonicalNames = (List<String>)solrDocument.get("classCanonicalNames_stored_strings");
+				if(classCanonicalNames != null)
+					oCluster.classCanonicalNames.addAll(classCanonicalNames);
+			}
+
+			if(saves.contains("sessionId")) {
+				String sessionId = (String)solrDocument.get("sessionId_stored_string");
+				if(sessionId != null)
+					oCluster.setSessionId(sessionId);
+			}
+
+			if(saves.contains("userId")) {
+				String userId = (String)solrDocument.get("userId_stored_string");
+				if(userId != null)
+					oCluster.setUserId(userId);
+			}
+
+			if(saves.contains("userKey")) {
+				Long userKey = (Long)solrDocument.get("userKey_stored_long");
+				if(userKey != null)
+					oCluster.setUserKey(userKey);
+			}
+
+			if(saves.contains("saves")) {
+				List<String> saves = (List<String>)solrDocument.get("saves_stored_strings");
+				if(saves != null)
+					oCluster.saves.addAll(saves);
+			}
+
+			if(saves.contains("objectTitle")) {
+				String objectTitle = (String)solrDocument.get("objectTitle_stored_string");
+				if(objectTitle != null)
+					oCluster.setObjectTitle(objectTitle);
+			}
+
+			if(saves.contains("objectId")) {
+				String objectId = (String)solrDocument.get("objectId_stored_string");
+				if(objectId != null)
+					oCluster.setObjectId(objectId);
+			}
+
+			if(saves.contains("objectSuggest")) {
+				String objectSuggest = (String)solrDocument.get("objectSuggest_suggested");
+				oCluster.setObjectSuggest(objectSuggest);
+			}
+
+			if(saves.contains("pageUrlId")) {
+				String pageUrlId = (String)solrDocument.get("pageUrlId_stored_string");
+				if(pageUrlId != null)
+					oCluster.setPageUrlId(pageUrlId);
+			}
+
+			if(saves.contains("pageUrlPk")) {
+				String pageUrlPk = (String)solrDocument.get("pageUrlPk_stored_string");
+				if(pageUrlPk != null)
+					oCluster.setPageUrlPk(pageUrlPk);
+			}
 		}
 	}
 
@@ -2547,10 +3077,157 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public void indexCluster(SolrInputDocument document) {
+		if(pk != null) {
+			document.addField("pk_indexed_long", pk);
+			document.addField("pk_stored_long", pk);
+		}
+		if(inheritPk != null) {
+			document.addField("inheritPk_indexed_long", inheritPk);
+			document.addField("inheritPk_stored_long", inheritPk);
+		}
+		if(id != null) {
+			document.addField("id", id);
+			document.addField("id_indexed_string", id);
+		}
+		if(created != null) {
+			document.addField("created_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
+			document.addField("created_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
+		}
+		if(modified != null) {
+			document.addField("modified_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
+			document.addField("modified_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
+		}
+		if(modifiedIsoOffsetDateTime != null) {
+			document.addField("modifiedIsoOffsetDateTime_stored_string", modifiedIsoOffsetDateTime);
+		}
+		if(archived != null) {
+			document.addField("archived_indexed_boolean", archived);
+			document.addField("archived_stored_boolean", archived);
+		}
+		if(deleted != null) {
+			document.addField("deleted_indexed_boolean", deleted);
+			document.addField("deleted_stored_boolean", deleted);
+		}
+		if(classCanonicalName != null) {
+			document.addField("classCanonicalName_indexed_string", classCanonicalName);
+			document.addField("classCanonicalName_stored_string", classCanonicalName);
+		}
+		if(classSimpleName != null) {
+			document.addField("classSimpleName_indexed_string", classSimpleName);
+			document.addField("classSimpleName_stored_string", classSimpleName);
+		}
+		if(classCanonicalNames != null) {
+			for(java.lang.String o : classCanonicalNames) {
+				document.addField("classCanonicalNames_indexed_strings", o);
+			}
+			for(java.lang.String o : classCanonicalNames) {
+				document.addField("classCanonicalNames_stored_strings", o);
+			}
+		}
+		if(sessionId != null) {
+			document.addField("sessionId_indexed_string", sessionId);
+			document.addField("sessionId_stored_string", sessionId);
+		}
+		if(userId != null) {
+			document.addField("userId_indexed_string", userId);
+			document.addField("userId_stored_string", userId);
+		}
+		if(userKey != null) {
+			document.addField("userKey_indexed_long", userKey);
+			document.addField("userKey_stored_long", userKey);
+		}
+		if(saves != null) {
+			for(java.lang.String o : saves) {
+				document.addField("saves_indexed_strings", o);
+			}
+			for(java.lang.String o : saves) {
+				document.addField("saves_stored_strings", o);
+			}
+		}
+		if(objectTitle != null) {
+			document.addField("objectTitle_indexed_string", objectTitle);
+			document.addField("objectTitle_stored_string", objectTitle);
+		}
+		if(objectId != null) {
+			document.addField("objectId_indexed_string", objectId);
+			document.addField("objectId_stored_string", objectId);
+		}
+		if(objectSuggest != null) {
+			document.addField("objectSuggest_suggested", objectSuggest);
+		}
+		if(objectText != null) {
+			document.addField("objectText_text_enUS", objectText.toString());
+			document.addField("objectText_indexed_string", objectText);
+		}
+		if(pageUrlId != null) {
+			document.addField("pageUrlId_indexed_string", pageUrlId);
+			document.addField("pageUrlId_stored_string", pageUrlId);
+		}
+		if(pageUrlPk != null) {
+			document.addField("pageUrlPk_indexed_string", pageUrlPk);
+			document.addField("pageUrlPk_stored_string", pageUrlPk);
+		}
+	}
+
+	public void unindexCluster() {
+		try {
+		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+			siteRequest.initDeepSiteRequestEnUS();
+			SiteContextEnUS siteContext = new SiteContextEnUS();
+			siteContext.initDeepSiteContextEnUS();
+			siteRequest.setSiteContext_(siteContext);
+			siteRequest.setSiteConfig_(siteContext.getSiteConfig());
+			initDeepCluster(siteRequest);
+			SolrClient solrClient = siteContext.getSolrClient();
+			solrClient.deleteById(id.toString());
+			solrClient.commit(false, false, true);
+		} catch(Exception e) {
+			ExceptionUtils.rethrow(e);
+		}
 	}
 
 	public static String varIndexedCluster(String entityVar) {
 		switch(entityVar) {
+			case "pk":
+				return "pk_indexed_long";
+			case "inheritPk":
+				return "inheritPk_indexed_long";
+			case "id":
+				return "id_indexed_string";
+			case "created":
+				return "created_indexed_date";
+			case "modified":
+				return "modified_indexed_date";
+			case "archived":
+				return "archived_indexed_boolean";
+			case "deleted":
+				return "deleted_indexed_boolean";
+			case "classCanonicalName":
+				return "classCanonicalName_indexed_string";
+			case "classSimpleName":
+				return "classSimpleName_indexed_string";
+			case "classCanonicalNames":
+				return "classCanonicalNames_indexed_strings";
+			case "sessionId":
+				return "sessionId_indexed_string";
+			case "userId":
+				return "userId_indexed_string";
+			case "userKey":
+				return "userKey_indexed_long";
+			case "saves":
+				return "saves_indexed_strings";
+			case "objectTitle":
+				return "objectTitle_indexed_string";
+			case "objectId":
+				return "objectId_indexed_string";
+			case "objectSuggest":
+				return "objectSuggest_indexed_string";
+			case "objectText":
+				return "objectText_indexed_string";
+			case "pageUrlId":
+				return "pageUrlId_indexed_string";
+			case "pageUrlPk":
+				return "pageUrlPk_indexed_string";
 			default:
 				return null;
 		}
@@ -2558,6 +3235,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public static String varSearchCluster(String entityVar) {
 		switch(entityVar) {
+			case "objectText":
+				return "objectText_text_enUS";
+			case "objectSuggest":
+				return "objectSuggest_suggested";
 			default:
 				return null;
 		}
@@ -2565,6 +3246,8 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public static String varSuggestedCluster(String entityVar) {
 		switch(entityVar) {
+			case "objectSuggest":
+				return "objectSuggest_suggested";
 			default:
 				return null;
 		}
@@ -2579,6 +3262,88 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 	public void storeCluster(SolrDocument solrDocument) {
 		Cluster oCluster = (Cluster)this;
+
+		Long pk = (Long)solrDocument.get("pk_stored_long");
+		if(pk != null)
+			oCluster.setPk(pk);
+
+		Long inheritPk = (Long)solrDocument.get("inheritPk_stored_long");
+		if(inheritPk != null)
+			oCluster.setInheritPk(inheritPk);
+
+		String id = (String)solrDocument.get("id");
+		oCluster.setId(id);
+
+		Date created = (Date)solrDocument.get("created_stored_date");
+		if(created != null)
+			oCluster.setCreated(created);
+
+		Date modified = (Date)solrDocument.get("modified_stored_date");
+		if(modified != null)
+			oCluster.setModified(modified);
+
+		String modifiedIsoOffsetDateTime = (String)solrDocument.get("modifiedIsoOffsetDateTime_stored_string");
+		if(modifiedIsoOffsetDateTime != null)
+			oCluster.setModifiedIsoOffsetDateTime(modifiedIsoOffsetDateTime);
+
+		Boolean archived = (Boolean)solrDocument.get("archived_stored_boolean");
+		if(archived != null)
+			oCluster.setArchived(archived);
+
+		Boolean deleted = (Boolean)solrDocument.get("deleted_stored_boolean");
+		if(deleted != null)
+			oCluster.setDeleted(deleted);
+
+		String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
+		if(classCanonicalName != null)
+			oCluster.setClassCanonicalName(classCanonicalName);
+
+		String classSimpleName = (String)solrDocument.get("classSimpleName_stored_string");
+		if(classSimpleName != null)
+			oCluster.setClassSimpleName(classSimpleName);
+
+		List<String> classCanonicalNames = (List<String>)solrDocument.get("classCanonicalNames_stored_strings");
+		if(classCanonicalNames != null)
+			oCluster.classCanonicalNames.addAll(classCanonicalNames);
+
+		String sessionId = (String)solrDocument.get("sessionId_stored_string");
+		if(sessionId != null)
+			oCluster.setSessionId(sessionId);
+
+		String userId = (String)solrDocument.get("userId_stored_string");
+		if(userId != null)
+			oCluster.setUserId(userId);
+
+		Long userKey = (Long)solrDocument.get("userKey_stored_long");
+		if(userKey != null)
+			oCluster.setUserKey(userKey);
+
+		List<String> saves = (List<String>)solrDocument.get("saves_stored_strings");
+		if(saves != null)
+			oCluster.saves.addAll(saves);
+
+		String objectTitle = (String)solrDocument.get("objectTitle_stored_string");
+		if(objectTitle != null)
+			oCluster.setObjectTitle(objectTitle);
+
+		String objectId = (String)solrDocument.get("objectId_stored_string");
+		if(objectId != null)
+			oCluster.setObjectId(objectId);
+
+		String objectSuggest = (String)solrDocument.get("objectSuggest_suggested");
+		oCluster.setObjectSuggest(objectSuggest);
+
+		String objectText = (String)solrDocument.get("objectText_stored_string");
+		if(objectText != null)
+			oCluster.setObjectText(objectText);
+
+		String pageUrlId = (String)solrDocument.get("pageUrlId_stored_string");
+		if(pageUrlId != null)
+			oCluster.setPageUrlId(pageUrlId);
+
+		String pageUrlPk = (String)solrDocument.get("pageUrlPk_stored_string");
+		if(pageUrlPk != null)
+			oCluster.setPageUrlPk(pageUrlPk);
 	}
 
 	//////////////////
@@ -2590,6 +3355,48 @@ public abstract class ClusterGen<DEV> extends Object {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof Cluster) {
 			Cluster original = (Cluster)o;
+			if(!Objects.equals(pk, original.getPk()))
+				apiRequest.addVars("pk");
+			if(!Objects.equals(inheritPk, original.getInheritPk()))
+				apiRequest.addVars("inheritPk");
+			if(!Objects.equals(id, original.getId()))
+				apiRequest.addVars("id");
+			if(!Objects.equals(created, original.getCreated()))
+				apiRequest.addVars("created");
+			if(!Objects.equals(modified, original.getModified()))
+				apiRequest.addVars("modified");
+			if(!Objects.equals(modifiedIsoOffsetDateTime, original.getModifiedIsoOffsetDateTime()))
+				apiRequest.addVars("modifiedIsoOffsetDateTime");
+			if(!Objects.equals(archived, original.getArchived()))
+				apiRequest.addVars("archived");
+			if(!Objects.equals(deleted, original.getDeleted()))
+				apiRequest.addVars("deleted");
+			if(!Objects.equals(classCanonicalName, original.getClassCanonicalName()))
+				apiRequest.addVars("classCanonicalName");
+			if(!Objects.equals(classSimpleName, original.getClassSimpleName()))
+				apiRequest.addVars("classSimpleName");
+			if(!Objects.equals(classCanonicalNames, original.getClassCanonicalNames()))
+				apiRequest.addVars("classCanonicalNames");
+			if(!Objects.equals(sessionId, original.getSessionId()))
+				apiRequest.addVars("sessionId");
+			if(!Objects.equals(userId, original.getUserId()))
+				apiRequest.addVars("userId");
+			if(!Objects.equals(userKey, original.getUserKey()))
+				apiRequest.addVars("userKey");
+			if(!Objects.equals(saves, original.getSaves()))
+				apiRequest.addVars("saves");
+			if(!Objects.equals(objectTitle, original.getObjectTitle()))
+				apiRequest.addVars("objectTitle");
+			if(!Objects.equals(objectId, original.getObjectId()))
+				apiRequest.addVars("objectId");
+			if(!Objects.equals(objectSuggest, original.getObjectSuggest()))
+				apiRequest.addVars("objectSuggest");
+			if(!Objects.equals(objectText, original.getObjectText()))
+				apiRequest.addVars("objectText");
+			if(!Objects.equals(pageUrlId, original.getPageUrlId()))
+				apiRequest.addVars("pageUrlId");
+			if(!Objects.equals(pageUrlPk, original.getPageUrlPk()))
+				apiRequest.addVars("pageUrlPk");
 		}
 	}
 
@@ -2598,7 +3405,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash();
+		return Objects.hash(pk, inheritPk, id, created, modified, modifiedIsoOffsetDateTime, archived, deleted, classCanonicalName, classSimpleName, classCanonicalNames, sessionId, userId, userKey, saves, objectTitle, objectId, objectSuggest, objectText, pageUrlId, pageUrlPk);
 	}
 
 	////////////
@@ -2611,7 +3418,27 @@ public abstract class ClusterGen<DEV> extends Object {
 		if(!(o instanceof Cluster))
 			return false;
 		Cluster that = (Cluster)o;
-		return true;
+		return Objects.equals( pk, that.pk )
+				&& Objects.equals( inheritPk, that.inheritPk )
+				&& Objects.equals( id, that.id )
+				&& Objects.equals( created, that.created )
+				&& Objects.equals( modified, that.modified )
+				&& Objects.equals( modifiedIsoOffsetDateTime, that.modifiedIsoOffsetDateTime )
+				&& Objects.equals( archived, that.archived )
+				&& Objects.equals( deleted, that.deleted )
+				&& Objects.equals( classCanonicalName, that.classCanonicalName )
+				&& Objects.equals( classSimpleName, that.classSimpleName )
+				&& Objects.equals( classCanonicalNames, that.classCanonicalNames )
+				&& Objects.equals( sessionId, that.sessionId )
+				&& Objects.equals( userId, that.userId )
+				&& Objects.equals( userKey, that.userKey )
+				&& Objects.equals( saves, that.saves )
+				&& Objects.equals( objectTitle, that.objectTitle )
+				&& Objects.equals( objectId, that.objectId )
+				&& Objects.equals( objectSuggest, that.objectSuggest )
+				&& Objects.equals( objectText, that.objectText )
+				&& Objects.equals( pageUrlId, that.pageUrlId )
+				&& Objects.equals( pageUrlPk, that.pageUrlPk );
 	}
 
 	//////////////
@@ -2621,6 +3448,27 @@ public abstract class ClusterGen<DEV> extends Object {
 	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Cluster { ");
+		sb.append( "pk: " ).append(pk);
+		sb.append( ", inheritPk: " ).append(inheritPk);
+		sb.append( ", id: \"" ).append(id).append( "\"" );
+		sb.append( ", created: " ).append(created);
+		sb.append( ", modified: " ).append(modified);
+		sb.append( ", modifiedIsoOffsetDateTime: \"" ).append(modifiedIsoOffsetDateTime).append( "\"" );
+		sb.append( ", archived: " ).append(archived);
+		sb.append( ", deleted: " ).append(deleted);
+		sb.append( ", classCanonicalName: \"" ).append(classCanonicalName).append( "\"" );
+		sb.append( ", classSimpleName: \"" ).append(classSimpleName).append( "\"" );
+		sb.append( ", classCanonicalNames: " ).append(classCanonicalNames);
+		sb.append( ", sessionId: \"" ).append(sessionId).append( "\"" );
+		sb.append( ", userId: \"" ).append(userId).append( "\"" );
+		sb.append( ", userKey: " ).append(userKey);
+		sb.append( ", saves: " ).append(saves);
+		sb.append( ", objectTitle: \"" ).append(objectTitle).append( "\"" );
+		sb.append( ", objectId: \"" ).append(objectId).append( "\"" );
+		sb.append( ", objectSuggest: \"" ).append(objectSuggest).append( "\"" );
+		sb.append( ", objectText: \"" ).append(objectText).append( "\"" );
+		sb.append( ", pageUrlId: \"" ).append(pageUrlId).append( "\"" );
+		sb.append( ", pageUrlPk: \"" ).append(pageUrlPk).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

@@ -1208,6 +1208,103 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userFullName == null ? "" : StringEscapeUtils.escapeHtml4(strUserFullName());
 	}
 
+	////////////////////
+	// userRealmRoles //
+	////////////////////
+
+	/**	 The entity userRealmRoles
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected List<String> userRealmRoles = new ArrayList<String>();
+	@JsonIgnore
+	public Wrap<List<String>> userRealmRolesWrap = new Wrap<List<String>>().p(this).c(List.class).var("userRealmRoles").o(userRealmRoles);
+
+	/**	<br/> The entity userRealmRoles
+	 *  It is constructed before being initialized with the constructor by default List<String>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userRealmRoles">Find the entity userRealmRoles in Solr</a>
+	 * <br/>
+	 * @param userRealmRoles is the entity already constructed. 
+	 **/
+	protected abstract void _userRealmRoles(List<String> o);
+
+	public List<String> getUserRealmRoles() {
+		return userRealmRoles;
+	}
+
+	public void setUserRealmRoles(List<String> userRealmRoles) {
+		this.userRealmRoles = userRealmRoles;
+		this.userRealmRolesWrap.alreadyInitialized = true;
+	}
+	public static String staticSetUserRealmRoles(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	public SiteRequestEnUS addUserRealmRoles(String...objets) {
+		for(String o : objets) {
+			addUserRealmRoles(o);
+		}
+		return (SiteRequestEnUS)this;
+	}
+	public SiteRequestEnUS addUserRealmRoles(String o) {
+		if(o != null && !userRealmRoles.contains(o))
+			this.userRealmRoles.add(o);
+		return (SiteRequestEnUS)this;
+	}
+	public void setUserRealmRoles(JsonArray objets) {
+		userRealmRoles.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			String o = objets.getString(i);
+			addUserRealmRoles(o);
+		}
+	}
+	protected SiteRequestEnUS userRealmRolesInit() {
+		if(!userRealmRolesWrap.alreadyInitialized) {
+			_userRealmRoles(userRealmRoles);
+		}
+		userRealmRolesWrap.alreadyInitialized(true);
+		return (SiteRequestEnUS)this;
+	}
+
+	public static String staticSolrUserRealmRoles(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrUserRealmRoles(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqUserRealmRoles(SiteRequestEnUS siteRequest_, String o) {
+		return SiteRequestEnUS.staticSolrStrUserRealmRoles(siteRequest_, SiteRequestEnUS.staticSolrUserRealmRoles(siteRequest_, SiteRequestEnUS.staticSetUserRealmRoles(siteRequest_, o)));
+	}
+
+	public List<String> solrUserRealmRoles() {
+		List<String> l = new ArrayList<String>();
+		for(String o : userRealmRoles) {
+			l.add(SiteRequestEnUS.staticSolrUserRealmRoles(siteRequest_, o));
+		}
+		return l;
+	}
+
+	public String strUserRealmRoles() {
+		return userRealmRoles == null ? "" : userRealmRoles.toString();
+	}
+
+	public String jsonUserRealmRoles() {
+		return userRealmRoles == null ? "" : userRealmRoles.toString();
+	}
+
+	public String nomAffichageUserRealmRoles() {
+		return null;
+	}
+
+	public String htmTooltipUserRealmRoles() {
+		return null;
+	}
+
+	public String htmUserRealmRoles() {
+		return userRealmRoles == null ? "" : StringEscapeUtils.escapeHtml4(strUserRealmRoles());
+	}
+
 	//////////////////
 	// userResource //
 	//////////////////
@@ -1989,6 +2086,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		userLastNameInit();
 		userFirstNameInit();
 		userFullNameInit();
+		userRealmRolesInit();
 		userResourceInit();
 		userResourceRolesInit();
 		siteUserInit();
@@ -2013,6 +2111,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/////////////////
 
 	public void siteRequestSiteRequestEnUS(SiteRequestEnUS siteRequest_) {
+		if(w != null)
+			w.setSiteRequest_(siteRequest_);
 		if(siteUser != null)
 			siteUser.setSiteRequest_(siteRequest_);
 	}
@@ -2083,6 +2183,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.userFirstName;
 			case "userFullName":
 				return oSiteRequestEnUS.userFullName;
+			case "userRealmRoles":
+				return oSiteRequestEnUS.userRealmRoles;
 			case "userResource":
 				return oSiteRequestEnUS.userResource;
 			case "userResourceRoles":
@@ -2164,6 +2266,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSetUserFirstName(siteRequest_, o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSetUserFullName(siteRequest_, o);
+		case "userRealmRoles":
+			return SiteRequestEnUS.staticSetUserRealmRoles(siteRequest_, o);
 		case "userResourceRoles":
 			return SiteRequestEnUS.staticSetUserResourceRoles(siteRequest_, o);
 		case "pageAdmin":
@@ -2204,6 +2308,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSolrUserFirstName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSolrUserFullName(siteRequest_, (String)o);
+		case "userRealmRoles":
+			return SiteRequestEnUS.staticSolrUserRealmRoles(siteRequest_, (String)o);
 		case "userResourceRoles":
 			return SiteRequestEnUS.staticSolrUserResourceRoles(siteRequest_, (String)o);
 		case "pageAdmin":
@@ -2244,6 +2350,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSolrStrUserFirstName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSolrStrUserFullName(siteRequest_, (String)o);
+		case "userRealmRoles":
+			return SiteRequestEnUS.staticSolrStrUserRealmRoles(siteRequest_, (String)o);
 		case "userResourceRoles":
 			return SiteRequestEnUS.staticSolrStrUserResourceRoles(siteRequest_, (String)o);
 		case "pageAdmin":
@@ -2284,6 +2392,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSolrFqUserFirstName(siteRequest_, o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSolrFqUserFullName(siteRequest_, o);
+		case "userRealmRoles":
+			return SiteRequestEnUS.staticSolrFqUserRealmRoles(siteRequest_, o);
 		case "userResourceRoles":
 			return SiteRequestEnUS.staticSolrFqUserResourceRoles(siteRequest_, o);
 		case "pageAdmin":

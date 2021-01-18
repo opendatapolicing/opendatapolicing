@@ -210,14 +210,14 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "sessionId", siteRequest.getSessionId())
+				, Tuple.of(pk, "sessionId", siteRequest.getSessionId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -230,7 +230,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			if(siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "userId", siteRequest.getUserId())
+				, Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -243,7 +243,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			if(siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "userKey", siteRequest.getUserKey().toString())
+				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -258,6 +258,45 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
+					case "inheritPk":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value Cluster.inheritPk failed", b.cause())));
+							});
+						}));
+						break;
+					case "archived":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value Cluster.archived failed", b.cause())));
+							});
+						}));
+						break;
+					case "deleted":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value Cluster.deleted failed", b.cause())));
+							});
+						}));
+						break;
 					}
 				}
 			}
@@ -403,7 +442,16 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 														apiRequest.initDeepApiRequest(siteRequest);
 														siteRequest.setApiRequest_(apiRequest);
 														siteRequest.getVertx().eventBus().publish("websocketCluster", JsonObject.mapFrom(apiRequest).toString());
-														String dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listCluster.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
+														Date date = null;
+														if(facets != null)
+														date = (Date)facets.get("max_modified");
+														String dt;
+														if(date == null)
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+														else
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
+														listCluster.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
 
 														try {
 															listPATCHCluster(apiRequest, listCluster, dt, e -> {
@@ -548,7 +596,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			Cluster o2 = new Cluster();
@@ -557,7 +605,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-							, Tuple.of(, "userId", siteRequest.getUserId())
+							, Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -570,7 +618,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "userKey", siteRequest.getUserKey().toString())
+				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -583,13 +631,97 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 
 			for(String methodName : methodNames) {
 				switch(methodName) {
+					case "setInheritPk":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "inheritPk")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.inheritPk failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setInheritPk(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.inheritPk failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setArchived":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "archived")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.archived failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setArchived(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "archived", o2.jsonArchived())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.archived failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setDeleted":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "deleted")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.deleted failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setDeleted(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "deleted", o2.jsonDeleted())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value Cluster.deleted failed", b.cause())));
+								});
+							}));
+						}
+						break;
 				}
 			}
 			CompositeFuture.all(futures).setHandler( a -> {
 				if(a.succeeded()) {
 					Cluster o3 = new Cluster();
 					o3.setSiteRequest_(o.getSiteRequest_());
-					o3.set();
+					o3.setPk(pk);
 					eventHandler.handle(Future.succeededFuture(o3));
 				} else {
 					LOGGER.error(String.format("sqlPATCHCluster failed. ", a.cause()));
@@ -783,7 +915,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 					fieldNames.addAll(json2.fieldNames());
 					if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 						fieldNames.removeAll(Optional.ofNullable(json2.getJsonArray("saves")).orElse(new JsonArray()).stream().map(s -> s.toString()).collect(Collectors.toList()));
-						fieldNames.remove("");
+						fieldNames.remove("pk");
 						fieldNames.remove("created");
 					}
 					else if(fls.size() >= 1) {
@@ -805,104 +937,6 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			LOGGER.error(String.format("response200SearchCluster failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
-	}
-
-	ClusterGen(String s) {
-		if(s != null) {
-			s = Normalizer.normalize(s, Normalizer.Form.NFD);
-			s = StringUtils.lowerCase(s);
-			s = StringUtils.trim(s);
-			s = StringUtils.replacePattern(s, "\\s{1,}", "-");
-			s = StringUtils.replacePattern(s, "[^\\w-]", "");
-			s = StringUtils.replacePattern(s, "-{2,}", "-");
-		}
-
-		return s;
-	}
-
-	ClusterGen(String attributeName, Object...objects) {
-		AllWriter w = siteRequest_.getW();
-		w.s(" ");
-		w.s(attributeName);
-		w.s("=\"");
-		for(Object object : objects) {
-			if(object != null) {
-				String s = object.toString();
-				w.s(UtilXml.escapeInQuotes(s));
-			}
-		}
-		w.s("\"");
-		
-		return this;
-	}
-
-	ClusterGen(Object...objects) {
-		AllWriter w = siteRequest_.getW();
-		for(Object object : objects) {
-			if(object != null) {
-				String s = object.toString();
-				w.s(UtilXml.escape(s));
-			}
-		}
-		
-		return this;
-	}
-
-	ClusterGen(int numberTabs, Object...objects) {
-		for(int i = 0; i < numberTabs; i++)
-			sx("  ");
-		sx(objects);
-		sx("\n");
-		return this;
-	}
-
-	ClusterGen() {
-		AllWriter w = siteRequest_.getW();
-		w.s("/>");
-		siteRequest_.getXmlStack().pop();
-		
-		return this;
-	}
-
-	ClusterGen(String localName) {
-		AllWriter w = siteRequest_.getW();
-		String localNameParent = siteRequest_.getXmlStack().peek();
-		boolean eNoWrap = localNameParent == null || PageLayout.HTML_ELEMENTS_NO_WRAP.contains(localName);
-	
-		siteRequest_.getXmlStack().pop();
-		String tabs = String.join("", Collections.nCopies(siteRequest_.getXmlStack().size(), "  "));
-	
-		if(!eNoWrap || localNameParent == null)
-			w.l();
-		if(!eNoWrap && !tabs.isEmpty())
-			w.s(tabs);
-		w.s("</");
-		w.s(localName);
-		w.s(">");
-		
-		return this;
-	}
-
-	ClusterGen(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ s.e("div").a("class", "w3-padding ").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3- ").f();
-							s.e("label").a("class", "").f().sx("primary key").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row  ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-								{ s.e("div").a("class", "w3-rest ").f();
-									s.e("a").a("href", StringUtils.substringBeforeLast(pageUrlApi, "/"), "?fq=pk:", pk).a("class", "varCluster", pk, "Pk ").f().sx(strPk()).g("a");
-								} s.g("div");
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			}
-		} s.g("div");
 	}
 
 	// General //
@@ -971,9 +1005,9 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			-> {
 				if(createAsync.succeeded()) {
 					Row createLine = createAsync.result().value().stream().findFirst().orElseGet(() -> null);
-					Long  = createLine.getLong(0);
+					Long pk = createLine.getLong(0);
 					Cluster o = new Cluster();
-					o.set();
+					o.setPk(pk);
 					o.setSiteRequest_(siteRequest);
 					eventHandler.handle(Future.succeededFuture(o));
 				} else {
@@ -1235,7 +1269,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
 																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
 																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
-																		siteRequest.setUserKey(siteUser.get());
+																		siteRequest.setUserKey(siteUser.getPk());
 																		eventHandler.handle(Future.succeededFuture());
 																	} else {
 																		errorCluster(siteRequest, eventHandler, e);
@@ -1250,13 +1284,13 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 													}
 												});
 											} else {
-												Long User = userValues.getLong(0);
+												Long pkUser = userValues.getLong(0);
 												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
 												searchList.setQuery("*:*");
 												searchList.setStore(true);
 												searchList.setC(SiteUser.class);
 												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
-												searchList.addFilterQuery("pk_indexed_long:" + User);
+												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
 												searchList.initDeepSearchList(siteRequest);
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
 
@@ -1275,7 +1309,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 													SiteUser siteUser;
 													if(siteUser1 == null) {
 														siteUser = new SiteUser();
-														siteUser.set(User);
+														siteUser.setPk(pkUser);
 														siteUser.setSiteRequest_(siteRequest);
 													} else {
 														siteUser = siteUser1;
@@ -1310,7 +1344,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
 																	siteRequest.setUserLastName(siteUser2.getUserLastName());
 																	siteRequest.setUserId(siteUser2.getUserId());
-																	siteRequest.setUserKey(siteUser2.get());
+																	siteRequest.setUserKey(siteUser2.getPk());
 																	eventHandler.handle(Future.succeededFuture());
 																} else {
 																	errorCluster(siteRequest, eventHandler, e);
@@ -1326,7 +1360,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
 													siteRequest.setUserLastName(siteUser1.getUserLastName());
 													siteRequest.setUserId(siteUser1.getUserId());
-													siteRequest.setUserKey(siteUser1.get());
+													siteRequest.setUserKey(siteUser1.getPk());
 													sqlRollbackCluster(siteRequest, c -> {
 														if(c.succeeded()) {
 															eventHandler.handle(Future.succeededFuture());
@@ -1459,10 +1493,11 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			searchList.setSiteRequest_(siteRequest);
 			if(entityList != null)
 				searchList.addFields(entityList);
+			searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
 			String id = operationRequest.getParams().getJsonObject("path").getString("id");
-			if( != null) {
-				searchList.addFilterQuery("(:" + ClientUtils.escapeQueryChars(id) + " OR _indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+			if(id != null) {
+				searchList.addFilterQuery("(id:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
 			}
 
 			List<String> roles = Arrays.asList("SiteAdmin");
@@ -1528,6 +1563,9 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
+			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+				searchList.addSort("created_indexed_date", ORDER.desc);
+			}
 			searchList.initDeepForClass(siteRequest);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
@@ -1540,10 +1578,10 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			tx.preparedQuery(
 					SiteContextEnUS.SQL_define
-					, Tuple.of()
+					, Tuple.of(pk)
 					, Collectors.toList()
 					, defineAsync
 			-> {
@@ -1577,10 +1615,10 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			tx.preparedQuery(
 					SiteContextEnUS.SQL_attribute
-					, Tuple.of(, )
+					, Tuple.of(pk, pk)
 					, Collectors.toList()
 					, attributeAsync
 			-> {
@@ -1643,7 +1681,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 				List<Future> futures = new ArrayList<>();
 
 				for(int i=0; i < pks.size(); i++) {
-					Long 2 = pks.get(i);
+					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
 				}
 
@@ -1658,7 +1696,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 								service.patchClusterFuture(o2, false, b -> {
 									if(b.succeeded()) {
 									} else {
-										LOGGER.info(String.format("Cluster %s failed. ", o2.get()));
+										LOGGER.info(String.format("Cluster %s failed. ", o2.getPk()));
 										eventHandler.handle(Future.failedFuture(b.cause()));
 									}
 								})

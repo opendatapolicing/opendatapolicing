@@ -185,7 +185,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 					fieldNames.addAll(json2.fieldNames());
 					if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 						fieldNames.removeAll(Optional.ofNullable(json2.getJsonArray("saves")).orElse(new JsonArray()).stream().map(s -> s.toString()).collect(Collectors.toList()));
-						fieldNames.remove("");
+						fieldNames.remove("pk");
 						fieldNames.remove("created");
 					}
 					else if(fls.size() >= 1) {
@@ -251,7 +251,16 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 														apiRequest.initDeepApiRequest(siteRequest);
 														siteRequest.setApiRequest_(apiRequest);
 														siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-														String dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteUser.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
+														Date date = null;
+														if(facets != null)
+														date = (Date)facets.get("max_modified");
+														String dt;
+														if(date == null)
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+														else
+															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
+														listSiteUser.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
 
 														try {
 															listPATCHSiteUser(apiRequest, listSiteUser, dt, e -> {
@@ -396,7 +405,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			SiteUser o2 = new SiteUser();
@@ -405,7 +414,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-							, Tuple.of(, "userId", siteRequest.getUserId())
+							, Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -418,7 +427,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "userKey", siteRequest.getUserKey().toString())
+				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -437,13 +446,97 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 
 			for(String methodName : methodNames) {
 				switch(methodName) {
+					case "setInheritPk":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "inheritPk")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setInheritPk(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setArchived":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "archived")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setArchived(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "archived", o2.jsonArchived())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setDeleted":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "deleted")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setDeleted(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "deleted", o2.jsonDeleted())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
+								});
+							}));
+						}
+						break;
 				}
 			}
 			CompositeFuture.all(futures).setHandler( a -> {
 				if(a.succeeded()) {
 					SiteUser o3 = new SiteUser();
 					o3.setSiteRequest_(o.getSiteRequest_());
-					o3.set();
+					o3.setPk(pk);
 					eventHandler.handle(Future.succeededFuture(o3));
 				} else {
 					LOGGER.error(String.format("sqlPATCHSiteUser failed. ", a.cause()));
@@ -592,14 +685,14 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "sessionId", siteRequest.getSessionId())
+				, Tuple.of(pk, "sessionId", siteRequest.getSessionId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -612,7 +705,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			if(siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "userId", siteRequest.getUserId())
+				, Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -625,7 +718,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			if(siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
 					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(, "userKey", siteRequest.getUserKey().toString())
+				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -646,6 +739,45 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
+					case "inheritPk":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
+							});
+						}));
+						break;
+					case "archived":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
+							});
+						}));
+						break;
+					case "deleted":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
+							});
+						}));
+						break;
 					}
 				}
 			}
@@ -771,7 +903,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			page.setPageSolrDocument(pageSolrDocument);
 			page.setW(w);
 			if(listSiteUser.size() == 1)
-				siteRequest.setRequest(listSiteUser.get(0).get());
+				siteRequest.setRequestPk(listSiteUser.get(0).getPk());
 			siteRequest.setW(w);
 			page.setListSiteUser(listSiteUser);
 			page.setSiteRequest_(siteRequest);
@@ -851,9 +983,9 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			-> {
 				if(createAsync.succeeded()) {
 					Row createLine = createAsync.result().value().stream().findFirst().orElseGet(() -> null);
-					Long  = createLine.getLong(0);
+					Long pk = createLine.getLong(0);
 					SiteUser o = new SiteUser();
-					o.set();
+					o.setPk(pk);
 					o.setSiteRequest_(siteRequest);
 					eventHandler.handle(Future.succeededFuture(o));
 				} else {
@@ -1115,7 +1247,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
 																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
 																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
-																		siteRequest.setUserKey(siteUser.get());
+																		siteRequest.setUserKey(siteUser.getPk());
 																		eventHandler.handle(Future.succeededFuture());
 																	} else {
 																		errorSiteUser(siteRequest, eventHandler, e);
@@ -1130,13 +1262,13 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 													}
 												});
 											} else {
-												Long User = userValues.getLong(0);
+												Long pkUser = userValues.getLong(0);
 												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
 												searchList.setQuery("*:*");
 												searchList.setStore(true);
 												searchList.setC(SiteUser.class);
 												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
-												searchList.addFilterQuery("pk_indexed_long:" + User);
+												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
 												searchList.initDeepSearchList(siteRequest);
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
 
@@ -1155,7 +1287,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 													SiteUser siteUser;
 													if(siteUser1 == null) {
 														siteUser = new SiteUser();
-														siteUser.set(User);
+														siteUser.setPk(pkUser);
 														siteUser.setSiteRequest_(siteRequest);
 													} else {
 														siteUser = siteUser1;
@@ -1190,7 +1322,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
 																	siteRequest.setUserLastName(siteUser2.getUserLastName());
 																	siteRequest.setUserId(siteUser2.getUserId());
-																	siteRequest.setUserKey(siteUser2.get());
+																	siteRequest.setUserKey(siteUser2.getPk());
 																	eventHandler.handle(Future.succeededFuture());
 																} else {
 																	errorSiteUser(siteRequest, eventHandler, e);
@@ -1206,7 +1338,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
 													siteRequest.setUserLastName(siteUser1.getUserLastName());
 													siteRequest.setUserId(siteUser1.getUserId());
-													siteRequest.setUserKey(siteUser1.get());
+													siteRequest.setUserKey(siteUser1.getPk());
 													sqlRollbackSiteUser(siteRequest, c -> {
 														if(c.succeeded()) {
 															eventHandler.handle(Future.succeededFuture());
@@ -1339,10 +1471,11 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			searchList.setSiteRequest_(siteRequest);
 			if(entityList != null)
 				searchList.addFields(entityList);
+			searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
 			String id = operationRequest.getParams().getJsonObject("path").getString("id");
-			if( != null) {
-				searchList.addFilterQuery("(:" + ClientUtils.escapeQueryChars(id) + " OR _indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+			if(id != null) {
+				searchList.addFilterQuery("(id:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
 			}
 
 			List<String> roles = Arrays.asList("SiteAdmin", "SiteAdmin");
@@ -1408,6 +1541,9 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
+			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+				searchList.addSort("created_indexed_date", ORDER.desc);
+			}
 			searchList.initDeepForClass(siteRequest);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
@@ -1420,10 +1556,10 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			tx.preparedQuery(
 					SiteContextEnUS.SQL_define
-					, Tuple.of()
+					, Tuple.of(pk)
 					, Collectors.toList()
 					, defineAsync
 			-> {
@@ -1457,10 +1593,10 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
-			Long  = o.get();
+			Long pk = o.getPk();
 			tx.preparedQuery(
 					SiteContextEnUS.SQL_attribute
-					, Tuple.of(, )
+					, Tuple.of(pk, pk)
 					, Collectors.toList()
 					, attributeAsync
 			-> {
@@ -1523,7 +1659,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				List<Future> futures = new ArrayList<>();
 
 				for(int i=0; i < pks.size(); i++) {
-					Long 2 = pks.get(i);
+					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
 				}
 
@@ -1538,7 +1674,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 								service.patchSiteUserFuture(o2, false, b -> {
 									if(b.succeeded()) {
 									} else {
-										LOGGER.info(String.format("SiteUser %s failed. ", o2.get()));
+										LOGGER.info(String.format("SiteUser %s failed. ", o2.getPk()));
 										eventHandler.handle(Future.failedFuture(b.cause()));
 									}
 								})

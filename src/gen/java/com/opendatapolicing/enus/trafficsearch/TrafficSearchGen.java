@@ -4491,6 +4491,23 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 	}
 
+	public void unindexTrafficSearch() {
+		try {
+		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+			siteRequest.initDeepSiteRequestEnUS();
+			SiteContextEnUS siteContext = new SiteContextEnUS();
+			siteContext.initDeepSiteContextEnUS();
+			siteRequest.setSiteContext_(siteContext);
+			siteRequest.setSiteConfig_(siteContext.getSiteConfig());
+			initDeepTrafficSearch(siteRequest);
+			SolrClient solrClient = siteContext.getSolrClient();
+			solrClient.deleteById(id.toString());
+			solrClient.commit(false, false, true);
+		} catch(Exception e) {
+			ExceptionUtils.rethrow(e);
+		}
+	}
+
 	public static String varIndexedTrafficSearch(String entityVar) {
 		switch(entityVar) {
 			default:

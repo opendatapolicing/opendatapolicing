@@ -70,7 +70,9 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficSearch_ != null)
+		if(trafficSearch_ != null && trafficSearch_.getObjectTitle() != null)
+			c.o(trafficSearch_.getObjectTitle());
+		else if(trafficSearch_ != null)
 			c.o("traffic searchs");
 		else if(listTrafficSearch == null || listTrafficSearch.size() == 0)
 			c.o("no traffic search found");
@@ -118,7 +120,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		tl(2, "}");
 		tl(1, "};");
 		tl(1, "window.eventBus = new EventBus('/eventbus');");
-		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequest()).map(l -> l.toString()).orElse("null"), ";");
+		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequestPk()).map(l -> l.toString()).orElse("null"), ";");
 		tl(1, "if(pk != null) {");
 		tl(1, "}");
 		tl(1, "websocketTrafficSearch(websocketTrafficSearchInner);");
@@ -126,9 +128,29 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	public void htmlFormPageTrafficSearch(TrafficSearch o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("Page");
+			o.htmCreated("Page");
+			o.htmModified("Page");
+			o.htmObjectId("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Page");
+			o.htmDeleted("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTTrafficSearch(TrafficSearch o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("POST");
+			o.htmCreated("POST");
+			o.htmModified("POST");
+			o.htmObjectId("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("POST");
+			o.htmDeleted("POST");
+		} g("div");
 	}
 
 	public void htmlFormPUTImportTrafficSearch(TrafficSearch o) {
@@ -156,12 +178,44 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	public void htmlFormPUTCopyTrafficSearch(TrafficSearch o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmCreated("PUTCopy");
+			o.htmModified("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PUTCopy");
+			o.htmDeleted("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHTrafficSearch(TrafficSearch o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmCreated("PATCH");
+			o.htmModified("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PATCH");
+			o.htmDeleted("PATCH");
+		} g("div");
 	}
 
 	public void htmlFormSearchTrafficSearch(TrafficSearch o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("Search");
+			o.htmCreated("Search");
+			o.htmModified("Search");
+			o.htmObjectId("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmInheritPk("Search");
+			o.htmUserId("Search");
+			o.htmUserKey("Search");
+			o.htmObjectTitle("Search");
+		} g("div");
 	}
 
 	@Override public void htmlBodyTrafficSearchGenPage() {
@@ -187,7 +241,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			} g("h2");
 		} else if(listTrafficSearch != null && listTrafficSearch.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
 			TrafficSearch o = listTrafficSearch.get(0);
-			siteRequest_.setRequest(o.get());
+			siteRequest_.setRequestPk(o.getPk());
 			if(StringUtils.isNotEmpty(pageH1)) {
 				{ e("h1").f();
 					{ e("a").a("href", "/api/traffic-search").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
@@ -226,7 +280,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficSearch.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "";
+					String query1 = "objectText";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -310,6 +364,22 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 
 			{ e("div").a("class", "").f();
 
+				if(o.getPk() != null) {
+					{ e("form").a("action", "").a("id", "TrafficSearchForm").a("style", "display: inline-block; width: 100%; ").a("onsubmit", "event.preventDefault(); return false; ").f();
+						e("input")
+						.a("name", "pk")
+						.a("class", "valuePk")
+						.a("type", "hidden")
+						.a("value", o.getPk())
+						.fg();
+						e("input")
+						.a("name", "focusId")
+						.a("type", "hidden")
+						.fg();
+					} g("form");
+					htmlFormPageTrafficSearch(o);
+				}
+
 			} g("div");
 
 		}
@@ -337,6 +407,12 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 
 	public void thead2TrafficSearchGenPage() {
 			{ e("tr").f();
+			if(getColumnCreated()) {
+				e("th").f().sx("created").g("th");
+			}
+			if(getColumnObjectTitle()) {
+				e("th").f().sx("").g("th");
+			}
 			} g("tr");
 	}
 
@@ -352,8 +428,27 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			TrafficSearch o = listTrafficSearch.getList().get(i);
 			Map<String, List<String>> highlights = highlighting == null ? null : highlighting.get(o.getId());
 			List<String> highlightList = highlights == null ? null : highlights.get(highlights.keySet().stream().findFirst().orElse(null));
-			String uri = "/api/traffic-search/" + o.getnull();
+			String uri = "/api/traffic-search/" + o.getPk();
 			{ e("tr").f();
+				if(getColumnCreated()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							{ e("span").f();
+								sx(o.strCreated());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
+				if(getColumnObjectTitle()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							e("i").a("class", "far fa-newspaper ").f().g("i");
+							{ e("span").f();
+								sx(o.strObjectTitle());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
 			} g("tr");
 		}
 	}
@@ -367,7 +462,23 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	public void tfoot2TrafficSearchGenPage() {
 		{ e("tr").f();
 			SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listTrafficSearch.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(new SimpleOrderedMap());
+			if(getColumnCreated()) {
+				e("td").f();
+				g("td");
+			}
+			if(getColumnObjectTitle()) {
+				e("td").f();
+				g("td");
+			}
 		} g("tr");
+	}
+
+	public Boolean getColumnCreated() {
+		return true;
+	}
+
+	public Boolean getColumnObjectTitle() {
+		return true;
 	}
 
 	public void htmlBodyFormsTrafficSearchGenPage() {
@@ -381,7 +492,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 				{ e("button")
 					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
 						.a("id", "refreshThisTrafficSearchGenPage")
-						.a("onclick", "patchTrafficSearchVals( [ {name: 'fq', value: ':' + " + siteRequest_.getRequest() + " } ], {}, function() { addGlow($('#refreshThisTrafficSearchGenPage')); }, function() { addError($('#refreshThisTrafficSearchGenPage')); }); return false; ").f();
+						.a("onclick", "patchTrafficSearchVals( [ {name: 'fq', value: 'pk:' + " + siteRequest_.getRequestPk() + " } ], {}, function() { addGlow($('#refreshThisTrafficSearchGenPage')); }, function() { addError($('#refreshThisTrafficSearchGenPage')); }); return false; ").f();
 						e("i").a("class", "fas fa-sync-alt ").f().g("i");
 					sx("refresh this traffic search");
 				} g("button");
@@ -447,7 +558,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 							htmlFormPATCHTrafficSearch(o);
 							e("button")
 								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
-								.a("onclick", "patchTrafficSearch(null, $('#patchTrafficSearchFormValues'), ", Optional.ofNullable(trafficSearch_).map(TrafficSearch::get).map(a -> a.toString()).orElse("null"), ", function() {}, function() {}); ")
+								.a("onclick", "patchTrafficSearch(null, $('#patchTrafficSearchFormValues'), ", Optional.ofNullable(trafficSearch_).map(TrafficSearch::getPk).map(a -> a.toString()).orElse("null"), ", function() {}, function() {}); ")
 								.f().sx("Modify traffic searchs")
 							.g("button");
 
@@ -469,7 +580,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			OperationRequest operationRequest = siteRequest_.getOperationRequest();
 			JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "";
+			String query1 = "objectText";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -540,7 +651,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficSearch")
 					.a("id", "suggestTrafficSearch", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficSearch( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': '' } ], $('#suggestListTrafficSearch", id, "'), ", p.getSiteRequest_().getRequest(), "); ")
+					.a("oninput", "suggestTrafficSearchObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListTrafficSearch", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/api/traffic-search?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficSearch != null)
 					p.a("value", query2);
