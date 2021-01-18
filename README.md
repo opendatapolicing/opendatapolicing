@@ -102,6 +102,11 @@ ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendat
 export ODP_ANSIBLE_INVENTORY=/usr/local/src/opendatapolicing-ansible
 ```
 
+**ODP_ANSIBLE_STATIC** Defines location of git repo holding inventories and vaults. Default /usr/local/src/opendatapolicing-static
+```bash
+export ODP_ANSIBLE_INVENTORY=/usr/local/src/opendatapolicing-static
+```
+
 **Update vault file with OpenShift Token**
 ```
 ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
