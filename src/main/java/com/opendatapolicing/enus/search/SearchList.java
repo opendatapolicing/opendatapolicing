@@ -1,4 +1,4 @@
-package org.southerncoalition.enus.search;
+package com.opendatapolicing.enus.search;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -7,7 +7,6 @@ import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -18,9 +17,9 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.southerncoalition.enus.request.SiteRequestEnUS;
-import org.southerncoalition.enus.user.SiteUser;
-import org.southerncoalition.enus.wrap.Wrap;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.user.SiteUser;
+import com.opendatapolicing.enus.wrap.Wrap;
 
 /** 
  * Keyword: classSimpleNameSearchList
@@ -689,3 +688,4 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			sb.append("numFound: ").append(numFound).append("\n");
 		return sb.toString();
 	}
+}
