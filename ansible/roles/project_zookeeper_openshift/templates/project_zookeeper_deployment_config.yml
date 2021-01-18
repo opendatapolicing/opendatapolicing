@@ -1,0 +1,53 @@
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+spec:
+  selector:
+    app: zookeeper
+    deploymentConfig: zookeeper
+  strategy:
+    recreateParams:
+      timeoutSeconds: 600
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+        application: zookeeper
+        deploymentConfig: zookeeper
+      name: zookeeper
+    spec:
+      containers:
+        - imagePullPolicy: Always
+          name: zookeeper
+          ports:
+            - containerPort: {{ZOOKEEPER_PORT}}
+              name: client-port
+              protocol: TCP
+          resources:
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /opt/zookeeper/data
+              name: volume-zookeeper-data
+            - mountPath: /opt/zookeeper/conf
+              name: volume-zookeeper-conf
+      volumes:
+        - name: volume-zookeeper-data
+          persistentVolumeClaim:
+            claimName: zookeeper-persistent-volume-claim
+        - configMap:
+            defaultMode: 440
+            name: zookeeper
+          name: volume-zookeeper-conf
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - zookeeper
+        from:
+          kind: ImageStreamTag
+          name: 'computate-zookeeper:latest'
+          namespace: {{ZOOKEEPER_NAMESPACE}}
+      type: ImageChange
+    - type: ConfigChange

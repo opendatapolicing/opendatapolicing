@@ -1,0 +1,46 @@
+---
+- name: Install zookeeper image stream on OpenShift
+  k8s:
+    state: present
+    name: zookeeper
+    host: "{{ZOOKEEPER_HOST}}"
+    api_key: "{{ZOOKEEPER_TOKEN}}"
+    namespace: "{{ZOOKEEPER_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_zookeeper_image_stream.yml') }}"
+    validate_certs: false
+- name: Install zookeeper configmap
+  k8s:
+    state: present
+    name: zookeeper
+    host: "{{ZOOKEEPER_HOST}}"
+    api_key: "{{ZOOKEEPER_TOKEN}}"
+    namespace: "{{ZOOKEEPER_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_zookeeper_configmap.yml') }}"
+    validate_certs: false
+- name: Install zookeeper persistent volume claim on OpenShift
+  k8s:
+    state: present
+    name: zookeeper-persistent-volume-claim
+    host: "{{ZOOKEEPER_HOST}}"
+    api_key: "{{ZOOKEEPER_TOKEN}}"
+    namespace: "{{ZOOKEEPER_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_zookeeper_persistent_volume_claim.yml') }}"
+    validate_certs: false
+- name: Install zookeeper deployment config on OpenShift
+  k8s:
+    state: present
+    name: zookeeper
+    host: "{{ZOOKEEPER_HOST}}"
+    api_key: "{{ZOOKEEPER_TOKEN}}"
+    namespace: "{{ZOOKEEPER_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_zookeeper_deployment_config.yml') }}"
+    validate_certs: false
+- name: Install zookeeper service on OpenShift
+  k8s:
+    state: present
+    name: zookeeper
+    host: "{{ZOOKEEPER_HOST}}"
+    api_key: "{{ZOOKEEPER_TOKEN}}"
+    namespace: "{{ZOOKEEPER_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_zookeeper_service.yml') }}"
+    validate_certs: false

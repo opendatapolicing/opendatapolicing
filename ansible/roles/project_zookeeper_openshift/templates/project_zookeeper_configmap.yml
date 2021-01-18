@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+data:
+  zoo.cfg: |
+    tickTime=2000
+    dataDir=/opt/zookeeper
+    clientPort={{ZOOKEEPER_PORT}}
+    admin.enableServer=false
+kind: ConfigMap

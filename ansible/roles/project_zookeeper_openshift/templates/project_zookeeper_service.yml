@@ -12,5 +12,5 @@ spec:
     - name: 2181-tcp
       port: 2181
   selector:
-    app: computate-zookeeper
-    deploymentconfig: computate-zookeeper
+    app: zookeeper
+    deploymentconfig: zookeeper
