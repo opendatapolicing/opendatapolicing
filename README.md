@@ -101,7 +101,7 @@ ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatap
 ```
 
 
-## For End to End deployment
+## For End-to-End deployment
 ```
 ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_openshift_complete.yml --ask-vault-pass
 ```
