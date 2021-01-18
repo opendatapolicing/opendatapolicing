@@ -1,0 +1,13 @@
+---
+# Title: create the Ansible playbook for creating SSL/TLS certificate keystores
+# Mission: create the Ansible playbook for creating SSL/TLS certificate keystores
+# Milestone: Setup Tasks
+# Column: Setup Tasks
+
+- name: Generate keystore and other files based on certificate and key from certbot
+  hosts: "{{target}}"
+  connection: local
+  vars_files:
+    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+  roles: 
+    - project_certbot
