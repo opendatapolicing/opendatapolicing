@@ -38,6 +38,7 @@ import com.opendatapolicing.enus.writer.AllWriter;
 import com.opendatapolicing.enus.xml.UtilXml;
 
 /**
+ * Keyword: classSimpleNamePageLayout
  **/
 
 public class PageLayout extends PageLayoutGen<Object> {
