@@ -153,7 +153,12 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	protected void _sort10(Wrap<Double> c) {
 	}
 	
-	_objectTitle(Wrap<String> c) {
+	/**
+	 * {@inheritDoc}
+	 * Var.enUS: _objectTitle
+	 */ 
+	@Override()
+	protected void  _objectTitle(Wrap<String> c) {
 		StringBuilder b = new StringBuilder();
 		if(htmlBefore != null)
 			b.append(htmlBefore);
@@ -184,7 +189,8 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 		c.o(b.toString());
 	}
 	
-	_objectId(Wrap<String> c) {
+	@Override()
+	protected void  _objectId(Wrap<String> c) {
 		if(pk != null){
 			c.o(pk.toString());
 		}
