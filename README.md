@@ -8,7 +8,7 @@ sudo yum install -y git python3 python3-pip libselinux-python3 maven
 
 ## Install dependencies on MacOSX
 
-For MacOS, install gnu-tar and add it to the system PATH 
+For MacOS, install gnu-tar and add it to the system PATH  
 https://stackoverflow.com/questions/54528115/unable-to-extract-tar-file-though-ansible-unarchive-module-in-macos
 
 ```bash
