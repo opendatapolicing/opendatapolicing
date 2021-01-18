@@ -1,0 +1,8 @@
+---
+# Label: solr_openshift_defaults
+# Title: create the Ansible defaults for the Apache Solr search engine in OpenShift
+# Mission: create the Ansible defaults for the Apache Solr search engine in OpenShift
+# Milestone: Automate Search Engine Deployment
+# Column: Automate Search Engine Deployment
+
+REDHAT_OPENSHIFT_STORAGE_CLASS_NAME: gp2

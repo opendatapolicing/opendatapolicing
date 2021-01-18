@@ -1,0 +1,22 @@
+---
+# Label: ansible_project_solr_image_stream
+# Title: create the Ansible template for the Apache Solr image stream in OpenShift
+# Mission: create the Ansible template for the Apache Solr image stream in OpenShift
+# Milestone: Automate Search Engine Deployment
+# Column: Automate Search Engine Deployment
+
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: quay.io/computate/computate-solr
+      generation: 1
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source

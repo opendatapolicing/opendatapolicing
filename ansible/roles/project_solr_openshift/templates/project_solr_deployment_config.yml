@@ -1,0 +1,81 @@
+---
+# Label: ansible_project_solr_deployment_config
+# Title: create the Ansible template for the Apache Solr deployment config in OpenShift
+# Mission: create the Ansible template for the Apache Solr deployment config in OpenShift
+# Milestone: Automate Search Engine Deployment
+# Column: Automate Search Engine Deployment
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: computate-solr
+    deploymentConfig: computate-solr
+    deploymentconfig: computate-solr
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: computate-solr
+        application: computate-solr
+        deploymentConfig: computate-solr
+        deploymentconfig: computate-solr
+      name: computate-solr
+    spec:
+      containers:
+        - env:
+            - name: ZK_HOSTNAME
+              value: {{ZOOKEEPER_HOST_NAME}}
+          imagePullPolicy: Always
+          name: computate-solr
+          ports:
+            - containerPort: {{SOLR_PORT}}
+              name: solr-port
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+          securityContext:
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /opt/solr/data
+              name: computate-solr-data-volume
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: computate-solr-data-volume
+          persistentVolumeClaim:
+            claimName: computate-solr-persistent-volume-claim
+  test: false
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - computate-solr
+        from:
+          kind: ImageStreamTag
+          name: 'computate-solr-image-stream:latest'
+          namespace: {{SOLR_NAMESPACE}}
+      type: ImageChange
+    - type: ConfigChange

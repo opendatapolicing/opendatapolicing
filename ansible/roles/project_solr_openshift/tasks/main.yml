@@ -1,0 +1,46 @@
+---
+# Label: solr_openshift_tasks
+# Title: create the Ansible tasks for the Apache Solr search engine in OpenShift
+# Mission: create the Ansible tasks for the Apache Solr search engine in OpenShift
+# Milestone: Automate Search Engine Deployment
+# Column: Automate Search Engine Deployment
+
+- name: Install computate-solr image stream on OpenShift
+  k8s: 
+    state: present
+    name: computate-solr-image-stream
+    host: "{{SOLR_HOST}}"
+    api_key: "{{SOLR_TOKEN}}"
+    namespace: "{{SOLR_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_solr_image_stream.yml') }}"
+    validate_certs: false
+
+- name: Install computate-solr persistent volume claim on OpenShift
+  k8s: 
+    state: present
+    name: computate-solr-persistent-volume-claim
+    host: "{{SOLR_HOST}}"
+    api_key: "{{SOLR_TOKEN}}"
+    namespace: "{{SOLR_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_solr_persistent_volume_claim.yml') }}"
+    validate_certs: false
+
+- name: Install computate-solr deployment config on OpenShift
+  k8s: 
+    state: present
+    name: computate-solr
+    host: "{{SOLR_HOST}}"
+    api_key: "{{SOLR_TOKEN}}"
+    namespace: "{{SOLR_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_solr_deployment_config.yml') }}"
+    validate_certs: false
+
+- name: Install computate-solr service on OpenShift
+  k8s: 
+    state: present
+    name: computate-solr
+    host: "{{SOLR_HOST}}"
+    api_key: "{{SOLR_TOKEN}}"
+    namespace: "{{SOLR_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_solr_service.yml') }}"
+    validate_certs: false
