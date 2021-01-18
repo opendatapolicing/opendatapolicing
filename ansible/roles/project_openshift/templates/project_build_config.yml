@@ -1,0 +1,49 @@
+---
+# Label: ansible_project_build_config
+# Title: create the Ansible template for the project build config in OpenShift
+# Mission: create the Ansible template for the project build config in OpenShift
+# Milestone: Automate Project Deployment
+# Column: Automate Project Deployment
+
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'opendatapolicing:latest'
+  postCommit: {}
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      memory: 1Gi
+  runPolicy: Serial
+  source:
+    git:
+      uri: 'https://github.com/opendatapolicing/opendatapolicing.git'
+    secrets:
+      - destinationDir: /opt/keystore
+        secret:
+          name: opendatapolicing-keystore
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: 'java:latest'
+        namespace: openshift
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
+    - github:
+        secret: gcQ4HNt-zy-siCAiiqYo
+      type: GitHub
+    - generic:
+        secret: Ciji-tEysxafyInX9Gd7
+      type: Generic
