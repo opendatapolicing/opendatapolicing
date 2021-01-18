@@ -53,6 +53,16 @@ ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatap
 
 **Create OpenShift Token**
 ```
-VAULT_ID=opendatapolicing-hackathon/host_vars/localhost
+export VAULT_ID=opendatapolicing-hackathon/host_vars/localhost
 ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_token_setup.yml --ask-vault-pass -e "ocp_cluster_user_user=username" -e "ocp_cluster_user_password=changeme" 
+```
+
+**Update vault file with OpenShift Token**
+```
+ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
+```
+
+**Run project_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_openshift.yml --ask-vault-pass
 ```
