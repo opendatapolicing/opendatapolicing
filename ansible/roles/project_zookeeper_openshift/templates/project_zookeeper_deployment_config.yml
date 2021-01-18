@@ -3,8 +3,8 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 spec:
   selector:
-    app: computate-zookeeper
-    deploymentConfig: computate-zookeeper
+    app: zookeeper
+    deploymentConfig: zookeeper
   strategy:
     recreateParams:
       timeoutSeconds: 600
@@ -12,14 +12,14 @@ spec:
   template:
     metadata:
       labels:
-        app: computate-zookeeper
-        application: computate-zookeeper
-        deploymentConfig: computate-zookeeper
-      name: computate-zookeeper
+        app: zookeeper
+        application: zookeeper
+        deploymentConfig: zookeeper
+      name: zookeeper
     spec:
       containers:
         - imagePullPolicy: Always
-          name: computate-zookeeper
+          name: zookeeper
           ports:
             - containerPort: {{ZOOKEEPER_PORT}}
               name: client-port
@@ -29,22 +29,22 @@ spec:
               memory: 256Mi
           volumeMounts:
             - mountPath: /opt/zookeeper/data
-              name: volume-computate-zookeeper-data
+              name: volume-zookeeper-data
             - mountPath: /opt/zookeeper/conf
-              name: volume-computate-zookeeper-conf
+              name: volume-zookeeper-conf
       volumes:
-        - name: volume-computate-zookeeper-data
+        - name: volume-zookeeper-data
           persistentVolumeClaim:
-            claimName: computate-zookeeper-persistent-volume-claim
+            claimName: zookeeper-persistent-volume-claim
         - configMap:
             defaultMode: 440
-            name: computate-zookeeper
-          name: volume-computate-zookeeper-conf
+            name: zookeeper
+          name: volume-zookeeper-conf
   triggers:
     - imageChangeParams:
         automatic: true
         containerNames:
-          - computate-zookeeper
+          - zookeeper
         from:
           kind: ImageStreamTag
           name: 'computate-zookeeper:latest'
