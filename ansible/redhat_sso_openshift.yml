@@ -8,6 +8,6 @@
   hosts: localhost
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - /usr/local/src/opendatapolicing-ansible/vaults/{{ lookup('env', 'VAULT_ID') }}/vault
   roles: 
     - redhat_sso_openshift
