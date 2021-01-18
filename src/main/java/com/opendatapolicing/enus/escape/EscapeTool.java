@@ -5,8 +5,8 @@ package com.opendatapolicing.enus.escape;
  **/
 
 public class EscapeTool {
-	
-	escapeXml(String str) {
+
+	public static String escapeXml(String str) {
 		String result = str;
 		
 		if(str != null) { 
@@ -16,7 +16,7 @@ public class EscapeTool {
 		return result;
 	}
 
-	escapeXmlInApostrophes(String str) {
+	public static String escapeXmlInApostrophes(String str) {
 		String result = str;
 		
 		if(str != null) { 
@@ -26,7 +26,7 @@ public class EscapeTool {
 		return result;
 	}
 
-	escapeXmlInQuotes(String str) {
+	public static String escapeXmlInQuotes(String str) {
 		String result = str;
 		
 		if(str != null) { 
@@ -36,7 +36,7 @@ public class EscapeTool {
 		return result;
 	}
 
-	escapeXmlAddQuotes(String str) {
+	public static String escapeXmlAddQuotes(String str) {
 		String result = str;
 		
 		if(str != null) { 

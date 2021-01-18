@@ -1,0 +1,13 @@
+---
+# Title: create the Ansible playbook for the Apache Solr search engine in OpenShift
+# Mission: create the Ansible playbook for the Apache Solr search engine in OpenShift
+# Milestone: Automate Search Engine Deployment
+# Column: Automate Search Engine Deployment
+
+- name: Install the computate-solr pod on OpenShift
+  hosts: localhost
+  connection: local
+  vars_files:
+    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+  roles: 
+    - project_solr_openshift

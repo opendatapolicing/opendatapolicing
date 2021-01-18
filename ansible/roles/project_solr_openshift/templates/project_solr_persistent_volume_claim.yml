@@ -1,0 +1,16 @@
+---
+# Label: ansible_project_solr_persistent_volume_claim
+# Title: create the Ansible template for the Apache Solr persistent volume claim in OpenShift
+# Mission: create the Ansible template for the Apache Solr persistent volume claim in OpenShift
+# Milestone: Automate Search Engine Deployment
+# Column: Automate Search Engine Deployment
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{SOLR_VOLUME_SIZE}}
+  storageClassName: "{{ REDHAT_OPENSHIFT_STORAGE_CLASS_NAME }}"
