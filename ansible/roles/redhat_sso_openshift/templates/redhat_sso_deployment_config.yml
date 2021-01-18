@@ -1,0 +1,215 @@
+---
+# Label: ansible_redhat_sso_deployment_config
+# Title: create the Ansible template for the Red Hat SSO deployment config in OpenShift
+# Mission: create the Ansible defaults for the Red Hat SSO deployment config in OpenShift
+# Milestone: Automate SSO Deployment
+# Column: Automate SSO Deployment
+
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    deploymentConfig: sso
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: sso73
+        application: sso
+        deploymentConfig: sso
+      name: sso
+    spec:
+      containers:
+        - env:
+            - name: DB_SERVICE_PREFIX_MAPPING
+              value: sso-postgresql=DB
+            - name: SSO_DC_NAME
+              value: sso
+            - name: DB_JNDI
+              value: 'java:jboss/datasources/KeycloakDS'
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_USERNAME
+                  name: sso-secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PASSWORD
+                  name: sso-secret
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: DB_DATABASE
+                  name: sso-secret
+            - name: TX_DATABASE_PREFIX_MAPPING
+              value: sso-postgresql=DB
+            - name: JGROUPS_PING_PROTOCOL
+              value: openshift.DNS_PING
+            - name: OPENSHIFT_DNS_PING_SERVICE_NAME
+              value: sso-ping
+            - name: OPENSHIFT_DNS_PING_SERVICE_PORT
+              value: '8888'
+            - name: HTTPS_KEYSTORE_DIR
+              value: /etc/sso-secret-volume
+            - name: HTTPS_KEYSTORE
+              value: keystore.jks
+            - name: HTTPS_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: HTTPS_NAME
+                  name: sso-secret
+            - name: HTTPS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: HTTPS_PASSWORD
+                  name: sso-secret
+            - name: JGROUPS_ENCRYPT_SECRET
+              value: sso-keystore
+            - name: JGROUPS_ENCRYPT_KEYSTORE_DIR
+              value: /etc/sso-secret-volume
+            - name: JGROUPS_ENCRYPT_KEYSTORE
+              value: jgroups.jceks
+            - name: JGROUPS_ENCRYPT_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: JGROUPS_ENCRYPT_NAME
+                  name: sso-secret
+            - name: JGROUPS_ENCRYPT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: JGROUPS_ENCRYPT_PASSWORD
+                  name: sso-secret
+            - name: JGROUPS_CLUSTER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: JGROUPS_CLUSTER_PASSWORD
+                  name: sso-secret
+            - name: SSO_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: SSO_ADMIN_USERNAME
+                  name: sso-secret
+            - name: SSO_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SSO_ADMIN_PASSWORD
+                  name: sso-secret
+            - name: SSO_REALM
+              valueFrom:
+                secretKeyRef:
+                  key: SSO_REALM
+                  name: sso-secret
+            - name: SSO_SERVICE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: SSO_SERVICE_USERNAME
+                  name: sso-secret
+            - name: SSO_SERVICE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SSO_SERVICE_PASSWORD
+                  name: sso-secret
+            - name: SSO_TRUSTSTORE
+              value: keystore.jks
+            - name: SSO_TRUSTSTORE_DIR
+              value: /etc/sso-secret-volume
+            - name: SSO_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: SSO_TRUSTSTORE_PASSWORD
+                  name: sso-secret
+          image: >-
+            docker-registry.default.svc:5000/openshift/redhat-sso73-openshift@sha256:03a700a5b1716248771624d80fdfc93eaf4b2e258857a87823b9c4a6c956e109
+          imagePullPolicy: Always
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - '-c'
+                - /opt/eap/bin/livenessProbe.sh
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: sso
+          ports:
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+            - containerPort: 8888
+              name: ping
+              protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - '-c'
+                - /opt/eap/bin/readinessProbe.sh
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 1Gi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/eap-secret-volume
+              name: eap-keystore-volume
+              readOnly: true
+            - mountPath: /etc/jgroups-encrypt-secret-volume
+              name: eap-jgroups-keystore-volume
+              readOnly: true
+            - mountPath: /etc/sso-secret-volume
+              name: volume-k1mol
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 75
+      volumes:
+        - name: eap-keystore-volume
+          secret:
+            defaultMode: 420
+            secretName: sso-keystore
+        - name: eap-jgroups-keystore-volume
+          secret:
+            defaultMode: 420
+            secretName: sso-keystore
+        - name: volume-k1mol
+          secret:
+            defaultMode: 420
+            secretName: sso-keystore
+  test: false
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - sso
+        from:
+          kind: ImageStreamTag
+          name: 'redhat-sso73-openshift:1.0'
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
