@@ -8,7 +8,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_login }
 
@@ -16,7 +16,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: page-design, DATA_URI: /api/admin/page-design, DATA_ROWS: 500 }
 
@@ -24,7 +24,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: html-part, DATA_URI: /api/html-part, DATA_ROWS: 500 }
 
@@ -32,7 +32,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: state, DATA_URI: /api/admin/state, DATA_ROWS: 500 }
 
@@ -40,7 +40,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: agency, DATA_URI: /api/admin/agency, DATA_ROWS: 500 }
 
@@ -48,7 +48,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: traffic-stop, DATA_URI: /api/admin/traffic-stop, DATA_ROWS: 500 }
 
@@ -56,7 +56,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: traffic-search, DATA_URI: /api/admin/traffic-search, DATA_ROWS: 500 }
 
@@ -64,7 +64,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: traffic-person, DATA_URI: /api/admin/traffic-person, DATA_ROWS: 500 }
 
@@ -72,7 +72,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: traffic-contraband, DATA_URI: /api/admin/traffic-contraband, DATA_ROWS: 500 }
 
@@ -80,6 +80,6 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: search-basis, DATA_URI: /api/admin/search-basis, DATA_ROWS: 500 }

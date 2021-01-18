@@ -9,7 +9,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_login }
 
@@ -17,7 +17,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: page-design, DATA_URI: /api/admin/page-design }
 
@@ -25,7 +25,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: html-part, DATA_URI: /api/html-part }
 
@@ -33,7 +33,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: state, DATA_URI: /api/admin/state }
 
@@ -41,7 +41,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: agency, DATA_URI: /api/admin/agency }
 
@@ -49,7 +49,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: traffic-stop, DATA_URI: /api/admin/traffic-stop }
 
@@ -57,7 +57,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: traffic-search, DATA_URI: /api/admin/traffic-search }
 
@@ -65,7 +65,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: traffic-person, DATA_URI: /api/admin/traffic-person }
 
@@ -73,7 +73,7 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: traffic-contraband, DATA_URI: /api/admin/traffic-contraband }
 
@@ -81,6 +81,6 @@
   hosts: "{{ target }}"
   connection: local
   vars_files:
-    - /usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   roles:
     - { role: project_restore, DATA_NAME_VAR: search-basis, DATA_URI: /api/admin/search-basis }
