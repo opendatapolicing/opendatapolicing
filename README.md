@@ -8,7 +8,7 @@ sudo yum install -y git python3 python3-pip libselinux-python3 maven
 
 ## Install dependencies on MacOSX
 
-For MacOS, install gnu-tar and add it to the system PATH 
+For MacOS, install gnu-tar and add it to the system PATH  
 https://stackoverflow.com/questions/54528115/unable-to-extract-tar-file-though-ansible-unarchive-module-in-macos
 
 ```bash
@@ -53,5 +53,6 @@ ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatap
 
 **Create OpenShift Token**
 ```
+VAULT_ID=opendatapolicing-hackathon/host_vars/localhost
 ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_token_setup.yml --ask-vault-pass -e "ocp_cluster_user_user=username" -e "ocp_cluster_user_password=changeme" 
 ```
