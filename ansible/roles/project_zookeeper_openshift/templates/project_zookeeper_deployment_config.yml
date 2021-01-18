@@ -1,0 +1,60 @@
+---
+# Label: ansible_project_zookeeper_deployment_config
+# Title: create the Ansible template for the Apache Zookeeper deployment config in OpenShift
+# Mission: create the Ansible template for the Apache Zookeeper deployment config in OpenShift
+# Milestone: Automate Cluster Manager Deployment
+# Column: Automate Cluster Manager Deployment
+
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+spec:
+  selector:
+    app: computate-zookeeper
+    deploymentConfig: computate-zookeeper
+  strategy:
+    recreateParams:
+      timeoutSeconds: 600
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: computate-zookeeper
+        application: computate-zookeeper
+        deploymentConfig: computate-zookeeper
+      name: computate-zookeeper
+    spec:
+      containers:
+        - imagePullPolicy: Always
+          name: computate-zookeeper
+          ports:
+            - containerPort: {{ZOOKEEPER_PORT}}
+              name: client-port
+              protocol: TCP
+          resources:
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /opt/zookeeper/data
+              name: volume-computate-zookeeper-data
+            - mountPath: /opt/zookeeper/conf
+              name: volume-computate-zookeeper-conf
+      volumes:
+        - name: volume-computate-zookeeper-data
+          persistentVolumeClaim:
+            claimName: computate-zookeeper-persistent-volume-claim
+        - configMap:
+            defaultMode: 440
+            name: computate-zookeeper
+          name: volume-computate-zookeeper-conf
+  triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - computate-zookeeper
+        from:
+          kind: ImageStreamTag
+          name: 'computate-zookeeper:latest'
+          namespace: {{ZOOKEEPER_NAMESPACE}}
+      type: ImageChange
+    - type: ConfigChange
+
