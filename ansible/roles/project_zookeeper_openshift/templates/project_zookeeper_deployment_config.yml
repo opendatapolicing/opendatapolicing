@@ -47,7 +47,7 @@ spec:
           - zookeeper
         from:
           kind: ImageStreamTag
-          name: 'computate-zookeeper:latest'
+          name: 'zookeeper:latest'
           namespace: {{ZOOKEEPER_NAMESPACE}}
       type: ImageChange
     - type: ConfigChange
