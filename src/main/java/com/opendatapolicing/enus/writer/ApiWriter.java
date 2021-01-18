@@ -2,6 +2,7 @@ package com.opendatapolicing.enus.writer;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
@@ -21,141 +23,186 @@ import com.opendatapolicing.enus.wrap.Wrap;
  **/
 
 public class ApiWriter extends ApiWriterGen<Object> {
-	
+
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
 	}
+
 	protected void _classSolrDocument(Wrap<SolrDocument> c) {
 	}
+
 	protected void _contextRows(Wrap<Integer> c) {
 	}
+
 	protected void _classApiMethod(Wrap<String> c) {
 	}
+
 	protected void _openApiVersion(Wrap<String> c) {
 	}
+
 	protected void _appSwagger2(Wrap<AppSwagger2> c) { 
 	}
+
 	protected void _classUris(Wrap<List<String>> c) {
 	}
+
 	protected void _openApiVersionNumber(Wrap<Integer> c) {
 		c.o((int)Double.parseDouble(StringUtils.substringBefore(openApiVersion, ".")));
 	}
+
 	protected void _tabsSchema(Wrap<Integer> c) {
 		if(openApiVersionNumber == 2)
 			c.o(1);
 		else
 			c.o(2);
 	}
+
 	protected void _tabsResponses(Wrap<Integer> c) {
 		if(StringUtils.equals(openApiVersion, "2.0"))
 			c.o(0);
 		else
 			c.o(2);
 	}
+
 	protected void _wPaths(Wrap<AllWriter> c) {
 	}
+
 	protected void _wRequestBodies(Wrap<AllWriter> c) {
 	}
+
 	protected void _wSchemas(Wrap<AllWriter> c) {
 	}
+
 	protected void _siteContext(Wrap<SiteContextEnUS> c) {
 		c.o(siteRequest_.getSiteContext_());
 	}
+
 	protected void _siteConfig(Wrap<SiteConfig> c) {
 		c.o(siteRequest_.getSiteConfig_());
 	}
+
 	protected void _wRequestHeaders(Wrap<AllWriter> c) {
 		c.o(AllWriter.create(siteRequest_, "  "));
 	}
+
 	protected void _wRequestDescription(Wrap<AllWriter> c) {
 		c.o(AllWriter.create(siteRequest_, "  "));
 	}
+
 	protected void _wResponseDescription(Wrap<AllWriter> c) {
 		c.o(AllWriter.create(siteRequest_, "  "));
 	}
+
 	protected void _wRequestBody(Wrap<AllWriter> c) {
 		c.o(AllWriter.create(siteRequest_, "  "));
 	}
+
 	protected void _wResponseBody(Wrap<AllWriter> c) {
 		c.o(AllWriter.create(siteRequest_, "  "));
 	}
+
 	protected void _wRequestSchema(Wrap<AllWriter> c) {
 		c.o(AllWriter.create(siteRequest_, "  "));
 	}
+
 	protected void _wResponseSchema(Wrap<AllWriter> c) {
 		c.o(AllWriter.create(siteRequest_, "  "));
 	}
+
 	protected void _writers(Wrap<AllWriters> c) {
 		c.o(AllWriters.create(siteRequest_));
 	}
+
 	protected void _classApiTag(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiTag_enUS_stored_string"));
 	}
+
 	protected void _classExtendsBase(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeEtendBase_stored_boolean"));
 	}
+
 	protected void _classIsBase(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeEstBase_stored_boolean"));
 	}
+
 	protected void _classSimpleName(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeNomSimple_enUS_stored_string"));
 	}
+
 	protected void _appName(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("appliNom_stored_string"));
 	}
+
 	protected void _classAbsolutePath(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeCheminAbsolu_enUS_stored_string"));
 	}
+
 	protected void _classApiUriMethod(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiUri" + classApiMethod + "_enUS_stored_string"));
 	}
+
 	protected void _classRoleUserMethod(Wrap<Boolean> c) {
 		c.o(BooleanUtils.isTrue((Boolean)classSolrDocument.get("classeRoleUtilisateur" + classApiMethod + "_enUS_stored_boolean")));
 	}
+
 	protected void _classApiMethodMethod(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiMethode" + classApiMethod + "_enUS_stored_string"));
 	}
+
 	protected void _classApiMediaType200Method(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiTypeMedia200" + classApiMethod + "_enUS_stored_string"));
 	}
+
 	protected void _classApiOperationIdMethod(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiOperationId" + classApiMethod + "_enUS_stored_string"));
 	}
+
 	protected void _classApiOperationIdMethodRequest(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiOperationId" + classApiMethod + "Requete_enUS_stored_string"));
 	}
+
 	protected void _classApiOperationIdMethodResponse(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeApiOperationId" + classApiMethod + "Reponse_enUS_stored_string"));
 	}
+
 	protected void _classSuperApiOperationIdMethodRequest(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeSuperApiOperationId" + classApiMethod + "Requete_enUS_stored_string"));
 	}
+
 	protected void _classSuperApiOperationIdMethodResponse(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classeSuperApiOperationId" + classApiMethod + "Reponse_enUS_stored_string"));
 	}
+
 	protected void _classPageCanonicalNameMethod(Wrap<String> c) {
 		c.o((String)classSolrDocument.get("classePageNomCanonique" + classApiMethod + "_enUS_stored_string"));
 	}
+
 	protected void _classKeywordsFound(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeMotsClesTrouves_stored_boolean"));
 	}
+
 	protected void _classKeywords(Wrap<List<String>> c) {
 		List<String> o = (List<String>)classSolrDocument.get("classeMotsCles_stored_strings");
 		if(o == null)
 			o = new ArrayList<>();
 		c.o(o);
 	}
+
 	protected void _classPublicRead(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classePublicLire_stored_boolean"));
 	}
+
 	protected void _classRoleSession(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeRoleSession_stored_boolean"));
 	}
+
 	protected void _classRoleUtilisateur(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeRoleUtilisateur_stored_boolean"));
 	}
+
 	protected void _classRolesFound(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeRolesTrouves_stored_boolean"));
 	}
+
 	protected void _classRoles(Wrap<List<String>> c) {
 		List<String> o = (List<String>)classSolrDocument.get("classeRoles_stored_strings");
 		if(o == null)
@@ -178,29 +225,50 @@ public class ApiWriter extends ApiWriterGen<Object> {
 	}
 
 	String entityVar;
+
 	String entityCanonicalName;
+
 	String entityCanonicalNameGeneric;
+
 	String entityVarApi;
+
 	String entityDescription;
+
 	String entityDisplayName;
+
 	Integer entityMinLength;
+
 	Integer entityMaxLength;
+
 	Double entityMin;
+
 	Double entityMax;
+
 	Boolean entityOptional;
+
 	String entityVarCapitalized;
+
 	String entityJsonType;
+
 	String entityListJsonType;
+
 	String entityJsonFormat;
+
 	Boolean entityPrimaryKey;
+
 	Boolean entityStored;
+
 	Boolean entityIndexed;
+
 	Boolean entityKeywordsFound;
+
 	List<String> entityKeywords;
+
 	List<String> entityOptionsVar;
+
 	List<String> entityOptionsDescription;
 
-	initEntity(SolrDocument entitySolrDocument) {
+	public void  initEntity(SolrDocument entitySolrDocument) {
 		setEntitySolrDocument(entitySolrDocument);
 		entityVar = (String)entitySolrDocument.get("entiteVar_enUS_stored_string");
 		entityVarCapitalized = (String)entitySolrDocument.get("entiteVarCapitalise_enUS_stored_string");
@@ -219,7 +287,7 @@ public class ApiWriter extends ApiWriterGen<Object> {
 		entityDescription = (String)entitySolrDocument.get("entiteDescription_stored_string");
 	}
 
-	writeEntityHeaders() {
+	public void  writeEntityHeaders() throws Exception, Exception {
 
 		if(entityKeywords.contains(classApiMethod + ".header")) {
 			wRequestHeaders.tl(4, "- name: ", entityVarApi);
@@ -231,12 +299,12 @@ public class ApiWriter extends ApiWriterGen<Object> {
 		}
 	}
 
-	writeEntityDescription(Integer numberTabs) {
+	public void  writeEntityDescription(Integer numberTabs) throws Exception, Exception {
 		writeEntityDescription(numberTabs, wRequestDescription, "request");
 		writeEntityDescription(numberTabs, wResponseDescription, "response");
 	}
 
-	writeEntityDescription(Integer numberTabs, AllWriter w, String apiRequestOrResponse) {
+	public void  writeEntityDescription(Integer numberTabs, AllWriter w, String apiRequestOrResponse) throws Exception, Exception {
 		numberTabs = numberTabs == null ? 0 : numberTabs;
 		
 		if(
@@ -353,12 +421,12 @@ public class ApiWriter extends ApiWriterGen<Object> {
 		}
 	}
 
-	writeEntitySchema(Integer numberTabs) {
+	public void  writeEntitySchema(Integer numberTabs) throws Exception, Exception {
 		writeEntitySchema(numberTabs, wRequestSchema, "request");
 		writeEntitySchema(numberTabs, wResponseSchema, "response");
 	}
 
-	writeEntitySchema(Integer numberTabs, AllWriter w, String apiRequestOrResponse) {
+	public void  writeEntitySchema(Integer numberTabs, AllWriter w, String apiRequestOrResponse) throws Exception, Exception {
 		numberTabs = numberTabs == null ? (classApiMethod.contains("Search") && "response".equals(apiRequestOrResponse) ? 1 : 0) : numberTabs;
 		if(entityJsonType != null) {
 
@@ -508,7 +576,7 @@ public class ApiWriter extends ApiWriterGen<Object> {
 		}
 	}
 
-	writeApi(Boolean id) {
+	public void  writeApi(Boolean id) throws Exception, Exception {
 
 			if(id || !classUris.contains(classApiUriMethod)) {
 				wPaths.tl(1, classApiUriMethod, (id ? "/{id}" : ""), ":");
@@ -798,11 +866,13 @@ public class ApiWriter extends ApiWriterGen<Object> {
 			writeApi(true);
 	}
 
-	compareTo(ApiWriter o) {
+	@Override()
+	public int compareTo(ApiWriter o) {
 		return ObjectUtils.compare(classApiUriMethod, o.getClassApiUriMethod());
 	}
 
-	toString() {
+	@Override()
+	public String toString() {
 		return (String)classSolrDocument.get("classSimpleName_enUS_stored_string") + " " + classApiMethod;
 	}
 }

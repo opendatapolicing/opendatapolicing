@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
 import java.util.stream.Collectors;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.solr.common.SolrDocument;
+
 import com.opendatapolicing.enus.agency.SiteAgencyGenPage;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.design.PageDesignGenPage;
@@ -224,7 +226,8 @@ public class PageLayout extends PageLayoutGen<Object> {
         }
     }
 
-    protected void htmlMeta() {
+	@Override()
+    public void htmlMeta() {
         e("meta").a("charset", "UTF-8").fg();
         e("meta").a("name", "viewport").a("content", "width=device-width, initial-scale=1").fg();
         e("meta").a("name", "keywords").a("content", pageKeywords).fg();
@@ -247,7 +250,8 @@ public class PageLayout extends PageLayoutGen<Object> {
         e("meta").a("name", "description").a("content", pageDescription).fg();
     }
 
-    protected void htmlScriptsPageLayout() {
+	@Override()
+	public void htmlScriptsPageLayout() {
         e("script").a("src", staticBaseUrl, "/js/jquery-1.12.4.min.js").f().g("script");
         e("script").a("src", staticBaseUrl, "/js/site-enUS.js").f().g("script");
         e("script").a("src", staticBaseUrl, "/js/sockjs.js").f().g("script");
@@ -263,10 +267,12 @@ public class PageLayout extends PageLayoutGen<Object> {
         e("script").a("src", "https://kit.fontawesome.com/59d19567d5.js").f().g("script");
     }
 
-    protected void htmlScriptPageLayout() {
+	@Override()
+	public void htmlScriptPageLayout() {
     }
 
-    protected void htmlStylesPageLayout() {
+	@Override()
+	public void htmlStylesPageLayout() {
         e("link").a("rel", "stylesheet").a("href", staticBaseUrl, "/css/w3.css").fg();
         e("link").a("rel", "stylesheet").a("href", staticBaseUrl, "/css/site-enUS.css").fg();
         e("link").a("rel", "stylesheet").a("href", staticBaseUrl, "/css/datePicker.css").fg();
@@ -274,13 +280,16 @@ public class PageLayout extends PageLayoutGen<Object> {
 //		e("link").a("rel", "stylesheet").a("href", "https://pro.fontawesome.com/releases/v5.9.0/css/all.css").a("integrity", "sha384-vlOMx0hKjUCl4WzuhIhSNZSm2yQCaf0mOU1hEDK/iztH3gU4v5NMmJln9273A6Jz").a("crossorigin", "anonymous").fg();
     }
 
-    protected void htmlStylePageLayout() {
+	@Override()
+	public void htmlStylePageLayout() {
     }
 
-    protected void htmlBodyPageLayout() {
+	@Override()
+	public void htmlBodyPageLayout() {
     }
 
-    protected void htmlPageLayout() {
+	@Override()
+	public void htmlPageLayout() {
         e("html").a("xmlns:xlink", "http://www.w3.org/1999/xlink").a("xmlns", "http://www.w3.org/1999/xhtml").a("xmlns:fb", "http://ogp.me/ns/fb#").f();
             e("head").f();
                 e("title").f();

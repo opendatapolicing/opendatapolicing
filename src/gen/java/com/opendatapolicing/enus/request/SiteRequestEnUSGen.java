@@ -1381,6 +1381,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			if(siteUser == null)
 				setSiteUser(siteUserWrap.o);
 		}
+		if(siteUser != null)
+			siteUser.initDeepForClass(siteRequest_);
 		siteUserWrap.alreadyInitialized(true);
 		return (SiteRequestEnUS)this;
 	}
@@ -2009,6 +2011,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/////////////////
 
 	public void siteRequestSiteRequestEnUS(SiteRequestEnUS siteRequest_) {
+		if(siteUser != null)
+			siteUser.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {

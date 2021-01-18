@@ -4,8 +4,8 @@ package com.opendatapolicing.enus.xml;
  *	Static methods for escaping XML. 
  **/
 public class UtilXml {
-	
-	escape(String str) {
+
+	public static String escape(String str) {
 		String o = str;
 		
 		if(str != null) { 
@@ -15,7 +15,7 @@ public class UtilXml {
 		return o;
 	}
 
-	escapeInApostrophes(String str) {
+	public static String escapeInApostrophes(String str) {
 		String o = str;
 		
 		if(str != null) { 
@@ -25,7 +25,7 @@ public class UtilXml {
 		return o;
 	}
 
-	escapeInQuotes(String str) {
+	public static String escapeInQuotes(String str) {
 		String o = str;
 		
 		if(str != null) { 
@@ -35,7 +35,7 @@ public class UtilXml {
 		return o;
 	}
 
-	escapeAddQuotes(String str) {
+	public static String escapeAddQuotes(String str) {
 		String o = str;
 		
 		if(str != null) { 
