@@ -44,14 +44,14 @@ cd /usr/local/src/opendatapolicing && ansible-playbook opendatapolicing_install_
 
 # OpenShift Deployment
 **Configure vault file**  
-see [opendatapolicing-ansible](https://github.com/opendatapolicing/opendatapolicing-ansible/tree/main/vaults) for sample
+*see [opendatapolicing-ansible](https://github.com/opendatapolicing/opendatapolicing-ansible/tree/main/vaults) for sample*
 ```
 install -d /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/
 ansible-vault create /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
 ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
 ```
 
-
+**Create OpenShift Token**
 ```
-ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_token_setup.yml --ask-vault-pass -e "ocp_cluster_user_password=changeme"
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_token_setup.yml --ask-vault-pass -e "ocp_cluster_user_user=username" -e "ocp_cluster_user_password=changeme" 
 ```
