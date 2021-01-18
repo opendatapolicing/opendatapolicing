@@ -43,6 +43,44 @@ cd /usr/local/src/opendatapolicing && ansible-playbook opendatapolicing_install_
  ```
 
 # OpenShift Deployment
+**Create OpenShift Hosts file**
+```
+echo "
+
+localhost
+
+[redhat_sso_openshift]
+localhost
+
+[postgres_openshift]
+localhost
+
+[project_zookeeper_openshift]
+localhost
+
+[project_solr_openshift]
+localhost
+
+[project_certbot]
+localhost
+
+[project_openshift_enUS]
+localhost
+
+[project_login]
+localhost
+
+[project_refresh]
+localhost
+
+[project_backup]
+localhost
+
+[project_restore]
+localhost
+" > /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts
+```
+
 **Configure vault file**  
 *see [opendatapolicing-ansible](https://github.com/opendatapolicing/opendatapolicing-ansible/tree/main/vaults) for sample*
 ```
@@ -53,12 +91,51 @@ ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatap
 
 **Create OpenShift Token**
 ```
-VAULT_ID=opendatapolicing-hackathon/host_vars/localhost
+export VAULT_ID=opendatapolicing-hackathon/host_vars/localhost
 ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_token_setup.yml --ask-vault-pass -e "ocp_cluster_user_user=username" -e "ocp_cluster_user_password=changeme" 
 ```
 
-## Environment Variables
+**Set Environment Variables**
+
 **ODP_ANSIBLE_INVENTORY** Defines location of git repo holding inventories and vaults. Default /usr/local/src/opendatapolicing-ansible
 ```bash
 export ODP_ANSIBLE_INVENTORY=/usr/local/src/opendatapolicing-ansible
+```
+
+**Update vault file with OpenShift Token**
+```
+ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
+```
+
+
+## For End-to-End deployment
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_openshift_complete.yml --ask-vault-pass
+```
+
+
+## To step thru deployment
+**Run redhat_sso_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/redhat_sso_openshift.yml --ask-vault-pass
+```
+
+**Run project_postgres_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_postgres_openshift.yml --ask-vault-pass
+```
+
+**Run project_zookeeper_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_zookeeper_openshift.yml --ask-vault-pass
+```
+
+**Run project_solr_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_solr_openshift.yml --ask-vault-pass
+```
+
+**Run project_openshift.yml**
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_openshift.yml --ask-vault-pass
 ```

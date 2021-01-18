@@ -69,3 +69,6 @@
         - robotsa_token.stdout is defined
         - robotsa_token.rc == 0
 
+    - name: Saving robotsa_token
+      set_fact:
+        robotsa_token_var: "{{ robotsa_token.stdout }}"
