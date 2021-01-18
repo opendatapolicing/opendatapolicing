@@ -31,7 +31,8 @@ import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Transaction;
 
 /**
- **/
+ * Keyword: classSimpleNameSiteRequest
+ **/  
 
 public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> {
 	
