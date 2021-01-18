@@ -42,3 +42,16 @@ ansible-galaxy install -r /usr/local/src/opendatapolicing/ansible/roles/requirem
 cd /usr/local/src/opendatapolicing && ansible-playbook opendatapolicing_install_project.yml -K
  ```
 
+# OpenShift Deployment
+**Configure vault file**  
+see [opendatapolicing-ansible](https://github.com/opendatapolicing/opendatapolicing-ansible/tree/main/vaults) for sample
+```
+install -d /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/
+ansible-vault create /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
+ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
+```
+
+
+```
+ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_token_setup.yml --ask-vault-pass -e "ocp_cluster_user_password=changeme"
+```
