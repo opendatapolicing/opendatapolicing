@@ -1,0 +1,10 @@
+---
+# Label: project_restore_defaults
+# Title: create some Ansible default variables for restoring all opendatapolicing data
+# Mission: create some Ansible default variables for restoring all opendatapolicing data
+# Milestone: Data Backup/Restore
+# Column: Data Backup/Restore
+
+target: project_restore
+SLEEP: 5
+DATA_ENCRYPT: false

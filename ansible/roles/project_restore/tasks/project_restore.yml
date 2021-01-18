@@ -1,0 +1,17 @@
+---
+# Label: project_restore_tasks_restore
+# Title: create the Ansible tasks for restoring all opendatapolicing data
+# Mission: create the Ansible tasks for restoring all opendatapolicing data
+# Milestone: Data Backup/Restore
+# Column: Data Backup/Restore
+# Before doing a restore, you may want to clear the database and search engine of the destination: 
+# Solr Pod: 
+# curl -X POST -d '<delete><query>*:*</query></delete>' http://localhost:8983/solr/opendatapolicing/update?commitWithin=1000&overwrite=true&wt=xml
+# Postgres Pod: 
+# psql opendatapolicing -c 'delete from a; delete from d; delete from c;'
+
+- name: Get restore site access token
+  shell: curl -X POST -u "{{ AUTH_RESOURCE }}:{{ AUTH_SECRET }}" -d "grant_type=client_credentials" "{{ AUTH_URL }}/realms/{{ AUTH_REALM }}/protocol/openid-connect/token"
+  register: AUTH_TOKEN
+- name: Import the {{ DATA_NAME_VAR }} data
+  shell: "cat '{{ item }}' | curl -X PUT -H 'Authorization: Bearer {{ (AUTH_TOKEN.stdout | from_json).access_token }}' -H 'Content-Type: application/json' -d @- '{{ PROJECT_SITE_BASE_URL_ENUS }}{{ DATA_URI }}/import?var=refresh:false' && sleep {{ SLEEP }}"

@@ -1,0 +1,22 @@
+---
+# Label: project_restore_tasks
+# Title: create the Ansible tasks for restoring all opendatapolicing data for each type
+# Mission: create the Ansible tasks for restoring all opendatapolicing data for each type
+# Milestone: Data Backup/Restore
+# Column: Data Backup/Restore
+# Before doing a restore, you may want to clear the database and search engine of the destination: 
+# Solr Pod: 
+# curl -X POST -d '<delete><query>*:*</query></delete>' http://localhost:8983/solr/opendatapolicing/update?commitWithin=1000&overwrite=true&wt=xml
+# Postgres Pod: 
+# psql opendatapolicing -c 'delete from a; delete from d; delete from c;'
+
+- name: For each file debug
+  debug:
+    var: item
+  with_fileglob: 
+    - "{{ PROJECT_RESTORE_DIR_ENUS }}/{{ DATA_NAME_VAR }}*"
+
+- name: For each file restore
+  include_tasks: project_restore.yml
+  with_fileglob: 
+    - "{{ PROJECT_RESTORE_DIR_ENUS }}/{{ DATA_NAME_VAR }}*"
