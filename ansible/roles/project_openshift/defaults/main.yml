@@ -123,7 +123,7 @@ PROJECT_DB_NAME_ENUS: opendatapolicing
 # The Java main class of the site.
 PROJECT_JAVA_MAIN_CLASS_ENUS: com.opendatapolicing.enus.vertx.AppVertx
 # The backup directory of the site.
-PROJECT_BACKUP_DIR_ENUS: /usr/local/src/opendatapolicing-static/data/enUS
+PROJECT_BACKUP_DIR_ENUS: "{{ lookup('env', 'ODP_ANSIBLE_STATIC') }}/data/enUS"
 # The restore directory of the site.
 PROJECT_RESTORE_DIR_ENUS: /home/ctate/backup/opendatapolicing-dev/enUS
 
