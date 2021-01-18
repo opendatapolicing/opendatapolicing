@@ -1,0 +1,75 @@
+---
+# Label: project_openshift_tasks
+# Title: create the Ansible tasks for deploying the application to OpenShift
+# Mission: create the Ansible tasks for deploying the application to OpenShift
+# Milestone: Automate Project Deployment
+# Column: Automate Project Deployment
+- name: Install opendatapolicing image stream on OpenShift
+  k8s:
+    state: present
+    name: opendatapolicing
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_image_stream.yml') }}"
+    validate_certs: false
+- name: Install opendatapolicing secret on OpenShift
+  k8s:
+    state: present
+    name: opendatapolicing-secret
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_secret.yml') }}"
+    validate_certs: false
+- name: Install opendatapolicing keystore secrets on OpenShift
+  k8s:
+    state: present
+    name: opendatapolicing-keystore
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_keystore.yml') }}"
+    validate_certs: false
+- name: Install opendatapolicing build config on OpenShift
+  k8s:
+    state: present
+    name: opendatapolicing
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_build_config.yml') }}"
+    validate_certs: false
+- name: Install opendatapolicing deployment config on OpenShift
+  k8s:
+    state: present
+    name: opendatapolicing
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_deployment_config.yml') }}"
+    validate_certs: false
+- name: Install opendatapolicing service on OpenShift
+  k8s:
+    state: present
+    name: opendatapolicing
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_service.yml') }}"
+    validate_certs: false
+- name: Install opendatapolicing route on OpenShift
+  k8s:
+    state: present
+    name: opendatapolicing
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_route.yml') }}"
+    validate_certs: false
+- name: Create Solr collection
+  shell: "oc login {{PROJECT_HOST}} --token={{REDHAT_OPENSHIFT_TOKEN}} && oc exec $(oc get pod -l app=computate-solr -o jsonpath='{.items[0].metadata.name}') -n opendatapolicing -- /opt/solr/bin/solr create_collection -c site -n computate || true"
+  register: create_collection
+- name: Print create_collection command
+  debug:
+    var: create_collection
