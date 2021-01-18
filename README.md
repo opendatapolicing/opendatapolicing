@@ -95,6 +95,13 @@ export VAULT_ID=opendatapolicing-hackathon/host_vars/localhost
 ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_token_setup.yml --ask-vault-pass -e "ocp_cluster_user_user=username" -e "ocp_cluster_user_password=changeme" 
 ```
 
+**Set Environment Variables**
+
+**ODP_ANSIBLE_INVENTORY** Defines location of git repo holding inventories and vaults. Default /usr/local/src/opendatapolicing-ansible
+```bash
+export ODP_ANSIBLE_INVENTORY=/usr/local/src/opendatapolicing-ansible
+```
+
 **Update vault file with OpenShift Token**
 ```
 ansible-vault edit /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/host_vars/localhost/vault
@@ -132,6 +139,3 @@ ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendat
 ```
 ansible-playbook  -i /usr/local/src/opendatapolicing-ansible/inventories/opendatapolicing-hackathon/hosts  /usr/local/src/opendatapolicing/ansible/project_openshift.yml --ask-vault-pass
 ```
-
-
-

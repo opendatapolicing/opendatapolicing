@@ -14,7 +14,7 @@
     ocp_cluster_user_password: ""
     project_robot_sa: "scrobot"
   vars_files:
-    - "/usr/local/src/opendatapolicing-ansible/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
   pre_tasks:
     - name: Install necessary requirement for k8s
       pip:
