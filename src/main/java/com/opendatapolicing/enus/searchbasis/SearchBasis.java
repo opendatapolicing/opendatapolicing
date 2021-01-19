@@ -1,7 +1,7 @@
 package com.opendatapolicing.enus.searchbasis;
 
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
@@ -16,28 +16,28 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiUri.enUS: /api/search-basis
  * ApiTag.enUS: Search Basis
 
- * ApiMethod: PUTImport.enUS
+ * ApiMethod.enUS: PUTImport
  * ApiUriPUTImport.enUS: /api/search-basis/import
 
- * ApiMethod: PUTMerge.enUS
+ * ApiMethod.enUS: PUTMerge
  * ApiUriPUTMerge.enUS: /api/search-basis/merge
 
- * ApiMethod: PUTCopy.enUS
+ * ApiMethod.enUS: PUTCopy
  * ApiUriPUTCopy.enUS: /api/search-basis/copy
 
  * ApiMethod: POST
 
  * ApiMethod: PATCH
 
- * ApiMethod: GET.enUS
+ * ApiMethod.enUS: GET
  * ApiUriGET.enUS: /api/search-basis/{id}
 
  * ApiMethod: Search
 
- * ApiMethod: AdminSearch.enUS
+ * ApiMethod.enUS: AdminSearch
  * ApiUriAdminSearch.enUS: /api/admin/search-basis
 
- * ApiMethod: SearchPage.enUS
+ * ApiMethod.enUS: SearchPage
  * ApiUriSearchPage.enUS: /search-basis
  * PageSearchPage.enUS: SearchBasisPage
  * PageSuperSearchPage.enUS: SearchBasisPage
@@ -48,7 +48,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * IconName: newspaper
  * NameVar: searchBasis
  **/
-
 public class SearchBasis extends SearchBasisGen<Cluster> {
 	
 	protected void _contrabandKey(Wrap<Long> c) {
@@ -286,7 +285,8 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 		}
 	}
 
-	strSearchBasisTitle() {
+	@Override
+	public String strSearchBasisTitle() {
 		return "basis of " + strSearchBasisTitle();
 	}
 
