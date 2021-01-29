@@ -45,6 +45,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	protected boolean alreadyInitializedAppOpenApi3 = false;
 
 	public AppOpenApi3 initDeepAppOpenApi3(SiteRequestEnUS siteRequest_) {
+		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedAppOpenApi3) {
 			alreadyInitializedAppOpenApi3 = true;
 			initDeepAppOpenApi3();
@@ -54,20 +55,33 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 
 	public void initDeepAppOpenApi3() {
 		initAppOpenApi3();
+		super.initDeepAppSwagger2(siteRequest_);
 	}
 
 	public void initAppOpenApi3() {
 	}
 
-	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
+	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
 		initDeepAppOpenApi3(siteRequest_);
+	}
+
+	/////////////////
+	// siteRequest //
+	/////////////////
+
+	public void siteRequestAppOpenApi3(SiteRequestEnUS siteRequest_) {
+			super.siteRequestAppSwagger2(siteRequest_);
+	}
+
+	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
+		siteRequestAppOpenApi3(siteRequest_);
 	}
 
 	/////////////
 	// obtain //
 	/////////////
 
-	public Object obtainForClass(String var) {
+	@Override public Object obtainForClass(String var) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
@@ -84,7 +98,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		AppOpenApi3 oAppOpenApi3 = (AppOpenApi3)this;
 		switch(var) {
 			default:
-				return null;
+				return super.obtainAppSwagger2(var);
 		}
 	}
 
@@ -92,7 +106,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	// attribute //
 	///////////////
 
-	public boolean attributeForClass(String var, Object val) {
+	@Override public boolean attributeForClass(String var, Object val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		for(String v : vars) {
@@ -109,7 +123,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		AppOpenApi3 oAppOpenApi3 = (AppOpenApi3)this;
 		switch(var) {
 			default:
-				return null;
+				return super.attributeAppSwagger2(var, val);
 		}
 	}
 
@@ -123,7 +137,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	public static Object staticSetAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 			default:
-				return null;
+				return AppSwagger2.staticSetAppSwagger2(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -137,7 +151,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	public static Object staticSolrAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 			default:
-				return null;
+				return AppSwagger2.staticSolrAppSwagger2(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -151,7 +165,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	public static String staticSolrStrAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 			default:
-				return null;
+				return AppSwagger2.staticSolrStrAppSwagger2(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -165,7 +179,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	public static String staticSolrFqAppOpenApi3(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 			default:
-				return null;
+				return AppSwagger2.staticSolrFqAppSwagger2(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -173,7 +187,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	// define //
 	/////////////
 
-	public boolean defineForClass(String var, String val) {
+	@Override public boolean defineForClass(String var, String val) {
 		String[] vars = StringUtils.split(var, ".");
 		Object o = null;
 		if(val != null) {
@@ -191,7 +205,20 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	public Object defineAppOpenApi3(String var, String val) {
 		switch(var) {
 			default:
-				return null;
+				return super.defineAppSwagger2(var, val);
+		}
+	}
+
+	//////////////////
+	// apiRequest //
+	//////////////////
+
+	public void apiRequestAppOpenApi3() {
+		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
+		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
+		if(o != null && o instanceof AppOpenApi3) {
+			AppOpenApi3 original = (AppOpenApi3)o;
+			super.apiRequestAppSwagger2();
 		}
 	}
 
@@ -200,7 +227,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash();
+		return Objects.hash(super.hashCode());
 	}
 
 	////////////
@@ -213,7 +240,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		if(!(o instanceof AppOpenApi3))
 			return false;
 		AppOpenApi3 that = (AppOpenApi3)o;
-		return true;
+		return super.equals(o);
 	}
 
 	//////////////
@@ -222,6 +249,7 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 
 	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString() + "\n");
 		sb.append("AppOpenApi3 { ");
 		sb.append(" }");
 		return sb.toString();

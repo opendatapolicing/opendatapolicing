@@ -119,7 +119,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		if(!siteContextWrap.alreadyInitialized) {
 			_siteContext(siteContext);
 		}
-		siteContext.initDeepForClass(null);
+		siteContext.initDeepForClass(siteRequest_);
 		siteContextWrap.alreadyInitialized(true);
 		return (AppSwagger2)this;
 	}
@@ -162,7 +162,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 				setSiteConfig(siteConfigWrap.o);
 		}
 		if(siteConfig != null)
-			siteConfig.initDeepForClass(null);
+			siteConfig.initDeepForClass(siteRequest_);
 		siteConfigWrap.alreadyInitialized(true);
 		return (AppSwagger2)this;
 	}
@@ -191,7 +191,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return appPath;
 	}
 	public void setAppPath(String o) {
-		this.appPath = AppSwagger2.staticSetAppPath(null, o);
+		this.appPath = AppSwagger2.staticSetAppPath(siteRequest_, o);
 		this.appPathWrap.alreadyInitialized = true;
 	}
 	public static String staticSetAppPath(SiteRequestEnUS siteRequest_, String o) {
@@ -207,16 +207,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrAppPath(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrAppPath(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrAppPath(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrAppPath(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqAppPath(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrAppPath(siteRequest_, AppSwagger2.staticSolrAppPath(siteRequest_, AppSwagger2.staticSetAppPath(siteRequest_, o)));
+	}
+
+	public String solrAppPath() {
+		return AppSwagger2.staticSolrAppPath(siteRequest_, appPath);
+	}
+
+	public String strAppPath() {
+		return appPath == null ? "" : appPath;
+	}
+
+	public String jsonAppPath() {
+		return appPath == null ? "" : appPath;
+	}
+
+	public String nomAffichageAppPath() {
+		return null;
+	}
+
+	public String htmTooltipAppPath() {
+		return null;
+	}
+
+	public String htmAppPath() {
+		return appPath == null ? "" : StringEscapeUtils.escapeHtml4(strAppPath());
 	}
 
 	/////////////
@@ -243,7 +267,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return appName;
 	}
 	public void setAppName(String o) {
-		this.appName = AppSwagger2.staticSetAppName(null, o);
+		this.appName = AppSwagger2.staticSetAppName(siteRequest_, o);
 		this.appNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetAppName(SiteRequestEnUS siteRequest_, String o) {
@@ -259,16 +283,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrAppName(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrAppName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrAppName(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrAppName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqAppName(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrAppName(siteRequest_, AppSwagger2.staticSolrAppName(siteRequest_, AppSwagger2.staticSetAppName(siteRequest_, o)));
+	}
+
+	public String solrAppName() {
+		return AppSwagger2.staticSolrAppName(siteRequest_, appName);
+	}
+
+	public String strAppName() {
+		return appName == null ? "" : appName;
+	}
+
+	public String jsonAppName() {
+		return appName == null ? "" : appName;
+	}
+
+	public String nomAffichageAppName() {
+		return null;
+	}
+
+	public String htmTooltipAppName() {
+		return null;
+	}
+
+	public String htmAppName() {
+		return appName == null ? "" : StringEscapeUtils.escapeHtml4(strAppName());
 	}
 
 	//////////////////
@@ -295,7 +343,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return languageName;
 	}
 	public void setLanguageName(String o) {
-		this.languageName = AppSwagger2.staticSetLanguageName(null, o);
+		this.languageName = AppSwagger2.staticSetLanguageName(siteRequest_, o);
 		this.languageNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetLanguageName(SiteRequestEnUS siteRequest_, String o) {
@@ -311,16 +359,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrLanguageName(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrLanguageName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrLanguageName(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrLanguageName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqLanguageName(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrLanguageName(siteRequest_, AppSwagger2.staticSolrLanguageName(siteRequest_, AppSwagger2.staticSetLanguageName(siteRequest_, o)));
+	}
+
+	public String solrLanguageName() {
+		return AppSwagger2.staticSolrLanguageName(siteRequest_, languageName);
+	}
+
+	public String strLanguageName() {
+		return languageName == null ? "" : languageName;
+	}
+
+	public String jsonLanguageName() {
+		return languageName == null ? "" : languageName;
+	}
+
+	public String nomAffichageLanguageName() {
+		return null;
+	}
+
+	public String htmTooltipLanguageName() {
+		return null;
+	}
+
+	public String htmLanguageName() {
+		return languageName == null ? "" : StringEscapeUtils.escapeHtml4(strLanguageName());
 	}
 
 	////////////////////
@@ -347,7 +419,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return openApiVersion;
 	}
 	public void setOpenApiVersion(String o) {
-		this.openApiVersion = AppSwagger2.staticSetOpenApiVersion(null, o);
+		this.openApiVersion = AppSwagger2.staticSetOpenApiVersion(siteRequest_, o);
 		this.openApiVersionWrap.alreadyInitialized = true;
 	}
 	public static String staticSetOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
@@ -363,16 +435,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrOpenApiVersion(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqOpenApiVersion(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrOpenApiVersion(siteRequest_, AppSwagger2.staticSolrOpenApiVersion(siteRequest_, AppSwagger2.staticSetOpenApiVersion(siteRequest_, o)));
+	}
+
+	public String solrOpenApiVersion() {
+		return AppSwagger2.staticSolrOpenApiVersion(siteRequest_, openApiVersion);
+	}
+
+	public String strOpenApiVersion() {
+		return openApiVersion == null ? "" : openApiVersion;
+	}
+
+	public String jsonOpenApiVersion() {
+		return openApiVersion == null ? "" : openApiVersion;
+	}
+
+	public String nomAffichageOpenApiVersion() {
+		return null;
+	}
+
+	public String htmTooltipOpenApiVersion() {
+		return null;
+	}
+
+	public String htmOpenApiVersion() {
+		return openApiVersion == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiVersion());
 	}
 
 	//////////////////////////
@@ -405,7 +501,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
 	}
 	public void setOpenApiVersionNumber(String o) {
-		this.openApiVersionNumber = AppSwagger2.staticSetOpenApiVersionNumber(null, o);
+		this.openApiVersionNumber = AppSwagger2.staticSetOpenApiVersionNumber(siteRequest_, o);
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetOpenApiVersionNumber(SiteRequestEnUS siteRequest_, String o) {
@@ -423,16 +519,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrOpenApiVersionNumber(SiteRequestEnUS siteRequest_, Integer o) {
-		return null;
+	public static Integer staticSolrOpenApiVersionNumber(SiteRequestEnUS siteRequest_, Integer o) {
+		return o;
 	}
 
-	public static String staticSolrStrOpenApiVersionNumber(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrOpenApiVersionNumber(SiteRequestEnUS siteRequest_, Integer o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqOpenApiVersionNumber(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrOpenApiVersionNumber(siteRequest_, AppSwagger2.staticSolrOpenApiVersionNumber(siteRequest_, AppSwagger2.staticSetOpenApiVersionNumber(siteRequest_, o)));
+	}
+
+	public Integer solrOpenApiVersionNumber() {
+		return AppSwagger2.staticSolrOpenApiVersionNumber(siteRequest_, openApiVersionNumber);
+	}
+
+	public String strOpenApiVersionNumber() {
+		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
+	}
+
+	public String jsonOpenApiVersionNumber() {
+		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
+	}
+
+	public String nomAffichageOpenApiVersionNumber() {
+		return null;
+	}
+
+	public String htmTooltipOpenApiVersionNumber() {
+		return null;
+	}
+
+	public String htmOpenApiVersionNumber() {
+		return openApiVersionNumber == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiVersionNumber());
 	}
 
 	////////////////
@@ -465,7 +585,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		this.tabsSchemaWrap.alreadyInitialized = true;
 	}
 	public void setTabsSchema(String o) {
-		this.tabsSchema = AppSwagger2.staticSetTabsSchema(null, o);
+		this.tabsSchema = AppSwagger2.staticSetTabsSchema(siteRequest_, o);
 		this.tabsSchemaWrap.alreadyInitialized = true;
 	}
 	public static Integer staticSetTabsSchema(SiteRequestEnUS siteRequest_, String o) {
@@ -483,16 +603,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrTabsSchema(SiteRequestEnUS siteRequest_, Integer o) {
-		return null;
+	public static Integer staticSolrTabsSchema(SiteRequestEnUS siteRequest_, Integer o) {
+		return o;
 	}
 
-	public static String staticSolrStrTabsSchema(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrTabsSchema(SiteRequestEnUS siteRequest_, Integer o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqTabsSchema(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrTabsSchema(siteRequest_, AppSwagger2.staticSolrTabsSchema(siteRequest_, AppSwagger2.staticSetTabsSchema(siteRequest_, o)));
+	}
+
+	public Integer solrTabsSchema() {
+		return AppSwagger2.staticSolrTabsSchema(siteRequest_, tabsSchema);
+	}
+
+	public String strTabsSchema() {
+		return tabsSchema == null ? "" : tabsSchema.toString();
+	}
+
+	public String jsonTabsSchema() {
+		return tabsSchema == null ? "" : tabsSchema.toString();
+	}
+
+	public String nomAffichageTabsSchema() {
+		return null;
+	}
+
+	public String htmTooltipTabsSchema() {
+		return null;
+	}
+
+	public String htmTabsSchema() {
+		return tabsSchema == null ? "" : StringEscapeUtils.escapeHtml4(strTabsSchema());
 	}
 
 	////////////////
@@ -519,7 +663,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return apiVersion;
 	}
 	public void setApiVersion(String o) {
-		this.apiVersion = AppSwagger2.staticSetApiVersion(null, o);
+		this.apiVersion = AppSwagger2.staticSetApiVersion(siteRequest_, o);
 		this.apiVersionWrap.alreadyInitialized = true;
 	}
 	public static String staticSetApiVersion(SiteRequestEnUS siteRequest_, String o) {
@@ -535,16 +679,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrApiVersion(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrApiVersion(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrApiVersion(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrApiVersion(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqApiVersion(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrApiVersion(siteRequest_, AppSwagger2.staticSolrApiVersion(siteRequest_, AppSwagger2.staticSetApiVersion(siteRequest_, o)));
+	}
+
+	public String solrApiVersion() {
+		return AppSwagger2.staticSolrApiVersion(siteRequest_, apiVersion);
+	}
+
+	public String strApiVersion() {
+		return apiVersion == null ? "" : apiVersion;
+	}
+
+	public String jsonApiVersion() {
+		return apiVersion == null ? "" : apiVersion;
+	}
+
+	public String nomAffichageApiVersion() {
+		return null;
+	}
+
+	public String htmTooltipApiVersion() {
+		return null;
+	}
+
+	public String htmApiVersion() {
+		return apiVersion == null ? "" : StringEscapeUtils.escapeHtml4(strApiVersion());
 	}
 
 	/////////////////////
@@ -571,7 +739,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return openApiYamlPath;
 	}
 	public void setOpenApiYamlPath(String o) {
-		this.openApiYamlPath = AppSwagger2.staticSetOpenApiYamlPath(null, o);
+		this.openApiYamlPath = AppSwagger2.staticSetOpenApiYamlPath(siteRequest_, o);
 		this.openApiYamlPathWrap.alreadyInitialized = true;
 	}
 	public static String staticSetOpenApiYamlPath(SiteRequestEnUS siteRequest_, String o) {
@@ -587,16 +755,40 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	public static Object staticSolrOpenApiYamlPath(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSolrOpenApiYamlPath(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 
-	public static String staticSolrStrOpenApiYamlPath(SiteRequestEnUS siteRequest_, Object o) {
-		return null;
+	public static String staticSolrStrOpenApiYamlPath(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
 	}
 
 	public static String staticSolrFqOpenApiYamlPath(SiteRequestEnUS siteRequest_, String o) {
 		return AppSwagger2.staticSolrStrOpenApiYamlPath(siteRequest_, AppSwagger2.staticSolrOpenApiYamlPath(siteRequest_, AppSwagger2.staticSetOpenApiYamlPath(siteRequest_, o)));
+	}
+
+	public String solrOpenApiYamlPath() {
+		return AppSwagger2.staticSolrOpenApiYamlPath(siteRequest_, openApiYamlPath);
+	}
+
+	public String strOpenApiYamlPath() {
+		return openApiYamlPath == null ? "" : openApiYamlPath;
+	}
+
+	public String jsonOpenApiYamlPath() {
+		return openApiYamlPath == null ? "" : openApiYamlPath;
+	}
+
+	public String nomAffichageOpenApiYamlPath() {
+		return null;
+	}
+
+	public String htmTooltipOpenApiYamlPath() {
+		return null;
+	}
+
+	public String htmOpenApiYamlPath() {
+		return openApiYamlPath == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiYamlPath());
 	}
 
 	/////////////////////
@@ -678,7 +870,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 				setW(wWrap.o);
 		}
 		if(w != null)
-			w.initDeepForClass(null);
+			w.initDeepForClass(siteRequest_);
 		wWrap.alreadyInitialized(true);
 		return (AppSwagger2)this;
 	}
@@ -721,7 +913,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 				setWPaths(wPathsWrap.o);
 		}
 		if(wPaths != null)
-			wPaths.initDeepForClass(null);
+			wPaths.initDeepForClass(siteRequest_);
 		wPathsWrap.alreadyInitialized(true);
 		return (AppSwagger2)this;
 	}
@@ -764,7 +956,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 				setWRequestBodies(wRequestBodiesWrap.o);
 		}
 		if(wRequestBodies != null)
-			wRequestBodies.initDeepForClass(null);
+			wRequestBodies.initDeepForClass(siteRequest_);
 		wRequestBodiesWrap.alreadyInitialized(true);
 		return (AppSwagger2)this;
 	}
@@ -807,7 +999,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 				setWSchemas(wSchemasWrap.o);
 		}
 		if(wSchemas != null)
-			wSchemas.initDeepForClass(null);
+			wSchemas.initDeepForClass(siteRequest_);
 		wSchemasWrap.alreadyInitialized(true);
 		return (AppSwagger2)this;
 	}
@@ -819,6 +1011,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	protected boolean alreadyInitializedAppSwagger2 = false;
 
 	public AppSwagger2 initDeepAppSwagger2(SiteRequestEnUS siteRequest_) {
+		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedAppSwagger2) {
 			alreadyInitializedAppSwagger2 = true;
 			initDeepAppSwagger2();
@@ -851,6 +1044,25 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
 		initDeepAppSwagger2(siteRequest_);
+	}
+
+	/////////////////
+	// siteRequest //
+	/////////////////
+
+	public void siteRequestAppSwagger2(SiteRequestEnUS siteRequest_) {
+		if(w != null)
+			w.setSiteRequest_(siteRequest_);
+		if(wPaths != null)
+			wPaths.setSiteRequest_(siteRequest_);
+		if(wRequestBodies != null)
+			wRequestBodies.setSiteRequest_(siteRequest_);
+		if(wSchemas != null)
+			wSchemas.setSiteRequest_(siteRequest_);
+	}
+
+	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
+		siteRequestAppSwagger2(siteRequest_);
 	}
 
 	/////////////
@@ -1078,6 +1290,18 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		switch(var) {
 			default:
 				return null;
+		}
+	}
+
+	//////////////////
+	// apiRequest //
+	//////////////////
+
+	public void apiRequestAppSwagger2() {
+		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
+		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
+		if(o != null && o instanceof AppSwagger2) {
+			AppSwagger2 original = (AppSwagger2)o;
 		}
 	}
 
