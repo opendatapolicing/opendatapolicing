@@ -202,7 +202,8 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		c.o("");
+		if(pageDesign_ != null && pageDesign_.getPageDesignCompleteName() != null)
+			c.o(pageDesign_.getPageDesignCompleteName());
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -210,8 +211,8 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(pageDesign_ != null && pageDesign_.getObjectTitle() != null)
-			c.o(pageDesign_.getObjectTitle());
+		if(pageDesign_ != null && pageDesign_.getPageDesignCompleteName() != null)
+			c.o(pageDesign_.getPageDesignCompleteName());
 		else if(pageDesign_ != null)
 			c.o("page designs");
 		else if(listPageDesign == null || listPageDesign.size() == 0)
@@ -243,6 +244,8 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 
 	@Override public void htmlScriptsDesignDisplayGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/DesignDisplayPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/PageDesignPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/PageDesignPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptDesignDisplayGenPage() {
@@ -262,6 +265,30 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 		tl(1, "window.eventBus = new EventBus('/eventbus');");
 		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequestPk()).map(l -> l.toString()).orElse("null"), ";");
 		tl(1, "if(pk != null) {");
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestPageDesignParentDesignKeys([{'name':'fq','value':'childDesignKeys:' + pk}], $('#listPageDesignParentDesignKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestPageDesignParentDesignKeys([{'name':'fq','value':'childDesignKeys:' + pk}], $('#listPageDesignParentDesignKeys_Page'), pk, false); ");
+		}
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestPageDesignHtmlPartKeys([{'name':'fq','value':'pageDesignKeys:' + pk}], $('#listPageDesignHtmlPartKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestPageDesignHtmlPartKeys([{'name':'fq','value':'pageDesignKeys:' + pk}], $('#listPageDesignHtmlPartKeys_Page'), pk, false); ");
+		}
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestPageDesignChildDesignKeys([{'name':'fq','value':'parentDesignKeys:' + pk}], $('#listPageDesignChildDesignKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestPageDesignChildDesignKeys([{'name':'fq','value':'parentDesignKeys:' + pk}], $('#listPageDesignChildDesignKeys_Page'), pk, false); ");
+		}
 		tl(1, "}");
 		tl(1, "websocketPageDesign(websocketPageDesignInner);");
 		l("});");
@@ -278,6 +305,19 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 			o.htmArchived("Page");
 			o.htmDeleted("Page");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageDesignCompleteName("Page");
+			o.htmDesignHidden("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmParentDesignKeys("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlPartKeys("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTPageDesign(PageDesign o) {
@@ -290,6 +330,19 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("POST");
 			o.htmDeleted("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageDesignCompleteName("POST");
+			o.htmDesignHidden("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmParentDesignKeys("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlPartKeys("POST");
 		} g("div");
 	}
 
@@ -326,6 +379,19 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 			o.htmArchived("PUTCopy");
 			o.htmDeleted("PUTCopy");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageDesignCompleteName("PUTCopy");
+			o.htmDesignHidden("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmParentDesignKeys("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlPartKeys("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHPageDesign(PageDesign o) {
@@ -336,6 +402,19 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
 			o.htmDeleted("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageDesignCompleteName("PATCH");
+			o.htmDesignHidden("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmParentDesignKeys("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlPartKeys("PATCH");
 		} g("div");
 	}
 
@@ -349,6 +428,19 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("Search");
 			o.htmDeleted("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageDesignCompleteName("Search");
+			o.htmDesignHidden("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPageContentType("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmParentDesignKeys("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmHtmlPartKeys("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
@@ -893,7 +985,7 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 					.a("name", "suggestPageDesign")
 					.a("id", "suggestPageDesign", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestPageDesignObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListPageDesign", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestPageDesignObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,pageDesignCompleteName' } ], $('#suggestListPageDesign", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/page?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listPageDesign != null)
 					p.a("value", query2);

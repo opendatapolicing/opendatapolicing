@@ -32,14 +32,14 @@ public interface SiteStateEnUSGenApiService {
 		return new SiteStateEnUSGenApiServiceVertxEBProxy(vertx, address);
 	}
 
-	public void putimport.enusSiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void putmerge.enusSiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void putcopy.enusSiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putimportSiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putmergeSiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putcopySiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void postSiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void patchSiteState(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void get.enusSiteState(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void getSiteState(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void searchSiteState(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void adminsearch.enusSiteState(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusSiteStateId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusSiteState(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void adminsearchSiteState(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageSiteStateId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageSiteState(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 }

@@ -42,8 +42,8 @@ import org.apache.solr.client.solrj.SolrQuery.SortClause;
  **/
 public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 
-	public static final List<String> ROLES = Arrays.asList();
-	public static final List<String> ROLE_READS = Arrays.asList();
+	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
+	public static final List<String> ROLE_READS = Arrays.asList("");
 
 	/**
 	 * {@inheritDoc}
@@ -62,7 +62,8 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		c.o("");
+		if(siteState_ != null && siteState_.getStateCompleteName() != null)
+			c.o(siteState_.getStateCompleteName());
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -70,8 +71,8 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(siteState_ != null && siteState_.getObjectTitle() != null)
-			c.o(siteState_.getObjectTitle());
+		if(siteState_ != null && siteState_.getStateCompleteName() != null)
+			c.o(siteState_.getStateCompleteName());
 		else if(siteState_ != null)
 			c.o("states");
 		else if(listSiteState == null || listSiteState.size() == 0)
@@ -81,11 +82,11 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageUri(Wrap<String> c) {
-		c.o("/api/state");
+		c.o("/state");
 	}
 
 	@Override protected void _pageImageUri(Wrap<String> c) {
-			c.o("/png/api/state-999.png");
+			c.o("/png/state-999.png");
 	}
 
 	@Override protected void _contextIconGroup(Wrap<String> c) {
@@ -103,6 +104,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 
 	@Override public void htmlScriptsSiteStateGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/SiteStatePage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/SiteAgencyPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptSiteStateGenPage() {
@@ -122,6 +124,14 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		tl(1, "window.eventBus = new EventBus('/eventbus');");
 		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequestPk()).map(l -> l.toString()).orElse("null"), ";");
 		tl(1, "if(pk != null) {");
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestSiteStateAgencyKeys([{'name':'fq','value':'stateKey:' + pk}], $('#listSiteStateAgencyKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestSiteStateAgencyKeys([{'name':'fq','value':'stateKey:' + pk}], $('#listSiteStateAgencyKeys_Page'), pk, false); ");
+		}
 		tl(1, "}");
 		tl(1, "websocketSiteState(websocketSiteStateInner);");
 		l("});");
@@ -138,6 +148,17 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmArchived("Page");
 			o.htmDeleted("Page");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStateName("Page");
+			o.htmStateAbbreviation("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmImageLeft("Page");
+			o.htmImageTop("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmAgencyKeys("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTSiteState(SiteState o) {
@@ -150,6 +171,17 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("POST");
 			o.htmDeleted("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStateName("POST");
+			o.htmStateAbbreviation("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmImageLeft("POST");
+			o.htmImageTop("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmAgencyKeys("POST");
 		} g("div");
 	}
 
@@ -186,6 +218,17 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmArchived("PUTCopy");
 			o.htmDeleted("PUTCopy");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStateName("PUTCopy");
+			o.htmStateAbbreviation("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmImageLeft("PUTCopy");
+			o.htmImageTop("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmAgencyKeys("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHSiteState(SiteState o) {
@@ -196,6 +239,17 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
 			o.htmDeleted("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStateName("PATCH");
+			o.htmStateAbbreviation("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmImageLeft("PATCH");
+			o.htmImageTop("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmAgencyKeys("PATCH");
 		} g("div");
 	}
 
@@ -209,6 +263,17 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("Search");
 			o.htmDeleted("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStateName("Search");
+			o.htmStateAbbreviation("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmImageLeft("Search");
+			o.htmImageTop("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmAgencyKeys("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
@@ -225,7 +290,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		if(listSiteState == null || listSiteState.size() == 0) {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/state").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-blue w3-hover-pale-blue ").f();
+				{ e("a").a("href", "/state").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-blue w3-hover-pale-blue ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx("states").g("span");
@@ -244,7 +309,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			siteRequest_.setRequestPk(o.getPk());
 			if(StringUtils.isNotEmpty(pageH1)) {
 				{ e("h1").f();
-					{ e("a").a("href", "/api/state").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-blue w3-hover-pale-blue ").f();
+					{ e("a").a("href", "/state").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-blue w3-hover-pale-blue ").f();
 						if(contextIconCssClasses != null)
 							e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 						e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -269,7 +334,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		} else {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/state").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-blue w3-hover-pale-blue ").f();
+				{ e("a").a("href", "/state").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-blue w3-hover-pale-blue ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -330,7 +395,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 					if(start1 == 0) {
 						e("i").a("class", "fas fa-arrow-square-left w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/state?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
+						{ e("a").a("href", "/state?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-left ").f().g("i");
 						} g("a");
 					}
@@ -338,19 +403,19 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 					if(rows1 <= 1) {
 						e("i").a("class", "fas fa-minus-square w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/state?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
+						{ e("a").a("href", "/state?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
 							e("i").a("class", "fas fa-minus-square ").f().g("i");
 						} g("a");
 					}
 
-					{ e("a").a("href", "/api/state?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
+					{ e("a").a("href", "/state?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
 						e("i").a("class", "fas fa-plus-square ").f().g("i");
 					} g("a");
 
 					if(start3 >= num) {
 						e("i").a("class", "fas fa-arrow-square-right w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/state?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
+						{ e("a").a("href", "/state?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-right ").f().g("i");
 						} g("a");
 					}
@@ -428,7 +493,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			SiteState o = listSiteState.getList().get(i);
 			Map<String, List<String>> highlights = highlighting == null ? null : highlighting.get(o.getId());
 			List<String> highlightList = highlights == null ? null : highlights.get(highlights.keySet().stream().findFirst().orElse(null));
-			String uri = "/api/state/" + o.getPk();
+			String uri = "/state/" + o.getPk();
 			{ e("tr").f();
 				if(getColumnCreated()) {
 					{ e("td").f();
@@ -502,6 +567,108 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 				siteRequest_.getUserResourceRoles().contains("SiteAdmin")
 				|| siteRequest_.getUserRealmRoles().contains("SiteAdmin")
 				) {
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-blue ")
+				.a("onclick", "$('#putimportSiteStateModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-file-import ").f().g("i");
+				sx("Import states");
+			} g("button");
+			{ e("div").a("id", "putimportSiteStateModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-blue ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putimportSiteStateModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Import states").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putimportSiteStateFormValues").f();
+							SiteState o = new SiteState();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putimportSiteStateForm").f();
+								htmlFormPUTImportSiteState(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-blue ")
+								.a("onclick", "putimportSiteState($('#putimportSiteStateForm')); ")
+								.f().sx("Import states")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-blue ")
+				.a("onclick", "$('#putmergeSiteStateModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-code-merge ").f().g("i");
+				sx("Merge states");
+			} g("button");
+			{ e("div").a("id", "putmergeSiteStateModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-blue ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putmergeSiteStateModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Merge states").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putmergeSiteStateFormValues").f();
+							SiteState o = new SiteState();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putmergeSiteStateForm").f();
+								htmlFormPUTMergeSiteState(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-blue ")
+								.a("onclick", "putmergeSiteState($('#putmergeSiteStateForm')); ")
+								.f().sx("Merge states")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-blue ")
+				.a("onclick", "$('#putcopySiteStateModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-copy ").f().g("i");
+				sx("Duplicate states");
+			} g("button");
+			{ e("div").a("id", "putcopySiteStateModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-blue ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putcopySiteStateModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Duplicate states").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putcopySiteStateFormValues").f();
+							SiteState o = new SiteState();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putcopySiteStateForm").f();
+								htmlFormPUTCopySiteState(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-blue ")
+								.a("onclick", "putcopySiteState($('#putcopySiteStateForm'), ", siteState_ == null ? "null" : siteState_.getPk(), "); ")
+								.f().sx("Duplicate states")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
 
 			{ e("button")
 				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-blue ")
@@ -651,14 +818,14 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 					.a("name", "suggestSiteState")
 					.a("id", "suggestSiteState", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestSiteStateObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListSiteState", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
-					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/api/state?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
+					.a("oninput", "suggestSiteStateObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,stateCompleteName' } ], $('#suggestListSiteState", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/state?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listSiteState != null)
 					p.a("value", query2);
 				p.fg();
 				{ p.e("button")
 					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-blue ")
-					.a("onclick", "window.location.href = '/api/state?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
+					.a("onclick", "window.location.href = '/state?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
 					.f();
 					p.e("i").a("class", "fas fa-search ").f().g("i");
 				} p.g("button");
@@ -671,7 +838,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 				} p.g("div");
 			} p.g("div");
 			{ p.e("div").a("class", "").f();
-				{ p.e("a").a("href", "/api/state").a("class", "").f();
+				{ p.e("a").a("href", "/state").a("class", "").f();
 					p.e("i").a("class", "far fa-globe-americas ").f().g("i");
 					p.sx("see all the states");
 				} p.g("a");

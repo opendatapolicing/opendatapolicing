@@ -63,6 +63,9 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 public abstract class SearchBasisGen<DEV> extends Cluster {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(SearchBasis.class);
 
+	public static final List<String> ROLES = Arrays.asList("SiteService");
+	public static final List<String> ROLE_READS = Arrays.asList("");
+
 	public static final String SearchBasis_AName = "a search basis";
 	public static final String SearchBasis_This = "this ";
 	public static final String SearchBasis_ThisName = "this search basis";
@@ -242,7 +245,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchKey() {
-		return null;
+		return "search key";
 	}
 
 	public String htmTooltipSearchKey() {
@@ -253,6 +256,90 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchKey == null ? "" : StringEscapeUtils.escapeHtml4(strSearchKey());
 	}
 
+	public void inputSearchKey(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_searchKey_clear")
+						.a("class", "searchKey_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_searchKey_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "search key")
+				.a("class", "value suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setSearchKey")
+				.a("id", classApiMethodMethod, "_searchKey")
+				.a("autocomplete", "off");
+				a("oninput", "suggestSearchBasisSearchKey($(this).val() ? searchTrafficSearchFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'searchBasisKeys:" + pk + "'}", "], $('#listSearchBasisSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
+	}
+
+	public void htmSearchKey(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisSearchKey").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "?fq=searchBasisKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
+								e("i").a("class", "far fa-newspaper ").f().g("i");
+								sx("search key");
+							} g("a");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate a traffic search to this search basis");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputSearchKey(classApiMethodMethod);
+								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listSearchBasisSearchKey_", classApiMethodMethod).f();
+								} g("ul");
+								if(
+										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), TrafficSearch.ROLES)
+										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), TrafficSearch.ROLES)
+										) {
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+												.a("id", classApiMethodMethod, "_searchKey_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postTrafficSearchVals({ searchBasisKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "searchKey')); });")
+												.f().sx("add a traffic search")
+											.g("button");
+										} g("div");
+									}
+								}
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	/////////////////////////
 	// trafficSearchSearch //
 	/////////////////////////
@@ -260,6 +347,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity trafficSearchSearch
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<TrafficSearch>(). 
 	 */
+	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<TrafficSearch> trafficSearchSearch = new SearchList<TrafficSearch>();
 	@JsonIgnore
@@ -399,7 +487,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopAgencyTitle() {
-		return null;
+		return "agency title";
 	}
 
 	public String htmTooltipStopAgencyTitle() {
@@ -408,6 +496,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopAgencyTitle() {
 		return stopAgencyTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopAgencyTitle());
+	}
+
+	public void inputStopAgencyTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "agency title")
+				.a("id", classApiMethodMethod, "_stopAgencyTitle");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopAgencyTitle classSearchBasis inputSearchBasis", pk, "StopAgencyTitle w3-input w3-border ");
+					a("name", "setStopAgencyTitle");
+				} else {
+					a("class", "valueStopAgencyTitle w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopAgencyTitle w3-input w3-border ");
+					a("name", "stopAgencyTitle");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopAgencyTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopAgencyTitle')); }); ");
+				}
+				a("value", strStopAgencyTitle())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopAgencyTitle ").f().sx(htmStopAgencyTitle()).g("span");
+		}
+	}
+
+	public void htmStopAgencyTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopAgencyTitle").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopAgencyTitle").a("class", "").f().sx("agency title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopAgencyTitle(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); $('#", classApiMethodMethod, "_stopAgencyTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopAgencyTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopAgencyTitle')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////
@@ -490,7 +644,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopDateTime() {
-		return null;
+		return "stop date/time";
 	}
 
 	public String htmTooltipStopDateTime() {
@@ -499,6 +653,65 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopDateTime() {
 		return stopDateTime == null ? "" : StringEscapeUtils.escapeHtml4(strStopDateTime());
+	}
+
+	public void inputStopDateTime(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+					.a("type", "text")
+					.a("class", "w3-input w3-border datepicker setStopDateTime classSearchBasis inputSearchBasis", pk, "StopDateTime w3-input w3-border ")
+					.a("placeholder", "MM/DD/YYYY HH:MM AM")
+					.a("data-timeformat", "MM/dd/yyyy")
+					.a("id", classApiMethodMethod, "_stopDateTime")
+				.a("value", stopDateTime == null ? "" : DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz").format(stopDateTime));
+			if("Page".equals(classApiMethodMethod)) {
+				a("onclick", "removeGlow($(this)); ");
+				a("onchange", "var t = moment(this.value, 'MM/DD/YYYY'); if(t) { var s = t.format('YYYY-MM-DD'); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopDateTime', s, function() { addGlow($('#", classApiMethodMethod, "_stopDateTime')); }, function() { addError($('#", classApiMethodMethod, "_stopDateTime')); }); } ");
+			}
+			fg();
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopDateTime ").f().sx(htmStopDateTime()).g("span");
+		}
+	}
+
+	public void htmStopDateTime(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopDateTime").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopDateTime").a("class", "").f().sx("stop date/time").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								inputStopDateTime(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopDateTime')); $('#", classApiMethodMethod, "_stopDateTime').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopDateTime', null, function() { addGlow($('#", classApiMethodMethod, "_stopDateTime')); }, function() { addError($('#", classApiMethodMethod, "_stopDateTime')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	////////////////////
@@ -574,7 +787,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopPurposeNum() {
-		return null;
+		return "stop purpose number";
 	}
 
 	public String htmTooltipStopPurposeNum() {
@@ -583,6 +796,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopPurposeNum() {
 		return stopPurposeNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeNum());
+	}
+
+	public void inputStopPurposeNum(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "stop purpose number")
+				.a("id", classApiMethodMethod, "_stopPurposeNum");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopPurposeNum classSearchBasis inputSearchBasis", pk, "StopPurposeNum w3-input w3-border ");
+					a("name", "setStopPurposeNum");
+				} else {
+					a("class", "valueStopPurposeNum w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopPurposeNum w3-input w3-border ");
+					a("name", "stopPurposeNum");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPurposeNum', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopPurposeNum')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeNum')); }); ");
+				}
+				a("value", strStopPurposeNum())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopPurposeNum ").f().sx(htmStopPurposeNum()).g("span");
+		}
+	}
+
+	public void htmStopPurposeNum(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopPurposeNum").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopPurposeNum").a("class", "").f().sx("stop purpose number").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopPurposeNum(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopPurposeNum')); $('#", classApiMethodMethod, "_stopPurposeNum').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopPurposeNum', null, function() { addGlow($('#", classApiMethodMethod, "_stopPurposeNum')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeNum')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////////
@@ -650,7 +929,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopPurposeTitle() {
-		return null;
+		return "stop purpose title";
 	}
 
 	public String htmTooltipStopPurposeTitle() {
@@ -659,6 +938,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopPurposeTitle() {
 		return stopPurposeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeTitle());
+	}
+
+	public void inputStopPurposeTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "stop purpose title")
+				.a("id", classApiMethodMethod, "_stopPurposeTitle");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopPurposeTitle classSearchBasis inputSearchBasis", pk, "StopPurposeTitle w3-input w3-border ");
+					a("name", "setStopPurposeTitle");
+				} else {
+					a("class", "valueStopPurposeTitle w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopPurposeTitle w3-input w3-border ");
+					a("name", "stopPurposeTitle");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPurposeTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeTitle')); }); ");
+				}
+				a("value", strStopPurposeTitle())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopPurposeTitle ").f().sx(htmStopPurposeTitle()).g("span");
+		}
+	}
+
+	public void htmStopPurposeTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopPurposeTitle").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopPurposeTitle").a("class", "").f().sx("stop purpose title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopPurposeTitle(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); $('#", classApiMethodMethod, "_stopPurposeTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopPurposeTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeTitle')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////////
@@ -734,7 +1079,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopActionNum() {
-		return null;
+		return "stop action number";
 	}
 
 	public String htmTooltipStopActionNum() {
@@ -743,6 +1088,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopActionNum() {
 		return stopActionNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionNum());
+	}
+
+	public void inputStopActionNum(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "stop action number")
+				.a("id", classApiMethodMethod, "_stopActionNum");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopActionNum classSearchBasis inputSearchBasis", pk, "StopActionNum w3-input w3-border ");
+					a("name", "setStopActionNum");
+				} else {
+					a("class", "valueStopActionNum w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopActionNum w3-input w3-border ");
+					a("name", "stopActionNum");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopActionNum', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopActionNum')); }, function() { addError($('#", classApiMethodMethod, "_stopActionNum')); }); ");
+				}
+				a("value", strStopActionNum())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopActionNum ").f().sx(htmStopActionNum()).g("span");
+		}
+	}
+
+	public void htmStopActionNum(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopActionNum").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopActionNum").a("class", "").f().sx("stop action number").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopActionNum(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopActionNum')); $('#", classApiMethodMethod, "_stopActionNum').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopActionNum', null, function() { addGlow($('#", classApiMethodMethod, "_stopActionNum')); }, function() { addError($('#", classApiMethodMethod, "_stopActionNum')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////////////
@@ -810,7 +1221,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopActionTitle() {
-		return null;
+		return "agency title";
 	}
 
 	public String htmTooltipStopActionTitle() {
@@ -819,6 +1230,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopActionTitle() {
 		return stopActionTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionTitle());
+	}
+
+	public void inputStopActionTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "agency title")
+				.a("id", classApiMethodMethod, "_stopActionTitle");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopActionTitle classSearchBasis inputSearchBasis", pk, "StopActionTitle w3-input w3-border ");
+					a("name", "setStopActionTitle");
+				} else {
+					a("class", "valueStopActionTitle w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopActionTitle w3-input w3-border ");
+					a("name", "stopActionTitle");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopActionTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopActionTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopActionTitle')); }); ");
+				}
+				a("value", strStopActionTitle())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopActionTitle ").f().sx(htmStopActionTitle()).g("span");
+		}
+	}
+
+	public void htmStopActionTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopActionTitle").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopActionTitle").a("class", "").f().sx("agency title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopActionTitle(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopActionTitle')); $('#", classApiMethodMethod, "_stopActionTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopActionTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopActionTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopActionTitle')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////////
@@ -891,7 +1368,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopDriverArrest() {
-		return null;
+		return "driver arrest";
 	}
 
 	public String htmTooltipStopDriverArrest() {
@@ -900,6 +1377,69 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopDriverArrest() {
 		return stopDriverArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverArrest());
+	}
+
+	public void inputStopDriverArrest(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_stopDriverArrest")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_stopDriverArrest");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setStopDriverArrest classSearchBasis inputSearchBasis", pk, "StopDriverArrest w3-input w3-border ");
+				a("name", "setStopDriverArrest");
+			} else {
+				a("class", "valueStopDriverArrest classSearchBasis inputSearchBasis", pk, "StopDriverArrest w3-input w3-border ");
+				a("name", "stopDriverArrest");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopDriverArrest', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopDriverArrest')); }, function() { addError($('#", classApiMethodMethod, "_stopDriverArrest')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getStopDriverArrest() != null && getStopDriverArrest())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopDriverArrest ").f().sx(htmStopDriverArrest()).g("span");
+		}
+	}
+
+	public void htmStopDriverArrest(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopDriverArrest").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopDriverArrest").a("class", "").f().sx("driver arrest").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopDriverArrest(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////////////////
@@ -972,7 +1512,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopPassengerArrest() {
-		return null;
+		return "passenger arrest";
 	}
 
 	public String htmTooltipStopPassengerArrest() {
@@ -981,6 +1521,69 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopPassengerArrest() {
 		return stopPassengerArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerArrest());
+	}
+
+	public void inputStopPassengerArrest(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_stopPassengerArrest")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_stopPassengerArrest");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setStopPassengerArrest classSearchBasis inputSearchBasis", pk, "StopPassengerArrest w3-input w3-border ");
+				a("name", "setStopPassengerArrest");
+			} else {
+				a("class", "valueStopPassengerArrest classSearchBasis inputSearchBasis", pk, "StopPassengerArrest w3-input w3-border ");
+				a("name", "stopPassengerArrest");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPassengerArrest', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopPassengerArrest')); }, function() { addError($('#", classApiMethodMethod, "_stopPassengerArrest')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getStopPassengerArrest() != null && getStopPassengerArrest())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopPassengerArrest ").f().sx(htmStopPassengerArrest()).g("span");
+		}
+	}
+
+	public void htmStopPassengerArrest(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopPassengerArrest").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopPassengerArrest").a("class", "").f().sx("passenger arrest").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopPassengerArrest(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	////////////////////////
@@ -1053,7 +1656,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopEncounterForce() {
-		return null;
+		return "encounter force";
 	}
 
 	public String htmTooltipStopEncounterForce() {
@@ -1062,6 +1665,69 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopEncounterForce() {
 		return stopEncounterForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEncounterForce());
+	}
+
+	public void inputStopEncounterForce(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_stopEncounterForce")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_stopEncounterForce");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setStopEncounterForce classSearchBasis inputSearchBasis", pk, "StopEncounterForce w3-input w3-border ");
+				a("name", "setStopEncounterForce");
+			} else {
+				a("class", "valueStopEncounterForce classSearchBasis inputSearchBasis", pk, "StopEncounterForce w3-input w3-border ");
+				a("name", "stopEncounterForce");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopEncounterForce', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopEncounterForce')); }, function() { addError($('#", classApiMethodMethod, "_stopEncounterForce')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getStopEncounterForce() != null && getStopEncounterForce())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopEncounterForce ").f().sx(htmStopEncounterForce()).g("span");
+		}
+	}
+
+	public void htmStopEncounterForce(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopEncounterForce").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopEncounterForce").a("class", "").f().sx("encounter force").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopEncounterForce(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////////////
@@ -1134,7 +1800,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopEngageForce() {
-		return null;
+		return "engage force";
 	}
 
 	public String htmTooltipStopEngageForce() {
@@ -1143,6 +1809,69 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopEngageForce() {
 		return stopEngageForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEngageForce());
+	}
+
+	public void inputStopEngageForce(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_stopEngageForce")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_stopEngageForce");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setStopEngageForce classSearchBasis inputSearchBasis", pk, "StopEngageForce w3-input w3-border ");
+				a("name", "setStopEngageForce");
+			} else {
+				a("class", "valueStopEngageForce classSearchBasis inputSearchBasis", pk, "StopEngageForce w3-input w3-border ");
+				a("name", "stopEngageForce");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopEngageForce', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopEngageForce')); }, function() { addError($('#", classApiMethodMethod, "_stopEngageForce')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getStopEngageForce() != null && getStopEngageForce())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopEngageForce ").f().sx(htmStopEngageForce()).g("span");
+		}
+	}
+
+	public void htmStopEngageForce(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopEngageForce").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopEngageForce").a("class", "").f().sx("engage force").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopEngageForce(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////////////
@@ -1215,7 +1944,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopOfficerInjury() {
-		return null;
+		return "officer injury";
 	}
 
 	public String htmTooltipStopOfficerInjury() {
@@ -1224,6 +1953,69 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopOfficerInjury() {
 		return stopOfficerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerInjury());
+	}
+
+	public void inputStopOfficerInjury(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_stopOfficerInjury")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_stopOfficerInjury");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setStopOfficerInjury classSearchBasis inputSearchBasis", pk, "StopOfficerInjury w3-input w3-border ");
+				a("name", "setStopOfficerInjury");
+			} else {
+				a("class", "valueStopOfficerInjury classSearchBasis inputSearchBasis", pk, "StopOfficerInjury w3-input w3-border ");
+				a("name", "stopOfficerInjury");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopOfficerInjury', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopOfficerInjury')); }, function() { addError($('#", classApiMethodMethod, "_stopOfficerInjury')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getStopOfficerInjury() != null && getStopOfficerInjury())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopOfficerInjury ").f().sx(htmStopOfficerInjury()).g("span");
+		}
+	}
+
+	public void htmStopOfficerInjury(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopOfficerInjury").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopOfficerInjury").a("class", "").f().sx("officer injury").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopOfficerInjury(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////////
@@ -1296,7 +2088,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopDriverInjury() {
-		return null;
+		return "driver injury";
 	}
 
 	public String htmTooltipStopDriverInjury() {
@@ -1305,6 +2097,69 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopDriverInjury() {
 		return stopDriverInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverInjury());
+	}
+
+	public void inputStopDriverInjury(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_stopDriverInjury")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_stopDriverInjury");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setStopDriverInjury classSearchBasis inputSearchBasis", pk, "StopDriverInjury w3-input w3-border ");
+				a("name", "setStopDriverInjury");
+			} else {
+				a("class", "valueStopDriverInjury classSearchBasis inputSearchBasis", pk, "StopDriverInjury w3-input w3-border ");
+				a("name", "stopDriverInjury");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopDriverInjury', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopDriverInjury')); }, function() { addError($('#", classApiMethodMethod, "_stopDriverInjury')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getStopDriverInjury() != null && getStopDriverInjury())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopDriverInjury ").f().sx(htmStopDriverInjury()).g("span");
+		}
+	}
+
+	public void htmStopDriverInjury(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopDriverInjury").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopDriverInjury").a("class", "").f().sx("driver injury").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopDriverInjury(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////////////////
@@ -1377,7 +2232,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopPassengerInjury() {
-		return null;
+		return "passenger injury";
 	}
 
 	public String htmTooltipStopPassengerInjury() {
@@ -1386,6 +2241,69 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopPassengerInjury() {
 		return stopPassengerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerInjury());
+	}
+
+	public void inputStopPassengerInjury(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_stopPassengerInjury")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_stopPassengerInjury");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setStopPassengerInjury classSearchBasis inputSearchBasis", pk, "StopPassengerInjury w3-input w3-border ");
+				a("name", "setStopPassengerInjury");
+			} else {
+				a("class", "valueStopPassengerInjury classSearchBasis inputSearchBasis", pk, "StopPassengerInjury w3-input w3-border ");
+				a("name", "stopPassengerInjury");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPassengerInjury', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopPassengerInjury')); }, function() { addError($('#", classApiMethodMethod, "_stopPassengerInjury')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getStopPassengerInjury() != null && getStopPassengerInjury())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopPassengerInjury ").f().sx(htmStopPassengerInjury()).g("span");
+		}
+	}
+
+	public void htmStopPassengerInjury(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopPassengerInjury").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopPassengerInjury").a("class", "").f().sx("passenger injury").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopPassengerInjury(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////////
@@ -1453,7 +2371,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopOfficerId() {
-		return null;
+		return "officer ID";
 	}
 
 	public String htmTooltipStopOfficerId() {
@@ -1462,6 +2380,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopOfficerId() {
 		return stopOfficerId == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerId());
+	}
+
+	public void inputStopOfficerId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "officer ID")
+				.a("id", classApiMethodMethod, "_stopOfficerId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopOfficerId classSearchBasis inputSearchBasis", pk, "StopOfficerId w3-input w3-border ");
+					a("name", "setStopOfficerId");
+				} else {
+					a("class", "valueStopOfficerId w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopOfficerId w3-input w3-border ");
+					a("name", "stopOfficerId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopOfficerId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopOfficerId')); }, function() { addError($('#", classApiMethodMethod, "_stopOfficerId')); }); ");
+				}
+				a("value", strStopOfficerId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopOfficerId ").f().sx(htmStopOfficerId()).g("span");
+		}
+	}
+
+	public void htmStopOfficerId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopOfficerId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopOfficerId").a("class", "").f().sx("officer ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopOfficerId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopOfficerId')); $('#", classApiMethodMethod, "_stopOfficerId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopOfficerId', null, function() { addGlow($('#", classApiMethodMethod, "_stopOfficerId')); }, function() { addError($('#", classApiMethodMethod, "_stopOfficerId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	////////////////////
@@ -1529,7 +2513,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopLocationId() {
-		return null;
+		return "location ID";
 	}
 
 	public String htmTooltipStopLocationId() {
@@ -1538,6 +2522,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopLocationId() {
 		return stopLocationId == null ? "" : StringEscapeUtils.escapeHtml4(strStopLocationId());
+	}
+
+	public void inputStopLocationId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "location ID")
+				.a("id", classApiMethodMethod, "_stopLocationId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopLocationId classSearchBasis inputSearchBasis", pk, "StopLocationId w3-input w3-border ");
+					a("name", "setStopLocationId");
+				} else {
+					a("class", "valueStopLocationId w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopLocationId w3-input w3-border ");
+					a("name", "stopLocationId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopLocationId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopLocationId')); }, function() { addError($('#", classApiMethodMethod, "_stopLocationId')); }); ");
+				}
+				a("value", strStopLocationId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopLocationId ").f().sx(htmStopLocationId()).g("span");
+		}
+	}
+
+	public void htmStopLocationId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopLocationId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopLocationId").a("class", "").f().sx("location ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopLocationId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopLocationId')); $('#", classApiMethodMethod, "_stopLocationId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopLocationId', null, function() { addGlow($('#", classApiMethodMethod, "_stopLocationId')); }, function() { addError($('#", classApiMethodMethod, "_stopLocationId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	////////////////
@@ -1605,7 +2655,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStopCityId() {
-		return null;
+		return "city ID";
 	}
 
 	public String htmTooltipStopCityId() {
@@ -1614,6 +2664,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmStopCityId() {
 		return stopCityId == null ? "" : StringEscapeUtils.escapeHtml4(strStopCityId());
+	}
+
+	public void inputStopCityId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "city ID")
+				.a("id", classApiMethodMethod, "_stopCityId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopCityId classSearchBasis inputSearchBasis", pk, "StopCityId w3-input w3-border ");
+					a("name", "setStopCityId");
+				} else {
+					a("class", "valueStopCityId w3-input w3-border classSearchBasis inputSearchBasis", pk, "StopCityId w3-input w3-border ");
+					a("name", "stopCityId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopCityId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopCityId')); }, function() { addError($('#", classApiMethodMethod, "_stopCityId')); }); ");
+				}
+				a("value", strStopCityId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "StopCityId ").f().sx(htmStopCityId()).g("span");
+		}
+	}
+
+	public void htmStopCityId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisStopCityId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopCityId").a("class", "").f().sx("city ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopCityId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopCityId')); $('#", classApiMethodMethod, "_stopCityId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setStopCityId', null, function() { addGlow($('#", classApiMethodMethod, "_stopCityId')); }, function() { addError($('#", classApiMethodMethod, "_stopCityId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////
@@ -1689,7 +2805,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonAge() {
-		return null;
+		return "person age";
 	}
 
 	public String htmTooltipPersonAge() {
@@ -1698,6 +2814,32 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonAge() {
 		return personAge == null ? "" : StringEscapeUtils.escapeHtml4(strPersonAge());
+	}
+
+	public void inputPersonAge(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+	}
+
+	public void htmPersonAge(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("class", "").f().sx("person age").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row  ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varSearchBasis", pk, "PersonAge ").f().sx(strPersonAge()).g("span");
+								} g("div");
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			}
+		} g("div");
 	}
 
 	//////////////////
@@ -1765,7 +2907,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonTypeId() {
-		return null;
+		return "person type ID";
 	}
 
 	public String htmTooltipPersonTypeId() {
@@ -1774,6 +2916,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonTypeId() {
 		return personTypeId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeId());
+	}
+
+	public void inputPersonTypeId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "person type ID")
+				.a("id", classApiMethodMethod, "_personTypeId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setPersonTypeId classSearchBasis inputSearchBasis", pk, "PersonTypeId w3-input w3-border ");
+					a("name", "setPersonTypeId");
+				} else {
+					a("class", "valuePersonTypeId w3-input w3-border classSearchBasis inputSearchBasis", pk, "PersonTypeId w3-input w3-border ");
+					a("name", "personTypeId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPersonTypeId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_personTypeId')); }, function() { addError($('#", classApiMethodMethod, "_personTypeId')); }); ");
+				}
+				a("value", strPersonTypeId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "PersonTypeId ").f().sx(htmPersonTypeId()).g("span");
+		}
+	}
+
+	public void htmPersonTypeId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisPersonTypeId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_personTypeId").a("class", "").f().sx("person type ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputPersonTypeId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_personTypeId')); $('#", classApiMethodMethod, "_personTypeId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setPersonTypeId', null, function() { addGlow($('#", classApiMethodMethod, "_personTypeId')); }, function() { addError($('#", classApiMethodMethod, "_personTypeId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////////////
@@ -1841,7 +3049,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonTypeTitle() {
-		return null;
+		return "person type title";
 	}
 
 	public String htmTooltipPersonTypeTitle() {
@@ -1850,6 +3058,32 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonTypeTitle() {
 		return personTypeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeTitle());
+	}
+
+	public void inputPersonTypeTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+	}
+
+	public void htmPersonTypeTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("class", "").f().sx("person type title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row  ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varSearchBasis", pk, "PersonTypeTitle ").f().sx(strPersonTypeTitle()).g("span");
+								} g("div");
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			}
+		} g("div");
 	}
 
 	//////////////////////
@@ -1922,7 +3156,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonTypeDriver() {
-		return null;
+		return "person was driver";
 	}
 
 	public String htmTooltipPersonTypeDriver() {
@@ -2003,7 +3237,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonTypePassenger() {
-		return null;
+		return "person was passenger";
 	}
 
 	public String htmTooltipPersonTypePassenger() {
@@ -2079,7 +3313,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonGenderId() {
-		return null;
+		return "person gender ID";
 	}
 
 	public String htmTooltipPersonGenderId() {
@@ -2088,6 +3322,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonGenderId() {
 		return personGenderId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderId());
+	}
+
+	public void inputPersonGenderId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "person gender ID")
+				.a("id", classApiMethodMethod, "_personGenderId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setPersonGenderId classSearchBasis inputSearchBasis", pk, "PersonGenderId w3-input w3-border ");
+					a("name", "setPersonGenderId");
+				} else {
+					a("class", "valuePersonGenderId w3-input w3-border classSearchBasis inputSearchBasis", pk, "PersonGenderId w3-input w3-border ");
+					a("name", "personGenderId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPersonGenderId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_personGenderId')); }, function() { addError($('#", classApiMethodMethod, "_personGenderId')); }); ");
+				}
+				a("value", strPersonGenderId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "PersonGenderId ").f().sx(htmPersonGenderId()).g("span");
+		}
+	}
+
+	public void htmPersonGenderId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisPersonGenderId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_personGenderId").a("class", "").f().sx("person gender ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputPersonGenderId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_personGenderId')); $('#", classApiMethodMethod, "_personGenderId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setPersonGenderId', null, function() { addGlow($('#", classApiMethodMethod, "_personGenderId')); }, function() { addError($('#", classApiMethodMethod, "_personGenderId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////////////
@@ -2155,7 +3455,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonGenderTitle() {
-		return null;
+		return "person gender title";
 	}
 
 	public String htmTooltipPersonGenderTitle() {
@@ -2164,6 +3464,32 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonGenderTitle() {
 		return personGenderTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderTitle());
+	}
+
+	public void inputPersonGenderTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+	}
+
+	public void htmPersonGenderTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("class", "").f().sx("person gender title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row  ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varSearchBasis", pk, "PersonGenderTitle ").f().sx(strPersonGenderTitle()).g("span");
+								} g("div");
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			}
+		} g("div");
 	}
 
 	////////////////////////
@@ -2236,7 +3562,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonGenderFemale() {
-		return null;
+		return "person was female";
 	}
 
 	public String htmTooltipPersonGenderFemale() {
@@ -2317,7 +3643,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonGenderMale() {
-		return null;
+		return "person was male";
 	}
 
 	public String htmTooltipPersonGenderMale() {
@@ -2393,7 +3719,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonEthnicityId() {
-		return null;
+		return "person ethnicity ID";
 	}
 
 	public String htmTooltipPersonEthnicityId() {
@@ -2402,6 +3728,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonEthnicityId() {
 		return personEthnicityId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityId());
+	}
+
+	public void inputPersonEthnicityId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "person ethnicity ID")
+				.a("id", classApiMethodMethod, "_personEthnicityId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setPersonEthnicityId classSearchBasis inputSearchBasis", pk, "PersonEthnicityId w3-input w3-border ");
+					a("name", "setPersonEthnicityId");
+				} else {
+					a("class", "valuePersonEthnicityId w3-input w3-border classSearchBasis inputSearchBasis", pk, "PersonEthnicityId w3-input w3-border ");
+					a("name", "personEthnicityId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPersonEthnicityId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_personEthnicityId')); }, function() { addError($('#", classApiMethodMethod, "_personEthnicityId')); }); ");
+				}
+				a("value", strPersonEthnicityId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "PersonEthnicityId ").f().sx(htmPersonEthnicityId()).g("span");
+		}
+	}
+
+	public void htmPersonEthnicityId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisPersonEthnicityId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_personEthnicityId").a("class", "").f().sx("person ethnicity ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputPersonEthnicityId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_personEthnicityId')); $('#", classApiMethodMethod, "_personEthnicityId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setPersonEthnicityId', null, function() { addGlow($('#", classApiMethodMethod, "_personEthnicityId')); }, function() { addError($('#", classApiMethodMethod, "_personEthnicityId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////////////
@@ -2469,7 +3861,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonEthnicityTitle() {
-		return null;
+		return "person ethnicity title";
 	}
 
 	public String htmTooltipPersonEthnicityTitle() {
@@ -2478,6 +3870,32 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonEthnicityTitle() {
 		return personEthnicityTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityTitle());
+	}
+
+	public void inputPersonEthnicityTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+	}
+
+	public void htmPersonEthnicityTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("class", "").f().sx("person ethnicity title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row  ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varSearchBasis", pk, "PersonEthnicityTitle ").f().sx(strPersonEthnicityTitle()).g("span");
+								} g("div");
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			}
+		} g("div");
 	}
 
 	//////////////////
@@ -2545,7 +3963,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonRaceId() {
-		return null;
+		return "person race ID";
 	}
 
 	public String htmTooltipPersonRaceId() {
@@ -2554,6 +3972,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonRaceId() {
 		return personRaceId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceId());
+	}
+
+	public void inputPersonRaceId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "person race ID")
+				.a("id", classApiMethodMethod, "_personRaceId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setPersonRaceId classSearchBasis inputSearchBasis", pk, "PersonRaceId w3-input w3-border ");
+					a("name", "setPersonRaceId");
+				} else {
+					a("class", "valuePersonRaceId w3-input w3-border classSearchBasis inputSearchBasis", pk, "PersonRaceId w3-input w3-border ");
+					a("name", "personRaceId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPersonRaceId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_personRaceId')); }, function() { addError($('#", classApiMethodMethod, "_personRaceId')); }); ");
+				}
+				a("value", strPersonRaceId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "PersonRaceId ").f().sx(htmPersonRaceId()).g("span");
+		}
+	}
+
+	public void htmPersonRaceId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisPersonRaceId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_personRaceId").a("class", "").f().sx("person race ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputPersonRaceId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_personRaceId')); $('#", classApiMethodMethod, "_personRaceId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setPersonRaceId', null, function() { addGlow($('#", classApiMethodMethod, "_personRaceId')); }, function() { addError($('#", classApiMethodMethod, "_personRaceId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////////////
@@ -2621,7 +4105,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichagePersonRaceTitle() {
-		return null;
+		return "person race title";
 	}
 
 	public String htmTooltipPersonRaceTitle() {
@@ -2630,6 +4114,32 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonRaceTitle() {
 		return personRaceTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceTitle());
+	}
+
+	public void inputPersonRaceTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+	}
+
+	public void htmPersonRaceTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("class", "").f().sx("person race title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row  ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varSearchBasis", pk, "PersonRaceTitle ").f().sx(strPersonRaceTitle()).g("span");
+								} g("div");
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			}
+		} g("div");
 	}
 
 	////////////////////
@@ -2705,7 +4215,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageTrafficStopKey() {
-		return null;
+		return "traffic stop key";
 	}
 
 	public String htmTooltipTrafficStopKey() {
@@ -2789,7 +4299,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchTypeNum() {
-		return null;
+		return "search type number";
 	}
 
 	public String htmTooltipSearchTypeNum() {
@@ -2798,6 +4308,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmSearchTypeNum() {
 		return searchTypeNum == null ? "" : StringEscapeUtils.escapeHtml4(strSearchTypeNum());
+	}
+
+	public void inputSearchTypeNum(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "search type number")
+				.a("id", classApiMethodMethod, "_searchTypeNum");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setSearchTypeNum classSearchBasis inputSearchBasis", pk, "SearchTypeNum w3-input w3-border ");
+					a("name", "setSearchTypeNum");
+				} else {
+					a("class", "valueSearchTypeNum w3-input w3-border classSearchBasis inputSearchBasis", pk, "SearchTypeNum w3-input w3-border ");
+					a("name", "searchTypeNum");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchTypeNum', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_searchTypeNum')); }, function() { addError($('#", classApiMethodMethod, "_searchTypeNum')); }); ");
+				}
+				a("value", strSearchTypeNum())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "SearchTypeNum ").f().sx(htmSearchTypeNum()).g("span");
+		}
+	}
+
+	public void htmSearchTypeNum(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisSearchTypeNum").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_searchTypeNum").a("class", "").f().sx("search type number").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputSearchTypeNum(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_searchTypeNum')); $('#", classApiMethodMethod, "_searchTypeNum').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setSearchTypeNum', null, function() { addGlow($('#", classApiMethodMethod, "_searchTypeNum')); }, function() { addError($('#", classApiMethodMethod, "_searchTypeNum')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////////////
@@ -2865,7 +4441,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchTypeTitle() {
-		return null;
+		return "search type title";
 	}
 
 	public String htmTooltipSearchTypeTitle() {
@@ -2946,7 +4522,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchVehicle() {
-		return null;
+		return "vehicle search";
 	}
 
 	public String htmTooltipSearchVehicle() {
@@ -3027,7 +4603,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchDriver() {
-		return null;
+		return "driver search";
 	}
 
 	public String htmTooltipSearchDriver() {
@@ -3108,7 +4684,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchPassenger() {
-		return null;
+		return "passenger search";
 	}
 
 	public String htmTooltipSearchPassenger() {
@@ -3189,7 +4765,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchProperty() {
-		return null;
+		return "property search";
 	}
 
 	public String htmTooltipSearchProperty() {
@@ -3270,7 +4846,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchVehicleSiezed() {
-		return null;
+		return "vehicle siezed";
 	}
 
 	public String htmTooltipSearchVehicleSiezed() {
@@ -3351,7 +4927,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchPersonalPropertySiezed() {
-		return null;
+		return "personal property siezed";
 	}
 
 	public String htmTooltipSearchPersonalPropertySiezed() {
@@ -3432,7 +5008,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchOtherPropertySiezed() {
-		return null;
+		return "other property siezed";
 	}
 
 	public String htmTooltipSearchOtherPropertySiezed() {
@@ -3508,7 +5084,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchBasisId() {
-		return null;
+		return "search basis ID";
 	}
 
 	public String htmTooltipSearchBasisId() {
@@ -3517,6 +5093,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmSearchBasisId() {
 		return searchBasisId == null ? "" : StringEscapeUtils.escapeHtml4(strSearchBasisId());
+	}
+
+	public void inputSearchBasisId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "search basis ID")
+				.a("id", classApiMethodMethod, "_searchBasisId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setSearchBasisId classSearchBasis inputSearchBasis", pk, "SearchBasisId w3-input w3-border ");
+					a("name", "setSearchBasisId");
+				} else {
+					a("class", "valueSearchBasisId w3-input w3-border classSearchBasis inputSearchBasis", pk, "SearchBasisId w3-input w3-border ");
+					a("name", "searchBasisId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchBasisId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_searchBasisId')); }, function() { addError($('#", classApiMethodMethod, "_searchBasisId')); }); ");
+				}
+				a("value", strSearchBasisId())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "SearchBasisId ").f().sx(htmSearchBasisId()).g("span");
+		}
+	}
+
+	public void htmSearchBasisId(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisSearchBasisId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_searchBasisId").a("class", "").f().sx("search basis ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputSearchBasisId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_searchBasisId')); $('#", classApiMethodMethod, "_searchBasisId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setSearchBasisId', null, function() { addGlow($('#", classApiMethodMethod, "_searchBasisId')); }, function() { addError($('#", classApiMethodMethod, "_searchBasisId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////////
@@ -3584,7 +5226,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSearchBasisTitle() {
-		return null;
+		return "search basis title";
 	}
 
 	public String htmTooltipSearchBasisTitle() {
@@ -3593,6 +5235,72 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmSearchBasisTitle() {
 		return searchBasisTitle == null ? "" : StringEscapeUtils.escapeHtml4(strSearchBasisTitle());
+	}
+
+	public void inputSearchBasisTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "search basis title")
+				.a("id", classApiMethodMethod, "_searchBasisTitle");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setSearchBasisTitle classSearchBasis inputSearchBasis", pk, "SearchBasisTitle w3-input w3-border ");
+					a("name", "setSearchBasisTitle");
+				} else {
+					a("class", "valueSearchBasisTitle w3-input w3-border classSearchBasis inputSearchBasis", pk, "SearchBasisTitle w3-input w3-border ");
+					a("name", "searchBasisTitle");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchBasisTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_searchBasisTitle')); }, function() { addError($('#", classApiMethodMethod, "_searchBasisTitle')); }); ");
+				}
+				a("value", strSearchBasisTitle())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSearchBasis", pk, "SearchBasisTitle ").f().sx(htmSearchBasisTitle()).g("span");
+		}
+	}
+
+	public void htmSearchBasisTitle(String classApiMethodMethod) {
+		SearchBasis s = (SearchBasis)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisSearchBasisTitle").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_searchBasisTitle").a("class", "").f().sx("search basis title").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputSearchBasisTitle(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_searchBasisTitle')); $('#", classApiMethodMethod, "_searchBasisTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SearchBasisForm :input[name=pk]').val() }], 'setSearchBasisTitle', null, function() { addGlow($('#", classApiMethodMethod, "_searchBasisTitle')); }, function() { addError($('#", classApiMethodMethod, "_searchBasisTitle')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////////////
@@ -3974,6 +5682,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	public Object attributeSearchBasis(String var, Object val) {
 		SearchBasis oSearchBasis = (SearchBasis)this;
 		switch(var) {
+			case "searchKey":
+				if(oSearchBasis.getSearchKey() == null)
+					oSearchBasis.setSearchKey((Long)val);
+				if(!saves.contains(var))
+					saves.add(var);
+				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -4416,6 +6130,121 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 	public Object defineSearchBasis(String var, String val) {
 		switch(var) {
+			case "stopAgencyTitle":
+				if(val != null)
+					setStopAgencyTitle(val);
+				saves.add(var);
+				return val;
+			case "stopDateTime":
+				if(val != null)
+					setStopDateTime(val);
+				saves.add(var);
+				return val;
+			case "stopPurposeNum":
+				if(val != null)
+					setStopPurposeNum(val);
+				saves.add(var);
+				return val;
+			case "stopPurposeTitle":
+				if(val != null)
+					setStopPurposeTitle(val);
+				saves.add(var);
+				return val;
+			case "stopActionNum":
+				if(val != null)
+					setStopActionNum(val);
+				saves.add(var);
+				return val;
+			case "stopActionTitle":
+				if(val != null)
+					setStopActionTitle(val);
+				saves.add(var);
+				return val;
+			case "stopDriverArrest":
+				if(val != null)
+					setStopDriverArrest(val);
+				saves.add(var);
+				return val;
+			case "stopPassengerArrest":
+				if(val != null)
+					setStopPassengerArrest(val);
+				saves.add(var);
+				return val;
+			case "stopEncounterForce":
+				if(val != null)
+					setStopEncounterForce(val);
+				saves.add(var);
+				return val;
+			case "stopEngageForce":
+				if(val != null)
+					setStopEngageForce(val);
+				saves.add(var);
+				return val;
+			case "stopOfficerInjury":
+				if(val != null)
+					setStopOfficerInjury(val);
+				saves.add(var);
+				return val;
+			case "stopDriverInjury":
+				if(val != null)
+					setStopDriverInjury(val);
+				saves.add(var);
+				return val;
+			case "stopPassengerInjury":
+				if(val != null)
+					setStopPassengerInjury(val);
+				saves.add(var);
+				return val;
+			case "stopOfficerId":
+				if(val != null)
+					setStopOfficerId(val);
+				saves.add(var);
+				return val;
+			case "stopLocationId":
+				if(val != null)
+					setStopLocationId(val);
+				saves.add(var);
+				return val;
+			case "stopCityId":
+				if(val != null)
+					setStopCityId(val);
+				saves.add(var);
+				return val;
+			case "personTypeId":
+				if(val != null)
+					setPersonTypeId(val);
+				saves.add(var);
+				return val;
+			case "personGenderId":
+				if(val != null)
+					setPersonGenderId(val);
+				saves.add(var);
+				return val;
+			case "personEthnicityId":
+				if(val != null)
+					setPersonEthnicityId(val);
+				saves.add(var);
+				return val;
+			case "personRaceId":
+				if(val != null)
+					setPersonRaceId(val);
+				saves.add(var);
+				return val;
+			case "searchTypeNum":
+				if(val != null)
+					setSearchTypeNum(val);
+				saves.add(var);
+				return val;
+			case "searchBasisId":
+				if(val != null)
+					setSearchBasisId(val);
+				saves.add(var);
+				return val;
+			case "searchBasisTitle":
+				if(val != null)
+					setSearchBasisTitle(val);
+				saves.add(var);
+				return val;
 			default:
 				return super.defineCluster(var, val);
 		}
@@ -4432,6 +6261,274 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		SearchBasis oSearchBasis = (SearchBasis)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
+
+			if(saves.contains("contrabandKey")) {
+				Long contrabandKey = (Long)solrDocument.get("contrabandKey_stored_long");
+				if(contrabandKey != null)
+					oSearchBasis.setContrabandKey(contrabandKey);
+			}
+
+			Long searchKey = (Long)solrDocument.get("searchKey_stored_long");
+			if(searchKey != null)
+				oSearchBasis.setSearchKey(searchKey);
+
+			if(saves.contains("stopAgencyTitle")) {
+				String stopAgencyTitle = (String)solrDocument.get("stopAgencyTitle_stored_string");
+				if(stopAgencyTitle != null)
+					oSearchBasis.setStopAgencyTitle(stopAgencyTitle);
+			}
+
+			if(saves.contains("stopDateTime")) {
+				Date stopDateTime = (Date)solrDocument.get("stopDateTime_stored_date");
+				if(stopDateTime != null)
+					oSearchBasis.setStopDateTime(stopDateTime);
+			}
+
+			if(saves.contains("stopPurposeNum")) {
+				Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_stored_int");
+				if(stopPurposeNum != null)
+					oSearchBasis.setStopPurposeNum(stopPurposeNum);
+			}
+
+			if(saves.contains("stopPurposeTitle")) {
+				String stopPurposeTitle = (String)solrDocument.get("stopPurposeTitle_stored_string");
+				if(stopPurposeTitle != null)
+					oSearchBasis.setStopPurposeTitle(stopPurposeTitle);
+			}
+
+			if(saves.contains("stopActionNum")) {
+				Integer stopActionNum = (Integer)solrDocument.get("stopActionNum_stored_int");
+				if(stopActionNum != null)
+					oSearchBasis.setStopActionNum(stopActionNum);
+			}
+
+			if(saves.contains("stopActionTitle")) {
+				String stopActionTitle = (String)solrDocument.get("stopActionTitle_stored_string");
+				if(stopActionTitle != null)
+					oSearchBasis.setStopActionTitle(stopActionTitle);
+			}
+
+			if(saves.contains("stopDriverArrest")) {
+				Boolean stopDriverArrest = (Boolean)solrDocument.get("stopDriverArrest_stored_boolean");
+				if(stopDriverArrest != null)
+					oSearchBasis.setStopDriverArrest(stopDriverArrest);
+			}
+
+			if(saves.contains("stopPassengerArrest")) {
+				Boolean stopPassengerArrest = (Boolean)solrDocument.get("stopPassengerArrest_stored_boolean");
+				if(stopPassengerArrest != null)
+					oSearchBasis.setStopPassengerArrest(stopPassengerArrest);
+			}
+
+			if(saves.contains("stopEncounterForce")) {
+				Boolean stopEncounterForce = (Boolean)solrDocument.get("stopEncounterForce_stored_boolean");
+				if(stopEncounterForce != null)
+					oSearchBasis.setStopEncounterForce(stopEncounterForce);
+			}
+
+			if(saves.contains("stopEngageForce")) {
+				Boolean stopEngageForce = (Boolean)solrDocument.get("stopEngageForce_stored_boolean");
+				if(stopEngageForce != null)
+					oSearchBasis.setStopEngageForce(stopEngageForce);
+			}
+
+			if(saves.contains("stopOfficerInjury")) {
+				Boolean stopOfficerInjury = (Boolean)solrDocument.get("stopOfficerInjury_stored_boolean");
+				if(stopOfficerInjury != null)
+					oSearchBasis.setStopOfficerInjury(stopOfficerInjury);
+			}
+
+			if(saves.contains("stopDriverInjury")) {
+				Boolean stopDriverInjury = (Boolean)solrDocument.get("stopDriverInjury_stored_boolean");
+				if(stopDriverInjury != null)
+					oSearchBasis.setStopDriverInjury(stopDriverInjury);
+			}
+
+			if(saves.contains("stopPassengerInjury")) {
+				Boolean stopPassengerInjury = (Boolean)solrDocument.get("stopPassengerInjury_stored_boolean");
+				if(stopPassengerInjury != null)
+					oSearchBasis.setStopPassengerInjury(stopPassengerInjury);
+			}
+
+			if(saves.contains("stopOfficerId")) {
+				String stopOfficerId = (String)solrDocument.get("stopOfficerId_stored_string");
+				if(stopOfficerId != null)
+					oSearchBasis.setStopOfficerId(stopOfficerId);
+			}
+
+			if(saves.contains("stopLocationId")) {
+				String stopLocationId = (String)solrDocument.get("stopLocationId_stored_string");
+				if(stopLocationId != null)
+					oSearchBasis.setStopLocationId(stopLocationId);
+			}
+
+			if(saves.contains("stopCityId")) {
+				String stopCityId = (String)solrDocument.get("stopCityId_stored_string");
+				if(stopCityId != null)
+					oSearchBasis.setStopCityId(stopCityId);
+			}
+
+			if(saves.contains("personAge")) {
+				Integer personAge = (Integer)solrDocument.get("personAge_stored_int");
+				if(personAge != null)
+					oSearchBasis.setPersonAge(personAge);
+			}
+
+			if(saves.contains("personTypeId")) {
+				String personTypeId = (String)solrDocument.get("personTypeId_stored_string");
+				if(personTypeId != null)
+					oSearchBasis.setPersonTypeId(personTypeId);
+			}
+
+			if(saves.contains("personTypeTitle")) {
+				String personTypeTitle = (String)solrDocument.get("personTypeTitle_stored_string");
+				if(personTypeTitle != null)
+					oSearchBasis.setPersonTypeTitle(personTypeTitle);
+			}
+
+			if(saves.contains("personTypeDriver")) {
+				Boolean personTypeDriver = (Boolean)solrDocument.get("personTypeDriver_stored_boolean");
+				if(personTypeDriver != null)
+					oSearchBasis.setPersonTypeDriver(personTypeDriver);
+			}
+
+			if(saves.contains("personTypePassenger")) {
+				Boolean personTypePassenger = (Boolean)solrDocument.get("personTypePassenger_stored_boolean");
+				if(personTypePassenger != null)
+					oSearchBasis.setPersonTypePassenger(personTypePassenger);
+			}
+
+			if(saves.contains("personGenderId")) {
+				String personGenderId = (String)solrDocument.get("personGenderId_stored_string");
+				if(personGenderId != null)
+					oSearchBasis.setPersonGenderId(personGenderId);
+			}
+
+			if(saves.contains("personGenderTitle")) {
+				String personGenderTitle = (String)solrDocument.get("personGenderTitle_stored_string");
+				if(personGenderTitle != null)
+					oSearchBasis.setPersonGenderTitle(personGenderTitle);
+			}
+
+			if(saves.contains("personGenderFemale")) {
+				Boolean personGenderFemale = (Boolean)solrDocument.get("personGenderFemale_stored_boolean");
+				if(personGenderFemale != null)
+					oSearchBasis.setPersonGenderFemale(personGenderFemale);
+			}
+
+			if(saves.contains("personGenderMale")) {
+				Boolean personGenderMale = (Boolean)solrDocument.get("personGenderMale_stored_boolean");
+				if(personGenderMale != null)
+					oSearchBasis.setPersonGenderMale(personGenderMale);
+			}
+
+			if(saves.contains("personEthnicityId")) {
+				String personEthnicityId = (String)solrDocument.get("personEthnicityId_stored_string");
+				if(personEthnicityId != null)
+					oSearchBasis.setPersonEthnicityId(personEthnicityId);
+			}
+
+			if(saves.contains("personEthnicityTitle")) {
+				String personEthnicityTitle = (String)solrDocument.get("personEthnicityTitle_stored_string");
+				if(personEthnicityTitle != null)
+					oSearchBasis.setPersonEthnicityTitle(personEthnicityTitle);
+			}
+
+			if(saves.contains("personRaceId")) {
+				String personRaceId = (String)solrDocument.get("personRaceId_stored_string");
+				if(personRaceId != null)
+					oSearchBasis.setPersonRaceId(personRaceId);
+			}
+
+			if(saves.contains("personRaceTitle")) {
+				String personRaceTitle = (String)solrDocument.get("personRaceTitle_stored_string");
+				if(personRaceTitle != null)
+					oSearchBasis.setPersonRaceTitle(personRaceTitle);
+			}
+
+			if(saves.contains("trafficStopKey")) {
+				Long trafficStopKey = (Long)solrDocument.get("trafficStopKey_stored_long");
+				if(trafficStopKey != null)
+					oSearchBasis.setTrafficStopKey(trafficStopKey);
+			}
+
+			if(saves.contains("searchTypeNum")) {
+				Integer searchTypeNum = (Integer)solrDocument.get("searchTypeNum_stored_int");
+				if(searchTypeNum != null)
+					oSearchBasis.setSearchTypeNum(searchTypeNum);
+			}
+
+			if(saves.contains("searchTypeTitle")) {
+				String searchTypeTitle = (String)solrDocument.get("searchTypeTitle_stored_string");
+				if(searchTypeTitle != null)
+					oSearchBasis.setSearchTypeTitle(searchTypeTitle);
+			}
+
+			if(saves.contains("searchVehicle")) {
+				Boolean searchVehicle = (Boolean)solrDocument.get("searchVehicle_stored_boolean");
+				if(searchVehicle != null)
+					oSearchBasis.setSearchVehicle(searchVehicle);
+			}
+
+			if(saves.contains("searchDriver")) {
+				Boolean searchDriver = (Boolean)solrDocument.get("searchDriver_stored_boolean");
+				if(searchDriver != null)
+					oSearchBasis.setSearchDriver(searchDriver);
+			}
+
+			if(saves.contains("searchPassenger")) {
+				Boolean searchPassenger = (Boolean)solrDocument.get("searchPassenger_stored_boolean");
+				if(searchPassenger != null)
+					oSearchBasis.setSearchPassenger(searchPassenger);
+			}
+
+			if(saves.contains("searchProperty")) {
+				Boolean searchProperty = (Boolean)solrDocument.get("searchProperty_stored_boolean");
+				if(searchProperty != null)
+					oSearchBasis.setSearchProperty(searchProperty);
+			}
+
+			if(saves.contains("searchVehicleSiezed")) {
+				Boolean searchVehicleSiezed = (Boolean)solrDocument.get("searchVehicleSiezed_stored_boolean");
+				if(searchVehicleSiezed != null)
+					oSearchBasis.setSearchVehicleSiezed(searchVehicleSiezed);
+			}
+
+			if(saves.contains("searchPersonalPropertySiezed")) {
+				Boolean searchPersonalPropertySiezed = (Boolean)solrDocument.get("searchPersonalPropertySiezed_stored_boolean");
+				if(searchPersonalPropertySiezed != null)
+					oSearchBasis.setSearchPersonalPropertySiezed(searchPersonalPropertySiezed);
+			}
+
+			if(saves.contains("searchOtherPropertySiezed")) {
+				Boolean searchOtherPropertySiezed = (Boolean)solrDocument.get("searchOtherPropertySiezed_stored_boolean");
+				if(searchOtherPropertySiezed != null)
+					oSearchBasis.setSearchOtherPropertySiezed(searchOtherPropertySiezed);
+			}
+
+			if(saves.contains("searchBasisId")) {
+				String searchBasisId = (String)solrDocument.get("searchBasisId_stored_string");
+				if(searchBasisId != null)
+					oSearchBasis.setSearchBasisId(searchBasisId);
+			}
+
+			if(saves.contains("searchBasisTitle")) {
+				String searchBasisTitle = (String)solrDocument.get("searchBasisTitle_stored_string");
+				if(searchBasisTitle != null)
+					oSearchBasis.setSearchBasisTitle(searchBasisTitle);
+			}
+
+			if(saves.contains("searchBasisShortName")) {
+				String searchBasisShortName = (String)solrDocument.get("searchBasisShortName_stored_string");
+				if(searchBasisShortName != null)
+					oSearchBasis.setSearchBasisShortName(searchBasisShortName);
+			}
+
+			if(saves.contains("searchBasisCompleteName")) {
+				String searchBasisCompleteName = (String)solrDocument.get("searchBasisCompleteName_stored_string");
+				if(searchBasisCompleteName != null)
+					oSearchBasis.setSearchBasisCompleteName(searchBasisCompleteName);
+			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -4499,6 +6596,186 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public void indexSearchBasis(SolrInputDocument document) {
+		if(contrabandKey != null) {
+			document.addField("contrabandKey_indexed_long", contrabandKey);
+			document.addField("contrabandKey_stored_long", contrabandKey);
+		}
+		if(searchKey != null) {
+			document.addField("searchKey_indexed_long", searchKey);
+			document.addField("searchKey_stored_long", searchKey);
+		}
+		if(stopAgencyTitle != null) {
+			document.addField("stopAgencyTitle_indexed_string", stopAgencyTitle);
+			document.addField("stopAgencyTitle_stored_string", stopAgencyTitle);
+		}
+		if(stopDateTime != null) {
+			document.addField("stopDateTime_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
+			document.addField("stopDateTime_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
+		}
+		if(stopPurposeNum != null) {
+			document.addField("stopPurposeNum_indexed_int", stopPurposeNum);
+			document.addField("stopPurposeNum_stored_int", stopPurposeNum);
+		}
+		if(stopPurposeTitle != null) {
+			document.addField("stopPurposeTitle_indexed_string", stopPurposeTitle);
+			document.addField("stopPurposeTitle_stored_string", stopPurposeTitle);
+		}
+		if(stopActionNum != null) {
+			document.addField("stopActionNum_indexed_int", stopActionNum);
+			document.addField("stopActionNum_stored_int", stopActionNum);
+		}
+		if(stopActionTitle != null) {
+			document.addField("stopActionTitle_indexed_string", stopActionTitle);
+			document.addField("stopActionTitle_stored_string", stopActionTitle);
+		}
+		if(stopDriverArrest != null) {
+			document.addField("stopDriverArrest_indexed_boolean", stopDriverArrest);
+			document.addField("stopDriverArrest_stored_boolean", stopDriverArrest);
+		}
+		if(stopPassengerArrest != null) {
+			document.addField("stopPassengerArrest_indexed_boolean", stopPassengerArrest);
+			document.addField("stopPassengerArrest_stored_boolean", stopPassengerArrest);
+		}
+		if(stopEncounterForce != null) {
+			document.addField("stopEncounterForce_indexed_boolean", stopEncounterForce);
+			document.addField("stopEncounterForce_stored_boolean", stopEncounterForce);
+		}
+		if(stopEngageForce != null) {
+			document.addField("stopEngageForce_indexed_boolean", stopEngageForce);
+			document.addField("stopEngageForce_stored_boolean", stopEngageForce);
+		}
+		if(stopOfficerInjury != null) {
+			document.addField("stopOfficerInjury_indexed_boolean", stopOfficerInjury);
+			document.addField("stopOfficerInjury_stored_boolean", stopOfficerInjury);
+		}
+		if(stopDriverInjury != null) {
+			document.addField("stopDriverInjury_indexed_boolean", stopDriverInjury);
+			document.addField("stopDriverInjury_stored_boolean", stopDriverInjury);
+		}
+		if(stopPassengerInjury != null) {
+			document.addField("stopPassengerInjury_indexed_boolean", stopPassengerInjury);
+			document.addField("stopPassengerInjury_stored_boolean", stopPassengerInjury);
+		}
+		if(stopOfficerId != null) {
+			document.addField("stopOfficerId_indexed_string", stopOfficerId);
+			document.addField("stopOfficerId_stored_string", stopOfficerId);
+		}
+		if(stopLocationId != null) {
+			document.addField("stopLocationId_indexed_string", stopLocationId);
+			document.addField("stopLocationId_stored_string", stopLocationId);
+		}
+		if(stopCityId != null) {
+			document.addField("stopCityId_indexed_string", stopCityId);
+			document.addField("stopCityId_stored_string", stopCityId);
+		}
+		if(personAge != null) {
+			document.addField("personAge_indexed_int", personAge);
+			document.addField("personAge_stored_int", personAge);
+		}
+		if(personTypeId != null) {
+			document.addField("personTypeId_indexed_string", personTypeId);
+			document.addField("personTypeId_stored_string", personTypeId);
+		}
+		if(personTypeTitle != null) {
+			document.addField("personTypeTitle_indexed_string", personTypeTitle);
+			document.addField("personTypeTitle_stored_string", personTypeTitle);
+		}
+		if(personTypeDriver != null) {
+			document.addField("personTypeDriver_indexed_boolean", personTypeDriver);
+			document.addField("personTypeDriver_stored_boolean", personTypeDriver);
+		}
+		if(personTypePassenger != null) {
+			document.addField("personTypePassenger_indexed_boolean", personTypePassenger);
+			document.addField("personTypePassenger_stored_boolean", personTypePassenger);
+		}
+		if(personGenderId != null) {
+			document.addField("personGenderId_indexed_string", personGenderId);
+			document.addField("personGenderId_stored_string", personGenderId);
+		}
+		if(personGenderTitle != null) {
+			document.addField("personGenderTitle_indexed_string", personGenderTitle);
+			document.addField("personGenderTitle_stored_string", personGenderTitle);
+		}
+		if(personGenderFemale != null) {
+			document.addField("personGenderFemale_indexed_boolean", personGenderFemale);
+			document.addField("personGenderFemale_stored_boolean", personGenderFemale);
+		}
+		if(personGenderMale != null) {
+			document.addField("personGenderMale_indexed_boolean", personGenderMale);
+			document.addField("personGenderMale_stored_boolean", personGenderMale);
+		}
+		if(personEthnicityId != null) {
+			document.addField("personEthnicityId_indexed_string", personEthnicityId);
+			document.addField("personEthnicityId_stored_string", personEthnicityId);
+		}
+		if(personEthnicityTitle != null) {
+			document.addField("personEthnicityTitle_indexed_string", personEthnicityTitle);
+			document.addField("personEthnicityTitle_stored_string", personEthnicityTitle);
+		}
+		if(personRaceId != null) {
+			document.addField("personRaceId_indexed_string", personRaceId);
+			document.addField("personRaceId_stored_string", personRaceId);
+		}
+		if(personRaceTitle != null) {
+			document.addField("personRaceTitle_indexed_string", personRaceTitle);
+			document.addField("personRaceTitle_stored_string", personRaceTitle);
+		}
+		if(trafficStopKey != null) {
+			document.addField("trafficStopKey_indexed_long", trafficStopKey);
+			document.addField("trafficStopKey_stored_long", trafficStopKey);
+		}
+		if(searchTypeNum != null) {
+			document.addField("searchTypeNum_indexed_int", searchTypeNum);
+			document.addField("searchTypeNum_stored_int", searchTypeNum);
+		}
+		if(searchTypeTitle != null) {
+			document.addField("searchTypeTitle_indexed_string", searchTypeTitle);
+			document.addField("searchTypeTitle_stored_string", searchTypeTitle);
+		}
+		if(searchVehicle != null) {
+			document.addField("searchVehicle_indexed_boolean", searchVehicle);
+			document.addField("searchVehicle_stored_boolean", searchVehicle);
+		}
+		if(searchDriver != null) {
+			document.addField("searchDriver_indexed_boolean", searchDriver);
+			document.addField("searchDriver_stored_boolean", searchDriver);
+		}
+		if(searchPassenger != null) {
+			document.addField("searchPassenger_indexed_boolean", searchPassenger);
+			document.addField("searchPassenger_stored_boolean", searchPassenger);
+		}
+		if(searchProperty != null) {
+			document.addField("searchProperty_indexed_boolean", searchProperty);
+			document.addField("searchProperty_stored_boolean", searchProperty);
+		}
+		if(searchVehicleSiezed != null) {
+			document.addField("searchVehicleSiezed_indexed_boolean", searchVehicleSiezed);
+			document.addField("searchVehicleSiezed_stored_boolean", searchVehicleSiezed);
+		}
+		if(searchPersonalPropertySiezed != null) {
+			document.addField("searchPersonalPropertySiezed_indexed_boolean", searchPersonalPropertySiezed);
+			document.addField("searchPersonalPropertySiezed_stored_boolean", searchPersonalPropertySiezed);
+		}
+		if(searchOtherPropertySiezed != null) {
+			document.addField("searchOtherPropertySiezed_indexed_boolean", searchOtherPropertySiezed);
+			document.addField("searchOtherPropertySiezed_stored_boolean", searchOtherPropertySiezed);
+		}
+		if(searchBasisId != null) {
+			document.addField("searchBasisId_indexed_string", searchBasisId);
+			document.addField("searchBasisId_stored_string", searchBasisId);
+		}
+		if(searchBasisTitle != null) {
+			document.addField("searchBasisTitle_indexed_string", searchBasisTitle);
+			document.addField("searchBasisTitle_stored_string", searchBasisTitle);
+		}
+		if(searchBasisShortName != null) {
+			document.addField("searchBasisShortName_indexed_string", searchBasisShortName);
+			document.addField("searchBasisShortName_stored_string", searchBasisShortName);
+		}
+		if(searchBasisCompleteName != null) {
+			document.addField("searchBasisCompleteName_indexed_string", searchBasisCompleteName);
+			document.addField("searchBasisCompleteName_stored_string", searchBasisCompleteName);
+		}
 		super.indexCluster(document);
 
 	}
@@ -4522,6 +6799,96 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public static String varIndexedSearchBasis(String entityVar) {
 		switch(entityVar) {
+			case "contrabandKey":
+				return "contrabandKey_indexed_long";
+			case "searchKey":
+				return "searchKey_indexed_long";
+			case "stopAgencyTitle":
+				return "stopAgencyTitle_indexed_string";
+			case "stopDateTime":
+				return "stopDateTime_indexed_date";
+			case "stopPurposeNum":
+				return "stopPurposeNum_indexed_int";
+			case "stopPurposeTitle":
+				return "stopPurposeTitle_indexed_string";
+			case "stopActionNum":
+				return "stopActionNum_indexed_int";
+			case "stopActionTitle":
+				return "stopActionTitle_indexed_string";
+			case "stopDriverArrest":
+				return "stopDriverArrest_indexed_boolean";
+			case "stopPassengerArrest":
+				return "stopPassengerArrest_indexed_boolean";
+			case "stopEncounterForce":
+				return "stopEncounterForce_indexed_boolean";
+			case "stopEngageForce":
+				return "stopEngageForce_indexed_boolean";
+			case "stopOfficerInjury":
+				return "stopOfficerInjury_indexed_boolean";
+			case "stopDriverInjury":
+				return "stopDriverInjury_indexed_boolean";
+			case "stopPassengerInjury":
+				return "stopPassengerInjury_indexed_boolean";
+			case "stopOfficerId":
+				return "stopOfficerId_indexed_string";
+			case "stopLocationId":
+				return "stopLocationId_indexed_string";
+			case "stopCityId":
+				return "stopCityId_indexed_string";
+			case "personAge":
+				return "personAge_indexed_int";
+			case "personTypeId":
+				return "personTypeId_indexed_string";
+			case "personTypeTitle":
+				return "personTypeTitle_indexed_string";
+			case "personTypeDriver":
+				return "personTypeDriver_indexed_boolean";
+			case "personTypePassenger":
+				return "personTypePassenger_indexed_boolean";
+			case "personGenderId":
+				return "personGenderId_indexed_string";
+			case "personGenderTitle":
+				return "personGenderTitle_indexed_string";
+			case "personGenderFemale":
+				return "personGenderFemale_indexed_boolean";
+			case "personGenderMale":
+				return "personGenderMale_indexed_boolean";
+			case "personEthnicityId":
+				return "personEthnicityId_indexed_string";
+			case "personEthnicityTitle":
+				return "personEthnicityTitle_indexed_string";
+			case "personRaceId":
+				return "personRaceId_indexed_string";
+			case "personRaceTitle":
+				return "personRaceTitle_indexed_string";
+			case "trafficStopKey":
+				return "trafficStopKey_indexed_long";
+			case "searchTypeNum":
+				return "searchTypeNum_indexed_int";
+			case "searchTypeTitle":
+				return "searchTypeTitle_indexed_string";
+			case "searchVehicle":
+				return "searchVehicle_indexed_boolean";
+			case "searchDriver":
+				return "searchDriver_indexed_boolean";
+			case "searchPassenger":
+				return "searchPassenger_indexed_boolean";
+			case "searchProperty":
+				return "searchProperty_indexed_boolean";
+			case "searchVehicleSiezed":
+				return "searchVehicleSiezed_indexed_boolean";
+			case "searchPersonalPropertySiezed":
+				return "searchPersonalPropertySiezed_indexed_boolean";
+			case "searchOtherPropertySiezed":
+				return "searchOtherPropertySiezed_indexed_boolean";
+			case "searchBasisId":
+				return "searchBasisId_indexed_string";
+			case "searchBasisTitle":
+				return "searchBasisTitle_indexed_string";
+			case "searchBasisShortName":
+				return "searchBasisShortName_indexed_string";
+			case "searchBasisCompleteName":
+				return "searchBasisCompleteName_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -4551,6 +6918,186 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	public void storeSearchBasis(SolrDocument solrDocument) {
 		SearchBasis oSearchBasis = (SearchBasis)this;
 
+		Long contrabandKey = (Long)solrDocument.get("contrabandKey_stored_long");
+		if(contrabandKey != null)
+			oSearchBasis.setContrabandKey(contrabandKey);
+
+		Long searchKey = (Long)solrDocument.get("searchKey_stored_long");
+		if(searchKey != null)
+			oSearchBasis.setSearchKey(searchKey);
+
+		String stopAgencyTitle = (String)solrDocument.get("stopAgencyTitle_stored_string");
+		if(stopAgencyTitle != null)
+			oSearchBasis.setStopAgencyTitle(stopAgencyTitle);
+
+		Date stopDateTime = (Date)solrDocument.get("stopDateTime_stored_date");
+		if(stopDateTime != null)
+			oSearchBasis.setStopDateTime(stopDateTime);
+
+		Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_stored_int");
+		if(stopPurposeNum != null)
+			oSearchBasis.setStopPurposeNum(stopPurposeNum);
+
+		String stopPurposeTitle = (String)solrDocument.get("stopPurposeTitle_stored_string");
+		if(stopPurposeTitle != null)
+			oSearchBasis.setStopPurposeTitle(stopPurposeTitle);
+
+		Integer stopActionNum = (Integer)solrDocument.get("stopActionNum_stored_int");
+		if(stopActionNum != null)
+			oSearchBasis.setStopActionNum(stopActionNum);
+
+		String stopActionTitle = (String)solrDocument.get("stopActionTitle_stored_string");
+		if(stopActionTitle != null)
+			oSearchBasis.setStopActionTitle(stopActionTitle);
+
+		Boolean stopDriverArrest = (Boolean)solrDocument.get("stopDriverArrest_stored_boolean");
+		if(stopDriverArrest != null)
+			oSearchBasis.setStopDriverArrest(stopDriverArrest);
+
+		Boolean stopPassengerArrest = (Boolean)solrDocument.get("stopPassengerArrest_stored_boolean");
+		if(stopPassengerArrest != null)
+			oSearchBasis.setStopPassengerArrest(stopPassengerArrest);
+
+		Boolean stopEncounterForce = (Boolean)solrDocument.get("stopEncounterForce_stored_boolean");
+		if(stopEncounterForce != null)
+			oSearchBasis.setStopEncounterForce(stopEncounterForce);
+
+		Boolean stopEngageForce = (Boolean)solrDocument.get("stopEngageForce_stored_boolean");
+		if(stopEngageForce != null)
+			oSearchBasis.setStopEngageForce(stopEngageForce);
+
+		Boolean stopOfficerInjury = (Boolean)solrDocument.get("stopOfficerInjury_stored_boolean");
+		if(stopOfficerInjury != null)
+			oSearchBasis.setStopOfficerInjury(stopOfficerInjury);
+
+		Boolean stopDriverInjury = (Boolean)solrDocument.get("stopDriverInjury_stored_boolean");
+		if(stopDriverInjury != null)
+			oSearchBasis.setStopDriverInjury(stopDriverInjury);
+
+		Boolean stopPassengerInjury = (Boolean)solrDocument.get("stopPassengerInjury_stored_boolean");
+		if(stopPassengerInjury != null)
+			oSearchBasis.setStopPassengerInjury(stopPassengerInjury);
+
+		String stopOfficerId = (String)solrDocument.get("stopOfficerId_stored_string");
+		if(stopOfficerId != null)
+			oSearchBasis.setStopOfficerId(stopOfficerId);
+
+		String stopLocationId = (String)solrDocument.get("stopLocationId_stored_string");
+		if(stopLocationId != null)
+			oSearchBasis.setStopLocationId(stopLocationId);
+
+		String stopCityId = (String)solrDocument.get("stopCityId_stored_string");
+		if(stopCityId != null)
+			oSearchBasis.setStopCityId(stopCityId);
+
+		Integer personAge = (Integer)solrDocument.get("personAge_stored_int");
+		if(personAge != null)
+			oSearchBasis.setPersonAge(personAge);
+
+		String personTypeId = (String)solrDocument.get("personTypeId_stored_string");
+		if(personTypeId != null)
+			oSearchBasis.setPersonTypeId(personTypeId);
+
+		String personTypeTitle = (String)solrDocument.get("personTypeTitle_stored_string");
+		if(personTypeTitle != null)
+			oSearchBasis.setPersonTypeTitle(personTypeTitle);
+
+		Boolean personTypeDriver = (Boolean)solrDocument.get("personTypeDriver_stored_boolean");
+		if(personTypeDriver != null)
+			oSearchBasis.setPersonTypeDriver(personTypeDriver);
+
+		Boolean personTypePassenger = (Boolean)solrDocument.get("personTypePassenger_stored_boolean");
+		if(personTypePassenger != null)
+			oSearchBasis.setPersonTypePassenger(personTypePassenger);
+
+		String personGenderId = (String)solrDocument.get("personGenderId_stored_string");
+		if(personGenderId != null)
+			oSearchBasis.setPersonGenderId(personGenderId);
+
+		String personGenderTitle = (String)solrDocument.get("personGenderTitle_stored_string");
+		if(personGenderTitle != null)
+			oSearchBasis.setPersonGenderTitle(personGenderTitle);
+
+		Boolean personGenderFemale = (Boolean)solrDocument.get("personGenderFemale_stored_boolean");
+		if(personGenderFemale != null)
+			oSearchBasis.setPersonGenderFemale(personGenderFemale);
+
+		Boolean personGenderMale = (Boolean)solrDocument.get("personGenderMale_stored_boolean");
+		if(personGenderMale != null)
+			oSearchBasis.setPersonGenderMale(personGenderMale);
+
+		String personEthnicityId = (String)solrDocument.get("personEthnicityId_stored_string");
+		if(personEthnicityId != null)
+			oSearchBasis.setPersonEthnicityId(personEthnicityId);
+
+		String personEthnicityTitle = (String)solrDocument.get("personEthnicityTitle_stored_string");
+		if(personEthnicityTitle != null)
+			oSearchBasis.setPersonEthnicityTitle(personEthnicityTitle);
+
+		String personRaceId = (String)solrDocument.get("personRaceId_stored_string");
+		if(personRaceId != null)
+			oSearchBasis.setPersonRaceId(personRaceId);
+
+		String personRaceTitle = (String)solrDocument.get("personRaceTitle_stored_string");
+		if(personRaceTitle != null)
+			oSearchBasis.setPersonRaceTitle(personRaceTitle);
+
+		Long trafficStopKey = (Long)solrDocument.get("trafficStopKey_stored_long");
+		if(trafficStopKey != null)
+			oSearchBasis.setTrafficStopKey(trafficStopKey);
+
+		Integer searchTypeNum = (Integer)solrDocument.get("searchTypeNum_stored_int");
+		if(searchTypeNum != null)
+			oSearchBasis.setSearchTypeNum(searchTypeNum);
+
+		String searchTypeTitle = (String)solrDocument.get("searchTypeTitle_stored_string");
+		if(searchTypeTitle != null)
+			oSearchBasis.setSearchTypeTitle(searchTypeTitle);
+
+		Boolean searchVehicle = (Boolean)solrDocument.get("searchVehicle_stored_boolean");
+		if(searchVehicle != null)
+			oSearchBasis.setSearchVehicle(searchVehicle);
+
+		Boolean searchDriver = (Boolean)solrDocument.get("searchDriver_stored_boolean");
+		if(searchDriver != null)
+			oSearchBasis.setSearchDriver(searchDriver);
+
+		Boolean searchPassenger = (Boolean)solrDocument.get("searchPassenger_stored_boolean");
+		if(searchPassenger != null)
+			oSearchBasis.setSearchPassenger(searchPassenger);
+
+		Boolean searchProperty = (Boolean)solrDocument.get("searchProperty_stored_boolean");
+		if(searchProperty != null)
+			oSearchBasis.setSearchProperty(searchProperty);
+
+		Boolean searchVehicleSiezed = (Boolean)solrDocument.get("searchVehicleSiezed_stored_boolean");
+		if(searchVehicleSiezed != null)
+			oSearchBasis.setSearchVehicleSiezed(searchVehicleSiezed);
+
+		Boolean searchPersonalPropertySiezed = (Boolean)solrDocument.get("searchPersonalPropertySiezed_stored_boolean");
+		if(searchPersonalPropertySiezed != null)
+			oSearchBasis.setSearchPersonalPropertySiezed(searchPersonalPropertySiezed);
+
+		Boolean searchOtherPropertySiezed = (Boolean)solrDocument.get("searchOtherPropertySiezed_stored_boolean");
+		if(searchOtherPropertySiezed != null)
+			oSearchBasis.setSearchOtherPropertySiezed(searchOtherPropertySiezed);
+
+		String searchBasisId = (String)solrDocument.get("searchBasisId_stored_string");
+		if(searchBasisId != null)
+			oSearchBasis.setSearchBasisId(searchBasisId);
+
+		String searchBasisTitle = (String)solrDocument.get("searchBasisTitle_stored_string");
+		if(searchBasisTitle != null)
+			oSearchBasis.setSearchBasisTitle(searchBasisTitle);
+
+		String searchBasisShortName = (String)solrDocument.get("searchBasisShortName_stored_string");
+		if(searchBasisShortName != null)
+			oSearchBasis.setSearchBasisShortName(searchBasisShortName);
+
+		String searchBasisCompleteName = (String)solrDocument.get("searchBasisCompleteName_stored_string");
+		if(searchBasisCompleteName != null)
+			oSearchBasis.setSearchBasisCompleteName(searchBasisCompleteName);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -4563,6 +7110,96 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof SearchBasis) {
 			SearchBasis original = (SearchBasis)o;
+			if(!Objects.equals(contrabandKey, original.getContrabandKey()))
+				apiRequest.addVars("contrabandKey");
+			if(!Objects.equals(searchKey, original.getSearchKey()))
+				apiRequest.addVars("searchKey");
+			if(!Objects.equals(stopAgencyTitle, original.getStopAgencyTitle()))
+				apiRequest.addVars("stopAgencyTitle");
+			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
+				apiRequest.addVars("stopDateTime");
+			if(!Objects.equals(stopPurposeNum, original.getStopPurposeNum()))
+				apiRequest.addVars("stopPurposeNum");
+			if(!Objects.equals(stopPurposeTitle, original.getStopPurposeTitle()))
+				apiRequest.addVars("stopPurposeTitle");
+			if(!Objects.equals(stopActionNum, original.getStopActionNum()))
+				apiRequest.addVars("stopActionNum");
+			if(!Objects.equals(stopActionTitle, original.getStopActionTitle()))
+				apiRequest.addVars("stopActionTitle");
+			if(!Objects.equals(stopDriverArrest, original.getStopDriverArrest()))
+				apiRequest.addVars("stopDriverArrest");
+			if(!Objects.equals(stopPassengerArrest, original.getStopPassengerArrest()))
+				apiRequest.addVars("stopPassengerArrest");
+			if(!Objects.equals(stopEncounterForce, original.getStopEncounterForce()))
+				apiRequest.addVars("stopEncounterForce");
+			if(!Objects.equals(stopEngageForce, original.getStopEngageForce()))
+				apiRequest.addVars("stopEngageForce");
+			if(!Objects.equals(stopOfficerInjury, original.getStopOfficerInjury()))
+				apiRequest.addVars("stopOfficerInjury");
+			if(!Objects.equals(stopDriverInjury, original.getStopDriverInjury()))
+				apiRequest.addVars("stopDriverInjury");
+			if(!Objects.equals(stopPassengerInjury, original.getStopPassengerInjury()))
+				apiRequest.addVars("stopPassengerInjury");
+			if(!Objects.equals(stopOfficerId, original.getStopOfficerId()))
+				apiRequest.addVars("stopOfficerId");
+			if(!Objects.equals(stopLocationId, original.getStopLocationId()))
+				apiRequest.addVars("stopLocationId");
+			if(!Objects.equals(stopCityId, original.getStopCityId()))
+				apiRequest.addVars("stopCityId");
+			if(!Objects.equals(personAge, original.getPersonAge()))
+				apiRequest.addVars("personAge");
+			if(!Objects.equals(personTypeId, original.getPersonTypeId()))
+				apiRequest.addVars("personTypeId");
+			if(!Objects.equals(personTypeTitle, original.getPersonTypeTitle()))
+				apiRequest.addVars("personTypeTitle");
+			if(!Objects.equals(personTypeDriver, original.getPersonTypeDriver()))
+				apiRequest.addVars("personTypeDriver");
+			if(!Objects.equals(personTypePassenger, original.getPersonTypePassenger()))
+				apiRequest.addVars("personTypePassenger");
+			if(!Objects.equals(personGenderId, original.getPersonGenderId()))
+				apiRequest.addVars("personGenderId");
+			if(!Objects.equals(personGenderTitle, original.getPersonGenderTitle()))
+				apiRequest.addVars("personGenderTitle");
+			if(!Objects.equals(personGenderFemale, original.getPersonGenderFemale()))
+				apiRequest.addVars("personGenderFemale");
+			if(!Objects.equals(personGenderMale, original.getPersonGenderMale()))
+				apiRequest.addVars("personGenderMale");
+			if(!Objects.equals(personEthnicityId, original.getPersonEthnicityId()))
+				apiRequest.addVars("personEthnicityId");
+			if(!Objects.equals(personEthnicityTitle, original.getPersonEthnicityTitle()))
+				apiRequest.addVars("personEthnicityTitle");
+			if(!Objects.equals(personRaceId, original.getPersonRaceId()))
+				apiRequest.addVars("personRaceId");
+			if(!Objects.equals(personRaceTitle, original.getPersonRaceTitle()))
+				apiRequest.addVars("personRaceTitle");
+			if(!Objects.equals(trafficStopKey, original.getTrafficStopKey()))
+				apiRequest.addVars("trafficStopKey");
+			if(!Objects.equals(searchTypeNum, original.getSearchTypeNum()))
+				apiRequest.addVars("searchTypeNum");
+			if(!Objects.equals(searchTypeTitle, original.getSearchTypeTitle()))
+				apiRequest.addVars("searchTypeTitle");
+			if(!Objects.equals(searchVehicle, original.getSearchVehicle()))
+				apiRequest.addVars("searchVehicle");
+			if(!Objects.equals(searchDriver, original.getSearchDriver()))
+				apiRequest.addVars("searchDriver");
+			if(!Objects.equals(searchPassenger, original.getSearchPassenger()))
+				apiRequest.addVars("searchPassenger");
+			if(!Objects.equals(searchProperty, original.getSearchProperty()))
+				apiRequest.addVars("searchProperty");
+			if(!Objects.equals(searchVehicleSiezed, original.getSearchVehicleSiezed()))
+				apiRequest.addVars("searchVehicleSiezed");
+			if(!Objects.equals(searchPersonalPropertySiezed, original.getSearchPersonalPropertySiezed()))
+				apiRequest.addVars("searchPersonalPropertySiezed");
+			if(!Objects.equals(searchOtherPropertySiezed, original.getSearchOtherPropertySiezed()))
+				apiRequest.addVars("searchOtherPropertySiezed");
+			if(!Objects.equals(searchBasisId, original.getSearchBasisId()))
+				apiRequest.addVars("searchBasisId");
+			if(!Objects.equals(searchBasisTitle, original.getSearchBasisTitle()))
+				apiRequest.addVars("searchBasisTitle");
+			if(!Objects.equals(searchBasisShortName, original.getSearchBasisShortName()))
+				apiRequest.addVars("searchBasisShortName");
+			if(!Objects.equals(searchBasisCompleteName, original.getSearchBasisCompleteName()))
+				apiRequest.addVars("searchBasisCompleteName");
 			super.apiRequestCluster();
 		}
 	}
@@ -4572,7 +7209,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
+		return Objects.hash(super.hashCode(), contrabandKey, searchKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle, searchBasisShortName, searchBasisCompleteName);
 	}
 
 	////////////
@@ -4585,7 +7222,52 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		if(!(o instanceof SearchBasis))
 			return false;
 		SearchBasis that = (SearchBasis)o;
-		return super.equals(o);
+		return super.equals(o)
+				&& Objects.equals( contrabandKey, that.contrabandKey )
+				&& Objects.equals( searchKey, that.searchKey )
+				&& Objects.equals( stopAgencyTitle, that.stopAgencyTitle )
+				&& Objects.equals( stopDateTime, that.stopDateTime )
+				&& Objects.equals( stopPurposeNum, that.stopPurposeNum )
+				&& Objects.equals( stopPurposeTitle, that.stopPurposeTitle )
+				&& Objects.equals( stopActionNum, that.stopActionNum )
+				&& Objects.equals( stopActionTitle, that.stopActionTitle )
+				&& Objects.equals( stopDriverArrest, that.stopDriverArrest )
+				&& Objects.equals( stopPassengerArrest, that.stopPassengerArrest )
+				&& Objects.equals( stopEncounterForce, that.stopEncounterForce )
+				&& Objects.equals( stopEngageForce, that.stopEngageForce )
+				&& Objects.equals( stopOfficerInjury, that.stopOfficerInjury )
+				&& Objects.equals( stopDriverInjury, that.stopDriverInjury )
+				&& Objects.equals( stopPassengerInjury, that.stopPassengerInjury )
+				&& Objects.equals( stopOfficerId, that.stopOfficerId )
+				&& Objects.equals( stopLocationId, that.stopLocationId )
+				&& Objects.equals( stopCityId, that.stopCityId )
+				&& Objects.equals( personAge, that.personAge )
+				&& Objects.equals( personTypeId, that.personTypeId )
+				&& Objects.equals( personTypeTitle, that.personTypeTitle )
+				&& Objects.equals( personTypeDriver, that.personTypeDriver )
+				&& Objects.equals( personTypePassenger, that.personTypePassenger )
+				&& Objects.equals( personGenderId, that.personGenderId )
+				&& Objects.equals( personGenderTitle, that.personGenderTitle )
+				&& Objects.equals( personGenderFemale, that.personGenderFemale )
+				&& Objects.equals( personGenderMale, that.personGenderMale )
+				&& Objects.equals( personEthnicityId, that.personEthnicityId )
+				&& Objects.equals( personEthnicityTitle, that.personEthnicityTitle )
+				&& Objects.equals( personRaceId, that.personRaceId )
+				&& Objects.equals( personRaceTitle, that.personRaceTitle )
+				&& Objects.equals( trafficStopKey, that.trafficStopKey )
+				&& Objects.equals( searchTypeNum, that.searchTypeNum )
+				&& Objects.equals( searchTypeTitle, that.searchTypeTitle )
+				&& Objects.equals( searchVehicle, that.searchVehicle )
+				&& Objects.equals( searchDriver, that.searchDriver )
+				&& Objects.equals( searchPassenger, that.searchPassenger )
+				&& Objects.equals( searchProperty, that.searchProperty )
+				&& Objects.equals( searchVehicleSiezed, that.searchVehicleSiezed )
+				&& Objects.equals( searchPersonalPropertySiezed, that.searchPersonalPropertySiezed )
+				&& Objects.equals( searchOtherPropertySiezed, that.searchOtherPropertySiezed )
+				&& Objects.equals( searchBasisId, that.searchBasisId )
+				&& Objects.equals( searchBasisTitle, that.searchBasisTitle )
+				&& Objects.equals( searchBasisShortName, that.searchBasisShortName )
+				&& Objects.equals( searchBasisCompleteName, that.searchBasisCompleteName );
 	}
 
 	//////////////
@@ -4596,6 +7278,51 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString() + "\n");
 		sb.append("SearchBasis { ");
+		sb.append( "contrabandKey: " ).append(contrabandKey);
+		sb.append( ", searchKey: " ).append(searchKey);
+		sb.append( ", stopAgencyTitle: \"" ).append(stopAgencyTitle).append( "\"" );
+		sb.append( ", stopDateTime: " ).append(stopDateTime);
+		sb.append( ", stopPurposeNum: " ).append(stopPurposeNum);
+		sb.append( ", stopPurposeTitle: \"" ).append(stopPurposeTitle).append( "\"" );
+		sb.append( ", stopActionNum: " ).append(stopActionNum);
+		sb.append( ", stopActionTitle: \"" ).append(stopActionTitle).append( "\"" );
+		sb.append( ", stopDriverArrest: " ).append(stopDriverArrest);
+		sb.append( ", stopPassengerArrest: " ).append(stopPassengerArrest);
+		sb.append( ", stopEncounterForce: " ).append(stopEncounterForce);
+		sb.append( ", stopEngageForce: " ).append(stopEngageForce);
+		sb.append( ", stopOfficerInjury: " ).append(stopOfficerInjury);
+		sb.append( ", stopDriverInjury: " ).append(stopDriverInjury);
+		sb.append( ", stopPassengerInjury: " ).append(stopPassengerInjury);
+		sb.append( ", stopOfficerId: \"" ).append(stopOfficerId).append( "\"" );
+		sb.append( ", stopLocationId: \"" ).append(stopLocationId).append( "\"" );
+		sb.append( ", stopCityId: \"" ).append(stopCityId).append( "\"" );
+		sb.append( ", personAge: " ).append(personAge);
+		sb.append( ", personTypeId: \"" ).append(personTypeId).append( "\"" );
+		sb.append( ", personTypeTitle: \"" ).append(personTypeTitle).append( "\"" );
+		sb.append( ", personTypeDriver: " ).append(personTypeDriver);
+		sb.append( ", personTypePassenger: " ).append(personTypePassenger);
+		sb.append( ", personGenderId: \"" ).append(personGenderId).append( "\"" );
+		sb.append( ", personGenderTitle: \"" ).append(personGenderTitle).append( "\"" );
+		sb.append( ", personGenderFemale: " ).append(personGenderFemale);
+		sb.append( ", personGenderMale: " ).append(personGenderMale);
+		sb.append( ", personEthnicityId: \"" ).append(personEthnicityId).append( "\"" );
+		sb.append( ", personEthnicityTitle: \"" ).append(personEthnicityTitle).append( "\"" );
+		sb.append( ", personRaceId: \"" ).append(personRaceId).append( "\"" );
+		sb.append( ", personRaceTitle: \"" ).append(personRaceTitle).append( "\"" );
+		sb.append( ", trafficStopKey: " ).append(trafficStopKey);
+		sb.append( ", searchTypeNum: " ).append(searchTypeNum);
+		sb.append( ", searchTypeTitle: \"" ).append(searchTypeTitle).append( "\"" );
+		sb.append( ", searchVehicle: " ).append(searchVehicle);
+		sb.append( ", searchDriver: " ).append(searchDriver);
+		sb.append( ", searchPassenger: " ).append(searchPassenger);
+		sb.append( ", searchProperty: " ).append(searchProperty);
+		sb.append( ", searchVehicleSiezed: " ).append(searchVehicleSiezed);
+		sb.append( ", searchPersonalPropertySiezed: " ).append(searchPersonalPropertySiezed);
+		sb.append( ", searchOtherPropertySiezed: " ).append(searchOtherPropertySiezed);
+		sb.append( ", searchBasisId: \"" ).append(searchBasisId).append( "\"" );
+		sb.append( ", searchBasisTitle: \"" ).append(searchBasisTitle).append( "\"" );
+		sb.append( ", searchBasisShortName: \"" ).append(searchBasisShortName).append( "\"" );
+		sb.append( ", searchBasisCompleteName: \"" ).append(searchBasisCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

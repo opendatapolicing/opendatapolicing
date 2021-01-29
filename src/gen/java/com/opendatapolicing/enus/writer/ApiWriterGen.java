@@ -402,6 +402,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			if(appSwagger2 == null)
 				setAppSwagger2(appSwagger2Wrap.o);
 		}
+		if(appSwagger2 != null)
+			appSwagger2.initDeepForClass(siteRequest_);
 		appSwagger2Wrap.alreadyInitialized(true);
 		return (ApiWriter)this;
 	}

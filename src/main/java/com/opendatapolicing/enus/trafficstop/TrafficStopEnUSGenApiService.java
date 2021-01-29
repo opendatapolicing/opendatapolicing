@@ -32,14 +32,14 @@ public interface TrafficStopEnUSGenApiService {
 		return new TrafficStopEnUSGenApiServiceVertxEBProxy(vertx, address);
 	}
 
-	public void putimport.enusTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void putmerge.enusTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void putcopy.enusTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putimportTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putmergeTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putcopyTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void postTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void patchTrafficStop(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void get.enusTrafficStop(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void getTrafficStop(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void searchTrafficStop(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void adminsearch.enusTrafficStop(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusTrafficStopId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusTrafficStop(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void adminsearchTrafficStop(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageTrafficStopId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageTrafficStop(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 }

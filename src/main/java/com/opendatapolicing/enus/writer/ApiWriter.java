@@ -12,17 +12,13 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.vertx.AppSwagger2;
 import com.opendatapolicing.enus.wrap.Wrap;
 
-/**
- **/
-
-public class ApiWriter extends ApiWriterGen<Object> {
+public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWriter> {
 
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
 	}

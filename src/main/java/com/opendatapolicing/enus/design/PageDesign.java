@@ -1,6 +1,7 @@
-package com.opendatapolicing.enus.design;
+package com.opendatapolicing.enus.design;  
 
 import java.util.List;
+
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.wrap.Wrap;
 
@@ -16,6 +17,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiMethod.enUS: PUTImport
  * ApiMethod.enUS: PUTMerge
  * ApiMethod.enUS: PUTCopy
+
  * ApiMethod: POST
  * ApiMethod: PATCH
  * ApiMethod: GET
@@ -67,32 +69,96 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Rows: 100
  **/ 
 public class PageDesign extends PageDesignGen<Cluster> {
-	
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Description.enUS: The primary key of the design in the database. 
+	 * DisplayName.enUS: key
+	 */            
 	protected void _pageDesignKey(Wrap<Long> c) {
 		c.o(pk);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Attribute: PageDesign.parentDesignKeys
+	 * DisplayName.enUS: child designs
+	*/  
 	protected void _childDesignKeys(List<Long> c) {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Attribute: PageDesign.childDesignKeys
+	 * HtmlRow: 5
+	 * HtmlCell: 1
+	 * DisplayName.enUS: parent designs
+	*/  
 	protected void _parentDesignKeys(List<Long> c) {
 	}
 
+	/**  
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Attribute: HtmlPart.pageDesignKeys
+	 * HtmlRow: 6
+	 * HtmlCell: 1
+	 * DisplayName.enUS: parts
+	 */           
 	protected void _htmlPartKeys(List<Long> o) {}
 
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * VarH2: true
+	 * VarTitle: true
+	 * Define: true
+	 * HtmlRow: 3
+	 * HtmlCell: 1
+	 * DisplayName.enUS: name
+	 */ 
 	protected void _pageDesignCompleteName(Wrap<String> c) {
 		c.o("enrollment design");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * Define: true
+	 * HtmlRow: 3
+	 * HtmlCell: 2
+	 * DisplayName.enUS: hidden
+	 * Indexed: true
+	 * Stored: true
+	 */                
 	protected void _designHidden(Wrap<Boolean> c) {
 		c.o(false);
 	}
 
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 4
+	 * HtmlCell: 1
+	 * DisplayName.enUS: content type
+	 */ 
 	protected void _pageContentType(Wrap<String> c) {
 		c.o("text/html;charset=UTF-8");
 	}
 
-	_objectTitle(Wrap<String> c) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override() protected void  _objectTitle(Wrap<String> c) {
 		c.o(pageDesignCompleteName);
 	}
 }

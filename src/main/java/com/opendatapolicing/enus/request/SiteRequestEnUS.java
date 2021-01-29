@@ -1,6 +1,7 @@
-package com.opendatapolicing.enus.request;
+package com.opendatapolicing.enus.request; 
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +16,6 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
@@ -34,11 +34,8 @@ import io.vertx.sqlclient.Transaction;
 
 /**
  * Keyword: classSimpleNameSiteRequest
- **/  
-
-public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> {
-	
-	long serialVersionUID = -6737494107881513257L;
+ */      
+public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Serializable {
 
 	/**	
 	 *	The site context with global site information. 

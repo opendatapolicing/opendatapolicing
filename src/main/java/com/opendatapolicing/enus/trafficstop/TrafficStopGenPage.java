@@ -42,8 +42,8 @@ import org.apache.solr.client.solrj.SolrQuery.SortClause;
  **/
 public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 
-	public static final List<String> ROLES = Arrays.asList();
-	public static final List<String> ROLE_READS = Arrays.asList();
+	public static final List<String> ROLES = Arrays.asList("SiteService");
+	public static final List<String> ROLE_READS = Arrays.asList("");
 
 	/**
 	 * {@inheritDoc}
@@ -62,7 +62,8 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		c.o("");
+		if(trafficStop_ != null && trafficStop_.getTrafficStopCompleteName() != null)
+			c.o(trafficStop_.getTrafficStopCompleteName());
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -70,8 +71,8 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficStop_ != null && trafficStop_.getObjectTitle() != null)
-			c.o(trafficStop_.getObjectTitle());
+		if(trafficStop_ != null && trafficStop_.getTrafficStopCompleteName() != null)
+			c.o(trafficStop_.getTrafficStopCompleteName());
 		else if(trafficStop_ != null)
 			c.o("traffic stops");
 		else if(listTrafficStop == null || listTrafficStop.size() == 0)
@@ -81,11 +82,11 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageUri(Wrap<String> c) {
-		c.o("/api/traffic-stop");
+		c.o("/traffic-stop");
 	}
 
 	@Override protected void _pageImageUri(Wrap<String> c) {
-			c.o("/png/api/traffic-stop-999.png");
+			c.o("/png/traffic-stop-999.png");
 	}
 
 	@Override protected void _contextIconGroup(Wrap<String> c) {
@@ -138,6 +139,25 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmArchived("Page");
 			o.htmDeleted("Page");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("Page");
+			o.htmStopDateTime("Page");
+			o.htmStopPurposeTitle("Page");
+			o.htmStopActionTitle("Page");
+			o.htmStopDriverArrest("Page");
+			o.htmStopPassengerArrest("Page");
+			o.htmStopEncounterForce("Page");
+			o.htmStopEngageForce("Page");
+			o.htmStopOfficerInjury("Page");
+			o.htmStopDriverInjury("Page");
+			o.htmStopPassengerInjury("Page");
+			o.htmStopOfficerId("Page");
+			o.htmStopLocationId("Page");
+			o.htmStopCityId("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKeys("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTTrafficStop(TrafficStop o) {
@@ -150,6 +170,25 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("POST");
 			o.htmDeleted("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("POST");
+			o.htmStopDateTime("POST");
+			o.htmStopPurposeTitle("POST");
+			o.htmStopActionTitle("POST");
+			o.htmStopDriverArrest("POST");
+			o.htmStopPassengerArrest("POST");
+			o.htmStopEncounterForce("POST");
+			o.htmStopEngageForce("POST");
+			o.htmStopOfficerInjury("POST");
+			o.htmStopDriverInjury("POST");
+			o.htmStopPassengerInjury("POST");
+			o.htmStopOfficerId("POST");
+			o.htmStopLocationId("POST");
+			o.htmStopCityId("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKeys("POST");
 		} g("div");
 	}
 
@@ -186,6 +225,22 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmArchived("PUTCopy");
 			o.htmDeleted("PUTCopy");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("PUTCopy");
+			o.htmStopDateTime("PUTCopy");
+			o.htmStopPurposeTitle("PUTCopy");
+			o.htmStopActionTitle("PUTCopy");
+			o.htmStopDriverArrest("PUTCopy");
+			o.htmStopPassengerArrest("PUTCopy");
+			o.htmStopEncounterForce("PUTCopy");
+			o.htmStopEngageForce("PUTCopy");
+			o.htmStopOfficerInjury("PUTCopy");
+			o.htmStopDriverInjury("PUTCopy");
+			o.htmStopPassengerInjury("PUTCopy");
+			o.htmStopOfficerId("PUTCopy");
+			o.htmStopLocationId("PUTCopy");
+			o.htmStopCityId("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHTrafficStop(TrafficStop o) {
@@ -196,6 +251,22 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
 			o.htmDeleted("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("PATCH");
+			o.htmStopDateTime("PATCH");
+			o.htmStopPurposeTitle("PATCH");
+			o.htmStopActionTitle("PATCH");
+			o.htmStopDriverArrest("PATCH");
+			o.htmStopPassengerArrest("PATCH");
+			o.htmStopEncounterForce("PATCH");
+			o.htmStopEngageForce("PATCH");
+			o.htmStopOfficerInjury("PATCH");
+			o.htmStopDriverInjury("PATCH");
+			o.htmStopPassengerInjury("PATCH");
+			o.htmStopOfficerId("PATCH");
+			o.htmStopLocationId("PATCH");
+			o.htmStopCityId("PATCH");
 		} g("div");
 	}
 
@@ -211,10 +282,31 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("Search");
+			o.htmStopDateTime("Search");
+			o.htmStopPurposeTitle("Search");
+			o.htmStopActionTitle("Search");
+			o.htmStopDriverArrest("Search");
+			o.htmStopPassengerArrest("Search");
+			o.htmStopEncounterForce("Search");
+			o.htmStopEngageForce("Search");
+			o.htmStopOfficerInjury("Search");
+			o.htmStopDriverInjury("Search");
+			o.htmStopPassengerInjury("Search");
+			o.htmStopOfficerId("Search");
+			o.htmStopLocationId("Search");
+			o.htmStopCityId("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKeys("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
+			o.htmStopPurposeNum("Search");
+			o.htmStopActionNum("Search");
 		} g("div");
 	}
 
@@ -225,7 +317,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		if(listTrafficStop == null || listTrafficStop.size() == 0) {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/traffic-stop").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
+				{ e("a").a("href", "/traffic-stop").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx("traffic stops").g("span");
@@ -244,7 +336,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			siteRequest_.setRequestPk(o.getPk());
 			if(StringUtils.isNotEmpty(pageH1)) {
 				{ e("h1").f();
-					{ e("a").a("href", "/api/traffic-stop").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
+					{ e("a").a("href", "/traffic-stop").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
 						if(contextIconCssClasses != null)
 							e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 						e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -269,7 +361,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		} else {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/traffic-stop").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
+				{ e("a").a("href", "/traffic-stop").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -330,7 +422,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 					if(start1 == 0) {
 						e("i").a("class", "fas fa-arrow-square-left w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/traffic-stop?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
+						{ e("a").a("href", "/traffic-stop?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-left ").f().g("i");
 						} g("a");
 					}
@@ -338,19 +430,19 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 					if(rows1 <= 1) {
 						e("i").a("class", "fas fa-minus-square w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/traffic-stop?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
+						{ e("a").a("href", "/traffic-stop?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
 							e("i").a("class", "fas fa-minus-square ").f().g("i");
 						} g("a");
 					}
 
-					{ e("a").a("href", "/api/traffic-stop?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
+					{ e("a").a("href", "/traffic-stop?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
 						e("i").a("class", "fas fa-plus-square ").f().g("i");
 					} g("a");
 
 					if(start3 >= num) {
 						e("i").a("class", "fas fa-arrow-square-right w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/traffic-stop?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
+						{ e("a").a("href", "/traffic-stop?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-right ").f().g("i");
 						} g("a");
 					}
@@ -428,7 +520,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			TrafficStop o = listTrafficStop.getList().get(i);
 			Map<String, List<String>> highlights = highlighting == null ? null : highlighting.get(o.getId());
 			List<String> highlightList = highlights == null ? null : highlights.get(highlights.keySet().stream().findFirst().orElse(null));
-			String uri = "/api/traffic-stop/" + o.getPk();
+			String uri = "/traffic-stop/" + o.getPk();
 			{ e("tr").f();
 				if(getColumnCreated()) {
 					{ e("td").f();
@@ -502,6 +594,108 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 				siteRequest_.getUserResourceRoles().contains("SiteAdmin")
 				|| siteRequest_.getUserRealmRoles().contains("SiteAdmin")
 				) {
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+				.a("onclick", "$('#putimportTrafficStopModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-file-import ").f().g("i");
+				sx("Import traffic stops");
+			} g("button");
+			{ e("div").a("id", "putimportTrafficStopModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-green ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putimportTrafficStopModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Import traffic stops").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putimportTrafficStopFormValues").f();
+							TrafficStop o = new TrafficStop();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putimportTrafficStopForm").f();
+								htmlFormPUTImportTrafficStop(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
+								.a("onclick", "putimportTrafficStop($('#putimportTrafficStopForm')); ")
+								.f().sx("Import traffic stops")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+				.a("onclick", "$('#putmergeTrafficStopModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-code-merge ").f().g("i");
+				sx("Merge traffic stops");
+			} g("button");
+			{ e("div").a("id", "putmergeTrafficStopModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-green ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putmergeTrafficStopModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Merge traffic stops").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putmergeTrafficStopFormValues").f();
+							TrafficStop o = new TrafficStop();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putmergeTrafficStopForm").f();
+								htmlFormPUTMergeTrafficStop(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
+								.a("onclick", "putmergeTrafficStop($('#putmergeTrafficStopForm')); ")
+								.f().sx("Merge traffic stops")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+				.a("onclick", "$('#putcopyTrafficStopModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-copy ").f().g("i");
+				sx("Duplicate traffic stops");
+			} g("button");
+			{ e("div").a("id", "putcopyTrafficStopModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-green ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putcopyTrafficStopModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Duplicate traffic stops").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putcopyTrafficStopFormValues").f();
+							TrafficStop o = new TrafficStop();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putcopyTrafficStopForm").f();
+								htmlFormPUTCopyTrafficStop(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
+								.a("onclick", "putcopyTrafficStop($('#putcopyTrafficStopForm'), ", trafficStop_ == null ? "null" : trafficStop_.getPk(), "); ")
+								.f().sx("Duplicate traffic stops")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
 
 			{ e("button")
 				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
@@ -651,14 +845,14 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficStop")
 					.a("id", "suggestTrafficStop", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficStopObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListTrafficStop", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
-					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/api/traffic-stop?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
+					.a("oninput", "suggestTrafficStopObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficStopCompleteName' } ], $('#suggestListTrafficStop", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/traffic-stop?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficStop != null)
 					p.a("value", query2);
 				p.fg();
 				{ p.e("button")
 					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-					.a("onclick", "window.location.href = '/api/traffic-stop?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
+					.a("onclick", "window.location.href = '/traffic-stop?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
 					.f();
 					p.e("i").a("class", "fas fa-search ").f().g("i");
 				} p.g("button");
@@ -671,7 +865,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 				} p.g("div");
 			} p.g("div");
 			{ p.e("div").a("class", "").f();
-				{ p.e("a").a("href", "/api/traffic-stop").a("class", "").f();
+				{ p.e("a").a("href", "/traffic-stop").a("class", "").f();
 					p.e("i").a("class", "far fa-newspaper ").f().g("i");
 					p.sx("see all the traffic stops");
 				} p.g("a");

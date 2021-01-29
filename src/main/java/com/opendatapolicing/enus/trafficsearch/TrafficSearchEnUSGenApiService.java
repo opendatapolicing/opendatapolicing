@@ -32,14 +32,14 @@ public interface TrafficSearchEnUSGenApiService {
 		return new TrafficSearchEnUSGenApiServiceVertxEBProxy(vertx, address);
 	}
 
-	public void putimport.enusTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void putmerge.enusTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void putcopy.enusTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putimportTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putmergeTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void putcopyTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void postTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void patchTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void get.enusTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void getTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 	public void searchTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void adminsearch.enusTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusTrafficSearchId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
-	public void searchpage.enusTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void adminsearchTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageTrafficSearchId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
+	public void searchpageTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler);
 }

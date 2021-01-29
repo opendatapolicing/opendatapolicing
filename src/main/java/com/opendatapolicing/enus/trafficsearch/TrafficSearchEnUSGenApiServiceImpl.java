@@ -1,5 +1,9 @@
 package com.opendatapolicing.enus.trafficsearch;
 
+import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.trafficperson.TrafficPerson;
+import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.searchbasis.SearchBasis;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
@@ -99,189 +103,1084 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		this.siteContext = siteContext;
 	}
 
-	// PUTImport.enUS //
+	// PUTImport //
 
 	@Override
-	public void putimport.enusTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putimportTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("PUTImport.enUS");
+		siteRequest.setRequestUri("/api/traffic-search/import");
+		siteRequest.setRequestMethod("PUTImport");
 		try {
-			LOGGER.info(String.format("putimport.enusTrafficSearch started. "));
-			{
+			LOGGER.info(String.format("putimportTrafficSearch started. "));
+
+			List<String> roles = Arrays.asList("SiteService");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					) {
+				eventHandler.handle(Future.succeededFuture(
+					new OperationResponse(401, "UNAUTHORIZED", 
+						Buffer.buffer().appendString(
+							new JsonObject()
+								.put("errorCode", "401")
+								.put("errorMessage", "roles required: " + String.join(", ", roles))
+								.encodePrettily()
+							), new CaseInsensitiveHeaders()
+					)
+				));
+			} else {
+
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
-						putimport.enusTrafficSearchResponse(siteRequest, c -> {
+						putimportTrafficSearchResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
-								LOGGER.info(String.format("putimport.enusTrafficSearch succeeded. "));
+								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+								workerExecutor.executeBlocking(
+									blockingCodeHandler -> {
+										try {
+											ApiRequest apiRequest = new ApiRequest();
+											JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
+											apiRequest.setRows(jsonArray.size());
+											apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
+											apiRequest.setNumPATCH(0L);
+											apiRequest.initDeepApiRequest(siteRequest);
+											siteRequest.setApiRequest_(apiRequest);
+											siteRequest.getVertx().eventBus().publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
+											varsTrafficSearch(siteRequest, d -> {
+												if(d.succeeded()) {
+													listPUTImportTrafficSearch(apiRequest, siteRequest, e -> {
+														if(e.succeeded()) {
+															putimportTrafficSearchResponse(siteRequest, f -> {
+																if(e.succeeded()) {
+																	LOGGER.info(String.format("putimportTrafficSearch succeeded. "));
+																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
+																} else {
+																	LOGGER.error(String.format("putimportTrafficSearch failed. ", f.cause()));
+																	errorTrafficSearch(siteRequest, null, f);
+																}
+															});
+														} else {
+															LOGGER.error(String.format("putimportTrafficSearch failed. ", e.cause()));
+															errorTrafficSearch(siteRequest, null, e);
+														}
+													});
+												} else {
+													LOGGER.error(String.format("putimportTrafficSearch failed. ", d.cause()));
+													errorTrafficSearch(siteRequest, null, d);
+												}
+											});
+										} catch(Exception ex) {
+											LOGGER.error(String.format("putimportTrafficSearch failed. ", ex));
+											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
+										}
+									}, resultHandler -> {
+									}
+								);
 							} else {
-								LOGGER.error(String.format("putimport.enusTrafficSearch failed. ", c.cause()));
+								LOGGER.error(String.format("putimportTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("putimport.enusTrafficSearch failed. ", b.cause()));
+						LOGGER.error(String.format("putimportTrafficSearch failed. ", b.cause()));
 						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
 				});
 			}
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putimport.enusTrafficSearch failed. ", ex));
+			LOGGER.error(String.format("putimportTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
 		}
 	}
 
 
-	public void putimport.enusTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTImportTrafficSearch(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		List<Future> futures = new ArrayList<>();
+		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
-			response200PUTImport.enUSTrafficSearch(siteRequest, a -> {
+			jsonArray.forEach(obj -> {
+				JsonObject json = (JsonObject)obj;
+
+				json.put("inheritPk", json.getValue("pk"));
+
+				json.put("created", json.getValue("created"));
+
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), json);
+				siteRequest2.setApiRequest_(apiRequest);
+				siteRequest2.setRequestVars(siteRequest.getRequestVars());
+
+				SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+				searchList.setStore(true);
+				searchList.setQuery("*:*");
+				searchList.setC(TrafficSearch.class);
+				searchList.addFilterQuery("deleted_indexed_boolean:false");
+				searchList.addFilterQuery("archived_indexed_boolean:false");
+				searchList.addFilterQuery("inheritPk_indexed_long:" + json.getString("pk"));
+				searchList.initDeepForClass(siteRequest2);
+
+				if(searchList.size() == 1) {
+					TrafficSearch o = searchList.getList().stream().findFirst().orElse(null);
+					JsonObject json2 = new JsonObject();
+					for(String f : json.fieldNames()) {
+						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
+					}
+					if(o != null) {
+						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+							if(!json.fieldNames().contains(f))
+								json2.putNull("set" + StringUtils.capitalize(f));
+						}
+						siteRequest2.setJsonObject(json2);
+						futures.add(
+							patchTrafficSearchFuture(o, true, a -> {
+								if(a.succeeded()) {
+								} else {
+									LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
+									errorTrafficSearch(siteRequest2, eventHandler, a);
+								}
+							})
+						);
+					}
+				} else {
+					futures.add(
+						postTrafficSearchFuture(siteRequest2, true, a -> {
+							if(a.succeeded()) {
+							} else {
+								LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
+								errorTrafficSearch(siteRequest2, eventHandler, a);
+							}
+						})
+					);
+				}
+			});
+			CompositeFuture.all(futures).setHandler( a -> {
+				if(a.succeeded()) {
+					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+					response200PUTImportTrafficSearch(siteRequest, eventHandler);
+				} else {
+					LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
+					errorTrafficSearch(apiRequest.getSiteRequest_(), eventHandler, a);
+				}
+			});
+		} catch(Exception ex) {
+			LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", ex));
+			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
+		}
+	}
+
+	public void putimportTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			response200PUTImportTrafficSearch(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putimport.enusTrafficSearchResponse failed. ", a.cause()));
+					LOGGER.error(String.format("putimportTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putimport.enusTrafficSearchResponse failed. ", ex));
+			LOGGER.error(String.format("putimportTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTImport.enUSTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTImportTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
 			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTImport.enUSTrafficSearch failed. ", e));
+			LOGGER.error(String.format("response200PUTImportTrafficSearch failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	// PUTMerge.enUS //
+	// PUTMerge //
 
 	@Override
-	public void putmerge.enusTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putmergeTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("PUTMerge.enUS");
+		siteRequest.setRequestUri("/api/traffic-search/merge");
+		siteRequest.setRequestMethod("PUTMerge");
 		try {
-			LOGGER.info(String.format("putmerge.enusTrafficSearch started. "));
-			{
+			LOGGER.info(String.format("putmergeTrafficSearch started. "));
+
+			List<String> roles = Arrays.asList("SiteService");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					) {
+				eventHandler.handle(Future.succeededFuture(
+					new OperationResponse(401, "UNAUTHORIZED", 
+						Buffer.buffer().appendString(
+							new JsonObject()
+								.put("errorCode", "401")
+								.put("errorMessage", "roles required: " + String.join(", ", roles))
+								.encodePrettily()
+							), new CaseInsensitiveHeaders()
+					)
+				));
+			} else {
+
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
-						putmerge.enusTrafficSearchResponse(siteRequest, c -> {
+						putmergeTrafficSearchResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
-								LOGGER.info(String.format("putmerge.enusTrafficSearch succeeded. "));
+								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+								workerExecutor.executeBlocking(
+									blockingCodeHandler -> {
+										try {
+											ApiRequest apiRequest = new ApiRequest();
+											JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
+											apiRequest.setRows(jsonArray.size());
+											apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
+											apiRequest.setNumPATCH(0L);
+											apiRequest.initDeepApiRequest(siteRequest);
+											siteRequest.setApiRequest_(apiRequest);
+											siteRequest.getVertx().eventBus().publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
+											varsTrafficSearch(siteRequest, d -> {
+												if(d.succeeded()) {
+													listPUTMergeTrafficSearch(apiRequest, siteRequest, e -> {
+														if(e.succeeded()) {
+															putmergeTrafficSearchResponse(siteRequest, f -> {
+																if(e.succeeded()) {
+																	LOGGER.info(String.format("putmergeTrafficSearch succeeded. "));
+																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
+																} else {
+																	LOGGER.error(String.format("putmergeTrafficSearch failed. ", f.cause()));
+																	errorTrafficSearch(siteRequest, null, f);
+																}
+															});
+														} else {
+															LOGGER.error(String.format("putmergeTrafficSearch failed. ", e.cause()));
+															errorTrafficSearch(siteRequest, null, e);
+														}
+													});
+												} else {
+													LOGGER.error(String.format("putmergeTrafficSearch failed. ", d.cause()));
+													errorTrafficSearch(siteRequest, null, d);
+												}
+											});
+										} catch(Exception ex) {
+											LOGGER.error(String.format("putmergeTrafficSearch failed. ", ex));
+											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
+										}
+									}, resultHandler -> {
+									}
+								);
 							} else {
-								LOGGER.error(String.format("putmerge.enusTrafficSearch failed. ", c.cause()));
+								LOGGER.error(String.format("putmergeTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("putmerge.enusTrafficSearch failed. ", b.cause()));
+						LOGGER.error(String.format("putmergeTrafficSearch failed. ", b.cause()));
 						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
 				});
 			}
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putmerge.enusTrafficSearch failed. ", ex));
+			LOGGER.error(String.format("putmergeTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
 		}
 	}
 
 
-	public void putmerge.enusTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTMergeTrafficSearch(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		List<Future> futures = new ArrayList<>();
+		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
-			response200PUTMerge.enUSTrafficSearch(siteRequest, a -> {
+			jsonArray.forEach(obj -> {
+				JsonObject json = (JsonObject)obj;
+
+				json.put("inheritPk", json.getValue("pk"));
+
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), json);
+				siteRequest2.setApiRequest_(apiRequest);
+				siteRequest2.setRequestVars(siteRequest.getRequestVars());
+
+				SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+				searchList.setStore(true);
+				searchList.setQuery("*:*");
+				searchList.setC(TrafficSearch.class);
+				searchList.addFilterQuery("deleted_indexed_boolean:false");
+				searchList.addFilterQuery("archived_indexed_boolean:false");
+				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
+				searchList.initDeepForClass(siteRequest2);
+
+				if(searchList.size() == 1) {
+					TrafficSearch o = searchList.getList().stream().findFirst().orElse(null);
+					JsonObject json2 = new JsonObject();
+					for(String f : json.fieldNames()) {
+						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
+					}
+					if(o != null) {
+						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+							if(!json.fieldNames().contains(f))
+								json2.putNull("set" + StringUtils.capitalize(f));
+						}
+						siteRequest2.setJsonObject(json2);
+						futures.add(
+							patchTrafficSearchFuture(o, false, a -> {
+								if(a.succeeded()) {
+								} else {
+									LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
+									errorTrafficSearch(siteRequest2, eventHandler, a);
+								}
+							})
+						);
+					}
+				} else {
+					futures.add(
+						postTrafficSearchFuture(siteRequest2, false, a -> {
+							if(a.succeeded()) {
+							} else {
+								LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
+								errorTrafficSearch(siteRequest2, eventHandler, a);
+							}
+						})
+					);
+				}
+			});
+			CompositeFuture.all(futures).setHandler( a -> {
+				if(a.succeeded()) {
+					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+					response200PUTMergeTrafficSearch(siteRequest, eventHandler);
+				} else {
+					LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
+					errorTrafficSearch(apiRequest.getSiteRequest_(), eventHandler, a);
+				}
+			});
+		} catch(Exception ex) {
+			LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", ex));
+			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
+		}
+	}
+
+	public void putmergeTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			response200PUTMergeTrafficSearch(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putmerge.enusTrafficSearchResponse failed. ", a.cause()));
+					LOGGER.error(String.format("putmergeTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putmerge.enusTrafficSearchResponse failed. ", ex));
+			LOGGER.error(String.format("putmergeTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTMerge.enUSTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTMergeTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
 			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTMerge.enUSTrafficSearch failed. ", e));
+			LOGGER.error(String.format("response200PUTMergeTrafficSearch failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	// PUTCopy.enUS //
+	// PUTCopy //
 
 	@Override
-	public void putcopy.enusTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putcopyTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("PUTCopy.enUS");
+		siteRequest.setRequestUri("/api/traffic-search/copy");
+		siteRequest.setRequestMethod("PUTCopy");
 		try {
-			LOGGER.info(String.format("putcopy.enusTrafficSearch started. "));
-			{
+			LOGGER.info(String.format("putcopyTrafficSearch started. "));
+
+			List<String> roles = Arrays.asList("SiteService");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					) {
+				eventHandler.handle(Future.succeededFuture(
+					new OperationResponse(401, "UNAUTHORIZED", 
+						Buffer.buffer().appendString(
+							new JsonObject()
+								.put("errorCode", "401")
+								.put("errorMessage", "roles required: " + String.join(", ", roles))
+								.encodePrettily()
+							), new CaseInsensitiveHeaders()
+					)
+				));
+			} else {
+
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
-						putcopy.enusTrafficSearchResponse(siteRequest, c -> {
+						putcopyTrafficSearchResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
-								LOGGER.info(String.format("putcopy.enusTrafficSearch succeeded. "));
+								WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+								workerExecutor.executeBlocking(
+									blockingCodeHandler -> {
+										try {
+											aSearchTrafficSearch(siteRequest, false, true, true, "/api/traffic-search/copy", "PUTCopy", d -> {
+												if(d.succeeded()) {
+													SearchList<TrafficSearch> listTrafficSearch = d.result();
+													ApiRequest apiRequest = new ApiRequest();
+													apiRequest.setRows(listTrafficSearch.getRows());
+													apiRequest.setNumFound(listTrafficSearch.getQueryResponse().getResults().getNumFound());
+													apiRequest.setNumPATCH(0L);
+													apiRequest.initDeepApiRequest(siteRequest);
+													siteRequest.setApiRequest_(apiRequest);
+													siteRequest.getVertx().eventBus().publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
+													try {
+														listPUTCopyTrafficSearch(apiRequest, listTrafficSearch, e -> {
+															if(e.succeeded()) {
+																putcopyTrafficSearchResponse(siteRequest, f -> {
+																	if(f.succeeded()) {
+																		LOGGER.info(String.format("putcopyTrafficSearch succeeded. "));
+																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
+																	} else {
+																		LOGGER.error(String.format("putcopyTrafficSearch failed. ", f.cause()));
+																		errorTrafficSearch(siteRequest, null, f);
+																	}
+																});
+															} else {
+																LOGGER.error(String.format("putcopyTrafficSearch failed. ", e.cause()));
+																errorTrafficSearch(siteRequest, null, e);
+															}
+														});
+													} catch(Exception ex) {
+														LOGGER.error(String.format("putcopyTrafficSearch failed. ", ex));
+														errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
+													}
+												} else {
+													LOGGER.error(String.format("putcopyTrafficSearch failed. ", d.cause()));
+													errorTrafficSearch(siteRequest, null, d);
+												}
+											});
+										} catch(Exception ex) {
+											LOGGER.error(String.format("putcopyTrafficSearch failed. ", ex));
+											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
+										}
+									}, resultHandler -> {
+									}
+								);
 							} else {
-								LOGGER.error(String.format("putcopy.enusTrafficSearch failed. ", c.cause()));
+								LOGGER.error(String.format("putcopyTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("putcopy.enusTrafficSearch failed. ", b.cause()));
+						LOGGER.error(String.format("putcopyTrafficSearch failed. ", b.cause()));
 						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
 				});
 			}
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopy.enusTrafficSearch failed. ", ex));
+			LOGGER.error(String.format("putcopyTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
 		}
 	}
 
 
-	public Future<TrafficSearch> putcopy.enusTrafficSearchFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject, Handler<AsyncResult<TrafficSearch>> eventHandler) {
+	public void listPUTCopyTrafficSearch(ApiRequest apiRequest, SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		List<Future> futures = new ArrayList<>();
+		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
+		listTrafficSearch.getList().forEach(o -> {
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
+			o.setSiteRequest_(siteRequest2);
+			futures.add(
+				putcopyTrafficSearchFuture(siteRequest2, JsonObject.mapFrom(o), a -> {
+					if(a.succeeded()) {
+					} else {
+						LOGGER.error(String.format("listPUTCopyTrafficSearch failed. ", a.cause()));
+						errorTrafficSearch(siteRequest, eventHandler, a);
+					}
+				})
+			);
+		});
+		CompositeFuture.all(futures).setHandler( a -> {
+			if(a.succeeded()) {
+				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listTrafficSearch.size());
+				if(listTrafficSearch.next()) {
+					listPUTCopyTrafficSearch(apiRequest, listTrafficSearch, eventHandler);
+				} else {
+					response200PUTCopyTrafficSearch(siteRequest, eventHandler);
+				}
+			} else {
+				LOGGER.error(String.format("listPUTCopyTrafficSearch failed. ", a.cause()));
+				errorTrafficSearch(listTrafficSearch.getSiteRequest_(), eventHandler, a);
+			}
+		});
+	}
+
+	public Future<TrafficSearch> putcopyTrafficSearchFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject, Handler<AsyncResult<TrafficSearch>> eventHandler) {
 		Promise<TrafficSearch> promise = Promise.promise();
 		try {
+
+			jsonObject.put("saves", Optional.ofNullable(jsonObject.getJsonArray("saves")).orElse(new JsonArray()));
+			JsonObject jsonPatch = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonObject("patch")).orElse(new JsonObject());
+			jsonPatch.stream().forEach(o -> {
+				if(o.getValue() == null)
+					jsonObject.remove(o.getKey());
+				else
+					jsonObject.put(o.getKey(), o.getValue());
+				jsonObject.getJsonArray("saves").add(o.getKey());
+			});
+
+			sqlConnectionTrafficSearch(siteRequest, a -> {
+				if(a.succeeded()) {
+					sqlTransactionTrafficSearch(siteRequest, b -> {
+						if(b.succeeded()) {
+							createTrafficSearch(siteRequest, c -> {
+								if(c.succeeded()) {
+									TrafficSearch trafficSearch = c.result();
+									sqlPUTCopyTrafficSearch(trafficSearch, jsonObject, d -> {
+										if(d.succeeded()) {
+											defineIndexTrafficSearch(trafficSearch, e -> {
+												if(e.succeeded()) {
+													ApiRequest apiRequest = siteRequest.getApiRequest_();
+													if(apiRequest != null) {
+														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+														if(apiRequest.getNumFound() == 1L) {
+															trafficSearch.apiRequestTrafficSearch();
+														}
+														siteRequest.getVertx().eventBus().publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
+													}
+													eventHandler.handle(Future.succeededFuture(trafficSearch));
+													promise.complete(trafficSearch);
+												} else {
+													LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", e.cause()));
+													eventHandler.handle(Future.failedFuture(e.cause()));
+												}
+											});
+										} else {
+											LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", d.cause()));
+											eventHandler.handle(Future.failedFuture(d.cause()));
+										}
+									});
+								} else {
+									LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", c.cause()));
+									eventHandler.handle(Future.failedFuture(c.cause()));
+								}
+							});
+						} else {
+							LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", b.cause()));
+							eventHandler.handle(Future.failedFuture(b.cause()));
+						}
+					});
+				} else {
+					LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", a.cause()));
+					eventHandler.handle(Future.failedFuture(a.cause()));
+				}
+			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("putcopy.enusTrafficSearchFuture failed. ", e));
+			LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", e));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
 	}
 
-	public void putcopy.enusTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPUTCopyTrafficSearch(TrafficSearch o, JsonObject jsonObject, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
-			response200PUTCopy.enUSTrafficSearch(siteRequest, a -> {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
+			ApiRequest apiRequest = siteRequest.getApiRequest_();
+			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
+			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
+			Transaction tx = siteRequest.getTx();
+			Long pk = o.getPk();
+			List<Future> futures = new ArrayList<>();
+
+			if(jsonObject != null) {
+				JsonArray entityVars = jsonObject.getJsonArray("saves");
+				for(Integer i = 0; i < entityVars.size(); i++) {
+					String entityVar = entityVars.getString(i);
+					switch(entityVar) {
+					case "inheritPk":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.inheritPk failed", b.cause())));
+							});
+						}));
+						break;
+					case "archived":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.archived failed", b.cause())));
+							});
+						}));
+						break;
+					case "deleted":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.deleted failed", b.cause())));
+							});
+						}));
+						break;
+					case "personKey":
+							{
+						Long l = Long.parseLong(jsonObject.getString(entityVar));
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_addA
+									, Tuple.of(pk, "personKey", l, "trafficSearchKeys")
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
+							});
+						}));
+						}
+						break;
+					case "searchBasisKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_addA
+										, Tuple.of(pk, "searchBasisKeys", l, "searchKey")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+								});
+							}));
+							if(!pks.contains(l)) {
+								pks.add(l);
+								classes.add("SearchBasis");
+							}
+						}
+						break;
+					case "stopAgencyTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopDateTime":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPurposeNum":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPurposeTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopActionNum":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopActionTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopDriverArrest":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPassengerArrest":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopEncounterForce":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopEngageForce":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopOfficerInjury":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopDriverInjury":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPassengerInjury":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopOfficerId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopLocationId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopCityId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personTypeId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personGenderId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personEthnicityId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personRaceId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchTypeNum":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchTypeTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchTypeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchVehicle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchVehicle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchDriver":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchDriver", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchPassenger":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchPassenger", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchProperty":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchProperty", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchVehicleSiezed":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchVehicleSiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchPersonalPropertySiezed":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchPersonalPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchOtherPropertySiezed":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchOtherPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
+							});
+						}));
+						break;
+					}
+				}
+			}
+			CompositeFuture.all(futures).setHandler( a -> {
+				if(a.succeeded()) {
+					eventHandler.handle(Future.succeededFuture());
+				} else {
+					LOGGER.error(String.format("sqlPUTCopyTrafficSearch failed. ", a.cause()));
+					eventHandler.handle(Future.failedFuture(a.cause()));
+				}
+			});
+		} catch(Exception e) {
+			LOGGER.error(String.format("sqlPUTCopyTrafficSearch failed. ", e));
+			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+
+	public void putcopyTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		try {
+			response200PUTCopyTrafficSearch(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putcopy.enusTrafficSearchResponse failed. ", a.cause()));
+					LOGGER.error(String.format("putcopyTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopy.enusTrafficSearchResponse failed. ", ex));
+			LOGGER.error(String.format("putcopyTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTCopy.enUSTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTCopyTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
 			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTCopy.enUSTrafficSearch failed. ", e));
+			LOGGER.error(String.format("response200PUTCopyTrafficSearch failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -295,7 +1194,24 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		siteRequest.setRequestMethod("POST");
 		try {
 			LOGGER.info(String.format("postTrafficSearch started. "));
-			{
+
+			List<String> roles = Arrays.asList("SiteService");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					) {
+				eventHandler.handle(Future.succeededFuture(
+					new OperationResponse(401, "UNAUTHORIZED", 
+						Buffer.buffer().appendString(
+							new JsonObject()
+								.put("errorCode", "401")
+								.put("errorMessage", "roles required: " + String.join(", ", roles))
+								.encodePrettily()
+							), new CaseInsensitiveHeaders()
+					)
+				));
+			} else {
+
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
 						ApiRequest apiRequest = new ApiRequest();
@@ -484,6 +1400,448 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							});
 						}));
 						break;
+					case "personKey":
+						{
+							Long l = Long.parseLong(jsonObject.getString(entityVar));
+							if(l != null) {
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(TrafficPerson.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "personKey", l2, "trafficSearchKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("TrafficPerson");
+									}
+								}
+							}
+						}
+						break;
+					case "searchBasisKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							if(l != null) {
+								SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(SearchBasis.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SearchBasis");
+									}
+								}
+							}
+						}
+						break;
+					case "stopAgencyTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopDateTime":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPurposeNum":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPurposeTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopActionNum":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopActionTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopDriverArrest":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPassengerArrest":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopEncounterForce":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopEngageForce":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopOfficerInjury":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopDriverInjury":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopPassengerInjury":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopOfficerId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopLocationId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopCityId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personTypeId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personGenderId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personEthnicityId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
+							});
+						}));
+						break;
+					case "personRaceId":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchTypeNum":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchTypeTitle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchTypeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchVehicle":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchVehicle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchDriver":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchDriver", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchPassenger":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchPassenger", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchProperty":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchProperty", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchVehicleSiezed":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchVehicleSiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchPersonalPropertySiezed":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchPersonalPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
+							});
+						}));
+						break;
+					case "searchOtherPropertySiezed":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "searchOtherPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
+							});
+						}));
+						break;
 					}
 				}
 			}
@@ -537,7 +1895,24 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		siteRequest.setRequestMethod("PATCH");
 		try {
 			LOGGER.info(String.format("patchTrafficSearch started. "));
-			{
+
+			List<String> roles = Arrays.asList("SiteService");
+			if(
+					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					) {
+				eventHandler.handle(Future.succeededFuture(
+					new OperationResponse(401, "UNAUTHORIZED", 
+						Buffer.buffer().appendString(
+							new JsonObject()
+								.put("errorCode", "401")
+								.put("errorMessage", "roles required: " + String.join(", ", roles))
+								.encodePrettily()
+							), new CaseInsensitiveHeaders()
+					)
+				));
+			} else {
+
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
 						patchTrafficSearchResponse(siteRequest, c -> {
@@ -547,20 +1922,18 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchTrafficSearch(siteRequest, false, true, "/api/traffic-search", "PATCH", d -> {
+											aSearchTrafficSearch(siteRequest, false, true, true, "/api/traffic-search", "PATCH", d -> {
 												if(d.succeeded()) {
 													SearchList<TrafficSearch> listTrafficSearch = d.result();
 
-													if(listTrafficSearch.getQueryResponse().getResults().getNumFound() > 1) {
-														List<String> roles2 = Arrays.asList("SiteAdmin");
-														if(
-																!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-																&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-																) {
-															String message = String.format("roles required: " + String.join(", ", roles2));
-															LOGGER.error(message);
-															errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(message));
-														}
+													List<String> roles2 = Arrays.asList("SiteAdmin");
+													if(listTrafficSearch.getQueryResponse().getResults().getNumFound() > 1
+															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+															) {
+														String message = String.format("roles required: " + String.join(", ", roles2));
+														LOGGER.error(message);
+														errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(message));
 													} else {
 
 														ApiRequest apiRequest = new ApiRequest();
@@ -843,6 +2216,1044 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							}));
 						}
 						break;
+					case "setPersonKey":
+						{
+							o2.setPersonKey(jsonObject.getString(methodName));
+							Long l = o2.getPersonKey();
+							if(l != null) {
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(TrafficPerson.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !l2.equals(o.getPersonKey())) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "personKey", l2, "trafficSearchKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("TrafficPerson");
+									}
+								}
+							}
+						}
+						break;
+					case "removePersonKey":
+						{
+							o2.setPersonKey(jsonObject.getString(methodName));
+							Long l = o2.getPersonKey();
+							if(l != null) {
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(TrafficPerson.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(pk, "personKey", l2, "trafficSearchKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("TrafficPerson");
+									}
+								}
+							}
+						}
+						break;
+					case "addSearchBasisKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(SearchBasis.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SearchBasis");
+									}
+								}
+							}
+						}
+						break;
+					case "addAllSearchBasisKeys":
+						JsonArray addAllSearchBasisKeysValues = jsonObject.getJsonArray(methodName);
+						if(addAllSearchBasisKeysValues != null) {
+							for(Integer i = 0; i <  addAllSearchBasisKeysValues.size(); i++) {
+								Long l = Long.parseLong(addAllSearchBasisKeysValues.getString(i));
+								if(l != null) {
+									SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(SearchBasis.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("SearchBasis");
+										}
+									}
+								}
+							}
+						}
+						break;
+					case "setSearchBasisKeys":
+						JsonArray setSearchBasisKeysValues = jsonObject.getJsonArray(methodName);
+						JsonArray setSearchBasisKeysValues2 = new JsonArray();
+						if(setSearchBasisKeysValues != null) {
+							for(Integer i = 0; i <  setSearchBasisKeysValues.size(); i++) {
+								Long l = Long.parseLong(setSearchBasisKeysValues.getString(i));
+								if(l != null) {
+									SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(SearchBasis.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null)
+										setSearchBasisKeysValues2.add(l2);
+									if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("SearchBasis");
+										}
+									}
+								}
+							}
+						}
+						if(o.getSearchBasisKeys() != null) {
+							for(Long l :  o.getSearchBasisKeys()) {
+								if(l != null && (setSearchBasisKeysValues2 == null || !setSearchBasisKeysValues2.contains(l))) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(pk, "searchBasisKeys", l, "searchKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+										});
+									}));
+								}
+							}
+						}
+						break;
+					case "removeSearchBasisKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(SearchBasis.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && o.getSearchBasisKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SearchBasis");
+									}
+								}
+							}
+						}
+						break;
+					case "setStopAgencyTitle":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopAgencyTitle")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopAgencyTitle(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopAgencyTitle", o2.jsonStopAgencyTitle())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopDateTime":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopDateTime")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopDateTime(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopDateTime", o2.jsonStopDateTime())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopPurposeNum":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopPurposeNum")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopPurposeNum(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopPurposeNum", o2.jsonStopPurposeNum())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopPurposeTitle":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopPurposeTitle")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopPurposeTitle(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopPurposeTitle", o2.jsonStopPurposeTitle())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopActionNum":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopActionNum")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopActionNum(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopActionNum", o2.jsonStopActionNum())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopActionTitle":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopActionTitle")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopActionTitle(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopActionTitle", o2.jsonStopActionTitle())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopDriverArrest":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopDriverArrest")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopDriverArrest(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopDriverArrest", o2.jsonStopDriverArrest())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopPassengerArrest":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopPassengerArrest")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopPassengerArrest(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopPassengerArrest", o2.jsonStopPassengerArrest())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopEncounterForce":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopEncounterForce")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopEncounterForce(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopEncounterForce", o2.jsonStopEncounterForce())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopEngageForce":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopEngageForce")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopEngageForce(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopEngageForce", o2.jsonStopEngageForce())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopOfficerInjury":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopOfficerInjury")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopOfficerInjury(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopOfficerInjury", o2.jsonStopOfficerInjury())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopDriverInjury":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopDriverInjury")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopDriverInjury(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopDriverInjury", o2.jsonStopDriverInjury())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopPassengerInjury":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopPassengerInjury")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopPassengerInjury(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopPassengerInjury", o2.jsonStopPassengerInjury())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopOfficerId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopOfficerId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopOfficerId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopOfficerId", o2.jsonStopOfficerId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopLocationId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopLocationId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopLocationId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopLocationId", o2.jsonStopLocationId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopCityId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "stopCityId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopCityId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "stopCityId", o2.jsonStopCityId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setPersonTypeId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "personTypeId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPersonTypeId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "personTypeId", o2.jsonPersonTypeId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setPersonGenderId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "personGenderId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPersonGenderId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "personGenderId", o2.jsonPersonGenderId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setPersonEthnicityId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "personEthnicityId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPersonEthnicityId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "personEthnicityId", o2.jsonPersonEthnicityId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setPersonRaceId":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "personRaceId")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPersonRaceId(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "personRaceId", o2.jsonPersonRaceId())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchTypeNum":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchTypeNum")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchTypeNum(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchTypeNum", o2.jsonSearchTypeNum())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchTypeTitle":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchTypeTitle")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchTypeTitle(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchTypeTitle", o2.jsonSearchTypeTitle())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchVehicle":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchVehicle")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchVehicle(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchVehicle", o2.jsonSearchVehicle())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchDriver":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchDriver")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchDriver(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchDriver", o2.jsonSearchDriver())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchPassenger":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchPassenger")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchPassenger(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchPassenger", o2.jsonSearchPassenger())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchProperty":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchProperty")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchProperty(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchProperty", o2.jsonSearchProperty())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchVehicleSiezed":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchVehicleSiezed")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchVehicleSiezed(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchVehicleSiezed", o2.jsonSearchVehicleSiezed())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchPersonalPropertySiezed":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchPersonalPropertySiezed")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchPersonalPropertySiezed(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchPersonalPropertySiezed", o2.jsonSearchPersonalPropertySiezed())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setSearchOtherPropertySiezed":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "searchOtherPropertySiezed")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setSearchOtherPropertySiezed(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "searchOtherPropertySiezed", o2.jsonSearchOtherPropertySiezed())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
+								});
+							}));
+						}
+						break;
 				}
 			}
 			CompositeFuture.all(futures).setHandler( a -> {
@@ -887,64 +3298,64 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		}
 	}
 
-	// GET.enUS //
+	// GET //
 
 	@Override
-	public void get.enusTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void getTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest);
 		siteRequest.setRequestUri("/api/traffic-search/{id}");
-		siteRequest.setRequestMethod("GET.enUS");
+		siteRequest.setRequestMethod("GET");
 		try {
 			{
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchTrafficSearch(siteRequest, false, true, "/api/traffic-search/{id}", "GET.enUS", c -> {
+						aSearchTrafficSearch(siteRequest, false, true, false, "/api/traffic-search/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
-								get.enusTrafficSearchResponse(listTrafficSearch, d -> {
+								getTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("get.enusTrafficSearch succeeded. "));
+										LOGGER.info(String.format("getTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("get.enusTrafficSearch failed. ", d.cause()));
+										LOGGER.error(String.format("getTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("get.enusTrafficSearch failed. ", c.cause()));
+								LOGGER.error(String.format("getTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("get.enusTrafficSearch failed. ", b.cause()));
+						LOGGER.error(String.format("getTrafficSearch failed. ", b.cause()));
 						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
 				});
 			}
 		} catch(Exception ex) {
-			LOGGER.error(String.format("get.enusTrafficSearch failed. ", ex));
+			LOGGER.error(String.format("getTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
 		}
 	}
 
 
-	public void get.enusTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void getTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		try {
-			response200GET.enUSTrafficSearch(listTrafficSearch, a -> {
+			response200GETTrafficSearch(listTrafficSearch, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("get.enusTrafficSearchResponse failed. ", a.cause()));
+					LOGGER.error(String.format("getTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("get.enusTrafficSearchResponse failed. ", ex));
+			LOGGER.error(String.format("getTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200GET.enUSTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200GETTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 			SolrDocumentList solrDocuments = listTrafficSearch.getSolrDocumentList();
@@ -952,7 +3363,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			JsonObject json = JsonObject.mapFrom(listTrafficSearch.getList().stream().findFirst().orElse(null));
 			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200GET.enUSTrafficSearch failed. ", e));
+			LOGGER.error(String.format("response200GETTrafficSearch failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -968,7 +3379,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			{
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchTrafficSearch(siteRequest, false, true, "/api/traffic-search", "Search", c -> {
+						aSearchTrafficSearch(siteRequest, false, true, false, "/api/traffic-search", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
 								searchTrafficSearchResponse(listTrafficSearch, d -> {
@@ -1067,64 +3478,64 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		}
 	}
 
-	// AdminSearch.enUS //
+	// AdminSearch //
 
 	@Override
-	public void adminsearch.enusTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void adminsearchTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("AdminSearch.enUS");
+		siteRequest.setRequestUri("/api/admin/traffic-search");
+		siteRequest.setRequestMethod("AdminSearch");
 		try {
 			{
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchTrafficSearch(siteRequest, false, true, "/api/traffic-search", "AdminSearch.enUS", c -> {
+						aSearchTrafficSearch(siteRequest, false, true, false, "/api/admin/traffic-search", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
-								adminsearch.enusTrafficSearchResponse(listTrafficSearch, d -> {
+								adminsearchTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("adminsearch.enusTrafficSearch succeeded. "));
+										LOGGER.info(String.format("adminsearchTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("adminsearch.enusTrafficSearch failed. ", d.cause()));
+										LOGGER.error(String.format("adminsearchTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("adminsearch.enusTrafficSearch failed. ", c.cause()));
+								LOGGER.error(String.format("adminsearchTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("adminsearch.enusTrafficSearch failed. ", b.cause()));
+						LOGGER.error(String.format("adminsearchTrafficSearch failed. ", b.cause()));
 						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
 				});
 			}
 		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearch.enusTrafficSearch failed. ", ex));
+			LOGGER.error(String.format("adminsearchTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
 		}
 	}
 
 
-	public void adminsearch.enusTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void adminsearchTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		try {
-			response200AdminSearch.enUSTrafficSearch(listTrafficSearch, a -> {
+			response200AdminSearchTrafficSearch(listTrafficSearch, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("adminsearch.enusTrafficSearchResponse failed. ", a.cause()));
+					LOGGER.error(String.format("adminsearchTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearch.enusTrafficSearchResponse failed. ", ex));
+			LOGGER.error(String.format("adminsearchTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200AdminSearch.enUSTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200AdminSearchTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 			QueryResponse responseSearch = listTrafficSearch.getQueryResponse();
@@ -1172,79 +3583,79 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			}
 			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200AdminSearch.enUSTrafficSearch failed. ", e));
+			LOGGER.error(String.format("response200AdminSearchTrafficSearch failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	// SearchPage.enUS //
+	// SearchPage //
 
 	@Override
-	public void searchpage.enusTrafficSearchId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		searchpage.enusTrafficSearch(operationRequest, eventHandler);
+	public void searchpageTrafficSearchId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+		searchpageTrafficSearch(operationRequest, eventHandler);
 	}
 
 	@Override
-	public void searchpage.enusTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchpageTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("SearchPage.enUS");
+		siteRequest.setRequestUri("/traffic-search");
+		siteRequest.setRequestMethod("SearchPage");
 		try {
 			{
 				userTrafficSearch(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchTrafficSearch(siteRequest, false, true, "/api/traffic-search", "SearchPage.enUS", c -> {
+						aSearchTrafficSearch(siteRequest, false, true, false, "/traffic-search", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
-								searchpage.enusTrafficSearchResponse(listTrafficSearch, d -> {
+								searchpageTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchpage.enusTrafficSearch succeeded. "));
+										LOGGER.info(String.format("searchpageTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("searchpage.enusTrafficSearch failed. ", d.cause()));
+										LOGGER.error(String.format("searchpageTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("searchpage.enusTrafficSearch failed. ", c.cause()));
+								LOGGER.error(String.format("searchpageTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("searchpage.enusTrafficSearch failed. ", b.cause()));
+						LOGGER.error(String.format("searchpageTrafficSearch failed. ", b.cause()));
 						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
 				});
 			}
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpage.enusTrafficSearch failed. ", ex));
+			LOGGER.error(String.format("searchpageTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
 		}
 	}
 
 
-	public void searchpage.enusTrafficSearchPageInit(TrafficSearchPage page, SearchList<TrafficSearch> listTrafficSearch) {
+	public void searchpageTrafficSearchPageInit(TrafficSearchPage page, SearchList<TrafficSearch> listTrafficSearch) {
 	}
-	public void searchpage.enusTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchpageTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		try {
 			Buffer buffer = Buffer.buffer();
 			AllWriter w = AllWriter.create(siteRequest, buffer);
 			siteRequest.setW(w);
-			response200SearchPage.enUSTrafficSearch(listTrafficSearch, a -> {
+			response200SearchPageTrafficSearch(listTrafficSearch, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("searchpage.enusTrafficSearchResponse failed. ", a.cause()));
+					LOGGER.error(String.format("searchpageTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpage.enusTrafficSearchResponse failed. ", ex));
+			LOGGER.error(String.format("searchpageTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200SearchPage.enUSTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200SearchPageTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 			Buffer buffer = Buffer.buffer();
@@ -1254,7 +3665,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			CaseInsensitiveHeaders requestHeaders = new CaseInsensitiveHeaders();
 			siteRequest.setRequestHeaders(requestHeaders);
 
-			pageSolrDocument.setField("pageUri_frFR_stored_string", "/api/traffic-search");
+			pageSolrDocument.setField("pageUri_frFR_stored_string", "/traffic-search");
 			page.setPageSolrDocument(pageSolrDocument);
 			page.setW(w);
 			if(listTrafficSearch.size() == 1)
@@ -1262,12 +3673,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			siteRequest.setW(w);
 			page.setListTrafficSearch(listTrafficSearch);
 			page.setSiteRequest_(siteRequest);
-			searchpage.enusTrafficSearchPageInit(page, listTrafficSearch);
+			searchpageTrafficSearchPageInit(page, listTrafficSearch);
 			page.initDeepTrafficSearchPage(siteRequest);
 			page.html();
 			eventHandler.handle(Future.succeededFuture(new OperationResponse(200, "OK", buffer, requestHeaders)));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchPage.enUSTrafficSearch failed. ", e));
+			LOGGER.error(String.format("response200SearchPageTrafficSearch failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1813,7 +4224,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		}
 	}
 
-	public void aSearchTrafficSearch(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<TrafficSearch>>> eventHandler) {
+	public void aSearchTrafficSearch(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<TrafficSearch>>> eventHandler) {
 		try {
 			OperationRequest operationRequest = siteRequest.getOperationRequest();
 			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
@@ -2000,6 +4411,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				searchList.setQuery("*:*");
 				searchList.setC(TrafficSearch.class);
 				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
+				searchList.add("json.facet", "{personKey:{terms:{field:personKey_indexed_longs, limit:1000}}}");
+				searchList.add("json.facet", "{searchBasisKeys:{terms:{field:searchBasisKeys_indexed_longs, limit:1000}}}");
 				searchList.setRows(1000);
 				searchList.initDeepSearchList(siteRequest);
 				List<Future> futures = new ArrayList<>();
@@ -2007,6 +4420,76 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
+
+					if("TrafficPerson".equals(classSimpleName2) && pk2 != null) {
+						SearchList<TrafficPerson> searchList2 = new SearchList<TrafficPerson>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(TrafficPerson.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						TrafficPerson o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							TrafficPersonEnUSGenApiServiceImpl service = new TrafficPersonEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchTrafficPersonFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("TrafficPerson %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
+
+					if("SearchBasis".equals(classSimpleName2) && pk2 != null) {
+						SearchList<SearchBasis> searchList2 = new SearchList<SearchBasis>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(SearchBasis.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						SearchBasis o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							SearchBasisEnUSGenApiServiceImpl service = new SearchBasisEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchSearchBasisFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("SearchBasis %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
 				}
 
 				CompositeFuture.all(futures).setHandler(a -> {

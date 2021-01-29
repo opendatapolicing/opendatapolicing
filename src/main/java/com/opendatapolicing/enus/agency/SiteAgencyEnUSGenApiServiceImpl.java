@@ -1,5 +1,7 @@
 package com.opendatapolicing.enus.agency;
 
+import com.opendatapolicing.enus.state.SiteStateEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
@@ -513,7 +515,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchSiteAgency(siteRequest, false, true, "/api/agency/copy", "PUTCopy", d -> {
+											aSearchSiteAgency(siteRequest, false, true, true, "/api/agency/copy", "PUTCopy", d -> {
 												if(d.succeeded()) {
 													SearchList<SiteAgency> listSiteAgency = d.result();
 													ApiRequest apiRequest = new ApiRequest();
@@ -724,6 +726,74 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 									a.handle(Future.succeededFuture());
 								else
 									a.handle(Future.failedFuture(new Exception("value SiteAgency.deleted failed", b.cause())));
+							});
+						}));
+						break;
+					case "agencyName":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "agencyName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
+							});
+						}));
+						break;
+					case "stateKey":
+							{
+						Long l = Long.parseLong(jsonObject.getString(entityVar));
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_addA
+									, Tuple.of(l, "agencyKeys", pk, "stateKey")
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
+							});
+						}));
+						}
+						break;
+					case "imageLeft":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "imageLeft", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
+							});
+						}));
+						break;
+					case "imageTop":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "imageTop", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
+							});
+						}));
+						break;
+					case "imageCoords":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "imageCoords", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
 							});
 						}));
 						break;
@@ -984,6 +1054,91 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 							});
 						}));
 						break;
+					case "agencyName":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "agencyName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
+							});
+						}));
+						break;
+					case "stateKey":
+						{
+							Long l = Long.parseLong(jsonObject.getString(entityVar));
+							if(l != null) {
+								SearchList<SiteState> searchList = new SearchList<SiteState>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(SiteState.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(l2, "agencyKeys", pk, "stateKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SiteState");
+									}
+								}
+							}
+						}
+						break;
+					case "imageLeft":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "imageLeft", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
+							});
+						}));
+						break;
+					case "imageTop":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "imageTop", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
+							});
+						}));
+						break;
+					case "imageCoords":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "imageCoords", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
+							});
+						}));
+						break;
 					}
 				}
 			}
@@ -1064,20 +1219,18 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchSiteAgency(siteRequest, false, true, "/api/agency", "PATCH", d -> {
+											aSearchSiteAgency(siteRequest, false, true, true, "/api/agency", "PATCH", d -> {
 												if(d.succeeded()) {
 													SearchList<SiteAgency> listSiteAgency = d.result();
 
-													if(listSiteAgency.getQueryResponse().getResults().getNumFound() > 1) {
-														List<String> roles2 = Arrays.asList("SiteAdmin");
-														if(
-																!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-																&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-																) {
-															String message = String.format("roles required: " + String.join(", ", roles2));
-															LOGGER.error(message);
-															errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(message));
-														}
+													List<String> roles2 = Arrays.asList("SiteAdmin");
+													if(listSiteAgency.getQueryResponse().getResults().getNumFound() > 1
+															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+															) {
+														String message = String.format("roles required: " + String.join(", ", roles2));
+														LOGGER.error(message);
+														errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(message));
 													} else {
 
 														ApiRequest apiRequest = new ApiRequest();
@@ -1360,6 +1513,186 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 							}));
 						}
 						break;
+					case "setAgencyName":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "agencyName")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setAgencyName(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "agencyName", o2.jsonAgencyName())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStateKey":
+						{
+							o2.setStateKey(jsonObject.getString(methodName));
+							Long l = o2.getStateKey();
+							if(l != null && !l.equals(o.getStateKey())) {
+								SearchList<SiteState> searchList = new SearchList<SiteState>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(SiteState.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(l2, "agencyKeys", pk, "stateKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SiteState");
+									}
+								}
+							}
+						}
+						break;
+					case "removeStateKey":
+						{
+							o2.setStateKey(jsonObject.getString(methodName));
+							Long l = o2.getStateKey();
+							if(l != null) {
+								SearchList<SiteState> searchList = new SearchList<SiteState>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(SiteState.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(l2, "agencyKeys", pk, "stateKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("SiteState");
+									}
+								}
+							}
+						}
+						break;
+					case "setImageLeft":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "imageLeft")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setImageLeft(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "imageLeft", o2.jsonImageLeft())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setImageTop":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "imageTop")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setImageTop(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "imageTop", o2.jsonImageTop())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setImageCoords":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "imageCoords")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setImageCoords(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "imageCoords", o2.jsonImageCoords())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
+								});
+							}));
+						}
+						break;
 				}
 			}
 			CompositeFuture.all(futures).setHandler( a -> {
@@ -1415,7 +1748,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			{
 				userSiteAgency(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteAgency(siteRequest, false, true, "/api/agency/{id}", "GET", c -> {
+						aSearchSiteAgency(siteRequest, false, true, false, "/api/agency/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								getSiteAgencyResponse(listSiteAgency, d -> {
@@ -1485,7 +1818,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			{
 				userSiteAgency(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteAgency(siteRequest, false, true, "/api/agency", "Search", c -> {
+						aSearchSiteAgency(siteRequest, false, true, false, "/api/agency", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								searchSiteAgencyResponse(listSiteAgency, d -> {
@@ -1595,7 +1928,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			{
 				userSiteAgency(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteAgency(siteRequest, false, true, "/api/admin/agency", "AdminSearch", c -> {
+						aSearchSiteAgency(siteRequest, false, true, false, "/api/admin/agency", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								adminsearchSiteAgencyResponse(listSiteAgency, d -> {
@@ -1710,7 +2043,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			{
 				userSiteAgency(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchSiteAgency(siteRequest, false, true, "/agency", "SearchPage", c -> {
+						aSearchSiteAgency(siteRequest, false, true, false, "/agency", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								searchpageSiteAgencyResponse(listSiteAgency, d -> {
@@ -1787,13 +2120,6 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			LOGGER.error(String.format("response200SearchPageSiteAgency failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
-	}
-
-	SiteAgencyGen(Wrap<String> c) {
-		if(StringUtils.equals(agencyName, stateName))
-			c.o(stateName + " (" + stateAbbreviation + ")");
-		else
-			c.o(agencyName + " in " + stateName + " (" + stateAbbreviation + ")");
 	}
 
 	// General //
@@ -2337,7 +2663,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 		}
 	}
 
-	public void aSearchSiteAgency(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteAgency>>> eventHandler) {
+	public void aSearchSiteAgency(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteAgency>>> eventHandler) {
 		try {
 			OperationRequest operationRequest = siteRequest.getOperationRequest();
 			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
@@ -2524,6 +2850,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				searchList.setQuery("*:*");
 				searchList.setC(SiteAgency.class);
 				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
+				searchList.add("json.facet", "{stateKey:{terms:{field:stateKey_indexed_longs, limit:1000}}}");
 				searchList.setRows(1000);
 				searchList.initDeepSearchList(siteRequest);
 				List<Future> futures = new ArrayList<>();
@@ -2531,6 +2858,41 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
+
+					if("SiteState".equals(classSimpleName2) && pk2 != null) {
+						SearchList<SiteState> searchList2 = new SearchList<SiteState>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(SiteState.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						SiteState o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							SiteStateEnUSGenApiServiceImpl service = new SiteStateEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketSiteState", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchSiteStateFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("SiteState %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
 				}
 
 				CompositeFuture.all(futures).setHandler(a -> {

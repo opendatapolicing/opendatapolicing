@@ -42,8 +42,8 @@ import org.apache.solr.client.solrj.SolrQuery.SortClause;
  **/
 public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 
-	public static final List<String> ROLES = Arrays.asList();
-	public static final List<String> ROLE_READS = Arrays.asList();
+	public static final List<String> ROLES = Arrays.asList("SiteService");
+	public static final List<String> ROLE_READS = Arrays.asList("");
 
 	/**
 	 * {@inheritDoc}
@@ -62,7 +62,8 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		c.o("");
+		if(trafficSearch_ != null && trafficSearch_.getTrafficSearchCompleteName() != null)
+			c.o(trafficSearch_.getTrafficSearchCompleteName());
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -70,8 +71,8 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficSearch_ != null && trafficSearch_.getObjectTitle() != null)
-			c.o(trafficSearch_.getObjectTitle());
+		if(trafficSearch_ != null && trafficSearch_.getTrafficSearchCompleteName() != null)
+			c.o(trafficSearch_.getTrafficSearchCompleteName());
 		else if(trafficSearch_ != null)
 			c.o("traffic searchs");
 		else if(listTrafficSearch == null || listTrafficSearch.size() == 0)
@@ -81,11 +82,11 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageUri(Wrap<String> c) {
-		c.o("/api/traffic-search");
+		c.o("/traffic-search");
 	}
 
 	@Override protected void _pageImageUri(Wrap<String> c) {
-			c.o("/png/api/traffic-search-999.png");
+			c.o("/png/traffic-search-999.png");
 	}
 
 	@Override protected void _contextIconGroup(Wrap<String> c) {
@@ -103,6 +104,8 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 
 	@Override public void htmlScriptsTrafficSearchGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficSearchPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficPersonPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/SearchBasisPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptTrafficSearchGenPage() {
@@ -122,6 +125,22 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		tl(1, "window.eventBus = new EventBus('/eventbus');");
 		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequestPk()).map(l -> l.toString()).orElse("null"), ";");
 		tl(1, "if(pk != null) {");
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestTrafficSearchPersonKey([{'name':'fq','value':'trafficSearchKeys:' + pk}], $('#listTrafficSearchPersonKey_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestTrafficSearchPersonKey([{'name':'fq','value':'trafficSearchKeys:' + pk}], $('#listTrafficSearchPersonKey_Page'), pk, false); ");
+		}
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestTrafficSearchSearchBasisKeys([{'name':'fq','value':'searchKey:' + pk}], $('#listTrafficSearchSearchBasisKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestTrafficSearchSearchBasisKeys([{'name':'fq','value':'searchKey:' + pk}], $('#listTrafficSearchSearchBasisKeys_Page'), pk, false); ");
+		}
 		tl(1, "}");
 		tl(1, "websocketTrafficSearch(websocketTrafficSearchInner);");
 		l("});");
@@ -138,6 +157,40 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmArchived("Page");
 			o.htmDeleted("Page");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("Page");
+			o.htmStopDateTime("Page");
+			o.htmStopPurposeTitle("Page");
+			o.htmStopActionTitle("Page");
+			o.htmStopDriverArrest("Page");
+			o.htmStopPassengerArrest("Page");
+			o.htmStopEncounterForce("Page");
+			o.htmStopEngageForce("Page");
+			o.htmStopOfficerInjury("Page");
+			o.htmStopDriverInjury("Page");
+			o.htmStopPassengerInjury("Page");
+			o.htmStopOfficerId("Page");
+			o.htmStopLocationId("Page");
+			o.htmStopCityId("Page");
+			o.htmPersonAge("Page");
+			o.htmPersonTypeTitle("Page");
+			o.htmPersonGenderTitle("Page");
+			o.htmPersonEthnicityTitle("Page");
+			o.htmPersonRaceTitle("Page");
+			o.htmSearchTypeTitle("Page");
+			o.htmSearchVehicle("Page");
+			o.htmSearchDriver("Page");
+			o.htmSearchPassenger("Page");
+			o.htmSearchProperty("Page");
+			o.htmSearchVehicleSiezed("Page");
+			o.htmSearchPersonalPropertySiezed("Page");
+			o.htmSearchOtherPropertySiezed("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKey("Page");
+			o.htmContrabandKeys("Page");
+			o.htmSearchBasisKeys("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTTrafficSearch(TrafficSearch o) {
@@ -150,6 +203,40 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("POST");
 			o.htmDeleted("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("POST");
+			o.htmStopDateTime("POST");
+			o.htmStopPurposeTitle("POST");
+			o.htmStopActionTitle("POST");
+			o.htmStopDriverArrest("POST");
+			o.htmStopPassengerArrest("POST");
+			o.htmStopEncounterForce("POST");
+			o.htmStopEngageForce("POST");
+			o.htmStopOfficerInjury("POST");
+			o.htmStopDriverInjury("POST");
+			o.htmStopPassengerInjury("POST");
+			o.htmStopOfficerId("POST");
+			o.htmStopLocationId("POST");
+			o.htmStopCityId("POST");
+			o.htmPersonAge("POST");
+			o.htmPersonTypeTitle("POST");
+			o.htmPersonGenderTitle("POST");
+			o.htmPersonEthnicityTitle("POST");
+			o.htmPersonRaceTitle("POST");
+			o.htmSearchTypeTitle("POST");
+			o.htmSearchVehicle("POST");
+			o.htmSearchDriver("POST");
+			o.htmSearchPassenger("POST");
+			o.htmSearchProperty("POST");
+			o.htmSearchVehicleSiezed("POST");
+			o.htmSearchPersonalPropertySiezed("POST");
+			o.htmSearchOtherPropertySiezed("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKey("POST");
+			o.htmContrabandKeys("POST");
+			o.htmSearchBasisKeys("POST");
 		} g("div");
 	}
 
@@ -186,6 +273,34 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmArchived("PUTCopy");
 			o.htmDeleted("PUTCopy");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("PUTCopy");
+			o.htmStopDateTime("PUTCopy");
+			o.htmStopPurposeTitle("PUTCopy");
+			o.htmStopActionTitle("PUTCopy");
+			o.htmStopDriverArrest("PUTCopy");
+			o.htmStopPassengerArrest("PUTCopy");
+			o.htmStopEncounterForce("PUTCopy");
+			o.htmStopEngageForce("PUTCopy");
+			o.htmStopOfficerInjury("PUTCopy");
+			o.htmStopDriverInjury("PUTCopy");
+			o.htmStopPassengerInjury("PUTCopy");
+			o.htmStopOfficerId("PUTCopy");
+			o.htmStopLocationId("PUTCopy");
+			o.htmStopCityId("PUTCopy");
+			o.htmSearchTypeTitle("PUTCopy");
+			o.htmSearchVehicle("PUTCopy");
+			o.htmSearchDriver("PUTCopy");
+			o.htmSearchPassenger("PUTCopy");
+			o.htmSearchProperty("PUTCopy");
+			o.htmSearchVehicleSiezed("PUTCopy");
+			o.htmSearchPersonalPropertySiezed("PUTCopy");
+			o.htmSearchOtherPropertySiezed("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKey("PUTCopy");
+			o.htmSearchBasisKeys("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHTrafficSearch(TrafficSearch o) {
@@ -196,6 +311,34 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
 			o.htmDeleted("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("PATCH");
+			o.htmStopDateTime("PATCH");
+			o.htmStopPurposeTitle("PATCH");
+			o.htmStopActionTitle("PATCH");
+			o.htmStopDriverArrest("PATCH");
+			o.htmStopPassengerArrest("PATCH");
+			o.htmStopEncounterForce("PATCH");
+			o.htmStopEngageForce("PATCH");
+			o.htmStopOfficerInjury("PATCH");
+			o.htmStopDriverInjury("PATCH");
+			o.htmStopPassengerInjury("PATCH");
+			o.htmStopOfficerId("PATCH");
+			o.htmStopLocationId("PATCH");
+			o.htmStopCityId("PATCH");
+			o.htmSearchTypeTitle("PATCH");
+			o.htmSearchVehicle("PATCH");
+			o.htmSearchDriver("PATCH");
+			o.htmSearchPassenger("PATCH");
+			o.htmSearchProperty("PATCH");
+			o.htmSearchVehicleSiezed("PATCH");
+			o.htmSearchPersonalPropertySiezed("PATCH");
+			o.htmSearchOtherPropertySiezed("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKey("PATCH");
+			o.htmSearchBasisKeys("PATCH");
 		} g("div");
 	}
 
@@ -211,10 +354,51 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopAgencyTitle("Search");
+			o.htmStopDateTime("Search");
+			o.htmStopPurposeTitle("Search");
+			o.htmStopActionTitle("Search");
+			o.htmStopDriverArrest("Search");
+			o.htmStopPassengerArrest("Search");
+			o.htmStopEncounterForce("Search");
+			o.htmStopEngageForce("Search");
+			o.htmStopOfficerInjury("Search");
+			o.htmStopDriverInjury("Search");
+			o.htmStopPassengerInjury("Search");
+			o.htmStopOfficerId("Search");
+			o.htmStopLocationId("Search");
+			o.htmStopCityId("Search");
+			o.htmPersonAge("Search");
+			o.htmPersonTypeTitle("Search");
+			o.htmPersonGenderTitle("Search");
+			o.htmPersonEthnicityTitle("Search");
+			o.htmPersonRaceTitle("Search");
+			o.htmSearchTypeTitle("Search");
+			o.htmSearchVehicle("Search");
+			o.htmSearchDriver("Search");
+			o.htmSearchPassenger("Search");
+			o.htmSearchProperty("Search");
+			o.htmSearchVehicleSiezed("Search");
+			o.htmSearchPersonalPropertySiezed("Search");
+			o.htmSearchOtherPropertySiezed("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonKey("Search");
+			o.htmContrabandKeys("Search");
+			o.htmSearchBasisKeys("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
+			o.htmStopPurposeNum("Search");
+			o.htmStopActionNum("Search");
+			o.htmPersonTypeId("Search");
+			o.htmPersonGenderId("Search");
+			o.htmPersonEthnicityId("Search");
+			o.htmPersonRaceId("Search");
+			o.htmSearchTypeNum("Search");
 		} g("div");
 	}
 
@@ -225,7 +409,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		if(listTrafficSearch == null || listTrafficSearch.size() == 0) {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/traffic-search").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
+				{ e("a").a("href", "/traffic-search").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx("traffic searchs").g("span");
@@ -244,7 +428,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			siteRequest_.setRequestPk(o.getPk());
 			if(StringUtils.isNotEmpty(pageH1)) {
 				{ e("h1").f();
-					{ e("a").a("href", "/api/traffic-search").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
+					{ e("a").a("href", "/traffic-search").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
 						if(contextIconCssClasses != null)
 							e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 						e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -269,7 +453,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		} else {
 
 			{ e("h1").f();
-				{ e("a").a("href", "/api/traffic-search").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
+				{ e("a").a("href", "/traffic-search").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
 					e("span").a("class", " ").f().sx(pageH1).g("span");
@@ -330,7 +514,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					if(start1 == 0) {
 						e("i").a("class", "fas fa-arrow-square-left w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/traffic-search?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
+						{ e("a").a("href", "/traffic-search?q=", query, fqs, sorts, "&start=", start2, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-left ").f().g("i");
 						} g("a");
 					}
@@ -338,19 +522,19 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					if(rows1 <= 1) {
 						e("i").a("class", "fas fa-minus-square w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/traffic-search?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
+						{ e("a").a("href", "/traffic-search?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows2).f();
 							e("i").a("class", "fas fa-minus-square ").f().g("i");
 						} g("a");
 					}
 
-					{ e("a").a("href", "/api/traffic-search?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
+					{ e("a").a("href", "/traffic-search?q=", query, fqs, sorts, "&start=", start1, "&rows=", rows3).f();
 						e("i").a("class", "fas fa-plus-square ").f().g("i");
 					} g("a");
 
 					if(start3 >= num) {
 						e("i").a("class", "fas fa-arrow-square-right w3-opacity ").f().g("i");
 					} else {
-						{ e("a").a("href", "/api/traffic-search?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
+						{ e("a").a("href", "/traffic-search?q=", query, fqs, sorts, "&start=", start3, "&rows=", rows1).f();
 							e("i").a("class", "fas fa-arrow-square-right ").f().g("i");
 						} g("a");
 					}
@@ -428,7 +612,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			TrafficSearch o = listTrafficSearch.getList().get(i);
 			Map<String, List<String>> highlights = highlighting == null ? null : highlighting.get(o.getId());
 			List<String> highlightList = highlights == null ? null : highlights.get(highlights.keySet().stream().findFirst().orElse(null));
-			String uri = "/api/traffic-search/" + o.getPk();
+			String uri = "/traffic-search/" + o.getPk();
 			{ e("tr").f();
 				if(getColumnCreated()) {
 					{ e("td").f();
@@ -502,6 +686,108 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 				siteRequest_.getUserResourceRoles().contains("SiteAdmin")
 				|| siteRequest_.getUserRealmRoles().contains("SiteAdmin")
 				) {
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+				.a("onclick", "$('#putimportTrafficSearchModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-file-import ").f().g("i");
+				sx("Import traffic searchs");
+			} g("button");
+			{ e("div").a("id", "putimportTrafficSearchModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-green ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putimportTrafficSearchModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Import traffic searchs").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putimportTrafficSearchFormValues").f();
+							TrafficSearch o = new TrafficSearch();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putimportTrafficSearchForm").f();
+								htmlFormPUTImportTrafficSearch(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
+								.a("onclick", "putimportTrafficSearch($('#putimportTrafficSearchForm')); ")
+								.f().sx("Import traffic searchs")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+				.a("onclick", "$('#putmergeTrafficSearchModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-code-merge ").f().g("i");
+				sx("Merge traffic searchs");
+			} g("button");
+			{ e("div").a("id", "putmergeTrafficSearchModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-green ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putmergeTrafficSearchModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Merge traffic searchs").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putmergeTrafficSearchFormValues").f();
+							TrafficSearch o = new TrafficSearch();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putmergeTrafficSearchForm").f();
+								htmlFormPUTMergeTrafficSearch(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
+								.a("onclick", "putmergeTrafficSearch($('#putmergeTrafficSearchForm')); ")
+								.f().sx("Merge traffic searchs")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
+
+			{ e("button")
+				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+				.a("onclick", "$('#putcopyTrafficSearchModal').show(); ")
+				.f();
+				e("i").a("class", "fas fa-copy ").f().g("i");
+				sx("Duplicate traffic searchs");
+			} g("button");
+			{ e("div").a("id", "putcopyTrafficSearchModal").a("class", "w3-modal w3-padding-32 ").f();
+				{ e("div").a("class", "w3-modal-content ").f();
+					{ e("div").a("class", "w3-card-4 ").f();
+						{ e("header").a("class", "w3-container w3-pale-green ").f();
+							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putcopyTrafficSearchModal').hide(); ").f().sx("×").g("span");
+							e("h2").a("class", "w3-padding ").f().sx("Duplicate traffic searchs").g("h2");
+						} g("header");
+						{ e("div").a("class", "w3-container ").a("id", "putcopyTrafficSearchFormValues").f();
+							TrafficSearch o = new TrafficSearch();
+							o.setSiteRequest_(siteRequest_);
+
+							// Form PUT
+							{ e("div").a("id", "putcopyTrafficSearchForm").f();
+								htmlFormPUTCopyTrafficSearch(o);
+							} g("div");
+							e("button")
+								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
+								.a("onclick", "putcopyTrafficSearch($('#putcopyTrafficSearchForm'), ", trafficSearch_ == null ? "null" : trafficSearch_.getPk(), "); ")
+								.f().sx("Duplicate traffic searchs")
+							.g("button");
+
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+
 
 			{ e("button")
 				.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
@@ -651,14 +937,14 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficSearch")
 					.a("id", "suggestTrafficSearch", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficSearchObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListTrafficSearch", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
-					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/api/traffic-search?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
+					.a("oninput", "suggestTrafficSearchObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ], $('#suggestListTrafficSearch", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/traffic-search?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficSearch != null)
 					p.a("value", query2);
 				p.fg();
 				{ p.e("button")
 					.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-					.a("onclick", "window.location.href = '/api/traffic-search?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
+					.a("onclick", "window.location.href = '/traffic-search?q=", query1, ":' + encodeURIComponent(this.previousElementSibling.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; ") 
 					.f();
 					p.e("i").a("class", "fas fa-search ").f().g("i");
 				} p.g("button");
@@ -671,7 +957,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 				} p.g("div");
 			} p.g("div");
 			{ p.e("div").a("class", "").f();
-				{ p.e("a").a("href", "/api/traffic-search").a("class", "").f();
+				{ p.e("a").a("href", "/traffic-search").a("class", "").f();
 					p.e("i").a("class", "far fa-newspaper ").f().g("i");
 					p.sx("see all the traffic searchs");
 				} p.g("a");

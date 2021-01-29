@@ -254,7 +254,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageUserId() {
-		return null;
+		return "user ID";
 	}
 
 	public String htmTooltipUserId() {
@@ -263,6 +263,72 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String htmUserId() {
 		return userId == null ? "" : StringEscapeUtils.escapeHtml4(strUserId());
+	}
+
+	public void inputUserId(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "user ID")
+				.a("id", classApiMethodMethod, "_userId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setUserId classSiteUser inputSiteUser", pk, "UserId w3-input w3-border ");
+					a("name", "setUserId");
+				} else {
+					a("class", "valueUserId w3-input w3-border classSiteUser inputSiteUser", pk, "UserId w3-input w3-border ");
+					a("name", "userId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userId')); }, function() { addError($('#", classApiMethodMethod, "_userId')); }); ");
+				}
+				a("value", strUserId())
+			.fg();
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "UserId ").f().sx(htmUserId()).g("span");
+		}
+	}
+
+	public void htmUserId(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3- ").f();
+							e("label").a("for", classApiMethodMethod, "_userId").a("class", "").f().sx("user ID").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userId')); $('#", classApiMethodMethod, "_userId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserId', null, function() { addGlow($('#", classApiMethodMethod, "_userId')); }, function() { addError($('#", classApiMethodMethod, "_userId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	/////////////
@@ -338,7 +404,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageUserKey() {
-		return null;
+		return "user key";
 	}
 
 	public String htmTooltipUserKey() {
@@ -347,6 +413,72 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String htmUserKey() {
 		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
+	}
+
+	public void inputUserKey(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "user key")
+				.a("id", classApiMethodMethod, "_userKey");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setUserKey classSiteUser inputSiteUser", pk, "UserKey w3-input w3-border ");
+					a("name", "setUserKey");
+				} else {
+					a("class", "valueUserKey w3-input w3-border classSiteUser inputSiteUser", pk, "UserKey w3-input w3-border ");
+					a("name", "userKey");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserKey', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userKey')); }, function() { addError($('#", classApiMethodMethod, "_userKey')); }); ");
+				}
+				a("value", strUserKey())
+			.fg();
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "UserKey ").f().sx(htmUserKey()).g("span");
+		}
+	}
+
+	public void htmUserKey(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserKey").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3- ").f();
+							e("label").a("for", classApiMethodMethod, "_userKey").a("class", "").f().sx("user key").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserKey(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userKey')); $('#", classApiMethodMethod, "_userKey').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserKey', null, function() { addGlow($('#", classApiMethodMethod, "_userKey')); }, function() { addError($('#", classApiMethodMethod, "_userKey')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////
@@ -423,6 +555,68 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String htmUserName() {
 		return userName == null ? "" : StringEscapeUtils.escapeHtml4(strUserName());
+	}
+
+	public void inputUserName(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_userName");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setUserName classSiteUser inputSiteUser", pk, "UserName w3-input w3-border ");
+					a("name", "setUserName");
+				} else {
+					a("class", "valueUserName w3-input w3-border classSiteUser inputSiteUser", pk, "UserName w3-input w3-border ");
+					a("name", "userName");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userName')); }, function() { addError($('#", classApiMethodMethod, "_userName')); }); ");
+				}
+				a("value", strUserName())
+			.fg();
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "UserName ").f().sx(htmUserName()).g("span");
+		}
+	}
+
+	public void htmUserName(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserName").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserName(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userName')); $('#", classApiMethodMethod, "_userName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserName', null, function() { addGlow($('#", classApiMethodMethod, "_userName')); }, function() { addError($('#", classApiMethodMethod, "_userName')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////
@@ -881,6 +1075,68 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return customerProfileId == null ? "" : StringEscapeUtils.escapeHtml4(strCustomerProfileId());
 	}
 
+	public void inputCustomerProfileId(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_customerProfileId");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setCustomerProfileId classSiteUser inputSiteUser", pk, "CustomerProfileId w3-input w3-border ");
+					a("name", "setCustomerProfileId");
+				} else {
+					a("class", "valueCustomerProfileId w3-input w3-border classSiteUser inputSiteUser", pk, "CustomerProfileId w3-input w3-border ");
+					a("name", "customerProfileId");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setCustomerProfileId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_customerProfileId')); }, function() { addError($('#", classApiMethodMethod, "_customerProfileId')); }); ");
+				}
+				a("value", strCustomerProfileId())
+			.fg();
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "CustomerProfileId ").f().sx(htmCustomerProfileId()).g("span");
+		}
+	}
+
+	public void htmCustomerProfileId(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserCustomerProfileId").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputCustomerProfileId(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_customerProfileId')); $('#", classApiMethodMethod, "_customerProfileId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setCustomerProfileId', null, function() { addGlow($('#", classApiMethodMethod, "_customerProfileId')); }, function() { addError($('#", classApiMethodMethod, "_customerProfileId')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	///////////////////////
 	// userReceiveEmails //
 	///////////////////////
@@ -962,6 +1218,66 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userReceiveEmails == null ? "" : StringEscapeUtils.escapeHtml4(strUserReceiveEmails());
 	}
 
+	public void inputUserReceiveEmails(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_userReceiveEmails")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_userReceiveEmails");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setUserReceiveEmails classSiteUser inputSiteUser", pk, "UserReceiveEmails w3-input w3-border ");
+				a("name", "setUserReceiveEmails");
+			} else {
+				a("class", "valueUserReceiveEmails classSiteUser inputSiteUser", pk, "UserReceiveEmails w3-input w3-border ");
+				a("name", "userReceiveEmails");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserReceiveEmails', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_userReceiveEmails')); }, function() { addError($('#", classApiMethodMethod, "_userReceiveEmails')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getUserReceiveEmails() != null && getUserReceiveEmails())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "UserReceiveEmails ").f().sx(htmUserReceiveEmails()).g("span");
+		}
+	}
+
+	public void htmUserReceiveEmails(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserReceiveEmails").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserReceiveEmails(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	/////////////////
 	// seeArchived //
 	/////////////////
@@ -1032,7 +1348,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSeeArchived() {
-		return null;
+		return "see archived";
 	}
 
 	public String htmTooltipSeeArchived() {
@@ -1041,6 +1357,69 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String htmSeeArchived() {
 		return seeArchived == null ? "" : StringEscapeUtils.escapeHtml4(strSeeArchived());
+	}
+
+	public void inputSeeArchived(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_seeArchived")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_seeArchived");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setSeeArchived classSiteUser inputSiteUser", pk, "SeeArchived w3-input w3-border ");
+				a("name", "setSeeArchived");
+			} else {
+				a("class", "valueSeeArchived classSiteUser inputSiteUser", pk, "SeeArchived w3-input w3-border ");
+				a("name", "seeArchived");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSeeArchived', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_seeArchived')); }, function() { addError($('#", classApiMethodMethod, "_seeArchived')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getSeeArchived() != null && getSeeArchived())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "SeeArchived ").f().sx(htmSeeArchived()).g("span");
+		}
+	}
+
+	public void htmSeeArchived(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserSeeArchived").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3- ").f();
+							e("label").a("for", classApiMethodMethod, "_seeArchived").a("class", "").f().sx("see archived").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputSeeArchived(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	////////////////
@@ -1113,7 +1492,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageSeeDeleted() {
-		return null;
+		return "see deleted";
 	}
 
 	public String htmTooltipSeeDeleted() {
@@ -1124,80 +1503,67 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return seeDeleted == null ? "" : StringEscapeUtils.escapeHtml4(strSeeDeleted());
 	}
 
-	/////////////////
-	// objectTitle //
-	/////////////////
+	public void inputSeeDeleted(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			if("Page".equals(classApiMethodMethod)) {
+				e("input")
+					.a("type", "checkbox")
+					.a("id", classApiMethodMethod, "_seeDeleted")
+					.a("value", "true");
+			} else {
+				e("select")
+					.a("id", classApiMethodMethod, "_seeDeleted");
+			}
+			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+				a("class", "setSeeDeleted classSiteUser inputSiteUser", pk, "SeeDeleted w3-input w3-border ");
+				a("name", "setSeeDeleted");
+			} else {
+				a("class", "valueSeeDeleted classSiteUser inputSiteUser", pk, "SeeDeleted w3-input w3-border ");
+				a("name", "seeDeleted");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSeeDeleted', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_seeDeleted')); }, function() { addError($('#", classApiMethodMethod, "_seeDeleted')); }); ");
+			}
+			if("Page".equals(classApiMethodMethod)) {
+				if(getSeeDeleted() != null && getSeeDeleted())
+					a("checked", "checked");
+				fg();
+			} else {
+				f();
+				e("option").a("value", "").a("selected", "selected").f().g("option");
+				e("option").a("value", "true").f().sx("true").g("option");
+				e("option").a("value", "false").f().sx("false").g("option");
+				g("select");
+			}
 
-	/**	 The entity objectTitle
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String objectTitle;
-	@JsonIgnore
-	public Wrap<String> objectTitleWrap = new Wrap<String>().p(this).c(String.class).var("objectTitle").o(objectTitle);
-
-	/**	<br/> The entity objectTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectTitle">Find the entity objectTitle in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _objectTitle(Wrap<String> c);
-
-	public String getObjectTitle() {
-		return objectTitle;
-	}
-	public void setObjectTitle(String o) {
-		this.objectTitle = SiteUser.staticSetObjectTitle(siteRequest_, o);
-		this.objectTitleWrap.alreadyInitialized = true;
-	}
-	public static String staticSetObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected SiteUser objectTitleInit() {
-		if(!objectTitleWrap.alreadyInitialized) {
-			_objectTitle(objectTitleWrap);
-			if(objectTitle == null)
-				setObjectTitle(objectTitleWrap.o);
+		} else {
+				e("span").a("class", "varSiteUser", pk, "SeeDeleted ").f().sx(htmSeeDeleted()).g("span");
 		}
-		objectTitleWrap.alreadyInitialized(true);
-		return (SiteUser)this;
 	}
 
-	public static String staticSolrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
+	public void htmSeeDeleted(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserSeeDeleted").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3- ").f();
+							e("label").a("for", classApiMethodMethod, "_seeDeleted").a("class", "").f().sx("see deleted").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
 
-	public static String staticSolrStrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUser.staticSolrStrObjectTitle(siteRequest_, SiteUser.staticSolrObjectTitle(siteRequest_, SiteUser.staticSetObjectTitle(siteRequest_, o)));
-	}
-
-	public String solrObjectTitle() {
-		return SiteUser.staticSolrObjectTitle(siteRequest_, objectTitle);
-	}
-
-	public String strObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String jsonObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String nomAffichageObjectTitle() {
-		return null;
-	}
-
-	public String htmTooltipObjectTitle() {
-		return null;
-	}
-
-	public String htmObjectTitle() {
-		return objectTitle == null ? "" : StringEscapeUtils.escapeHtml4(strObjectTitle());
+								inputSeeDeleted(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////
@@ -1234,7 +1600,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		userReceiveEmailsInit();
 		seeArchivedInit();
 		seeDeletedInit();
-		objectTitleInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -1299,8 +1664,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				return oSiteUser.seeArchived;
 			case "seeDeleted":
 				return oSiteUser.seeDeleted;
-			case "objectTitle":
-				return oSiteUser.objectTitle;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -1366,8 +1729,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSetSeeArchived(siteRequest_, o);
 		case "seeDeleted":
 			return SiteUser.staticSetSeeDeleted(siteRequest_, o);
-		case "objectTitle":
-			return SiteUser.staticSetObjectTitle(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -1408,8 +1769,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrSeeArchived(siteRequest_, (Boolean)o);
 		case "seeDeleted":
 			return SiteUser.staticSolrSeeDeleted(siteRequest_, (Boolean)o);
-		case "objectTitle":
-			return SiteUser.staticSolrObjectTitle(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -1450,8 +1809,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrStrSeeArchived(siteRequest_, (Boolean)o);
 		case "seeDeleted":
 			return SiteUser.staticSolrStrSeeDeleted(siteRequest_, (Boolean)o);
-		case "objectTitle":
-			return SiteUser.staticSolrStrObjectTitle(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -1492,8 +1849,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrFqSeeArchived(siteRequest_, o);
 		case "seeDeleted":
 			return SiteUser.staticSolrFqSeeDeleted(siteRequest_, o);
-		case "objectTitle":
-			return SiteUser.staticSolrFqObjectTitle(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -1520,6 +1875,41 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 	public Object defineSiteUser(String var, String val) {
 		switch(var) {
+			case "userId":
+				if(val != null)
+					setUserId(val);
+				saves.add(var);
+				return val;
+			case "userKey":
+				if(val != null)
+					setUserKey(val);
+				saves.add(var);
+				return val;
+			case "userName":
+				if(val != null)
+					setUserName(val);
+				saves.add(var);
+				return val;
+			case "customerProfileId":
+				if(val != null)
+					setCustomerProfileId(val);
+				saves.add(var);
+				return val;
+			case "userReceiveEmails":
+				if(val != null)
+					setUserReceiveEmails(val);
+				saves.add(var);
+				return val;
+			case "seeArchived":
+				if(val != null)
+					setSeeArchived(val);
+				saves.add(var);
+				return val;
+			case "seeDeleted":
+				if(val != null)
+					setSeeDeleted(val);
+				saves.add(var);
+				return val;
 			default:
 				return super.defineCluster(var, val);
 		}
@@ -1536,6 +1926,84 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		SiteUser oSiteUser = (SiteUser)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
+
+			if(saves.contains("userKeys")) {
+				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+				if(userKeys != null)
+					oSiteUser.userKeys.addAll(userKeys);
+			}
+
+			if(saves.contains("userId")) {
+				String userId = (String)solrDocument.get("userId_stored_string");
+				if(userId != null)
+					oSiteUser.setUserId(userId);
+			}
+
+			if(saves.contains("userKey")) {
+				Long userKey = (Long)solrDocument.get("userKey_stored_long");
+				if(userKey != null)
+					oSiteUser.setUserKey(userKey);
+			}
+
+			if(saves.contains("userName")) {
+				String userName = (String)solrDocument.get("userName_stored_string");
+				if(userName != null)
+					oSiteUser.setUserName(userName);
+			}
+
+			if(saves.contains("userEmail")) {
+				String userEmail = (String)solrDocument.get("userEmail_stored_string");
+				if(userEmail != null)
+					oSiteUser.setUserEmail(userEmail);
+			}
+
+			if(saves.contains("userFirstName")) {
+				String userFirstName = (String)solrDocument.get("userFirstName_stored_string");
+				if(userFirstName != null)
+					oSiteUser.setUserFirstName(userFirstName);
+			}
+
+			if(saves.contains("userLastName")) {
+				String userLastName = (String)solrDocument.get("userLastName_stored_string");
+				if(userLastName != null)
+					oSiteUser.setUserLastName(userLastName);
+			}
+
+			if(saves.contains("userFullName")) {
+				String userFullName = (String)solrDocument.get("userFullName_stored_string");
+				if(userFullName != null)
+					oSiteUser.setUserFullName(userFullName);
+			}
+
+			if(saves.contains("userSite")) {
+				String userSite = (String)solrDocument.get("userSite_stored_string");
+				if(userSite != null)
+					oSiteUser.setUserSite(userSite);
+			}
+
+			if(saves.contains("customerProfileId")) {
+				String customerProfileId = (String)solrDocument.get("customerProfileId_stored_string");
+				if(customerProfileId != null)
+					oSiteUser.setCustomerProfileId(customerProfileId);
+			}
+
+			if(saves.contains("userReceiveEmails")) {
+				Boolean userReceiveEmails = (Boolean)solrDocument.get("userReceiveEmails_stored_boolean");
+				if(userReceiveEmails != null)
+					oSiteUser.setUserReceiveEmails(userReceiveEmails);
+			}
+
+			if(saves.contains("seeArchived")) {
+				Boolean seeArchived = (Boolean)solrDocument.get("seeArchived_stored_boolean");
+				if(seeArchived != null)
+					oSiteUser.setSeeArchived(seeArchived);
+			}
+
+			if(saves.contains("seeDeleted")) {
+				Boolean seeDeleted = (Boolean)solrDocument.get("seeDeleted_stored_boolean");
+				if(seeDeleted != null)
+					oSiteUser.setSeeDeleted(seeDeleted);
+			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -1603,6 +2071,62 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 
 	public void indexSiteUser(SolrInputDocument document) {
+		if(userKeys != null) {
+			for(java.lang.Long o : userKeys) {
+				document.addField("userKeys_indexed_longs", o);
+			}
+			for(java.lang.Long o : userKeys) {
+				document.addField("userKeys_stored_longs", o);
+			}
+		}
+		if(userId != null) {
+			document.addField("userId_indexed_string", userId);
+			document.addField("userId_stored_string", userId);
+		}
+		if(userKey != null) {
+			document.addField("userKey_indexed_long", userKey);
+			document.addField("userKey_stored_long", userKey);
+		}
+		if(userName != null) {
+			document.addField("userName_indexed_string", userName);
+			document.addField("userName_stored_string", userName);
+		}
+		if(userEmail != null) {
+			document.addField("userEmail_indexed_string", userEmail);
+			document.addField("userEmail_stored_string", userEmail);
+		}
+		if(userFirstName != null) {
+			document.addField("userFirstName_indexed_string", userFirstName);
+			document.addField("userFirstName_stored_string", userFirstName);
+		}
+		if(userLastName != null) {
+			document.addField("userLastName_indexed_string", userLastName);
+			document.addField("userLastName_stored_string", userLastName);
+		}
+		if(userFullName != null) {
+			document.addField("userFullName_indexed_string", userFullName);
+			document.addField("userFullName_stored_string", userFullName);
+		}
+		if(userSite != null) {
+			document.addField("userSite_indexed_string", userSite);
+			document.addField("userSite_stored_string", userSite);
+		}
+		if(customerProfileId != null) {
+			document.addField("customerProfileId_indexed_string", customerProfileId);
+			document.addField("customerProfileId_stored_string", customerProfileId);
+		}
+		if(userReceiveEmails != null) {
+			document.addField("userReceiveEmails_indexed_boolean", userReceiveEmails);
+			document.addField("userReceiveEmails_stored_boolean", userReceiveEmails);
+		}
+		if(seeArchived != null) {
+			document.addField("seeArchived_indexed_boolean", seeArchived);
+			document.addField("seeArchived_stored_boolean", seeArchived);
+		}
+		if(seeDeleted != null) {
+			document.addField("seeDeleted_indexed_boolean", seeDeleted);
+			document.addField("seeDeleted_stored_boolean", seeDeleted);
+		}
 		super.indexCluster(document);
 
 	}
@@ -1626,6 +2150,32 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public static String varIndexedSiteUser(String entityVar) {
 		switch(entityVar) {
+			case "userKeys":
+				return "userKeys_indexed_longs";
+			case "userId":
+				return "userId_indexed_string";
+			case "userKey":
+				return "userKey_indexed_long";
+			case "userName":
+				return "userName_indexed_string";
+			case "userEmail":
+				return "userEmail_indexed_string";
+			case "userFirstName":
+				return "userFirstName_indexed_string";
+			case "userLastName":
+				return "userLastName_indexed_string";
+			case "userFullName":
+				return "userFullName_indexed_string";
+			case "userSite":
+				return "userSite_indexed_string";
+			case "customerProfileId":
+				return "customerProfileId_indexed_string";
+			case "userReceiveEmails":
+				return "userReceiveEmails_indexed_boolean";
+			case "seeArchived":
+				return "seeArchived_indexed_boolean";
+			case "seeDeleted":
+				return "seeDeleted_indexed_boolean";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -1655,6 +2205,58 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public void storeSiteUser(SolrDocument solrDocument) {
 		SiteUser oSiteUser = (SiteUser)this;
 
+		List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+		if(userKeys != null)
+			oSiteUser.userKeys.addAll(userKeys);
+
+		String userId = (String)solrDocument.get("userId_stored_string");
+		if(userId != null)
+			oSiteUser.setUserId(userId);
+
+		Long userKey = (Long)solrDocument.get("userKey_stored_long");
+		if(userKey != null)
+			oSiteUser.setUserKey(userKey);
+
+		String userName = (String)solrDocument.get("userName_stored_string");
+		if(userName != null)
+			oSiteUser.setUserName(userName);
+
+		String userEmail = (String)solrDocument.get("userEmail_stored_string");
+		if(userEmail != null)
+			oSiteUser.setUserEmail(userEmail);
+
+		String userFirstName = (String)solrDocument.get("userFirstName_stored_string");
+		if(userFirstName != null)
+			oSiteUser.setUserFirstName(userFirstName);
+
+		String userLastName = (String)solrDocument.get("userLastName_stored_string");
+		if(userLastName != null)
+			oSiteUser.setUserLastName(userLastName);
+
+		String userFullName = (String)solrDocument.get("userFullName_stored_string");
+		if(userFullName != null)
+			oSiteUser.setUserFullName(userFullName);
+
+		String userSite = (String)solrDocument.get("userSite_stored_string");
+		if(userSite != null)
+			oSiteUser.setUserSite(userSite);
+
+		String customerProfileId = (String)solrDocument.get("customerProfileId_stored_string");
+		if(customerProfileId != null)
+			oSiteUser.setCustomerProfileId(customerProfileId);
+
+		Boolean userReceiveEmails = (Boolean)solrDocument.get("userReceiveEmails_stored_boolean");
+		if(userReceiveEmails != null)
+			oSiteUser.setUserReceiveEmails(userReceiveEmails);
+
+		Boolean seeArchived = (Boolean)solrDocument.get("seeArchived_stored_boolean");
+		if(seeArchived != null)
+			oSiteUser.setSeeArchived(seeArchived);
+
+		Boolean seeDeleted = (Boolean)solrDocument.get("seeDeleted_stored_boolean");
+		if(seeDeleted != null)
+			oSiteUser.setSeeDeleted(seeDeleted);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -1667,6 +2269,32 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof SiteUser) {
 			SiteUser original = (SiteUser)o;
+			if(!Objects.equals(userKeys, original.getUserKeys()))
+				apiRequest.addVars("userKeys");
+			if(!Objects.equals(userId, original.getUserId()))
+				apiRequest.addVars("userId");
+			if(!Objects.equals(userKey, original.getUserKey()))
+				apiRequest.addVars("userKey");
+			if(!Objects.equals(userName, original.getUserName()))
+				apiRequest.addVars("userName");
+			if(!Objects.equals(userEmail, original.getUserEmail()))
+				apiRequest.addVars("userEmail");
+			if(!Objects.equals(userFirstName, original.getUserFirstName()))
+				apiRequest.addVars("userFirstName");
+			if(!Objects.equals(userLastName, original.getUserLastName()))
+				apiRequest.addVars("userLastName");
+			if(!Objects.equals(userFullName, original.getUserFullName()))
+				apiRequest.addVars("userFullName");
+			if(!Objects.equals(userSite, original.getUserSite()))
+				apiRequest.addVars("userSite");
+			if(!Objects.equals(customerProfileId, original.getCustomerProfileId()))
+				apiRequest.addVars("customerProfileId");
+			if(!Objects.equals(userReceiveEmails, original.getUserReceiveEmails()))
+				apiRequest.addVars("userReceiveEmails");
+			if(!Objects.equals(seeArchived, original.getSeeArchived()))
+				apiRequest.addVars("seeArchived");
+			if(!Objects.equals(seeDeleted, original.getSeeDeleted()))
+				apiRequest.addVars("seeDeleted");
 			super.apiRequestCluster();
 		}
 	}
@@ -1676,7 +2304,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
+		return Objects.hash(super.hashCode(), userKeys, userId, userKey, userName, userEmail, userFirstName, userLastName, userFullName, userSite, customerProfileId, userReceiveEmails, seeArchived, seeDeleted);
 	}
 
 	////////////
@@ -1689,7 +2317,20 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		if(!(o instanceof SiteUser))
 			return false;
 		SiteUser that = (SiteUser)o;
-		return super.equals(o);
+		return super.equals(o)
+				&& Objects.equals( userKeys, that.userKeys )
+				&& Objects.equals( userId, that.userId )
+				&& Objects.equals( userKey, that.userKey )
+				&& Objects.equals( userName, that.userName )
+				&& Objects.equals( userEmail, that.userEmail )
+				&& Objects.equals( userFirstName, that.userFirstName )
+				&& Objects.equals( userLastName, that.userLastName )
+				&& Objects.equals( userFullName, that.userFullName )
+				&& Objects.equals( userSite, that.userSite )
+				&& Objects.equals( customerProfileId, that.customerProfileId )
+				&& Objects.equals( userReceiveEmails, that.userReceiveEmails )
+				&& Objects.equals( seeArchived, that.seeArchived )
+				&& Objects.equals( seeDeleted, that.seeDeleted );
 	}
 
 	//////////////
@@ -1700,6 +2341,19 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString() + "\n");
 		sb.append("SiteUser { ");
+		sb.append( "userKeys: " ).append(userKeys);
+		sb.append( ", userId: \"" ).append(userId).append( "\"" );
+		sb.append( ", userKey: " ).append(userKey);
+		sb.append( ", userName: \"" ).append(userName).append( "\"" );
+		sb.append( ", userEmail: \"" ).append(userEmail).append( "\"" );
+		sb.append( ", userFirstName: \"" ).append(userFirstName).append( "\"" );
+		sb.append( ", userLastName: \"" ).append(userLastName).append( "\"" );
+		sb.append( ", userFullName: \"" ).append(userFullName).append( "\"" );
+		sb.append( ", userSite: \"" ).append(userSite).append( "\"" );
+		sb.append( ", customerProfileId: \"" ).append(customerProfileId).append( "\"" );
+		sb.append( ", userReceiveEmails: " ).append(userReceiveEmails);
+		sb.append( ", seeArchived: " ).append(seeArchived);
+		sb.append( ", seeDeleted: " ).append(seeDeleted);
 		sb.append(" }");
 		return sb.toString();
 	}

@@ -1,5 +1,11 @@
 package com.opendatapolicing.enus.design;
 
+import com.opendatapolicing.enus.design.PageDesignEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.design.PageDesign;
+import com.opendatapolicing.enus.design.PageDesignEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.design.PageDesign;
+import com.opendatapolicing.enus.html.part.HtmlPartEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.html.part.HtmlPart;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
@@ -513,7 +519,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchPageDesign(siteRequest, false, true, "/api/page-design/copy", "PUTCopy", d -> {
+											aSearchPageDesign(siteRequest, false, true, true, "/api/page-design/copy", "PUTCopy", d -> {
 												if(d.succeeded()) {
 													SearchList<PageDesign> listPageDesign = d.result();
 													ApiRequest apiRequest = new ApiRequest();
@@ -724,6 +730,102 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 									a.handle(Future.succeededFuture());
 								else
 									a.handle(Future.failedFuture(new Exception("value PageDesign.deleted failed", b.cause())));
+							});
+						}));
+						break;
+					case "childDesignKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_addA
+										, Tuple.of(pk, "childDesignKeys", l, "parentDesignKeys")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.childDesignKeys failed", b.cause())));
+								});
+							}));
+							if(!pks.contains(l)) {
+								pks.add(l);
+								classes.add("PageDesign");
+							}
+						}
+						break;
+					case "parentDesignKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_addA
+										, Tuple.of(l, "childDesignKeys", pk, "parentDesignKeys")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.parentDesignKeys failed", b.cause())));
+								});
+							}));
+							if(!pks.contains(l)) {
+								pks.add(l);
+								classes.add("PageDesign");
+							}
+						}
+						break;
+					case "htmlPartKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_addA
+										, Tuple.of(pk, "htmlPartKeys", l, "pageDesignKeys")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.htmlPartKeys failed", b.cause())));
+								});
+							}));
+							if(!pks.contains(l)) {
+								pks.add(l);
+								classes.add("HtmlPart");
+							}
+						}
+						break;
+					case "pageDesignCompleteName":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "pageDesignCompleteName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value PageDesign.pageDesignCompleteName failed", b.cause())));
+							});
+						}));
+						break;
+					case "designHidden":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "designHidden", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value PageDesign.designHidden failed", b.cause())));
+							});
+						}));
+						break;
+					case "pageContentType":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "pageContentType", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value PageDesign.pageContentType failed", b.cause())));
 							});
 						}));
 						break;
@@ -984,6 +1086,141 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							});
 						}));
 						break;
+					case "childDesignKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							if(l != null) {
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(PageDesign.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "childDesignKeys", l2, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.childDesignKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("PageDesign");
+									}
+								}
+							}
+						}
+						break;
+					case "parentDesignKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							if(l != null) {
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(PageDesign.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(l2, "childDesignKeys", pk, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.parentDesignKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("PageDesign");
+									}
+								}
+							}
+						}
+						break;
+					case "htmlPartKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							if(l != null) {
+								SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(HtmlPart.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "htmlPartKeys", l2, "pageDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.htmlPartKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("HtmlPart");
+									}
+								}
+							}
+						}
+						break;
+					case "pageDesignCompleteName":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "pageDesignCompleteName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value PageDesign.pageDesignCompleteName failed", b.cause())));
+							});
+						}));
+						break;
+					case "designHidden":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "designHidden", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value PageDesign.designHidden failed", b.cause())));
+							});
+						}));
+						break;
+					case "pageContentType":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD
+									, Tuple.of(pk, "pageContentType", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value PageDesign.pageContentType failed", b.cause())));
+							});
+						}));
+						break;
 					}
 				}
 			}
@@ -1064,20 +1301,18 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchPageDesign(siteRequest, false, true, "/api/page-design", "PATCH", d -> {
+											aSearchPageDesign(siteRequest, false, true, true, "/api/page-design", "PATCH", d -> {
 												if(d.succeeded()) {
 													SearchList<PageDesign> listPageDesign = d.result();
 
-													if(listPageDesign.getQueryResponse().getResults().getNumFound() > 1) {
-														List<String> roles2 = Arrays.asList("SiteAdmin");
-														if(
-																!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-																&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-																) {
-															String message = String.format("roles required: " + String.join(", ", roles2));
-															LOGGER.error(message);
-															errorPageDesign(siteRequest, eventHandler, Future.failedFuture(message));
-														}
+													List<String> roles2 = Arrays.asList("SiteAdmin");
+													if(listPageDesign.getQueryResponse().getResults().getNumFound() > 1
+															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+															) {
+														String message = String.format("roles required: " + String.join(", ", roles2));
+														LOGGER.error(message);
+														errorPageDesign(siteRequest, eventHandler, Future.failedFuture(message));
 													} else {
 
 														ApiRequest apiRequest = new ApiRequest();
@@ -1360,6 +1595,564 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							}));
 						}
 						break;
+					case "addChildDesignKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(PageDesign.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !o.getChildDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "childDesignKeys", l2, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.childDesignKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("PageDesign");
+									}
+								}
+							}
+						}
+						break;
+					case "addAllChildDesignKeys":
+						JsonArray addAllChildDesignKeysValues = jsonObject.getJsonArray(methodName);
+						if(addAllChildDesignKeysValues != null) {
+							for(Integer i = 0; i <  addAllChildDesignKeysValues.size(); i++) {
+								Long l = Long.parseLong(addAllChildDesignKeysValues.getString(i));
+								if(l != null) {
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(PageDesign.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null && !o.getChildDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "childDesignKeys", l2, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.childDesignKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("PageDesign");
+										}
+									}
+								}
+							}
+						}
+						break;
+					case "setChildDesignKeys":
+						JsonArray setChildDesignKeysValues = jsonObject.getJsonArray(methodName);
+						JsonArray setChildDesignKeysValues2 = new JsonArray();
+						if(setChildDesignKeysValues != null) {
+							for(Integer i = 0; i <  setChildDesignKeysValues.size(); i++) {
+								Long l = Long.parseLong(setChildDesignKeysValues.getString(i));
+								if(l != null) {
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(PageDesign.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null)
+										setChildDesignKeysValues2.add(l2);
+									if(l2 != null && !o.getChildDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "childDesignKeys", l2, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.childDesignKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("PageDesign");
+										}
+									}
+								}
+							}
+						}
+						if(o.getChildDesignKeys() != null) {
+							for(Long l :  o.getChildDesignKeys()) {
+								if(l != null && (setChildDesignKeysValues2 == null || !setChildDesignKeysValues2.contains(l))) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(pk, "childDesignKeys", l, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.childDesignKeys failed", b.cause())));
+										});
+									}));
+								}
+							}
+						}
+						break;
+					case "removeChildDesignKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(PageDesign.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && o.getChildDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(pk, "childDesignKeys", l2, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.childDesignKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("PageDesign");
+									}
+								}
+							}
+						}
+						break;
+					case "addParentDesignKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(PageDesign.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !o.getParentDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(l2, "childDesignKeys", pk, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.parentDesignKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("PageDesign");
+									}
+								}
+							}
+						}
+						break;
+					case "addAllParentDesignKeys":
+						JsonArray addAllParentDesignKeysValues = jsonObject.getJsonArray(methodName);
+						if(addAllParentDesignKeysValues != null) {
+							for(Integer i = 0; i <  addAllParentDesignKeysValues.size(); i++) {
+								Long l = Long.parseLong(addAllParentDesignKeysValues.getString(i));
+								if(l != null) {
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(PageDesign.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null && !o.getParentDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(l2, "childDesignKeys", pk, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.parentDesignKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("PageDesign");
+										}
+									}
+								}
+							}
+						}
+						break;
+					case "setParentDesignKeys":
+						JsonArray setParentDesignKeysValues = jsonObject.getJsonArray(methodName);
+						JsonArray setParentDesignKeysValues2 = new JsonArray();
+						if(setParentDesignKeysValues != null) {
+							for(Integer i = 0; i <  setParentDesignKeysValues.size(); i++) {
+								Long l = Long.parseLong(setParentDesignKeysValues.getString(i));
+								if(l != null) {
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(PageDesign.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null)
+										setParentDesignKeysValues2.add(l2);
+									if(l2 != null && !o.getParentDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(l2, "childDesignKeys", pk, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.parentDesignKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("PageDesign");
+										}
+									}
+								}
+							}
+						}
+						if(o.getParentDesignKeys() != null) {
+							for(Long l :  o.getParentDesignKeys()) {
+								if(l != null && (setParentDesignKeysValues == null || !setParentDesignKeysValues2.contains(l))) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(l, "childDesignKeys", pk, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.parentDesignKeys failed", b.cause())));
+										});
+									}));
+								}
+							}
+						}
+						break;
+					case "removeParentDesignKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(PageDesign.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && o.getParentDesignKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(l2, "childDesignKeys", pk, "parentDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.parentDesignKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("PageDesign");
+									}
+								}
+							}
+						}
+						break;
+					case "addHtmlPartKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(HtmlPart.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !o.getHtmlPartKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "htmlPartKeys", l2, "pageDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.htmlPartKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("HtmlPart");
+									}
+								}
+							}
+						}
+						break;
+					case "addAllHtmlPartKeys":
+						JsonArray addAllHtmlPartKeysValues = jsonObject.getJsonArray(methodName);
+						if(addAllHtmlPartKeysValues != null) {
+							for(Integer i = 0; i <  addAllHtmlPartKeysValues.size(); i++) {
+								Long l = Long.parseLong(addAllHtmlPartKeysValues.getString(i));
+								if(l != null) {
+									SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(HtmlPart.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null && !o.getHtmlPartKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "htmlPartKeys", l2, "pageDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.htmlPartKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("HtmlPart");
+										}
+									}
+								}
+							}
+						}
+						break;
+					case "setHtmlPartKeys":
+						JsonArray setHtmlPartKeysValues = jsonObject.getJsonArray(methodName);
+						JsonArray setHtmlPartKeysValues2 = new JsonArray();
+						if(setHtmlPartKeysValues != null) {
+							for(Integer i = 0; i <  setHtmlPartKeysValues.size(); i++) {
+								Long l = Long.parseLong(setHtmlPartKeysValues.getString(i));
+								if(l != null) {
+									SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(HtmlPart.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null)
+										setHtmlPartKeysValues2.add(l2);
+									if(l2 != null && !o.getHtmlPartKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA
+												, Tuple.of(pk, "htmlPartKeys", l2, "pageDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.htmlPartKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("HtmlPart");
+										}
+									}
+								}
+							}
+						}
+						if(o.getHtmlPartKeys() != null) {
+							for(Long l :  o.getHtmlPartKeys()) {
+								if(l != null && (setHtmlPartKeysValues2 == null || !setHtmlPartKeysValues2.contains(l))) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(pk, "htmlPartKeys", l, "pageDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.htmlPartKeys failed", b.cause())));
+										});
+									}));
+								}
+							}
+						}
+						break;
+					case "removeHtmlPartKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(HtmlPart.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && o.getHtmlPartKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA
+												, Tuple.of(pk, "htmlPartKeys", l2, "pageDesignKeys")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value PageDesign.htmlPartKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("HtmlPart");
+									}
+								}
+							}
+						}
+						break;
+					case "setPageDesignCompleteName":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "pageDesignCompleteName")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.pageDesignCompleteName failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPageDesignCompleteName(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "pageDesignCompleteName", o2.jsonPageDesignCompleteName())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.pageDesignCompleteName failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setDesignHidden":
+						if(jsonObject.getBoolean(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "designHidden")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.designHidden failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setDesignHidden(jsonObject.getBoolean(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "designHidden", o2.jsonDesignHidden())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.designHidden failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setPageContentType":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD
+										, Tuple.of(pk, "pageContentType")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.pageContentType failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPageContentType(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD
+										, Tuple.of(pk, "pageContentType", o2.jsonPageContentType())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value PageDesign.pageContentType failed", b.cause())));
+								});
+							}));
+						}
+						break;
 				}
 			}
 			CompositeFuture.all(futures).setHandler( a -> {
@@ -1415,7 +2208,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/api/page-design/{id}", "GET", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/api/page-design/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								getPageDesignResponse(listPageDesign, d -> {
@@ -1485,7 +2278,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/api/page-design", "Search", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/api/page-design", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								searchPageDesignResponse(listPageDesign, d -> {
@@ -1595,7 +2388,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/api/admin/page-design", "AdminSearch", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/api/admin/page-design", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								adminsearchPageDesignResponse(listPageDesign, d -> {
@@ -1710,7 +2503,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/page-design", "SearchPage", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/page-design", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								searchpagePageDesignResponse(listPageDesign, d -> {
@@ -1805,7 +2598,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/page", "DesignDisplaySearchPage", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/page", "DesignDisplaySearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								designdisplaysearchpagePageDesignResponse(listPageDesign, d -> {
@@ -1900,7 +2693,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/pdf", "DesignPdfSearchPage", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/pdf", "DesignPdfSearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								designpdfsearchpagePageDesignResponse(listPageDesign, d -> {
@@ -1992,7 +2785,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/email", "DesignEmailSearchPage", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/email", "DesignEmailSearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								designemailsearchpagePageDesignResponse(listPageDesign, d -> {
@@ -2087,7 +2880,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			{
 				userPageDesign(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchPageDesign(siteRequest, false, true, "/", "HomePageSearchPage", c -> {
+						aSearchPageDesign(siteRequest, false, true, false, "/", "HomePageSearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<PageDesign> listPageDesign = c.result();
 								homepagesearchpagePageDesignResponse(listPageDesign, d -> {
@@ -2164,10 +2957,6 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			LOGGER.error(String.format("response200HomePageSearchPagePageDesign failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
-	}
-
-	PageDesignGen(Wrap<String> c) {
-		c.o(pageDesignCompleteName);
 	}
 
 	// General //
@@ -2711,7 +3500,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 		}
 	}
 
-	public void aSearchPageDesign(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<PageDesign>>> eventHandler) {
+	public void aSearchPageDesign(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<PageDesign>>> eventHandler) {
 		try {
 			OperationRequest operationRequest = siteRequest.getOperationRequest();
 			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
@@ -2898,6 +3687,8 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 				searchList.setQuery("*:*");
 				searchList.setC(PageDesign.class);
 				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
+				searchList.add("json.facet", "{childDesignKeys:{terms:{field:childDesignKeys_indexed_longs, limit:1000}}}");
+				searchList.add("json.facet", "{htmlPartKeys:{terms:{field:htmlPartKeys_indexed_longs, limit:1000}}}");
 				searchList.setRows(1000);
 				searchList.initDeepSearchList(siteRequest);
 				List<Future> futures = new ArrayList<>();
@@ -2905,6 +3696,76 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
+
+					if("PageDesign".equals(classSimpleName2) && pk2 != null) {
+						SearchList<PageDesign> searchList2 = new SearchList<PageDesign>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(PageDesign.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						PageDesign o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							PageDesignEnUSGenApiServiceImpl service = new PageDesignEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForPageDesign(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketPageDesign", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchPageDesignFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("PageDesign %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
+
+					if("HtmlPart".equals(classSimpleName2) && pk2 != null) {
+						SearchList<HtmlPart> searchList2 = new SearchList<HtmlPart>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(HtmlPart.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						HtmlPart o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							HtmlPartEnUSGenApiServiceImpl service = new HtmlPartEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForPageDesign(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketHtmlPart", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchHtmlPartFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("HtmlPart %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
 				}
 
 				CompositeFuture.all(futures).setHandler(a -> {

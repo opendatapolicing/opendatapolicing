@@ -40,6 +40,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.cluster.Cluster;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
@@ -51,6 +52,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
  **/
 public abstract class SiteStateGen<DEV> extends Cluster {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteState.class);
+
+	public static final List<String> ROLES = Arrays.asList("SiteAdmin");
+	public static final List<String> ROLE_READS = Arrays.asList("");
 
 	public static final String SiteState_AName = "a state";
 	public static final String SiteState_This = "this ";
@@ -224,7 +228,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStateName() {
-		return null;
+		return "name";
 	}
 
 	public String htmTooltipStateName() {
@@ -233,6 +237,72 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String htmStateName() {
 		return stateName == null ? "" : StringEscapeUtils.escapeHtml4(strStateName());
+	}
+
+	public void inputStateName(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "name")
+				.a("id", classApiMethodMethod, "_stateName");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStateName classSiteState inputSiteState", pk, "StateName w3-input w3-border ");
+					a("name", "setStateName");
+				} else {
+					a("class", "valueStateName w3-input w3-border classSiteState inputSiteState", pk, "StateName w3-input w3-border ");
+					a("name", "stateName");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStateName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stateName')); }, function() { addError($('#", classApiMethodMethod, "_stateName')); }); ");
+				}
+				a("value", strStateName())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSiteState", pk, "StateName ").f().sx(htmStateName()).g("span");
+		}
+	}
+
+	public void htmStateName(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteStateStateName").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-blue ").f();
+							e("label").a("for", classApiMethodMethod, "_stateName").a("class", "").f().sx("name").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStateName(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-blue ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stateName')); $('#", classApiMethodMethod, "_stateName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteStateForm :input[name=pk]').val() }], 'setStateName', null, function() { addGlow($('#", classApiMethodMethod, "_stateName')); }, function() { addError($('#", classApiMethodMethod, "_stateName')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////////////
@@ -300,7 +370,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageStateAbbreviation() {
-		return null;
+		return "abbreviation";
 	}
 
 	public String htmTooltipStateAbbreviation() {
@@ -309,6 +379,72 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String htmStateAbbreviation() {
 		return stateAbbreviation == null ? "" : StringEscapeUtils.escapeHtml4(strStateAbbreviation());
+	}
+
+	public void inputStateAbbreviation(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "abbreviation")
+				.a("id", classApiMethodMethod, "_stateAbbreviation");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStateAbbreviation classSiteState inputSiteState", pk, "StateAbbreviation w3-input w3-border ");
+					a("name", "setStateAbbreviation");
+				} else {
+					a("class", "valueStateAbbreviation w3-input w3-border classSiteState inputSiteState", pk, "StateAbbreviation w3-input w3-border ");
+					a("name", "stateAbbreviation");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStateAbbreviation', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stateAbbreviation')); }, function() { addError($('#", classApiMethodMethod, "_stateAbbreviation')); }); ");
+				}
+				a("value", strStateAbbreviation())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSiteState", pk, "StateAbbreviation ").f().sx(htmStateAbbreviation()).g("span");
+		}
+	}
+
+	public void htmStateAbbreviation(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteStateStateAbbreviation").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-blue ").f();
+							e("label").a("for", classApiMethodMethod, "_stateAbbreviation").a("class", "").f().sx("abbreviation").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStateAbbreviation(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-blue ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stateAbbreviation')); $('#", classApiMethodMethod, "_stateAbbreviation').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteStateForm :input[name=pk]').val() }], 'setStateAbbreviation', null, function() { addGlow($('#", classApiMethodMethod, "_stateAbbreviation')); }, function() { addError($('#", classApiMethodMethod, "_stateAbbreviation')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////
@@ -384,7 +520,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageImageLeft() {
-		return null;
+		return "image left pixels";
 	}
 
 	public String htmTooltipImageLeft() {
@@ -393,6 +529,72 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String htmImageLeft() {
 		return imageLeft == null ? "" : StringEscapeUtils.escapeHtml4(strImageLeft());
+	}
+
+	public void inputImageLeft(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "image left pixels")
+				.a("id", classApiMethodMethod, "_imageLeft");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setImageLeft classSiteState inputSiteState", pk, "ImageLeft w3-input w3-border ");
+					a("name", "setImageLeft");
+				} else {
+					a("class", "valueImageLeft w3-input w3-border classSiteState inputSiteState", pk, "ImageLeft w3-input w3-border ");
+					a("name", "imageLeft");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setImageLeft', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_imageLeft')); }, function() { addError($('#", classApiMethodMethod, "_imageLeft')); }); ");
+				}
+				a("value", strImageLeft())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSiteState", pk, "ImageLeft ").f().sx(htmImageLeft()).g("span");
+		}
+	}
+
+	public void htmImageLeft(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteStateImageLeft").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-blue ").f();
+							e("label").a("for", classApiMethodMethod, "_imageLeft").a("class", "").f().sx("image left pixels").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputImageLeft(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-blue ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_imageLeft')); $('#", classApiMethodMethod, "_imageLeft').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteStateForm :input[name=pk]').val() }], 'setImageLeft', null, function() { addGlow($('#", classApiMethodMethod, "_imageLeft')); }, function() { addError($('#", classApiMethodMethod, "_imageLeft')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////
@@ -468,7 +670,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageImageTop() {
-		return null;
+		return "image top pixels";
 	}
 
 	public String htmTooltipImageTop() {
@@ -477,6 +679,72 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String htmImageTop() {
 		return imageTop == null ? "" : StringEscapeUtils.escapeHtml4(strImageTop());
+	}
+
+	public void inputImageTop(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "image top pixels")
+				.a("id", classApiMethodMethod, "_imageTop");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setImageTop classSiteState inputSiteState", pk, "ImageTop w3-input w3-border ");
+					a("name", "setImageTop");
+				} else {
+					a("class", "valueImageTop w3-input w3-border classSiteState inputSiteState", pk, "ImageTop w3-input w3-border ");
+					a("name", "imageTop");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setImageTop', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_imageTop')); }, function() { addError($('#", classApiMethodMethod, "_imageTop')); }); ");
+				}
+				a("value", strImageTop())
+			.fg();
+
+		} else {
+			e("span").a("class", "varSiteState", pk, "ImageTop ").f().sx(htmImageTop()).g("span");
+		}
+	}
+
+	public void htmImageTop(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteStateImageTop").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-blue ").f();
+							e("label").a("for", classApiMethodMethod, "_imageTop").a("class", "").f().sx("image top pixels").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputImageTop(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-blue ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_imageTop')); $('#", classApiMethodMethod, "_imageTop').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteStateForm :input[name=pk]').val() }], 'setImageTop', null, function() { addGlow($('#", classApiMethodMethod, "_imageTop')); }, function() { addError($('#", classApiMethodMethod, "_imageTop')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	////////////////
@@ -581,7 +849,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	}
 
 	public String nomAffichageAgencyKeys() {
-		return null;
+		return "agencies";
 	}
 
 	public String htmTooltipAgencyKeys() {
@@ -590,6 +858,90 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String htmAgencyKeys() {
 		return agencyKeys == null ? "" : StringEscapeUtils.escapeHtml4(strAgencyKeys());
+	}
+
+	public void inputAgencyKeys(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_agencyKeys_clear")
+						.a("class", "agencyKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_agencyKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "agencies")
+				.a("class", "value suggestAgencyKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setAgencyKeys")
+				.a("id", classApiMethodMethod, "_agencyKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestSiteStateAgencyKeys($(this).val() ? searchSiteAgencyFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'stateKey:" + pk + "'}", "], $('#listSiteStateAgencyKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
+	}
+
+	public void htmAgencyKeys(String classApiMethodMethod) {
+		SiteState s = (SiteState)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteStateAgencyKeys").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "/agency?fq=stateKey:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-yellow w3-hover-pale-yellow ").f();
+								e("i").a("class", "far fa-road ").f().g("i");
+								sx("agencies");
+							} g("a");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate  to this state");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputAgencyKeys(classApiMethodMethod);
+								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listSiteStateAgencyKeys_", classApiMethodMethod).f();
+								} g("ul");
+								if(
+										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), SiteAgency.ROLES)
+										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), SiteAgency.ROLES)
+										) {
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-yellow ")
+												.a("id", classApiMethodMethod, "_agencyKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postSiteAgencyVals({ stateKey: \"", pk, "\" }, function() {}, function() { addError($('#", classApiMethodMethod, "agencyKeys')); });")
+												.f().sx("add a agency")
+											.g("button");
+										} g("div");
+									}
+								}
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	///////////////////////
@@ -668,82 +1020,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		return stateCompleteName == null ? "" : StringEscapeUtils.escapeHtml4(strStateCompleteName());
 	}
 
-	/////////////////
-	// objectTitle //
-	/////////////////
-
-	/**	 The entity objectTitle
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String objectTitle;
-	@JsonIgnore
-	public Wrap<String> objectTitleWrap = new Wrap<String>().p(this).c(String.class).var("objectTitle").o(objectTitle);
-
-	/**	<br/> The entity objectTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectTitle">Find the entity objectTitle in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _objectTitle(Wrap<String> c);
-
-	public String getObjectTitle() {
-		return objectTitle;
-	}
-	public void setObjectTitle(String o) {
-		this.objectTitle = SiteState.staticSetObjectTitle(siteRequest_, o);
-		this.objectTitleWrap.alreadyInitialized = true;
-	}
-	public static String staticSetObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected SiteState objectTitleInit() {
-		if(!objectTitleWrap.alreadyInitialized) {
-			_objectTitle(objectTitleWrap);
-			if(objectTitle == null)
-				setObjectTitle(objectTitleWrap.o);
-		}
-		objectTitleWrap.alreadyInitialized(true);
-		return (SiteState)this;
-	}
-
-	public static String staticSolrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return SiteState.staticSolrStrObjectTitle(siteRequest_, SiteState.staticSolrObjectTitle(siteRequest_, SiteState.staticSetObjectTitle(siteRequest_, o)));
-	}
-
-	public String solrObjectTitle() {
-		return SiteState.staticSolrObjectTitle(siteRequest_, objectTitle);
-	}
-
-	public String strObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String jsonObjectTitle() {
-		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String nomAffichageObjectTitle() {
-		return null;
-	}
-
-	public String htmTooltipObjectTitle() {
-		return null;
-	}
-
-	public String htmObjectTitle() {
-		return objectTitle == null ? "" : StringEscapeUtils.escapeHtml4(strObjectTitle());
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -772,7 +1048,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		imageTopInit();
 		agencyKeysInit();
 		stateCompleteNameInit();
-		objectTitleInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -825,8 +1100,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 				return oSiteState.agencyKeys;
 			case "stateCompleteName":
 				return oSiteState.stateCompleteName;
-			case "objectTitle":
-				return oSiteState.objectTitle;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -852,6 +1125,11 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	public Object attributeSiteState(String var, Object val) {
 		SiteState oSiteState = (SiteState)this;
 		switch(var) {
+			case "agencyKeys":
+				oSiteState.addAgencyKeys((Long)val);
+				if(!saves.contains(var))
+					saves.add(var);
+				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -880,8 +1158,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 			return SiteState.staticSetAgencyKeys(siteRequest_, o);
 		case "stateCompleteName":
 			return SiteState.staticSetStateCompleteName(siteRequest_, o);
-		case "objectTitle":
-			return SiteState.staticSetObjectTitle(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -910,8 +1186,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 			return SiteState.staticSolrAgencyKeys(siteRequest_, (Long)o);
 		case "stateCompleteName":
 			return SiteState.staticSolrStateCompleteName(siteRequest_, (String)o);
-		case "objectTitle":
-			return SiteState.staticSolrObjectTitle(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -940,8 +1214,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 			return SiteState.staticSolrStrAgencyKeys(siteRequest_, (Long)o);
 		case "stateCompleteName":
 			return SiteState.staticSolrStrStateCompleteName(siteRequest_, (String)o);
-		case "objectTitle":
-			return SiteState.staticSolrStrObjectTitle(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -970,8 +1242,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 			return SiteState.staticSolrFqAgencyKeys(siteRequest_, o);
 		case "stateCompleteName":
 			return SiteState.staticSolrFqStateCompleteName(siteRequest_, o);
-		case "objectTitle":
-			return SiteState.staticSolrFqObjectTitle(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -998,6 +1268,26 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	}
 	public Object defineSiteState(String var, String val) {
 		switch(var) {
+			case "stateName":
+				if(val != null)
+					setStateName(val);
+				saves.add(var);
+				return val;
+			case "stateAbbreviation":
+				if(val != null)
+					setStateAbbreviation(val);
+				saves.add(var);
+				return val;
+			case "imageLeft":
+				if(val != null)
+					setImageLeft(val);
+				saves.add(var);
+				return val;
+			case "imageTop":
+				if(val != null)
+					setImageTop(val);
+				saves.add(var);
+				return val;
 			default:
 				return super.defineCluster(var, val);
 		}
@@ -1014,6 +1304,46 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		SiteState oSiteState = (SiteState)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
+
+			if(saves.contains("stateKey")) {
+				Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
+				if(stateKey != null)
+					oSiteState.setStateKey(stateKey);
+			}
+
+			if(saves.contains("stateName")) {
+				String stateName = (String)solrDocument.get("stateName_stored_string");
+				if(stateName != null)
+					oSiteState.setStateName(stateName);
+			}
+
+			if(saves.contains("stateAbbreviation")) {
+				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+				if(stateAbbreviation != null)
+					oSiteState.setStateAbbreviation(stateAbbreviation);
+			}
+
+			if(saves.contains("imageLeft")) {
+				Integer imageLeft = (Integer)solrDocument.get("imageLeft_stored_int");
+				if(imageLeft != null)
+					oSiteState.setImageLeft(imageLeft);
+			}
+
+			if(saves.contains("imageTop")) {
+				Integer imageTop = (Integer)solrDocument.get("imageTop_stored_int");
+				if(imageTop != null)
+					oSiteState.setImageTop(imageTop);
+			}
+
+			List<Long> agencyKeys = (List<Long>)solrDocument.get("agencyKeys_stored_longs");
+			if(agencyKeys != null)
+				oSiteState.agencyKeys.addAll(agencyKeys);
+
+			if(saves.contains("stateCompleteName")) {
+				String stateCompleteName = (String)solrDocument.get("stateCompleteName_stored_string");
+				if(stateCompleteName != null)
+					oSiteState.setStateCompleteName(stateCompleteName);
+			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -1081,6 +1411,38 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	}
 
 	public void indexSiteState(SolrInputDocument document) {
+		if(stateKey != null) {
+			document.addField("stateKey_indexed_long", stateKey);
+			document.addField("stateKey_stored_long", stateKey);
+		}
+		if(stateName != null) {
+			document.addField("stateName_indexed_string", stateName);
+			document.addField("stateName_stored_string", stateName);
+		}
+		if(stateAbbreviation != null) {
+			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
+			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
+		}
+		if(imageLeft != null) {
+			document.addField("imageLeft_indexed_int", imageLeft);
+			document.addField("imageLeft_stored_int", imageLeft);
+		}
+		if(imageTop != null) {
+			document.addField("imageTop_indexed_int", imageTop);
+			document.addField("imageTop_stored_int", imageTop);
+		}
+		if(agencyKeys != null) {
+			for(java.lang.Long o : agencyKeys) {
+				document.addField("agencyKeys_indexed_longs", o);
+			}
+			for(java.lang.Long o : agencyKeys) {
+				document.addField("agencyKeys_stored_longs", o);
+			}
+		}
+		if(stateCompleteName != null) {
+			document.addField("stateCompleteName_indexed_string", stateCompleteName);
+			document.addField("stateCompleteName_stored_string", stateCompleteName);
+		}
 		super.indexCluster(document);
 
 	}
@@ -1104,6 +1466,20 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public static String varIndexedSiteState(String entityVar) {
 		switch(entityVar) {
+			case "stateKey":
+				return "stateKey_indexed_long";
+			case "stateName":
+				return "stateName_indexed_string";
+			case "stateAbbreviation":
+				return "stateAbbreviation_indexed_string";
+			case "imageLeft":
+				return "imageLeft_indexed_int";
+			case "imageTop":
+				return "imageTop_indexed_int";
+			case "agencyKeys":
+				return "agencyKeys_indexed_longs";
+			case "stateCompleteName":
+				return "stateCompleteName_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -1133,6 +1509,34 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	public void storeSiteState(SolrDocument solrDocument) {
 		SiteState oSiteState = (SiteState)this;
 
+		Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
+		if(stateKey != null)
+			oSiteState.setStateKey(stateKey);
+
+		String stateName = (String)solrDocument.get("stateName_stored_string");
+		if(stateName != null)
+			oSiteState.setStateName(stateName);
+
+		String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+		if(stateAbbreviation != null)
+			oSiteState.setStateAbbreviation(stateAbbreviation);
+
+		Integer imageLeft = (Integer)solrDocument.get("imageLeft_stored_int");
+		if(imageLeft != null)
+			oSiteState.setImageLeft(imageLeft);
+
+		Integer imageTop = (Integer)solrDocument.get("imageTop_stored_int");
+		if(imageTop != null)
+			oSiteState.setImageTop(imageTop);
+
+		List<Long> agencyKeys = (List<Long>)solrDocument.get("agencyKeys_stored_longs");
+		if(agencyKeys != null)
+			oSiteState.agencyKeys.addAll(agencyKeys);
+
+		String stateCompleteName = (String)solrDocument.get("stateCompleteName_stored_string");
+		if(stateCompleteName != null)
+			oSiteState.setStateCompleteName(stateCompleteName);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -1145,6 +1549,20 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof SiteState) {
 			SiteState original = (SiteState)o;
+			if(!Objects.equals(stateKey, original.getStateKey()))
+				apiRequest.addVars("stateKey");
+			if(!Objects.equals(stateName, original.getStateName()))
+				apiRequest.addVars("stateName");
+			if(!Objects.equals(stateAbbreviation, original.getStateAbbreviation()))
+				apiRequest.addVars("stateAbbreviation");
+			if(!Objects.equals(imageLeft, original.getImageLeft()))
+				apiRequest.addVars("imageLeft");
+			if(!Objects.equals(imageTop, original.getImageTop()))
+				apiRequest.addVars("imageTop");
+			if(!Objects.equals(agencyKeys, original.getAgencyKeys()))
+				apiRequest.addVars("agencyKeys");
+			if(!Objects.equals(stateCompleteName, original.getStateCompleteName()))
+				apiRequest.addVars("stateCompleteName");
 			super.apiRequestCluster();
 		}
 	}
@@ -1154,7 +1572,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode());
+		return Objects.hash(super.hashCode(), stateKey, stateName, stateAbbreviation, imageLeft, imageTop, agencyKeys, stateCompleteName);
 	}
 
 	////////////
@@ -1167,7 +1585,14 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		if(!(o instanceof SiteState))
 			return false;
 		SiteState that = (SiteState)o;
-		return super.equals(o);
+		return super.equals(o)
+				&& Objects.equals( stateKey, that.stateKey )
+				&& Objects.equals( stateName, that.stateName )
+				&& Objects.equals( stateAbbreviation, that.stateAbbreviation )
+				&& Objects.equals( imageLeft, that.imageLeft )
+				&& Objects.equals( imageTop, that.imageTop )
+				&& Objects.equals( agencyKeys, that.agencyKeys )
+				&& Objects.equals( stateCompleteName, that.stateCompleteName );
 	}
 
 	//////////////
@@ -1178,6 +1603,13 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString() + "\n");
 		sb.append("SiteState { ");
+		sb.append( "stateKey: " ).append(stateKey);
+		sb.append( ", stateName: \"" ).append(stateName).append( "\"" );
+		sb.append( ", stateAbbreviation: \"" ).append(stateAbbreviation).append( "\"" );
+		sb.append( ", imageLeft: " ).append(imageLeft);
+		sb.append( ", imageTop: " ).append(imageTop);
+		sb.append( ", agencyKeys: " ).append(agencyKeys);
+		sb.append( ", stateCompleteName: \"" ).append(stateCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

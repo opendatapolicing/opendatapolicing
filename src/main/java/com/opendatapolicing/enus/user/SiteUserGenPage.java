@@ -138,6 +138,12 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmArchived("Page");
 			o.htmDeleted("Page");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserReceiveEmails("Page");
+			o.htmSeeArchived("Page");
+			o.htmSeeDeleted("Page");
+			o.htmCustomerProfileId("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTSiteUser(SiteUser o) {
@@ -150,6 +156,12 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("POST");
 			o.htmDeleted("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserReceiveEmails("POST");
+			o.htmSeeArchived("POST");
+			o.htmSeeDeleted("POST");
+			o.htmCustomerProfileId("POST");
 		} g("div");
 	}
 
@@ -186,6 +198,12 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmArchived("PUTCopy");
 			o.htmDeleted("PUTCopy");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserReceiveEmails("PUTCopy");
+			o.htmSeeArchived("PUTCopy");
+			o.htmSeeDeleted("PUTCopy");
+			o.htmCustomerProfileId("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHSiteUser(SiteUser o) {
@@ -196,6 +214,12 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
 			o.htmDeleted("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserReceiveEmails("PATCH");
+			o.htmSeeArchived("PATCH");
+			o.htmSeeDeleted("PATCH");
+			o.htmCustomerProfileId("PATCH");
 		} g("div");
 	}
 
@@ -211,10 +235,19 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserReceiveEmails("Search");
+			o.htmSeeArchived("Search");
+			o.htmSeeDeleted("Search");
+			o.htmCustomerProfileId("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
+			o.htmUserId("Search");
+			o.htmUserKey("Search");
+			o.htmUserName("Search");
 		} g("div");
 	}
 
