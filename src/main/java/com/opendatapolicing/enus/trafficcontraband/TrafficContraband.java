@@ -687,4 +687,9 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	protected void _trafficSearchCompleteName(Wrap<String> c) {
 		c.o(trafficSearchShortName);
 	}
+
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(trafficSearchCompleteName);
+	}
 }

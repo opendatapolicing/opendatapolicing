@@ -3477,6 +3477,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
 																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
 																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
+																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
 																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
 																		siteRequest.setUserKey(siteUser.getPk());
 																		eventHandler.handle(Future.succeededFuture());
@@ -3766,12 +3767,15 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
 				searchList.addSort("created_indexed_date", ORDER.desc);
 			}
+			aSearchSearchBasis2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
 			searchList.initDeepForClass(siteRequest);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
 			LOGGER.error(String.format("aSearchSearchBasis failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
+	}
+	public void aSearchSearchBasis2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SearchBasis> searchList) {
 	}
 
 	public void defineSearchBasis(SearchBasis o, Handler<AsyncResult<OperationResponse>> eventHandler) {

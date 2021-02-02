@@ -246,6 +246,7 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 		e("script").a("src", staticBaseUrl, "/js/enUS/DesignDisplayPage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/enUS/PageDesignPage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/enUS/PageDesignPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/HtmlPartPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptDesignDisplayGenPage() {
@@ -507,7 +508,7 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listPageDesign.getQueryResponse().getResults().getNumFound();
@@ -589,6 +590,7 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1DesignDisplayGenPage();
+			} g("div");
 		}
 
 		if(listPageDesign != null && listPageDesign.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -616,7 +618,6 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsDesignDisplayGenPage();
-		g("div");
 	}
 
 	public void table1DesignDisplayGenPage() {

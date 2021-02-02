@@ -3448,6 +3448,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/////////////////
 
 	public void siteRequestApiWriter(SiteRequestEnUS siteRequest_) {
+		if(appSwagger2 != null)
+			appSwagger2.setSiteRequest_(siteRequest_);
 		if(wPaths != null)
 			wPaths.setSiteRequest_(siteRequest_);
 		if(wRequestBodies != null)

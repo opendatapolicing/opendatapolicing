@@ -340,7 +340,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSiteState.getQueryResponse().getResults().getNumFound();
@@ -422,6 +422,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1SiteStateGenPage();
+			} g("div");
 		}
 
 		if(listSiteState != null && listSiteState.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -449,7 +450,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsSiteStateGenPage();
-		g("div");
 	}
 
 	public void table1SiteStateGenPage() {

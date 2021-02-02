@@ -139,11 +139,31 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 
 	public void htmlFormPageTrafficContraband(TrafficContraband o) {
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("Page");
+			o.htmCreated("Page");
+			o.htmModified("Page");
+			o.htmObjectId("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Page");
+			o.htmDeleted("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("Page");
 		} g("div");
 	}
 
 	public void htmlFormPOSTTrafficContraband(TrafficContraband o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("POST");
+			o.htmCreated("POST");
+			o.htmModified("POST");
+			o.htmObjectId("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("POST");
+			o.htmDeleted("POST");
+		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("POST");
 		} g("div");
@@ -175,11 +195,27 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 
 	public void htmlFormPUTCopyTrafficContraband(TrafficContraband o) {
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmCreated("PUTCopy");
+			o.htmModified("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PUTCopy");
+			o.htmDeleted("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("PUTCopy");
 		} g("div");
 	}
 
 	public void htmlFormPATCHTrafficContraband(TrafficContraband o) {
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmCreated("PATCH");
+			o.htmModified("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PATCH");
+			o.htmDeleted("PATCH");
+		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("PATCH");
 		} g("div");
@@ -187,9 +223,23 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 
 	public void htmlFormSearchTrafficContraband(TrafficContraband o) {
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPk("Search");
+			o.htmCreated("Search");
+			o.htmModified("Search");
+			o.htmObjectId("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmInheritPk("Search");
+			o.htmUserId("Search");
+			o.htmUserKey("Search");
+			o.htmObjectTitle("Search");
 			o.htmContrabandOunces("Search");
 			o.htmContrabandPounds("Search");
 			o.htmContrabandPints("Search");
@@ -260,7 +310,7 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficContraband.getQueryResponse().getResults().getNumFound();
@@ -342,6 +392,7 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1ContrabandGenPage();
+			} g("div");
 		}
 
 		if(listTrafficContraband != null && listTrafficContraband.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -369,7 +420,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsContrabandGenPage();
-		g("div");
 	}
 
 	public void table1ContrabandGenPage() {
@@ -392,6 +442,12 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 
 	public void thead2ContrabandGenPage() {
 			{ e("tr").f();
+			if(getColumnCreated()) {
+				e("th").f().sx("created").g("th");
+			}
+			if(getColumnObjectTitle()) {
+				e("th").f().sx("").g("th");
+			}
 			} g("tr");
 	}
 
@@ -409,6 +465,25 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 			List<String> highlightList = highlights == null ? null : highlights.get(highlights.keySet().stream().findFirst().orElse(null));
 			String uri = "/contraband/" + o.getPk();
 			{ e("tr").f();
+				if(getColumnCreated()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							{ e("span").f();
+								sx(o.strCreated());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
+				if(getColumnObjectTitle()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							e("i").a("class", "far fa-newspaper ").f().g("i");
+							{ e("span").f();
+								sx(o.strObjectTitle());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
 			} g("tr");
 		}
 	}
@@ -422,7 +497,23 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 	public void tfoot2ContrabandGenPage() {
 		{ e("tr").f();
 			SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listTrafficContraband.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(new SimpleOrderedMap());
+			if(getColumnCreated()) {
+				e("td").f();
+				g("td");
+			}
+			if(getColumnObjectTitle()) {
+				e("td").f();
+				g("td");
+			}
 		} g("tr");
+	}
+
+	public Boolean getColumnCreated() {
+		return true;
+	}
+
+	public Boolean getColumnObjectTitle() {
+		return true;
 	}
 
 	public void htmlBodyFormsContrabandGenPage() {

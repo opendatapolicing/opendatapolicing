@@ -144,18 +144,22 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmStopDateTime("Page");
 			o.htmStopPurposeTitle("Page");
 			o.htmStopActionTitle("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopDriverArrest("Page");
 			o.htmStopPassengerArrest("Page");
 			o.htmStopEncounterForce("Page");
 			o.htmStopEngageForce("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopOfficerInjury("Page");
 			o.htmStopDriverInjury("Page");
 			o.htmStopPassengerInjury("Page");
 			o.htmStopOfficerId("Page");
-			o.htmStopLocationId("Page");
-			o.htmStopCityId("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopLocationId("Page");
+			o.htmStopCityId("Page");
 			o.htmPersonKeys("Page");
 		} g("div");
 	}
@@ -176,18 +180,22 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmStopDateTime("POST");
 			o.htmStopPurposeTitle("POST");
 			o.htmStopActionTitle("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopDriverArrest("POST");
 			o.htmStopPassengerArrest("POST");
 			o.htmStopEncounterForce("POST");
 			o.htmStopEngageForce("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopOfficerInjury("POST");
 			o.htmStopDriverInjury("POST");
 			o.htmStopPassengerInjury("POST");
 			o.htmStopOfficerId("POST");
-			o.htmStopLocationId("POST");
-			o.htmStopCityId("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopLocationId("POST");
+			o.htmStopCityId("POST");
 			o.htmPersonKeys("POST");
 		} g("div");
 	}
@@ -230,14 +238,20 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmStopDateTime("PUTCopy");
 			o.htmStopPurposeTitle("PUTCopy");
 			o.htmStopActionTitle("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopDriverArrest("PUTCopy");
 			o.htmStopPassengerArrest("PUTCopy");
 			o.htmStopEncounterForce("PUTCopy");
 			o.htmStopEngageForce("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopOfficerInjury("PUTCopy");
 			o.htmStopDriverInjury("PUTCopy");
 			o.htmStopPassengerInjury("PUTCopy");
 			o.htmStopOfficerId("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopLocationId("PUTCopy");
 			o.htmStopCityId("PUTCopy");
 		} g("div");
@@ -257,14 +271,20 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmStopDateTime("PATCH");
 			o.htmStopPurposeTitle("PATCH");
 			o.htmStopActionTitle("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopDriverArrest("PATCH");
 			o.htmStopPassengerArrest("PATCH");
 			o.htmStopEncounterForce("PATCH");
 			o.htmStopEngageForce("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopOfficerInjury("PATCH");
 			o.htmStopDriverInjury("PATCH");
 			o.htmStopPassengerInjury("PATCH");
 			o.htmStopOfficerId("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopLocationId("PATCH");
 			o.htmStopCityId("PATCH");
 		} g("div");
@@ -286,18 +306,22 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmStopDateTime("Search");
 			o.htmStopPurposeTitle("Search");
 			o.htmStopActionTitle("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopDriverArrest("Search");
 			o.htmStopPassengerArrest("Search");
 			o.htmStopEncounterForce("Search");
 			o.htmStopEngageForce("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopOfficerInjury("Search");
 			o.htmStopDriverInjury("Search");
 			o.htmStopPassengerInjury("Search");
 			o.htmStopOfficerId("Search");
-			o.htmStopLocationId("Search");
-			o.htmStopCityId("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmStopLocationId("Search");
+			o.htmStopCityId("Search");
 			o.htmPersonKeys("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -367,7 +391,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficStop.getQueryResponse().getResults().getNumFound();
@@ -449,6 +473,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1TrafficStopGenPage();
+			} g("div");
 		}
 
 		if(listTrafficStop != null && listTrafficStop.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -476,7 +501,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsTrafficStopGenPage();
-		g("div");
 	}
 
 	public void table1TrafficStopGenPage() {

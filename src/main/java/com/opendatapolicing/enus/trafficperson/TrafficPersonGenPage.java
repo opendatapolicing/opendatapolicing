@@ -103,6 +103,8 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 
 	@Override public void htmlScriptsTrafficPersonGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficPersonPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficStopPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficSearchPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptTrafficPersonGenPage() {
@@ -412,7 +414,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficPerson.getQueryResponse().getResults().getNumFound();
@@ -494,6 +496,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1TrafficPersonGenPage();
+			} g("div");
 		}
 
 		if(listTrafficPerson != null && listTrafficPerson.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -521,7 +524,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsTrafficPersonGenPage();
-		g("div");
 	}
 
 	public void table1TrafficPersonGenPage() {

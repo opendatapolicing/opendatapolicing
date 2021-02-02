@@ -12,6 +12,10 @@ import com.opendatapolicing.enus.wrap.Wrap;
  */
 public class ApiRequest extends ApiRequestGen<Object> {
 	
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {}
 	
 	protected void _created(Wrap<ZonedDateTime> c) {

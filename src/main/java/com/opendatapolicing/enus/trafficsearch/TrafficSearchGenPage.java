@@ -105,6 +105,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	@Override public void htmlScriptsTrafficSearchGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficSearchPage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficPersonPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/ContrabandPage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/enUS/SearchBasisPage.js").f().g("script");
 	}
 
@@ -132,6 +133,14 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			tl(2, "suggestTrafficSearchPersonKey([{'name':'fq','value':'trafficSearchKeys:' + pk}], $('#listTrafficSearchPersonKey_Page'), pk, true); ");
 		} else {
 			tl(2, "suggestTrafficSearchPersonKey([{'name':'fq','value':'trafficSearchKeys:' + pk}], $('#listTrafficSearchPersonKey_Page'), pk, false); ");
+		}
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestTrafficSearchContrabandKeys([{'name':'fq','value':'searchKey:' + pk}], $('#listTrafficSearchContrabandKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestTrafficSearchContrabandKeys([{'name':'fq','value':'searchKey:' + pk}], $('#listTrafficSearchContrabandKeys_Page'), pk, false); ");
 		}
 		if(
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
@@ -299,6 +308,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("PUTCopy");
+			o.htmContrabandKeys("PUTCopy");
 			o.htmSearchBasisKeys("PUTCopy");
 		} g("div");
 	}
@@ -338,6 +348,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("PATCH");
+			o.htmContrabandKeys("PATCH");
 			o.htmSearchBasisKeys("PATCH");
 		} g("div");
 	}
@@ -459,7 +470,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficSearch.getQueryResponse().getResults().getNumFound();
@@ -541,6 +552,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1TrafficSearchGenPage();
+			} g("div");
 		}
 
 		if(listTrafficSearch != null && listTrafficSearch.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -568,7 +580,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsTrafficSearchGenPage();
-		g("div");
 	}
 
 	public void table1TrafficSearchGenPage() {

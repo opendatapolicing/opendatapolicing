@@ -695,6 +695,68 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userEmail == null ? "" : StringEscapeUtils.escapeHtml4(strUserEmail());
 	}
 
+	public void inputUserEmail(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_userEmail");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setUserEmail classSiteUser inputSiteUser", pk, "UserEmail w3-input w3-border ");
+					a("name", "setUserEmail");
+				} else {
+					a("class", "valueUserEmail w3-input w3-border classSiteUser inputSiteUser", pk, "UserEmail w3-input w3-border ");
+					a("name", "userEmail");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserEmail', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userEmail')); }, function() { addError($('#", classApiMethodMethod, "_userEmail')); }); ");
+				}
+				a("value", strUserEmail())
+			.fg();
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "UserEmail ").f().sx(htmUserEmail()).g("span");
+		}
+	}
+
+	public void htmUserEmail(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserEmail").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserEmail(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userEmail')); $('#", classApiMethodMethod, "_userEmail').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserEmail', null, function() { addGlow($('#", classApiMethodMethod, "_userEmail')); }, function() { addError($('#", classApiMethodMethod, "_userEmail')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	///////////////////
 	// userFirstName //
 	///////////////////
@@ -769,6 +831,68 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String htmUserFirstName() {
 		return userFirstName == null ? "" : StringEscapeUtils.escapeHtml4(strUserFirstName());
+	}
+
+	public void inputUserFirstName(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_userFirstName");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setUserFirstName classSiteUser inputSiteUser", pk, "UserFirstName w3-input w3-border ");
+					a("name", "setUserFirstName");
+				} else {
+					a("class", "valueUserFirstName w3-input w3-border classSiteUser inputSiteUser", pk, "UserFirstName w3-input w3-border ");
+					a("name", "userFirstName");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserFirstName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userFirstName')); }, function() { addError($('#", classApiMethodMethod, "_userFirstName')); }); ");
+				}
+				a("value", strUserFirstName())
+			.fg();
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "UserFirstName ").f().sx(htmUserFirstName()).g("span");
+		}
+	}
+
+	public void htmUserFirstName(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserFirstName").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserFirstName(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userFirstName')); $('#", classApiMethodMethod, "_userFirstName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserFirstName', null, function() { addGlow($('#", classApiMethodMethod, "_userFirstName')); }, function() { addError($('#", classApiMethodMethod, "_userFirstName')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
 	}
 
 	//////////////////
@@ -847,6 +971,68 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userLastName == null ? "" : StringEscapeUtils.escapeHtml4(strUserLastName());
 	}
 
+	public void inputUserLastName(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_userLastName");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setUserLastName classSiteUser inputSiteUser", pk, "UserLastName w3-input w3-border ");
+					a("name", "setUserLastName");
+				} else {
+					a("class", "valueUserLastName w3-input w3-border classSiteUser inputSiteUser", pk, "UserLastName w3-input w3-border ");
+					a("name", "userLastName");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserLastName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userLastName')); }, function() { addError($('#", classApiMethodMethod, "_userLastName')); }); ");
+				}
+				a("value", strUserLastName())
+			.fg();
+
+		} else {
+				e("span").a("class", "varSiteUser", pk, "UserLastName ").f().sx(htmUserLastName()).g("span");
+		}
+	}
+
+	public void htmUserLastName(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserLastName").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserLastName(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userLastName')); $('#", classApiMethodMethod, "_userLastName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserLastName', null, function() { addGlow($('#", classApiMethodMethod, "_userLastName')); }, function() { addError($('#", classApiMethodMethod, "_userLastName')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	//////////////////
 	// userFullName //
 	//////////////////
@@ -923,159 +1109,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userFullName == null ? "" : StringEscapeUtils.escapeHtml4(strUserFullName());
 	}
 
-	//////////////
-	// userSite //
-	//////////////
-
-	/**	 The entity userSite
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String userSite;
-	@JsonIgnore
-	public Wrap<String> userSiteWrap = new Wrap<String>().p(this).c(String.class).var("userSite").o(userSite);
-
-	/**	<br/> The entity userSite
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userSite">Find the entity userSite in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _userSite(Wrap<String> c);
-
-	public String getUserSite() {
-		return userSite;
-	}
-	public void setUserSite(String o) {
-		this.userSite = SiteUser.staticSetUserSite(siteRequest_, o);
-		this.userSiteWrap.alreadyInitialized = true;
-	}
-	public static String staticSetUserSite(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected SiteUser userSiteInit() {
-		if(!userSiteWrap.alreadyInitialized) {
-			_userSite(userSiteWrap);
-			if(userSite == null)
-				setUserSite(userSiteWrap.o);
-		}
-		userSiteWrap.alreadyInitialized(true);
-		return (SiteUser)this;
-	}
-
-	public static String staticSolrUserSite(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrUserSite(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqUserSite(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUser.staticSolrStrUserSite(siteRequest_, SiteUser.staticSolrUserSite(siteRequest_, SiteUser.staticSetUserSite(siteRequest_, o)));
-	}
-
-	public String solrUserSite() {
-		return SiteUser.staticSolrUserSite(siteRequest_, userSite);
-	}
-
-	public String strUserSite() {
-		return userSite == null ? "" : userSite;
-	}
-
-	public String jsonUserSite() {
-		return userSite == null ? "" : userSite;
-	}
-
-	public String nomAffichageUserSite() {
-		return null;
-	}
-
-	public String htmTooltipUserSite() {
-		return null;
-	}
-
-	public String htmUserSite() {
-		return userSite == null ? "" : StringEscapeUtils.escapeHtml4(strUserSite());
-	}
-
-	///////////////////////
-	// customerProfileId //
-	///////////////////////
-
-	/**	 The entity customerProfileId
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String customerProfileId;
-	@JsonIgnore
-	public Wrap<String> customerProfileIdWrap = new Wrap<String>().p(this).c(String.class).var("customerProfileId").o(customerProfileId);
-
-	/**	<br/> The entity customerProfileId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:customerProfileId">Find the entity customerProfileId in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _customerProfileId(Wrap<String> c);
-
-	public String getCustomerProfileId() {
-		return customerProfileId;
-	}
-	public void setCustomerProfileId(String o) {
-		this.customerProfileId = SiteUser.staticSetCustomerProfileId(siteRequest_, o);
-		this.customerProfileIdWrap.alreadyInitialized = true;
-	}
-	public static String staticSetCustomerProfileId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected SiteUser customerProfileIdInit() {
-		if(!customerProfileIdWrap.alreadyInitialized) {
-			_customerProfileId(customerProfileIdWrap);
-			if(customerProfileId == null)
-				setCustomerProfileId(customerProfileIdWrap.o);
-		}
-		customerProfileIdWrap.alreadyInitialized(true);
-		return (SiteUser)this;
-	}
-
-	public static String staticSolrCustomerProfileId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrCustomerProfileId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqCustomerProfileId(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUser.staticSolrStrCustomerProfileId(siteRequest_, SiteUser.staticSolrCustomerProfileId(siteRequest_, SiteUser.staticSetCustomerProfileId(siteRequest_, o)));
-	}
-
-	public String solrCustomerProfileId() {
-		return SiteUser.staticSolrCustomerProfileId(siteRequest_, customerProfileId);
-	}
-
-	public String strCustomerProfileId() {
-		return customerProfileId == null ? "" : customerProfileId;
-	}
-
-	public String jsonCustomerProfileId() {
-		return customerProfileId == null ? "" : customerProfileId;
-	}
-
-	public String nomAffichageCustomerProfileId() {
-		return null;
-	}
-
-	public String htmTooltipCustomerProfileId() {
-		return null;
-	}
-
-	public String htmCustomerProfileId() {
-		return customerProfileId == null ? "" : StringEscapeUtils.escapeHtml4(strCustomerProfileId());
-	}
-
-	public void inputCustomerProfileId(String classApiMethodMethod) {
+	public void inputUserFullName(String classApiMethodMethod) {
 		SiteUser s = (SiteUser)this;
 		if(
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
@@ -1083,36 +1117,36 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				) {
 			e("input")
 				.a("type", "text")
-				.a("id", classApiMethodMethod, "_customerProfileId");
+				.a("id", classApiMethodMethod, "_userFullName");
 				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setCustomerProfileId classSiteUser inputSiteUser", pk, "CustomerProfileId w3-input w3-border ");
-					a("name", "setCustomerProfileId");
+					a("class", "setUserFullName classSiteUser inputSiteUser", pk, "UserFullName w3-input w3-border ");
+					a("name", "setUserFullName");
 				} else {
-					a("class", "valueCustomerProfileId w3-input w3-border classSiteUser inputSiteUser", pk, "CustomerProfileId w3-input w3-border ");
-					a("name", "customerProfileId");
+					a("class", "valueUserFullName w3-input w3-border classSiteUser inputSiteUser", pk, "UserFullName w3-input w3-border ");
+					a("name", "userFullName");
 				}
 				if("Page".equals(classApiMethodMethod)) {
 					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setCustomerProfileId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_customerProfileId')); }, function() { addError($('#", classApiMethodMethod, "_customerProfileId')); }); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserFullName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userFullName')); }, function() { addError($('#", classApiMethodMethod, "_userFullName')); }); ");
 				}
-				a("value", strCustomerProfileId())
+				a("value", strUserFullName())
 			.fg();
 
 		} else {
-				e("span").a("class", "varSiteUser", pk, "CustomerProfileId ").f().sx(htmCustomerProfileId()).g("span");
+				e("span").a("class", "varSiteUser", pk, "UserFullName ").f().sx(htmUserFullName()).g("span");
 		}
 	}
 
-	public void htmCustomerProfileId(String classApiMethodMethod) {
+	public void htmUserFullName(String classApiMethodMethod) {
 		SiteUser s = (SiteUser)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
 			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserCustomerProfileId").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserFullName").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
 							{ e("div").a("class", "w3-cell ").f();
 
-								inputCustomerProfileId(classApiMethodMethod);
+								inputUserFullName(classApiMethodMethod);
 							} g("div");
 							if(
 									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
@@ -1123,154 +1157,13 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 										{ e("button")
 											.a("tabindex", "-1")
 											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_customerProfileId')); $('#", classApiMethodMethod, "_customerProfileId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setCustomerProfileId', null, function() { addGlow($('#", classApiMethodMethod, "_customerProfileId')); }, function() { addError($('#", classApiMethodMethod, "_customerProfileId')); }); ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userFullName')); $('#", classApiMethodMethod, "_userFullName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserFullName', null, function() { addGlow($('#", classApiMethodMethod, "_userFullName')); }, function() { addError($('#", classApiMethodMethod, "_userFullName')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
 										} g("button");
 									} g("div");
 								}
 							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
-	///////////////////////
-	// userReceiveEmails //
-	///////////////////////
-
-	/**	 The entity userReceiveEmails
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected Boolean userReceiveEmails;
-	@JsonIgnore
-	public Wrap<Boolean> userReceiveEmailsWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("userReceiveEmails").o(userReceiveEmails);
-
-	/**	<br/> The entity userReceiveEmails
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userReceiveEmails">Find the entity userReceiveEmails in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _userReceiveEmails(Wrap<Boolean> c);
-
-	public Boolean getUserReceiveEmails() {
-		return userReceiveEmails;
-	}
-
-	public void setUserReceiveEmails(Boolean userReceiveEmails) {
-		this.userReceiveEmails = userReceiveEmails;
-		this.userReceiveEmailsWrap.alreadyInitialized = true;
-	}
-	public void setUserReceiveEmails(String o) {
-		this.userReceiveEmails = SiteUser.staticSetUserReceiveEmails(siteRequest_, o);
-		this.userReceiveEmailsWrap.alreadyInitialized = true;
-	}
-	public static Boolean staticSetUserReceiveEmails(SiteRequestEnUS siteRequest_, String o) {
-		return Boolean.parseBoolean(o);
-	}
-	protected SiteUser userReceiveEmailsInit() {
-		if(!userReceiveEmailsWrap.alreadyInitialized) {
-			_userReceiveEmails(userReceiveEmailsWrap);
-			if(userReceiveEmails == null)
-				setUserReceiveEmails(userReceiveEmailsWrap.o);
-		}
-		userReceiveEmailsWrap.alreadyInitialized(true);
-		return (SiteUser)this;
-	}
-
-	public static Boolean staticSolrUserReceiveEmails(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
-	}
-
-	public static String staticSolrStrUserReceiveEmails(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqUserReceiveEmails(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUser.staticSolrStrUserReceiveEmails(siteRequest_, SiteUser.staticSolrUserReceiveEmails(siteRequest_, SiteUser.staticSetUserReceiveEmails(siteRequest_, o)));
-	}
-
-	public Boolean solrUserReceiveEmails() {
-		return SiteUser.staticSolrUserReceiveEmails(siteRequest_, userReceiveEmails);
-	}
-
-	public String strUserReceiveEmails() {
-		return userReceiveEmails == null ? "" : userReceiveEmails.toString();
-	}
-
-	public String jsonUserReceiveEmails() {
-		return userReceiveEmails == null ? "" : userReceiveEmails.toString();
-	}
-
-	public String nomAffichageUserReceiveEmails() {
-		return null;
-	}
-
-	public String htmTooltipUserReceiveEmails() {
-		return null;
-	}
-
-	public String htmUserReceiveEmails() {
-		return userReceiveEmails == null ? "" : StringEscapeUtils.escapeHtml4(strUserReceiveEmails());
-	}
-
-	public void inputUserReceiveEmails(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_userReceiveEmails")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_userReceiveEmails");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setUserReceiveEmails classSiteUser inputSiteUser", pk, "UserReceiveEmails w3-input w3-border ");
-				a("name", "setUserReceiveEmails");
-			} else {
-				a("class", "valueUserReceiveEmails classSiteUser inputSiteUser", pk, "UserReceiveEmails w3-input w3-border ");
-				a("name", "userReceiveEmails");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserReceiveEmails', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_userReceiveEmails')); }, function() { addError($('#", classApiMethodMethod, "_userReceiveEmails')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getUserReceiveEmails() != null && getUserReceiveEmails())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserReceiveEmails ").f().sx(htmUserReceiveEmails()).g("span");
-		}
-	}
-
-	public void htmUserReceiveEmails(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserReceiveEmails").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserReceiveEmails(classApiMethodMethod);
-							} g("div");
 						} g("div");
 					} g("div");
 				} g("div");
@@ -1595,9 +1488,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		userFirstNameInit();
 		userLastNameInit();
 		userFullNameInit();
-		userSiteInit();
-		customerProfileIdInit();
-		userReceiveEmailsInit();
 		seeArchivedInit();
 		seeDeletedInit();
 	}
@@ -1654,12 +1544,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				return oSiteUser.userLastName;
 			case "userFullName":
 				return oSiteUser.userFullName;
-			case "userSite":
-				return oSiteUser.userSite;
-			case "customerProfileId":
-				return oSiteUser.customerProfileId;
-			case "userReceiveEmails":
-				return oSiteUser.userReceiveEmails;
 			case "seeArchived":
 				return oSiteUser.seeArchived;
 			case "seeDeleted":
@@ -1719,12 +1603,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSetUserLastName(siteRequest_, o);
 		case "userFullName":
 			return SiteUser.staticSetUserFullName(siteRequest_, o);
-		case "userSite":
-			return SiteUser.staticSetUserSite(siteRequest_, o);
-		case "customerProfileId":
-			return SiteUser.staticSetCustomerProfileId(siteRequest_, o);
-		case "userReceiveEmails":
-			return SiteUser.staticSetUserReceiveEmails(siteRequest_, o);
 		case "seeArchived":
 			return SiteUser.staticSetSeeArchived(siteRequest_, o);
 		case "seeDeleted":
@@ -1759,12 +1637,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrUserLastName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteUser.staticSolrUserFullName(siteRequest_, (String)o);
-		case "userSite":
-			return SiteUser.staticSolrUserSite(siteRequest_, (String)o);
-		case "customerProfileId":
-			return SiteUser.staticSolrCustomerProfileId(siteRequest_, (String)o);
-		case "userReceiveEmails":
-			return SiteUser.staticSolrUserReceiveEmails(siteRequest_, (Boolean)o);
 		case "seeArchived":
 			return SiteUser.staticSolrSeeArchived(siteRequest_, (Boolean)o);
 		case "seeDeleted":
@@ -1799,12 +1671,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrStrUserLastName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteUser.staticSolrStrUserFullName(siteRequest_, (String)o);
-		case "userSite":
-			return SiteUser.staticSolrStrUserSite(siteRequest_, (String)o);
-		case "customerProfileId":
-			return SiteUser.staticSolrStrCustomerProfileId(siteRequest_, (String)o);
-		case "userReceiveEmails":
-			return SiteUser.staticSolrStrUserReceiveEmails(siteRequest_, (Boolean)o);
 		case "seeArchived":
 			return SiteUser.staticSolrStrSeeArchived(siteRequest_, (Boolean)o);
 		case "seeDeleted":
@@ -1839,12 +1705,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrFqUserLastName(siteRequest_, o);
 		case "userFullName":
 			return SiteUser.staticSolrFqUserFullName(siteRequest_, o);
-		case "userSite":
-			return SiteUser.staticSolrFqUserSite(siteRequest_, o);
-		case "customerProfileId":
-			return SiteUser.staticSolrFqCustomerProfileId(siteRequest_, o);
-		case "userReceiveEmails":
-			return SiteUser.staticSolrFqUserReceiveEmails(siteRequest_, o);
 		case "seeArchived":
 			return SiteUser.staticSolrFqSeeArchived(siteRequest_, o);
 		case "seeDeleted":
@@ -1890,14 +1750,24 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 					setUserName(val);
 				saves.add(var);
 				return val;
-			case "customerProfileId":
+			case "userEmail":
 				if(val != null)
-					setCustomerProfileId(val);
+					setUserEmail(val);
 				saves.add(var);
 				return val;
-			case "userReceiveEmails":
+			case "userFirstName":
 				if(val != null)
-					setUserReceiveEmails(val);
+					setUserFirstName(val);
+				saves.add(var);
+				return val;
+			case "userLastName":
+				if(val != null)
+					setUserLastName(val);
+				saves.add(var);
+				return val;
+			case "userFullName":
+				if(val != null)
+					setUserFullName(val);
 				saves.add(var);
 				return val;
 			case "seeArchived":
@@ -1973,24 +1843,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				String userFullName = (String)solrDocument.get("userFullName_stored_string");
 				if(userFullName != null)
 					oSiteUser.setUserFullName(userFullName);
-			}
-
-			if(saves.contains("userSite")) {
-				String userSite = (String)solrDocument.get("userSite_stored_string");
-				if(userSite != null)
-					oSiteUser.setUserSite(userSite);
-			}
-
-			if(saves.contains("customerProfileId")) {
-				String customerProfileId = (String)solrDocument.get("customerProfileId_stored_string");
-				if(customerProfileId != null)
-					oSiteUser.setCustomerProfileId(customerProfileId);
-			}
-
-			if(saves.contains("userReceiveEmails")) {
-				Boolean userReceiveEmails = (Boolean)solrDocument.get("userReceiveEmails_stored_boolean");
-				if(userReceiveEmails != null)
-					oSiteUser.setUserReceiveEmails(userReceiveEmails);
 			}
 
 			if(saves.contains("seeArchived")) {
@@ -2107,18 +1959,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			document.addField("userFullName_indexed_string", userFullName);
 			document.addField("userFullName_stored_string", userFullName);
 		}
-		if(userSite != null) {
-			document.addField("userSite_indexed_string", userSite);
-			document.addField("userSite_stored_string", userSite);
-		}
-		if(customerProfileId != null) {
-			document.addField("customerProfileId_indexed_string", customerProfileId);
-			document.addField("customerProfileId_stored_string", customerProfileId);
-		}
-		if(userReceiveEmails != null) {
-			document.addField("userReceiveEmails_indexed_boolean", userReceiveEmails);
-			document.addField("userReceiveEmails_stored_boolean", userReceiveEmails);
-		}
 		if(seeArchived != null) {
 			document.addField("seeArchived_indexed_boolean", seeArchived);
 			document.addField("seeArchived_stored_boolean", seeArchived);
@@ -2166,12 +2006,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				return "userLastName_indexed_string";
 			case "userFullName":
 				return "userFullName_indexed_string";
-			case "userSite":
-				return "userSite_indexed_string";
-			case "customerProfileId":
-				return "customerProfileId_indexed_string";
-			case "userReceiveEmails":
-				return "userReceiveEmails_indexed_boolean";
 			case "seeArchived":
 				return "seeArchived_indexed_boolean";
 			case "seeDeleted":
@@ -2237,18 +2071,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		if(userFullName != null)
 			oSiteUser.setUserFullName(userFullName);
 
-		String userSite = (String)solrDocument.get("userSite_stored_string");
-		if(userSite != null)
-			oSiteUser.setUserSite(userSite);
-
-		String customerProfileId = (String)solrDocument.get("customerProfileId_stored_string");
-		if(customerProfileId != null)
-			oSiteUser.setCustomerProfileId(customerProfileId);
-
-		Boolean userReceiveEmails = (Boolean)solrDocument.get("userReceiveEmails_stored_boolean");
-		if(userReceiveEmails != null)
-			oSiteUser.setUserReceiveEmails(userReceiveEmails);
-
 		Boolean seeArchived = (Boolean)solrDocument.get("seeArchived_stored_boolean");
 		if(seeArchived != null)
 			oSiteUser.setSeeArchived(seeArchived);
@@ -2285,12 +2107,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				apiRequest.addVars("userLastName");
 			if(!Objects.equals(userFullName, original.getUserFullName()))
 				apiRequest.addVars("userFullName");
-			if(!Objects.equals(userSite, original.getUserSite()))
-				apiRequest.addVars("userSite");
-			if(!Objects.equals(customerProfileId, original.getCustomerProfileId()))
-				apiRequest.addVars("customerProfileId");
-			if(!Objects.equals(userReceiveEmails, original.getUserReceiveEmails()))
-				apiRequest.addVars("userReceiveEmails");
 			if(!Objects.equals(seeArchived, original.getSeeArchived()))
 				apiRequest.addVars("seeArchived");
 			if(!Objects.equals(seeDeleted, original.getSeeDeleted()))
@@ -2304,7 +2120,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), userKeys, userId, userKey, userName, userEmail, userFirstName, userLastName, userFullName, userSite, customerProfileId, userReceiveEmails, seeArchived, seeDeleted);
+		return Objects.hash(super.hashCode(), userKeys, userId, userKey, userName, userEmail, userFirstName, userLastName, userFullName, seeArchived, seeDeleted);
 	}
 
 	////////////
@@ -2326,9 +2142,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				&& Objects.equals( userFirstName, that.userFirstName )
 				&& Objects.equals( userLastName, that.userLastName )
 				&& Objects.equals( userFullName, that.userFullName )
-				&& Objects.equals( userSite, that.userSite )
-				&& Objects.equals( customerProfileId, that.customerProfileId )
-				&& Objects.equals( userReceiveEmails, that.userReceiveEmails )
 				&& Objects.equals( seeArchived, that.seeArchived )
 				&& Objects.equals( seeDeleted, that.seeDeleted );
 	}
@@ -2349,9 +2162,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		sb.append( ", userFirstName: \"" ).append(userFirstName).append( "\"" );
 		sb.append( ", userLastName: \"" ).append(userLastName).append( "\"" );
 		sb.append( ", userFullName: \"" ).append(userFullName).append( "\"" );
-		sb.append( ", userSite: \"" ).append(userSite).append( "\"" );
-		sb.append( ", customerProfileId: \"" ).append(customerProfileId).append( "\"" );
-		sb.append( ", userReceiveEmails: " ).append(userReceiveEmails);
 		sb.append( ", seeArchived: " ).append(seeArchived);
 		sb.append( ", seeDeleted: " ).append(seeDeleted);
 		sb.append(" }");

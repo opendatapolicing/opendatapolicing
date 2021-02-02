@@ -632,8 +632,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	/**	
 	 * 
 	 * Val.ErrorServer.enUS:The server is not configured properly. 
-	 * Val.SuccessServer.enUS:The HTTP server is running: %s:%s
-	 * Val.BeforeServer.enUS:HTTP server starting: %s://%s:%s
+	 * Val.SuccessServer.enUS:The HTTP server is running: %s
+	 * Val.BeforeServer.enUS:HTTP server starting: %s
 	 * Val.Ssl.enUS:Configuring SSL: %s
 	 * 
 	 *	Start the Vert.x server. 
@@ -670,6 +670,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		Json.mapper.registerModule(module);
 
 		String siteHostName = siteConfig.getSiteHostName();
+		String siteBaseUrl = siteConfig.getSiteBaseUrl();
 		Integer sitePort = siteConfig.getSitePort();
 		HttpServerOptions options = new HttpServerOptions();
 		if(siteConfig.getSslPassthrough() != null && siteConfig.getSslPassthrough()) {
@@ -679,10 +680,10 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		}
 		options.setPort(sitePort);
 
-		LOGGER.info(String.format(startServerBeforeServer, "https", siteHostName, sitePort));
+		LOGGER.info(String.format(startServerBeforeServer, siteBaseUrl));
 		vertx.createHttpServer(options).requestHandler(siteRouter).listen(ar -> {
 			if (ar.succeeded()) {
-				LOGGER.info(String.format(startServerSuccessServer, "*", sitePort));
+				LOGGER.info(String.format(startServerSuccessServer, siteBaseUrl));
 				promise.complete();
 			} else {
 				LOGGER.error(startServerErrorServer, ar.cause());

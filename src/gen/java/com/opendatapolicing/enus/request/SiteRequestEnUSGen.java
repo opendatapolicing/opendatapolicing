@@ -1208,6 +1208,82 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userFullName == null ? "" : StringEscapeUtils.escapeHtml4(strUserFullName());
 	}
 
+	///////////////
+	// userEmail //
+	///////////////
+
+	/**	 The entity userEmail
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String userEmail;
+	@JsonIgnore
+	public Wrap<String> userEmailWrap = new Wrap<String>().p(this).c(String.class).var("userEmail").o(userEmail);
+
+	/**	<br/> The entity userEmail
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userEmail">Find the entity userEmail in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _userEmail(Wrap<String> c);
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+	public void setUserEmail(String o) {
+		this.userEmail = SiteRequestEnUS.staticSetUserEmail(siteRequest_, o);
+		this.userEmailWrap.alreadyInitialized = true;
+	}
+	public static String staticSetUserEmail(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected SiteRequestEnUS userEmailInit() {
+		if(!userEmailWrap.alreadyInitialized) {
+			_userEmail(userEmailWrap);
+			if(userEmail == null)
+				setUserEmail(userEmailWrap.o);
+		}
+		userEmailWrap.alreadyInitialized(true);
+		return (SiteRequestEnUS)this;
+	}
+
+	public static String staticSolrUserEmail(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrUserEmail(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqUserEmail(SiteRequestEnUS siteRequest_, String o) {
+		return SiteRequestEnUS.staticSolrStrUserEmail(siteRequest_, SiteRequestEnUS.staticSolrUserEmail(siteRequest_, SiteRequestEnUS.staticSetUserEmail(siteRequest_, o)));
+	}
+
+	public String solrUserEmail() {
+		return SiteRequestEnUS.staticSolrUserEmail(siteRequest_, userEmail);
+	}
+
+	public String strUserEmail() {
+		return userEmail == null ? "" : userEmail;
+	}
+
+	public String jsonUserEmail() {
+		return userEmail == null ? "" : userEmail;
+	}
+
+	public String nomAffichageUserEmail() {
+		return null;
+	}
+
+	public String htmTooltipUserEmail() {
+		return null;
+	}
+
+	public String htmUserEmail() {
+		return userEmail == null ? "" : StringEscapeUtils.escapeHtml4(strUserEmail());
+	}
+
 	////////////////////
 	// userRealmRoles //
 	////////////////////
@@ -2086,6 +2162,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		userLastNameInit();
 		userFirstNameInit();
 		userFullNameInit();
+		userEmailInit();
 		userRealmRolesInit();
 		userResourceInit();
 		userResourceRolesInit();
@@ -2183,6 +2260,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.userFirstName;
 			case "userFullName":
 				return oSiteRequestEnUS.userFullName;
+			case "userEmail":
+				return oSiteRequestEnUS.userEmail;
 			case "userRealmRoles":
 				return oSiteRequestEnUS.userRealmRoles;
 			case "userResource":
@@ -2266,6 +2345,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSetUserFirstName(siteRequest_, o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSetUserFullName(siteRequest_, o);
+		case "userEmail":
+			return SiteRequestEnUS.staticSetUserEmail(siteRequest_, o);
 		case "userRealmRoles":
 			return SiteRequestEnUS.staticSetUserRealmRoles(siteRequest_, o);
 		case "userResourceRoles":
@@ -2308,6 +2389,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSolrUserFirstName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSolrUserFullName(siteRequest_, (String)o);
+		case "userEmail":
+			return SiteRequestEnUS.staticSolrUserEmail(siteRequest_, (String)o);
 		case "userRealmRoles":
 			return SiteRequestEnUS.staticSolrUserRealmRoles(siteRequest_, (String)o);
 		case "userResourceRoles":
@@ -2350,6 +2433,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSolrStrUserFirstName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSolrStrUserFullName(siteRequest_, (String)o);
+		case "userEmail":
+			return SiteRequestEnUS.staticSolrStrUserEmail(siteRequest_, (String)o);
 		case "userRealmRoles":
 			return SiteRequestEnUS.staticSolrStrUserRealmRoles(siteRequest_, (String)o);
 		case "userResourceRoles":
@@ -2392,6 +2477,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			return SiteRequestEnUS.staticSolrFqUserFirstName(siteRequest_, o);
 		case "userFullName":
 			return SiteRequestEnUS.staticSolrFqUserFullName(siteRequest_, o);
+		case "userEmail":
+			return SiteRequestEnUS.staticSolrFqUserEmail(siteRequest_, o);
 		case "userRealmRoles":
 			return SiteRequestEnUS.staticSolrFqUserRealmRoles(siteRequest_, o);
 		case "userResourceRoles":

@@ -51,6 +51,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
 import java.time.temporal.ChronoUnit;
+import com.opendatapolicing.enus.trafficcontraband.TrafficContraband;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -539,27 +540,85 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 	public void inputContrabandKeys(String classApiMethodMethod) {
 		TrafficSearch s = (TrafficSearch)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_contrabandKeys_clear")
+						.a("class", "contrabandKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_contrabandKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "contrabands")
+				.a("class", "value suggestContrabandKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setContrabandKeys")
+				.a("id", classApiMethodMethod, "_contrabandKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestTrafficSearchContrabandKeys($(this).val() ? searchTrafficContrabandFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchContrabandKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
 	}
 
 	public void htmContrabandKeys(String classApiMethodMethod) {
 		TrafficSearch s = (TrafficSearch)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchContrabandKeys").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("contrabands").g("label");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "/contraband?fq=searchKey:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
+								e("i").a("class", "far fa-newspaper ").f().g("i");
+								sx("contrabands");
+							} g("a");
 						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate  to this traffic search");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
 							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficSearch", pk, "ContrabandKeys ").f().sx(strContrabandKeys()).g("span");
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputContrabandKeys(classApiMethodMethod);
 								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listTrafficSearchContrabandKeys_", classApiMethodMethod).f();
+								} g("ul");
+								if(
+										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), TrafficContraband.ROLES)
+										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), TrafficContraband.ROLES)
+										) {
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+												.a("id", classApiMethodMethod, "_contrabandKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postTrafficContrabandVals({ searchKey: \"", pk, "\" }, function() {}, function() { addError($('#", classApiMethodMethod, "contrabandKeys')); });")
+												.f().sx("add a contraband")
+											.g("button");
+										} g("div");
+									}
+								}
 							} g("div");
 						} g("div");
 					} g("div");
 				} g("div");
-			}
+			} g("div");
 		} g("div");
 	}
 
@@ -6170,6 +6229,11 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				if(!saves.contains(var))
 					saves.add(var);
 				return val;
+			case "contrabandKeys":
+				oTrafficSearch.addContrabandKeys((Long)val);
+				if(!saves.contains(var))
+					saves.add(var);
+				return val;
 			case "searchBasisKeys":
 				oTrafficSearch.addSearchBasisKeys((Long)val);
 				if(!saves.contains(var))
@@ -6781,11 +6845,9 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			if(personKey != null)
 				oTrafficSearch.setPersonKey(personKey);
 
-			if(saves.contains("contrabandKeys")) {
-				List<Long> contrabandKeys = (List<Long>)solrDocument.get("contrabandKeys_stored_longs");
-				if(contrabandKeys != null)
-					oTrafficSearch.contrabandKeys.addAll(contrabandKeys);
-			}
+			List<Long> contrabandKeys = (List<Long>)solrDocument.get("contrabandKeys_stored_longs");
+			if(contrabandKeys != null)
+				oTrafficSearch.contrabandKeys.addAll(contrabandKeys);
 
 			List<Long> searchBasisKeys = (List<Long>)solrDocument.get("searchBasisKeys_stored_longs");
 			if(searchBasisKeys != null)

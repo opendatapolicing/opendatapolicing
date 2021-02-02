@@ -104,6 +104,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 
 	@Override public void htmlScriptsSearchBasisGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/SearchBasisPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficSearchPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptSearchBasisGenPage() {
@@ -407,7 +408,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSearchBasis.getQueryResponse().getResults().getNumFound();
@@ -489,6 +490,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1SearchBasisGenPage();
+			} g("div");
 		}
 
 		if(listSearchBasis != null && listSearchBasis.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -516,7 +518,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsSearchBasisGenPage();
-		g("div");
 	}
 
 	public void table1SearchBasisGenPage() {

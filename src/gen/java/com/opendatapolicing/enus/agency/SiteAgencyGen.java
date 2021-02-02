@@ -511,7 +511,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteAgencyStateKey").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "?fq=agencyKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-blue w3-hover-pale-blue ").f();
+							{ e("a").a("href", "/state?fq=agencyKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-blue w3-hover-pale-blue ").f();
 								e("i").a("class", "far fa-globe-americas ").f().g("i");
 								sx("state");
 							} g("a");

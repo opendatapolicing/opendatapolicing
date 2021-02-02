@@ -139,10 +139,8 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmDeleted("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmUserReceiveEmails("Page");
 			o.htmSeeArchived("Page");
 			o.htmSeeDeleted("Page");
-			o.htmCustomerProfileId("Page");
 		} g("div");
 	}
 
@@ -158,10 +156,8 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmUserReceiveEmails("POST");
 			o.htmSeeArchived("POST");
 			o.htmSeeDeleted("POST");
-			o.htmCustomerProfileId("POST");
 		} g("div");
 	}
 
@@ -199,10 +195,8 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmDeleted("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmUserReceiveEmails("PUTCopy");
 			o.htmSeeArchived("PUTCopy");
 			o.htmSeeDeleted("PUTCopy");
-			o.htmCustomerProfileId("PUTCopy");
 		} g("div");
 	}
 
@@ -216,10 +210,8 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmUserReceiveEmails("PATCH");
 			o.htmSeeArchived("PATCH");
 			o.htmSeeDeleted("PATCH");
-			o.htmCustomerProfileId("PATCH");
 		} g("div");
 	}
 
@@ -235,10 +227,8 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmUserReceiveEmails("Search");
 			o.htmSeeArchived("Search");
 			o.htmSeeDeleted("Search");
-			o.htmCustomerProfileId("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
@@ -248,6 +238,10 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmUserName("Search");
+			o.htmUserEmail("Search");
+			o.htmUserFirstName("Search");
+			o.htmUserLastName("Search");
+			o.htmUserFullName("Search");
 		} g("div");
 	}
 
@@ -308,7 +302,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 					e("span").a("class", " ").f().sx(pageH1).g("span");
 				} g("a");
 			} g("h1");
-			e("div").a("class", "").f();
+			{ e("div").a("class", "").f();
 				{ e("div").f();
 					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSiteUser.getQueryResponse().getResults().getNumFound();
@@ -390,6 +384,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 						e("span").f().sx((start1 + 1), " - ", (start1 + rows1), " of ", num).g("span");
 				} g("div");
 				table1SiteUserGenPage();
+			} g("div");
 		}
 
 		if(listSiteUser != null && listSiteUser.size() == 1 && params.getJsonObject("query").getString("q").equals("*:*")) {
@@ -417,7 +412,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 
 		}
 		htmlBodyFormsSiteUserGenPage();
-		g("div");
 	}
 
 	public void table1SiteUserGenPage() {

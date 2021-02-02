@@ -419,20 +419,18 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 								workerExecutor.executeBlocking(
 									blockingCodeHandler -> {
 										try {
-											aSearchCluster(siteRequest, false, true, "/api/cluster", "PATCH", d -> {
+											aSearchCluster(siteRequest, false, true, true, "/api/cluster", "PATCH", d -> {
 												if(d.succeeded()) {
 													SearchList<Cluster> listCluster = d.result();
 
-													if(listCluster.getQueryResponse().getResults().getNumFound() > 1) {
-														List<String> roles2 = Arrays.asList("SiteAdmin");
-														if(
-																!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-																&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-																) {
-															String message = String.format("roles required: " + String.join(", ", roles2));
-															LOGGER.error(message);
-															errorCluster(siteRequest, eventHandler, Future.failedFuture(message));
-														}
+													List<String> roles2 = Arrays.asList("SiteAdmin");
+													if(listCluster.getQueryResponse().getResults().getNumFound() > 1
+															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+															) {
+														String message = String.format("roles required: " + String.join(", ", roles2));
+														LOGGER.error(message);
+														errorCluster(siteRequest, eventHandler, Future.failedFuture(message));
 													} else {
 
 														ApiRequest apiRequest = new ApiRequest();
@@ -770,7 +768,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			{
 				userCluster(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchCluster(siteRequest, false, true, "/api/cluster/{id}", "GET", c -> {
+						aSearchCluster(siteRequest, false, true, false, "/api/cluster/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<Cluster> listCluster = c.result();
 								getClusterResponse(listCluster, d -> {
@@ -840,7 +838,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			{
 				userCluster(siteRequest, b -> {
 					if(b.succeeded()) {
-						aSearchCluster(siteRequest, false, true, "/api/cluster", "Search", c -> {
+						aSearchCluster(siteRequest, false, true, false, "/api/cluster", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<Cluster> listCluster = c.result();
 								searchClusterResponse(listCluster, d -> {
@@ -1268,6 +1266,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
 																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
 																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
+																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
 																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
 																		siteRequest.setUserKey(siteUser.getPk());
 																		eventHandler.handle(Future.succeededFuture());
@@ -1480,7 +1479,7 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 		}
 	}
 
-	public void aSearchCluster(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, String uri, String apiMethod, Handler<AsyncResult<SearchList<Cluster>>> eventHandler) {
+	public void aSearchCluster(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<Cluster>>> eventHandler) {
 		try {
 			OperationRequest operationRequest = siteRequest.getOperationRequest();
 			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
@@ -1501,9 +1500,12 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			}
 
 			List<String> roles = Arrays.asList("SiteAdmin");
+			List<String> roleLires = Arrays.asList("User");
 			if(
 					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
 					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roleLires))
+					&& (modify || !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roleLires))
 					) {
 				searchList.addFilterQuery("sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionId()).orElse("-----")) + " OR " + "sessionId_indexed_string:" + ClientUtils.escapeQueryChars(Optional.ofNullable(siteRequest.getSessionIdBefore()).orElse("-----"))
 						+ " OR userKeys_indexed_longs:" + Optional.ofNullable(siteRequest.getUserKey()).orElse(0L));
@@ -1566,12 +1568,15 @@ public class ClusterEnUSGenApiServiceImpl implements ClusterEnUSGenApiService {
 			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
 				searchList.addSort("created_indexed_date", ORDER.desc);
 			}
+			aSearchCluster2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
 			searchList.initDeepForClass(siteRequest);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
 			LOGGER.error(String.format("aSearchCluster failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
+	}
+	public void aSearchCluster2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<Cluster> searchList) {
 	}
 
 	public void defineCluster(Cluster o, Handler<AsyncResult<OperationResponse>> eventHandler) {

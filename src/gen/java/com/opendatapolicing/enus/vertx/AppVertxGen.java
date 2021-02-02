@@ -67,9 +67,9 @@ public abstract class AppVertxGen<DEV> extends AbstractVerticle {
 
 	public static final String startServerErrorServer1 = "The server is not configured properly. ";
 	public static final String startServerErrorServer = startServerErrorServer1;
-	public static final String startServerSuccessServer1 = "The HTTP server is running: %s:%s";
+	public static final String startServerSuccessServer1 = "The HTTP server is running: %s";
 	public static final String startServerSuccessServer = startServerSuccessServer1;
-	public static final String startServerBeforeServer1 = "HTTP server starting: %s://%s:%s";
+	public static final String startServerBeforeServer1 = "HTTP server starting: %s";
 	public static final String startServerBeforeServer = startServerBeforeServer1;
 	public static final String startServerSsl1 = "Configuring SSL: %s";
 	public static final String startServerSsl = startServerSsl1;

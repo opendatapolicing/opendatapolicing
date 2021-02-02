@@ -45,7 +45,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * PublicRead: true
  * 
  * Map.hackathonMission: to create a new Java class TrafficStop to define the TrafficStop Java class that collects stop, search, and use-of-force police data publicly available to ensure transparency
- **/     
+ **/    
 public class TrafficStop extends TrafficStopGen<Cluster> {
 
 	/**
@@ -104,7 +104,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Stored: true
 	 * Define: true
 	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlCell: 2
 	 * DisplayName.enUS: stop date/time
 	 */ 
 	protected void _stopDateTime(Wrap<ZonedDateTime> w) {
@@ -126,7 +126,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Stored: true
 	 * Define: true
 	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlCell: 3
 	 * DisplayName.enUS: stop purpose title
 	 */ 
 	protected void _stopPurposeTitle(Wrap<String> w) {
@@ -170,7 +170,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Stored: true
 	 * Define: true
 	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlCell: 4
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopActionTitle(Wrap<String> w) {
@@ -193,7 +193,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
+	 * HtmlRow: 4
 	 * HtmlCell: 1
 	 * DisplayName.enUS: driver arrest
 	 */ 
@@ -205,8 +205,8 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 2
 	 * DisplayName.enUS: passenger arrest
 	 */ 
 	protected void _stopPassengerArrest(Wrap<Boolean> w) {
@@ -217,8 +217,8 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 3
 	 * DisplayName.enUS: encounter force
 	 */ 
 	protected void _stopEncounterForce(Wrap<Boolean> w) {
@@ -229,8 +229,8 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 4
 	 * DisplayName.enUS: engage force
 	 */ 
 	protected void _stopEngageForce(Wrap<Boolean> w) {
@@ -241,7 +241,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
+	 * HtmlRow: 5
 	 * HtmlCell: 1
 	 * DisplayName.enUS: officer injury
 	 */ 
@@ -253,8 +253,8 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 5
+	 * HtmlCell: 2
 	 * DisplayName.enUS: driver injury
 	 */ 
 	protected void _stopDriverInjury(Wrap<Boolean> w) {
@@ -265,8 +265,8 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 5
+	 * HtmlCell: 3
 	 * DisplayName.enUS: passenger injury
 	 */ 
 	protected void _stopPassengerInjury(Wrap<Boolean> w) {
@@ -277,8 +277,8 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 5
+	 * HtmlCell: 4
 	 * DisplayName.enUS: officer ID
 	 */ 
 	protected void _stopOfficerId(Wrap<String> w) {
@@ -289,7 +289,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
+	 * HtmlRow: 6
 	 * HtmlCell: 1
 	 * DisplayName.enUS: location ID
 	 */ 
@@ -301,22 +301,22 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 6
+	 * HtmlCell: 2
 	 * DisplayName.enUS: city ID
 	 */ 
 	protected void _stopCityId(Wrap<String> w) {
 	}
 
-	/**  
+	/** 
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
 	 * Attribute: TrafficPerson.trafficStopKeys
-	 * HtmlRow: 5
-	 * HtmlCell: 2
+	 * HtmlRow: 6
+	 * HtmlCell: 3
 	 * DisplayName.enUS: people
-	 */          
+	 */       
 	protected void _personKeys(List<Long> c) {
 	}
 

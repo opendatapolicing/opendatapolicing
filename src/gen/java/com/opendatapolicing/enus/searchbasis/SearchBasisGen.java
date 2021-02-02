@@ -295,7 +295,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				{ e("div").a("id", "suggest", classApiMethodMethod, "SearchBasisSearchKey").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "?fq=searchBasisKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
+							{ e("a").a("href", "/traffic-search?fq=searchBasisKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
 								e("i").a("class", "far fa-newspaper ").f().g("i");
 								sx("search key");
 							} g("a");

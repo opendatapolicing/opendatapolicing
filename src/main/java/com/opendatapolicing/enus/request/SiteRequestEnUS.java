@@ -166,6 +166,13 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 		}
 	}
 
+	protected void _userEmail(Wrap<String> c) {
+		if(jsonPrincipal != null) {
+			String o = jsonPrincipal.getString("email");
+			c.o(o);
+		}
+	}
+
 	protected void _userRealmRoles(List<String> o) {
 		JsonArray roles = Optional.ofNullable(jsonPrincipal).map(o1 -> o1.getJsonObject("realm_access")).map(o2 -> o2.getJsonArray("roles")).orElse(new JsonArray());
 		roles.stream().forEach(r -> {
