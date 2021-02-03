@@ -2,6 +2,7 @@ package com.opendatapolicing.enus.request;
 
 import java.util.Arrays;
 import org.apache.solr.common.SolrDocumentList;
+import io.vertx.core.MultiMap;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -10,7 +11,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Transaction;
 import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
-import io.vertx.core.http.CaseInsensitiveHeaders;
 import com.opendatapolicing.enus.wrap.Wrap;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -2049,9 +2049,9 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonInclude(Include.NON_NULL)
-	protected CaseInsensitiveHeaders requestHeaders;
+	protected MultiMap requestHeaders;
 	@JsonIgnore
-	public Wrap<CaseInsensitiveHeaders> requestHeadersWrap = new Wrap<CaseInsensitiveHeaders>().p(this).c(CaseInsensitiveHeaders.class).var("requestHeaders").o(requestHeaders);
+	public Wrap<MultiMap> requestHeadersWrap = new Wrap<MultiMap>().p(this).c(MultiMap.class).var("requestHeaders").o(requestHeaders);
 
 	/**	<br/> The entity requestHeaders
 	 *  is defined as null before being initialized. 
@@ -2059,17 +2059,17 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _requestHeaders(Wrap<CaseInsensitiveHeaders> c);
+	protected abstract void _requestHeaders(Wrap<MultiMap> c);
 
-	public CaseInsensitiveHeaders getRequestHeaders() {
+	public MultiMap getRequestHeaders() {
 		return requestHeaders;
 	}
 
-	public void setRequestHeaders(CaseInsensitiveHeaders requestHeaders) {
+	public void setRequestHeaders(MultiMap requestHeaders) {
 		this.requestHeaders = requestHeaders;
 		this.requestHeadersWrap.alreadyInitialized = true;
 	}
-	public static CaseInsensitiveHeaders staticSetRequestHeaders(SiteRequestEnUS siteRequest_, String o) {
+	public static MultiMap staticSetRequestHeaders(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
 	protected SiteRequestEnUS requestHeadersInit() {

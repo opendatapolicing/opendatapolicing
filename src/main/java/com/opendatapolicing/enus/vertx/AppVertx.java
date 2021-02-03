@@ -391,6 +391,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		OpenIDConnectAuth.discover(vertx, oauth2ClientOptions, a -> {
 			if(a.succeeded()) {
 				OAuth2Auth authProvider = a.result();
+				siteContextEnUS.setAuthProvider(authProvider);
 	
 				OAuth2AuthHandler authHandler = OAuth2AuthHandler.create(authProvider, siteUrlBase + "/callback");
 				authHandler.addAuthority("DefaultAuthScope");
