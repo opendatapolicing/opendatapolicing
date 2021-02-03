@@ -521,6 +521,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 5
+	 * HtmlCell: 1
 	 * DisplayName.enUS: ounces
 	 */ 
 	protected void _contrabandOunces(Wrap<BigDecimal> w) {
@@ -534,6 +536,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 5
+	 * HtmlCell: 2
 	 * DisplayName.enUS: pounds
 	 */ 
 	protected void _contrabandPounds(Wrap<BigDecimal> w) {
@@ -547,6 +551,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 5
+	 * HtmlCell: 3
 	 * DisplayName.enUS: pints
 	 */ 
 	protected void _contrabandPints(Wrap<BigDecimal> w) {
@@ -560,6 +566,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 5
+	 * HtmlCell: 4
 	 * DisplayName.enUS: gallons
 	 */ 
 	protected void _contrabandGallons(Wrap<BigDecimal> w) {
@@ -573,6 +581,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 6
+	 * HtmlCell: 1
 	 * DisplayName.enUS: dosages
 	 */ 
 	protected void _contrabandDosages(Wrap<BigDecimal> w) {
@@ -586,6 +596,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 6
+	 * HtmlCell: 2
 	 * DisplayName.enUS: grams
 	 */ 
 	protected void _contrabandGrams(Wrap<BigDecimal> w) {
@@ -599,6 +611,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 6
+	 * HtmlCell: 3
 	 * DisplayName.enUS: kilos
 	 */ 
 	protected void _contrabandKilos(Wrap<BigDecimal> w) {
@@ -612,6 +626,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 6
+	 * HtmlCell: 4
 	 * DisplayName.enUS: money
 	 */ 
 	protected void _contrabandMoney(Wrap<BigDecimal> w) {
@@ -625,6 +641,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 7
+	 * HtmlCell: 1
 	 * DisplayName.enUS: weapons
 	 */ 
 	protected void _contrabandWeapons(Wrap<BigDecimal> w) {
@@ -638,6 +656,8 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 7
+	 * HtmlCell: 2
 	 * DisplayName.enUS: dollar amount
 	 */ 
 	protected void _contrabandDollarAmount(Wrap<BigDecimal> w) {
@@ -653,25 +673,25 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 */ 
 	protected void _trafficSearchShortName(Wrap<String> w) {
 		StringBuilder b = new StringBuilder();
-		if(contrabandDollarAmount != null)
+		if(contrabandDollarAmount != null && contrabandDollarAmount.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandDollarAmount()).append(" of ");
-		if(contrabandOunces != null)
+		if(contrabandOunces != null && contrabandOunces.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandOunces()).append(" ");
-		if(contrabandPounds != null)
+		if(contrabandPounds != null && contrabandPounds.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandPounds()).append(" ");
-		if(contrabandPints != null)
+		if(contrabandPints != null && contrabandPints.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandPints()).append(" ");
-		if(contrabandGallons != null)
+		if(contrabandGallons != null && contrabandGallons.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandGallons()).append(" ");
-		if(contrabandDosages != null)
+		if(contrabandDosages != null && contrabandDosages.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandDosages()).append(" ");
-		if(contrabandGrams != null)
+		if(contrabandGrams != null && contrabandGrams.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandGrams()).append(" ");
-		if(contrabandKilos != null)
+		if(contrabandKilos != null && contrabandKilos.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandKilos()).append(" ");
-		if(contrabandMoney != null)
+		if(contrabandMoney != null && contrabandMoney.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandMoney()).append(" ");
-		if(contrabandWeapons != null)
+		if(contrabandWeapons != null && contrabandWeapons.compareTo(BigDecimal.ZERO) != 0)
 			b.append(strContrabandMoney()).append(" ");
 		b.append("contraband");
 		w.o(b.toString());

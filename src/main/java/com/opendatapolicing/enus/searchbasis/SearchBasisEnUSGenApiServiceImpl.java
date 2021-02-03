@@ -692,8 +692,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					switch(entityVar) {
 					case "inheritPk":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -705,8 +705,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "archived":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -718,8 +718,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "deleted":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -733,8 +733,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 							{
 						Long l = Long.parseLong(jsonObject.getString(entityVar));
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_addA
-									, Tuple.of(l, "searchBasisKeys", pk, "searchKey")
+							tx.preparedQuery(SiteContextEnUS.SQL_addA)
+									.execute(Tuple.of(l, "searchBasisKeys", pk, "searchKey")
 									, b
 							-> {
 								if(b.succeeded())
@@ -747,8 +747,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopAgencyTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -760,8 +760,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopDateTime":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -773,8 +773,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPurposeNum":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -786,8 +786,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPurposeTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -799,8 +799,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopActionNum":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -812,8 +812,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopActionTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -825,8 +825,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopDriverArrest":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -838,8 +838,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPassengerArrest":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -851,8 +851,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopEncounterForce":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -864,8 +864,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopEngageForce":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -877,8 +877,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopOfficerInjury":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -890,8 +890,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopDriverInjury":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -903,8 +903,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPassengerInjury":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -916,8 +916,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopOfficerId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -929,8 +929,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopLocationId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -942,8 +942,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopCityId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -955,8 +955,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personTypeId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -968,8 +968,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personGenderId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -981,8 +981,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personEthnicityId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -994,8 +994,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personRaceId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1007,8 +1007,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "searchTypeNum":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1020,8 +1020,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "searchBasisId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "searchBasisId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "searchBasisId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1033,8 +1033,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "searchBasisTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "searchBasisTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "searchBasisTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1220,8 +1220,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 
 			if(siteRequest.getSessionId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "sessionId", siteRequest.getSessionId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1233,8 +1233,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			}
 			if(siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userId", siteRequest.getUserId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1246,8 +1246,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			}
 			if(siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1264,8 +1264,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					switch(entityVar) {
 					case "inheritPk":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1277,8 +1277,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "archived":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1290,8 +1290,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "deleted":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1316,8 +1316,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA
-												, Tuple.of(l2, "searchBasisKeys", pk, "searchKey")
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "searchBasisKeys", pk, "searchKey")
 												, b
 										-> {
 											if(b.succeeded())
@@ -1336,8 +1336,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopAgencyTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1349,8 +1349,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopDateTime":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1362,8 +1362,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPurposeNum":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1375,8 +1375,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPurposeTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1388,8 +1388,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopActionNum":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1401,8 +1401,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopActionTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1414,8 +1414,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopDriverArrest":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1427,8 +1427,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPassengerArrest":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1440,8 +1440,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopEncounterForce":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1453,8 +1453,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopEngageForce":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1466,8 +1466,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopOfficerInjury":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1479,8 +1479,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopDriverInjury":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1492,8 +1492,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopPassengerInjury":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1505,8 +1505,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopOfficerId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1518,8 +1518,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopLocationId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1531,8 +1531,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "stopCityId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1544,8 +1544,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personTypeId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1557,8 +1557,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personGenderId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1570,8 +1570,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personEthnicityId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1583,8 +1583,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "personRaceId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1596,8 +1596,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "searchTypeNum":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1609,8 +1609,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "searchBasisId":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "searchBasisId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "searchBasisId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1622,8 +1622,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						break;
 					case "searchBasisTitle":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "searchBasisTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "searchBasisTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1896,8 +1896,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-							, Tuple.of(pk, "userId", siteRequest.getUserId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1909,8 +1909,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1926,8 +1926,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setInheritPk":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "inheritPk")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "inheritPk")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1939,8 +1939,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1954,8 +1954,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setArchived":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "archived")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "archived")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1967,8 +1967,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "archived", o2.jsonArchived())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1982,8 +1982,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setDeleted":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "deleted")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "deleted")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1995,8 +1995,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "deleted", o2.jsonDeleted())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2023,8 +2023,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA
-												, Tuple.of(l2, "searchBasisKeys", pk, "searchKey")
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "searchBasisKeys", pk, "searchKey")
 												, b
 										-> {
 											if(b.succeeded())
@@ -2057,8 +2057,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA
-												, Tuple.of(l2, "searchBasisKeys", pk, "searchKey")
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(l2, "searchBasisKeys", pk, "searchKey")
 												, b
 										-> {
 											if(b.succeeded())
@@ -2078,8 +2078,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopAgencyTitle":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopAgencyTitle")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopAgencyTitle")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2091,8 +2091,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopAgencyTitle(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopAgencyTitle", o2.jsonStopAgencyTitle())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopAgencyTitle", o2.jsonStopAgencyTitle())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2106,8 +2106,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopDateTime":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopDateTime")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopDateTime")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2119,8 +2119,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopDateTime(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopDateTime", o2.jsonStopDateTime())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopDateTime", o2.jsonStopDateTime())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2134,8 +2134,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopPurposeNum":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopPurposeNum")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopPurposeNum")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2147,8 +2147,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopPurposeNum(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopPurposeNum", o2.jsonStopPurposeNum())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopPurposeNum", o2.jsonStopPurposeNum())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2162,8 +2162,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopPurposeTitle":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopPurposeTitle")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopPurposeTitle")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2175,8 +2175,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopPurposeTitle(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopPurposeTitle", o2.jsonStopPurposeTitle())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopPurposeTitle", o2.jsonStopPurposeTitle())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2190,8 +2190,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopActionNum":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopActionNum")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopActionNum")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2203,8 +2203,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopActionNum(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopActionNum", o2.jsonStopActionNum())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopActionNum", o2.jsonStopActionNum())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2218,8 +2218,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopActionTitle":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopActionTitle")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopActionTitle")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2231,8 +2231,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopActionTitle(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopActionTitle", o2.jsonStopActionTitle())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopActionTitle", o2.jsonStopActionTitle())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2246,8 +2246,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopDriverArrest":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopDriverArrest")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopDriverArrest")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2259,8 +2259,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopDriverArrest(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopDriverArrest", o2.jsonStopDriverArrest())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopDriverArrest", o2.jsonStopDriverArrest())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2274,8 +2274,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopPassengerArrest":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopPassengerArrest")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopPassengerArrest")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2287,8 +2287,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopPassengerArrest(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopPassengerArrest", o2.jsonStopPassengerArrest())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopPassengerArrest", o2.jsonStopPassengerArrest())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2302,8 +2302,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopEncounterForce":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopEncounterForce")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopEncounterForce")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2315,8 +2315,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopEncounterForce(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopEncounterForce", o2.jsonStopEncounterForce())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopEncounterForce", o2.jsonStopEncounterForce())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2330,8 +2330,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopEngageForce":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopEngageForce")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopEngageForce")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2343,8 +2343,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopEngageForce(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopEngageForce", o2.jsonStopEngageForce())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopEngageForce", o2.jsonStopEngageForce())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2358,8 +2358,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopOfficerInjury":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopOfficerInjury")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopOfficerInjury")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2371,8 +2371,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopOfficerInjury(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopOfficerInjury", o2.jsonStopOfficerInjury())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopOfficerInjury", o2.jsonStopOfficerInjury())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2386,8 +2386,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopDriverInjury":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopDriverInjury")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopDriverInjury")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2399,8 +2399,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopDriverInjury(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopDriverInjury", o2.jsonStopDriverInjury())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopDriverInjury", o2.jsonStopDriverInjury())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2414,8 +2414,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopPassengerInjury":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopPassengerInjury")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopPassengerInjury")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2427,8 +2427,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopPassengerInjury(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopPassengerInjury", o2.jsonStopPassengerInjury())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopPassengerInjury", o2.jsonStopPassengerInjury())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2442,8 +2442,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopOfficerId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopOfficerId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopOfficerId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2455,8 +2455,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopOfficerId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopOfficerId", o2.jsonStopOfficerId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopOfficerId", o2.jsonStopOfficerId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2470,8 +2470,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopLocationId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopLocationId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopLocationId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2483,8 +2483,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopLocationId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopLocationId", o2.jsonStopLocationId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopLocationId", o2.jsonStopLocationId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2498,8 +2498,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setStopCityId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "stopCityId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopCityId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2511,8 +2511,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setStopCityId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "stopCityId", o2.jsonStopCityId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopCityId", o2.jsonStopCityId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2526,8 +2526,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setPersonTypeId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "personTypeId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "personTypeId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2539,8 +2539,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setPersonTypeId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "personTypeId", o2.jsonPersonTypeId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "personTypeId", o2.jsonPersonTypeId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2554,8 +2554,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setPersonGenderId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "personGenderId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "personGenderId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2567,8 +2567,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setPersonGenderId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "personGenderId", o2.jsonPersonGenderId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "personGenderId", o2.jsonPersonGenderId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2582,8 +2582,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setPersonEthnicityId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "personEthnicityId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "personEthnicityId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2595,8 +2595,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setPersonEthnicityId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "personEthnicityId", o2.jsonPersonEthnicityId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "personEthnicityId", o2.jsonPersonEthnicityId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2610,8 +2610,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setPersonRaceId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "personRaceId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "personRaceId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2623,8 +2623,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setPersonRaceId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "personRaceId", o2.jsonPersonRaceId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "personRaceId", o2.jsonPersonRaceId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2638,8 +2638,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setSearchTypeNum":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "searchTypeNum")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "searchTypeNum")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2651,8 +2651,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setSearchTypeNum(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "searchTypeNum", o2.jsonSearchTypeNum())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "searchTypeNum", o2.jsonSearchTypeNum())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2666,8 +2666,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setSearchBasisId":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "searchBasisId")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "searchBasisId")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2679,8 +2679,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setSearchBasisId(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "searchBasisId", o2.jsonSearchBasisId())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "searchBasisId", o2.jsonSearchBasisId())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2694,8 +2694,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					case "setSearchBasisTitle":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "searchBasisTitle")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "searchBasisTitle")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2707,8 +2707,8 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						} else {
 							o2.setSearchBasisTitle(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "searchBasisTitle", o2.jsonSearchBasisTitle())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "searchBasisTitle", o2.jsonSearchBasisTitle())
 										, b
 								-> {
 									if(b.succeeded())
@@ -3206,10 +3206,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			String userId = siteRequest.getUserId();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_create
-					, Tuple.of(SearchBasis.class.getCanonicalName(), userId, created.toOffsetDateTime())
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_create)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(SearchBasis.class.getCanonicalName(), userId, created.toOffsetDateTime())
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -3426,10 +3425,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						sqlTransactionSearchBasis(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(
-										SiteContextEnUS.SQL_selectC
-										, Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
-										, Collectors.toList()
+								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+										.collecting(Collectors.toList())
+										.execute(Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -3783,10 +3781,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_define
-					, Tuple.of(pk)
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_define)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(pk)
 					, defineAsync
 			-> {
 				if(defineAsync.succeeded()) {
@@ -3820,10 +3817,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_attribute
-					, Tuple.of(pk, pk)
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(pk, pk)
 					, attributeAsync
 			-> {
 				try {

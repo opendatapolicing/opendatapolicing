@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficperson;  
+package com.opendatapolicing.enus.trafficperson;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -46,7 +46,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * PublicRead: true
  * 
  * Map.hackathonMission: to create a new Java class TrafficStop to define the TrafficStop Java class that collects stop, search, and use-of-force police data publicly available to ensure transparency
- **/     
+ **/  
 public class TrafficPerson extends TrafficPersonGen<Cluster> {
 
 	/**

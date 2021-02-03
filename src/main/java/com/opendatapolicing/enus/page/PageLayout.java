@@ -262,7 +262,11 @@ public class PageLayout extends PageLayoutGen<Object> {
 		e("script").a("src", staticBaseUrl, "/js/enUS/SiteUserPage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/enUS/SiteStatePage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/enUS/SiteAgencyPage.js").f().g("script");
-		e("script").a("src", staticBaseUrl, "/js/enUS/ReportCardPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficStopPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/SearchBasisPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/ContrabandPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficPersonPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficSearchPage.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/moment.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/jqDatePicker.js").f().g("script");
 		e("script").a("src", staticBaseUrl, "/js/jquery.serialize-object.js").f().g("script");

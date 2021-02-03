@@ -151,6 +151,22 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("Page");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandOunces("Page");
+			o.htmContrabandPounds("Page");
+			o.htmContrabandPints("Page");
+			o.htmContrabandGallons("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandDosages("Page");
+			o.htmContrabandGrams("Page");
+			o.htmContrabandKilos("Page");
+			o.htmContrabandMoney("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandWeapons("Page");
+			o.htmContrabandDollarAmount("Page");
+		} g("div");
 	}
 
 	public void htmlFormPOSTTrafficContraband(TrafficContraband o) {
@@ -166,6 +182,22 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandOunces("POST");
+			o.htmContrabandPounds("POST");
+			o.htmContrabandPints("POST");
+			o.htmContrabandGallons("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandDosages("POST");
+			o.htmContrabandGrams("POST");
+			o.htmContrabandKilos("POST");
+			o.htmContrabandMoney("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandWeapons("POST");
+			o.htmContrabandDollarAmount("POST");
 		} g("div");
 	}
 
@@ -205,6 +237,22 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("PUTCopy");
 		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandOunces("PUTCopy");
+			o.htmContrabandPounds("PUTCopy");
+			o.htmContrabandPints("PUTCopy");
+			o.htmContrabandGallons("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandDosages("PUTCopy");
+			o.htmContrabandGrams("PUTCopy");
+			o.htmContrabandKilos("PUTCopy");
+			o.htmContrabandMoney("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandWeapons("PUTCopy");
+			o.htmContrabandDollarAmount("PUTCopy");
+		} g("div");
 	}
 
 	public void htmlFormPATCHTrafficContraband(TrafficContraband o) {
@@ -218,6 +266,22 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandOunces("PATCH");
+			o.htmContrabandPounds("PATCH");
+			o.htmContrabandPints("PATCH");
+			o.htmContrabandGallons("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandDosages("PATCH");
+			o.htmContrabandGrams("PATCH");
+			o.htmContrabandKilos("PATCH");
+			o.htmContrabandMoney("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmContrabandWeapons("PATCH");
+			o.htmContrabandDollarAmount("PATCH");
 		} g("div");
 	}
 
@@ -236,20 +300,26 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 			o.htmSearchKey("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmInheritPk("Search");
-			o.htmUserId("Search");
-			o.htmUserKey("Search");
-			o.htmObjectTitle("Search");
 			o.htmContrabandOunces("Search");
 			o.htmContrabandPounds("Search");
 			o.htmContrabandPints("Search");
 			o.htmContrabandGallons("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmContrabandDosages("Search");
 			o.htmContrabandGrams("Search");
 			o.htmContrabandKilos("Search");
 			o.htmContrabandMoney("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmContrabandWeapons("Search");
 			o.htmContrabandDollarAmount("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmInheritPk("Search");
+			o.htmUserId("Search");
+			o.htmUserKey("Search");
+			o.htmObjectTitle("Search");
 		} g("div");
 	}
 

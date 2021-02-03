@@ -692,8 +692,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					switch(entityVar) {
 					case "inheritPk":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -705,8 +705,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "archived":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -718,8 +718,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "deleted":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -733,8 +733,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 							{
 						Long l = Long.parseLong(jsonObject.getString(entityVar));
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_addA
-									, Tuple.of(l, "contrabandKeys", pk, "searchKey")
+							tx.preparedQuery(SiteContextEnUS.SQL_addA)
+									.execute(Tuple.of(l, "contrabandKeys", pk, "searchKey")
 									, b
 							-> {
 								if(b.succeeded())
@@ -747,8 +747,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandOunces":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandOunces", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandOunces", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -760,8 +760,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandPounds":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandPounds", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandPounds", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -773,8 +773,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandPints":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandPints", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandPints", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -786,8 +786,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandGallons":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandGallons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandGallons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -799,8 +799,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandDosages":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandDosages", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandDosages", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -812,8 +812,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandGrams":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandGrams", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandGrams", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -825,8 +825,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandKilos":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandKilos", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandKilos", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -838,8 +838,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandMoney":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandMoney", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandMoney", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -851,8 +851,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandWeapons":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandWeapons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandWeapons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -864,8 +864,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandDollarAmount":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandDollarAmount", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandDollarAmount", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1051,8 +1051,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 
 			if(siteRequest.getSessionId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "sessionId", siteRequest.getSessionId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1064,8 +1064,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 			}
 			if(siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userId", siteRequest.getUserId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1077,8 +1077,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 			}
 			if(siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1095,8 +1095,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					switch(entityVar) {
 					case "inheritPk":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1108,8 +1108,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "archived":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1121,8 +1121,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "deleted":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1147,8 +1147,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA
-												, Tuple.of(l2, "contrabandKeys", pk, "searchKey")
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "contrabandKeys", pk, "searchKey")
 												, b
 										-> {
 											if(b.succeeded())
@@ -1167,8 +1167,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandOunces":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandOunces", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandOunces", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1180,8 +1180,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandPounds":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandPounds", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandPounds", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1193,8 +1193,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandPints":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandPints", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandPints", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1206,8 +1206,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandGallons":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandGallons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandGallons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1219,8 +1219,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandDosages":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandDosages", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandDosages", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1232,8 +1232,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandGrams":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandGrams", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandGrams", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1245,8 +1245,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandKilos":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandKilos", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandKilos", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1258,8 +1258,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandMoney":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandMoney", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandMoney", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1271,8 +1271,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandWeapons":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandWeapons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandWeapons", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1284,8 +1284,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						break;
 					case "contrabandDollarAmount":
 						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD
-									, Tuple.of(pk, "contrabandDollarAmount", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "contrabandDollarAmount", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
 									, b
 							-> {
 								if(b.succeeded())
@@ -1558,8 +1558,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-							, Tuple.of(pk, "userId", siteRequest.getUserId())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1571,8 +1571,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD
-				, Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
+					tx.preparedQuery(SiteContextEnUS.SQL_setD)
+				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
 							, b
 					-> {
 						if(b.succeeded())
@@ -1588,8 +1588,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setInheritPk":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "inheritPk")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "inheritPk")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1601,8 +1601,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1616,8 +1616,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setArchived":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "archived")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "archived")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1629,8 +1629,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "archived", o2.jsonArchived())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1644,8 +1644,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setDeleted":
 						if(jsonObject.getBoolean(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "deleted")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "deleted")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1657,8 +1657,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "deleted", o2.jsonDeleted())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1685,8 +1685,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA
-												, Tuple.of(l2, "contrabandKeys", pk, "searchKey")
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(l2, "contrabandKeys", pk, "searchKey")
 												, b
 										-> {
 											if(b.succeeded())
@@ -1719,8 +1719,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA
-												, Tuple.of(l2, "contrabandKeys", pk, "searchKey")
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(l2, "contrabandKeys", pk, "searchKey")
 												, b
 										-> {
 											if(b.succeeded())
@@ -1740,8 +1740,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandOunces":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandOunces")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandOunces")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1753,8 +1753,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandOunces(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandOunces", o2.jsonContrabandOunces())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandOunces", o2.jsonContrabandOunces())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1768,8 +1768,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandPounds":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandPounds")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandPounds")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1781,8 +1781,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandPounds(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandPounds", o2.jsonContrabandPounds())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandPounds", o2.jsonContrabandPounds())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1796,8 +1796,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandPints":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandPints")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandPints")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1809,8 +1809,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandPints(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandPints", o2.jsonContrabandPints())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandPints", o2.jsonContrabandPints())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1824,8 +1824,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandGallons":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandGallons")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandGallons")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1837,8 +1837,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandGallons(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandGallons", o2.jsonContrabandGallons())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandGallons", o2.jsonContrabandGallons())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1852,8 +1852,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandDosages":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandDosages")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandDosages")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1865,8 +1865,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandDosages(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandDosages", o2.jsonContrabandDosages())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandDosages", o2.jsonContrabandDosages())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1880,8 +1880,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandGrams":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandGrams")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandGrams")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1893,8 +1893,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandGrams(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandGrams", o2.jsonContrabandGrams())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandGrams", o2.jsonContrabandGrams())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1908,8 +1908,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandKilos":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandKilos")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandKilos")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1921,8 +1921,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandKilos(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandKilos", o2.jsonContrabandKilos())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandKilos", o2.jsonContrabandKilos())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1936,8 +1936,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandMoney":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandMoney")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandMoney")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1949,8 +1949,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandMoney(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandMoney", o2.jsonContrabandMoney())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandMoney", o2.jsonContrabandMoney())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1964,8 +1964,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandWeapons":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandWeapons")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandWeapons")
 										, b
 								-> {
 									if(b.succeeded())
@@ -1977,8 +1977,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandWeapons(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandWeapons", o2.jsonContrabandWeapons())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandWeapons", o2.jsonContrabandWeapons())
 										, b
 								-> {
 									if(b.succeeded())
@@ -1992,8 +1992,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 					case "setContrabandDollarAmount":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD
-										, Tuple.of(pk, "contrabandDollarAmount")
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "contrabandDollarAmount")
 										, b
 								-> {
 									if(b.succeeded())
@@ -2005,8 +2005,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						} else {
 							o2.setContrabandDollarAmount(jsonObject.getString(methodName));
 							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD
-										, Tuple.of(pk, "contrabandDollarAmount", o2.jsonContrabandDollarAmount())
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "contrabandDollarAmount", o2.jsonContrabandDollarAmount())
 										, b
 								-> {
 									if(b.succeeded())
@@ -2504,10 +2504,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 			String userId = siteRequest.getUserId();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_create
-					, Tuple.of(TrafficContraband.class.getCanonicalName(), userId, created.toOffsetDateTime())
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_create)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(TrafficContraband.class.getCanonicalName(), userId, created.toOffsetDateTime())
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -2724,10 +2723,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 						sqlTransactionTrafficContraband(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(
-										SiteContextEnUS.SQL_selectC
-										, Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
-										, Collectors.toList()
+								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+										.collecting(Collectors.toList())
+										.execute(Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -3081,10 +3079,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_define
-					, Tuple.of(pk)
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_define)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(pk)
 					, defineAsync
 			-> {
 				if(defineAsync.succeeded()) {
@@ -3118,10 +3115,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(
-					SiteContextEnUS.SQL_attribute
-					, Tuple.of(pk, pk)
-					, Collectors.toList()
+			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+					.collecting(Collectors.toList())
+					.execute(Tuple.of(pk, pk)
 					, attributeAsync
 			-> {
 				try {

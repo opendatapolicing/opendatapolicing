@@ -69,6 +69,7 @@ import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.sockjs.BridgeOptions;
+import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.pgclient.PgConnectOptions;
@@ -283,17 +284,17 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		siteContextEnUS.setPgPool(pgPool);
 
 
-		pgPool.preparedQuery(SQL_createTableC, a -> {
+		pgPool.preparedQuery(SQL_createTableC).execute(a -> {
 			if (a.succeeded()) {
-				pgPool.preparedQuery(SQL_uniqueIndexC, b -> {
+				pgPool.preparedQuery(SQL_uniqueIndexC).execute(b -> {
 					if (b.succeeded()) {
-						pgPool.preparedQuery(SQL_createTableA, c -> {
+						pgPool.preparedQuery(SQL_createTableA).execute(c -> {
 							if (c.succeeded()) {
-								pgPool.preparedQuery(SQL_uniqueIndexA, d -> {
+								pgPool.preparedQuery(SQL_uniqueIndexA).execute(d -> {
 									if (d.succeeded()) {
-										pgPool.preparedQuery(SQL_createTableD, e -> {
+										pgPool.preparedQuery(SQL_createTableD).execute(e -> {
 											if (e.succeeded()) {
-												pgPool.preparedQuery(SQL_uniqueIndexD, f -> {
+												pgPool.preparedQuery(SQL_uniqueIndexD).execute(f -> {
 													if (f.succeeded()) {
 														LOGGER.info(configureDataInitSuccess);
 														promise.complete();
@@ -403,6 +404,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		//		ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
 				LocalSessionStore sessionStore = LocalSessionStore.create(vertx, "opendatapolicing-sessions");
 				SessionHandler sessionHandler = SessionHandler.create(sessionStore);
+				sessionHandler.setCookieSecureFlag(true);
 				sessionHandler.setAuthProvider(authProvider);
 		
 				OpenAPI3RouterFactory.create(vertx, "openapi3-enUS.yaml", b -> {
@@ -441,7 +443,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 											if (session != null) {
 												// the user has upgraded from unauthenticated to authenticated
 												// session should be upgraded as recommended by owasp
-												ctx.addCookie(Cookie.cookie("sessionIdBefore", session.id()));
+												ctx.addCookie(Cookie.cookie("sessionIdBefore", session.id()).setSecure(true));
 												session.regenerateId();
 												// we should redirect the UA so this link becomes invalid
 												ctx.response()
@@ -535,7 +537,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
 
 		healthCheckHandler.register("database", 2000, a -> {
-			siteContextEnUS.getPgPool().preparedQuery("select current_timestamp" , selectCAsync -> {
+			siteContextEnUS.getPgPool().preparedQuery("select current_timestamp").execute(selectCAsync -> {
 				if(selectCAsync.succeeded()) {
 					a.complete(Status.OK());
 				} else {
@@ -571,7 +573,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Promise<Void> configureWebsockets() {
 		Promise<Void> promise = Promise.promise();
 		Router siteRouter = siteContextEnUS.getRouter();
-		BridgeOptions options = new BridgeOptions()
+		SockJSBridgeOptions options = new SockJSBridgeOptions()
 				.addOutboundPermitted(new PermittedOptions().setAddressRegex("websocket.*"));
 		SockJSHandler sockJsHandler = SockJSHandler.create(vertx);
 		sockJsHandler.bridge(options);
