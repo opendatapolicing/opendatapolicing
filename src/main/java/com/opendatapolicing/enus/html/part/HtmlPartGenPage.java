@@ -751,7 +751,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listHtmlPart != null && listHtmlPart.size() == 1) {
 				{ e("button")
@@ -934,7 +933,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedHtmlPartGenPage(this, null, listHtmlPart);
 	}

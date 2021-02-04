@@ -625,7 +625,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listTrafficPerson != null && listTrafficPerson.size() == 1) {
 				{ e("button")
@@ -808,7 +807,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedTrafficPersonGenPage(this, null, listTrafficPerson);
 	}

@@ -602,7 +602,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listTrafficStop != null && listTrafficStop.size() == 1) {
 				{ e("button")
@@ -785,7 +784,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedTrafficStopGenPage(this, null, listTrafficStop);
 	}

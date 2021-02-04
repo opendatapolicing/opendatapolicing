@@ -551,7 +551,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listSiteAgency != null && listSiteAgency.size() == 1) {
 				{ e("button")
@@ -734,7 +733,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedSiteAgencyGenPage(this, null, listSiteAgency);
 	}

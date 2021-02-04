@@ -681,7 +681,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listTrafficSearch != null && listTrafficSearch.size() == 1) {
 				{ e("button")
@@ -864,7 +863,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedTrafficSearchGenPage(this, null, listTrafficSearch);
 	}

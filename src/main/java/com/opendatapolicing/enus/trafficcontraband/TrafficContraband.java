@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficcontraband; 
+package com.opendatapolicing.enus.trafficcontraband;   
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;

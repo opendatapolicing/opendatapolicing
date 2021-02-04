@@ -513,7 +513,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listSiteUser != null && listSiteUser.size() == 1) {
 				{ e("button")
@@ -594,7 +593,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedSiteUserGenPage(this, null, listSiteUser);
 	}

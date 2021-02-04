@@ -551,7 +551,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listSiteState != null && listSiteState.size() == 1) {
 				{ e("button")
@@ -734,7 +733,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedSiteStateGenPage(this, null, listSiteState);
 	}

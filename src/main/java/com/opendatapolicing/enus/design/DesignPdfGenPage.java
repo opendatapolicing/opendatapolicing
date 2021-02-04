@@ -719,7 +719,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listPageDesign != null && listPageDesign.size() == 1) {
 				{ e("button")
@@ -902,7 +901,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedDesignPdfGenPage(this, null, listPageDesign);
 	}

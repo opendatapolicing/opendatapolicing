@@ -591,7 +591,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
 				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
 				) {
-			e("div").a("class", "w3-margin-top ").f();
 
 			if(listTrafficContraband != null && listTrafficContraband.size() == 1) {
 				{ e("button")
@@ -774,7 +773,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 				} g("div");
 			} g("div");
 
-			g("div");
 		}
 		htmlSuggestedContrabandGenPage(this, null, listTrafficContraband);
 	}
