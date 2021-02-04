@@ -3016,27 +3016,67 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public void inputPersonAge(String classApiMethodMethod) {
 		TrafficPerson s = (TrafficPerson)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "person age")
+				.a("id", classApiMethodMethod, "_personAge");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setPersonAge classTrafficPerson inputTrafficPerson", pk, "PersonAge w3-input w3-border ");
+					a("name", "setPersonAge");
+				} else {
+					a("class", "valuePersonAge w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "PersonAge w3-input w3-border ");
+					a("name", "personAge");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setPersonAge', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_personAge')); }, function() { addError($('#", classApiMethodMethod, "_personAge')); }); ");
+				}
+				a("value", strPersonAge())
+			.fg();
+
+		} else {
+			e("span").a("class", "varTrafficPerson", pk, "PersonAge ").f().sx(htmPersonAge()).g("span");
+		}
 	}
 
 	public void htmPersonAge(String classApiMethodMethod) {
 		TrafficPerson s = (TrafficPerson)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonPersonAge").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person age").g("label");
+							e("label").a("for", classApiMethodMethod, "_personAge").a("class", "").f().sx("person age").g("label");
 						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
 							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficPerson", pk, "PersonAge ").f().sx(strPersonAge()).g("span");
-								} g("div");
+
+								inputPersonAge(classApiMethodMethod);
 							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_personAge')); $('#", classApiMethodMethod, "_personAge').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setPersonAge', null, function() { addGlow($('#", classApiMethodMethod, "_personAge')); }, function() { addError($('#", classApiMethodMethod, "_personAge')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
 						} g("div");
 					} g("div");
 				} g("div");
-			}
+			} g("div");
 		} g("div");
 	}
 
@@ -4340,6 +4380,158 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		} g("div");
 	}
 
+	////////////////////////////
+	// trafficPersonShortName //
+	////////////////////////////
+
+	/**	 The entity trafficPersonShortName
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String trafficPersonShortName;
+	@JsonIgnore
+	public Wrap<String> trafficPersonShortNameWrap = new Wrap<String>().p(this).c(String.class).var("trafficPersonShortName").o(trafficPersonShortName);
+
+	/**	<br/> The entity trafficPersonShortName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficperson.TrafficPerson&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficPersonShortName">Find the entity trafficPersonShortName in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _trafficPersonShortName(Wrap<String> w);
+
+	public String getTrafficPersonShortName() {
+		return trafficPersonShortName;
+	}
+	public void setTrafficPersonShortName(String o) {
+		this.trafficPersonShortName = TrafficPerson.staticSetTrafficPersonShortName(siteRequest_, o);
+		this.trafficPersonShortNameWrap.alreadyInitialized = true;
+	}
+	public static String staticSetTrafficPersonShortName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected TrafficPerson trafficPersonShortNameInit() {
+		if(!trafficPersonShortNameWrap.alreadyInitialized) {
+			_trafficPersonShortName(trafficPersonShortNameWrap);
+			if(trafficPersonShortName == null)
+				setTrafficPersonShortName(trafficPersonShortNameWrap.o);
+		}
+		trafficPersonShortNameWrap.alreadyInitialized(true);
+		return (TrafficPerson)this;
+	}
+
+	public static String staticSolrTrafficPersonShortName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrTrafficPersonShortName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqTrafficPersonShortName(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficPerson.staticSolrStrTrafficPersonShortName(siteRequest_, TrafficPerson.staticSolrTrafficPersonShortName(siteRequest_, TrafficPerson.staticSetTrafficPersonShortName(siteRequest_, o)));
+	}
+
+	public String solrTrafficPersonShortName() {
+		return TrafficPerson.staticSolrTrafficPersonShortName(siteRequest_, trafficPersonShortName);
+	}
+
+	public String strTrafficPersonShortName() {
+		return trafficPersonShortName == null ? "" : trafficPersonShortName;
+	}
+
+	public String jsonTrafficPersonShortName() {
+		return trafficPersonShortName == null ? "" : trafficPersonShortName;
+	}
+
+	public String nomAffichageTrafficPersonShortName() {
+		return null;
+	}
+
+	public String htmTooltipTrafficPersonShortName() {
+		return null;
+	}
+
+	public String htmTrafficPersonShortName() {
+		return trafficPersonShortName == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficPersonShortName());
+	}
+
+	///////////////////////////////
+	// trafficPersonCompleteName //
+	///////////////////////////////
+
+	/**	 The entity trafficPersonCompleteName
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String trafficPersonCompleteName;
+	@JsonIgnore
+	public Wrap<String> trafficPersonCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("trafficPersonCompleteName").o(trafficPersonCompleteName);
+
+	/**	<br/> The entity trafficPersonCompleteName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficperson.TrafficPerson&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficPersonCompleteName">Find the entity trafficPersonCompleteName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _trafficPersonCompleteName(Wrap<String> c);
+
+	public String getTrafficPersonCompleteName() {
+		return trafficPersonCompleteName;
+	}
+	public void setTrafficPersonCompleteName(String o) {
+		this.trafficPersonCompleteName = TrafficPerson.staticSetTrafficPersonCompleteName(siteRequest_, o);
+		this.trafficPersonCompleteNameWrap.alreadyInitialized = true;
+	}
+	public static String staticSetTrafficPersonCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected TrafficPerson trafficPersonCompleteNameInit() {
+		if(!trafficPersonCompleteNameWrap.alreadyInitialized) {
+			_trafficPersonCompleteName(trafficPersonCompleteNameWrap);
+			if(trafficPersonCompleteName == null)
+				setTrafficPersonCompleteName(trafficPersonCompleteNameWrap.o);
+		}
+		trafficPersonCompleteNameWrap.alreadyInitialized(true);
+		return (TrafficPerson)this;
+	}
+
+	public static String staticSolrTrafficPersonCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrTrafficPersonCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqTrafficPersonCompleteName(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficPerson.staticSolrStrTrafficPersonCompleteName(siteRequest_, TrafficPerson.staticSolrTrafficPersonCompleteName(siteRequest_, TrafficPerson.staticSetTrafficPersonCompleteName(siteRequest_, o)));
+	}
+
+	public String solrTrafficPersonCompleteName() {
+		return TrafficPerson.staticSolrTrafficPersonCompleteName(siteRequest_, trafficPersonCompleteName);
+	}
+
+	public String strTrafficPersonCompleteName() {
+		return trafficPersonCompleteName == null ? "" : trafficPersonCompleteName;
+	}
+
+	public String jsonTrafficPersonCompleteName() {
+		return trafficPersonCompleteName == null ? "" : trafficPersonCompleteName;
+	}
+
+	public String nomAffichageTrafficPersonCompleteName() {
+		return null;
+	}
+
+	public String htmTooltipTrafficPersonCompleteName() {
+		return null;
+	}
+
+	public String htmTrafficPersonCompleteName() {
+		return trafficPersonCompleteName == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficPersonCompleteName());
+	}
+
 	//////////////
 	// initDeep //
 	//////////////
@@ -4395,6 +4587,8 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		personEthnicityTitleInit();
 		personRaceIdInit();
 		personRaceTitleInit();
+		trafficPersonShortNameInit();
+		trafficPersonCompleteNameInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -4503,6 +4697,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				return oTrafficPerson.personRaceId;
 			case "personRaceTitle":
 				return oTrafficPerson.personRaceTitle;
+			case "trafficPersonShortName":
+				return oTrafficPerson.trafficPersonShortName;
+			case "trafficPersonCompleteName":
+				return oTrafficPerson.trafficPersonCompleteName;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -4617,6 +4815,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSetPersonRaceId(siteRequest_, o);
 		case "personRaceTitle":
 			return TrafficPerson.staticSetPersonRaceTitle(siteRequest_, o);
+		case "trafficPersonShortName":
+			return TrafficPerson.staticSetTrafficPersonShortName(siteRequest_, o);
+		case "trafficPersonCompleteName":
+			return TrafficPerson.staticSetTrafficPersonCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -4695,6 +4897,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSolrPersonRaceId(siteRequest_, (String)o);
 		case "personRaceTitle":
 			return TrafficPerson.staticSolrPersonRaceTitle(siteRequest_, (String)o);
+		case "trafficPersonShortName":
+			return TrafficPerson.staticSolrTrafficPersonShortName(siteRequest_, (String)o);
+		case "trafficPersonCompleteName":
+			return TrafficPerson.staticSolrTrafficPersonCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -4773,6 +4979,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSolrStrPersonRaceId(siteRequest_, (String)o);
 		case "personRaceTitle":
 			return TrafficPerson.staticSolrStrPersonRaceTitle(siteRequest_, (String)o);
+		case "trafficPersonShortName":
+			return TrafficPerson.staticSolrStrTrafficPersonShortName(siteRequest_, (String)o);
+		case "trafficPersonCompleteName":
+			return TrafficPerson.staticSolrStrTrafficPersonCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -4851,6 +5061,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSolrFqPersonRaceId(siteRequest_, o);
 		case "personRaceTitle":
 			return TrafficPerson.staticSolrFqPersonRaceTitle(siteRequest_, o);
+		case "trafficPersonShortName":
+			return TrafficPerson.staticSolrFqTrafficPersonShortName(siteRequest_, o);
+		case "trafficPersonCompleteName":
+			return TrafficPerson.staticSolrFqTrafficPersonCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -4955,6 +5169,11 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			case "stopCityId":
 				if(val != null)
 					setStopCityId(val);
+				saves.add(var);
+				return val;
+			case "personAge":
+				if(val != null)
+					setPersonAge(val);
 				saves.add(var);
 				return val;
 			case "personTypeId":
@@ -5181,6 +5400,18 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				if(personRaceTitle != null)
 					oTrafficPerson.setPersonRaceTitle(personRaceTitle);
 			}
+
+			if(saves.contains("trafficPersonShortName")) {
+				String trafficPersonShortName = (String)solrDocument.get("trafficPersonShortName_stored_string");
+				if(trafficPersonShortName != null)
+					oTrafficPerson.setTrafficPersonShortName(trafficPersonShortName);
+			}
+
+			if(saves.contains("trafficPersonCompleteName")) {
+				String trafficPersonCompleteName = (String)solrDocument.get("trafficPersonCompleteName_stored_string");
+				if(trafficPersonCompleteName != null)
+					oTrafficPerson.setTrafficPersonCompleteName(trafficPersonCompleteName);
+			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -5380,6 +5611,14 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			document.addField("personRaceTitle_indexed_string", personRaceTitle);
 			document.addField("personRaceTitle_stored_string", personRaceTitle);
 		}
+		if(trafficPersonShortName != null) {
+			document.addField("trafficPersonShortName_indexed_string", trafficPersonShortName);
+			document.addField("trafficPersonShortName_stored_string", trafficPersonShortName);
+		}
+		if(trafficPersonCompleteName != null) {
+			document.addField("trafficPersonCompleteName_indexed_string", trafficPersonCompleteName);
+			document.addField("trafficPersonCompleteName_stored_string", trafficPersonCompleteName);
+		}
 		super.indexCluster(document);
 
 	}
@@ -5467,6 +5706,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				return "personRaceId_indexed_string";
 			case "personRaceTitle":
 				return "personRaceTitle_indexed_string";
+			case "trafficPersonShortName":
+				return "trafficPersonShortName_indexed_string";
+			case "trafficPersonCompleteName":
+				return "trafficPersonCompleteName_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -5624,6 +5867,14 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		if(personRaceTitle != null)
 			oTrafficPerson.setPersonRaceTitle(personRaceTitle);
 
+		String trafficPersonShortName = (String)solrDocument.get("trafficPersonShortName_stored_string");
+		if(trafficPersonShortName != null)
+			oTrafficPerson.setTrafficPersonShortName(trafficPersonShortName);
+
+		String trafficPersonCompleteName = (String)solrDocument.get("trafficPersonCompleteName_stored_string");
+		if(trafficPersonCompleteName != null)
+			oTrafficPerson.setTrafficPersonCompleteName(trafficPersonCompleteName);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -5700,6 +5951,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				apiRequest.addVars("personRaceId");
 			if(!Objects.equals(personRaceTitle, original.getPersonRaceTitle()))
 				apiRequest.addVars("personRaceTitle");
+			if(!Objects.equals(trafficPersonShortName, original.getTrafficPersonShortName()))
+				apiRequest.addVars("trafficPersonShortName");
+			if(!Objects.equals(trafficPersonCompleteName, original.getTrafficPersonCompleteName()))
+				apiRequest.addVars("trafficPersonCompleteName");
 			super.apiRequestCluster();
 		}
 	}
@@ -5709,7 +5964,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), personKey, trafficStopKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, trafficSearchKeys, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle);
+		return Objects.hash(super.hashCode(), personKey, trafficStopKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, trafficSearchKeys, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficPersonShortName, trafficPersonCompleteName);
 	}
 
 	////////////
@@ -5754,7 +6009,9 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				&& Objects.equals( personEthnicityId, that.personEthnicityId )
 				&& Objects.equals( personEthnicityTitle, that.personEthnicityTitle )
 				&& Objects.equals( personRaceId, that.personRaceId )
-				&& Objects.equals( personRaceTitle, that.personRaceTitle );
+				&& Objects.equals( personRaceTitle, that.personRaceTitle )
+				&& Objects.equals( trafficPersonShortName, that.trafficPersonShortName )
+				&& Objects.equals( trafficPersonCompleteName, that.trafficPersonCompleteName );
 	}
 
 	//////////////
@@ -5797,6 +6054,8 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		sb.append( ", personEthnicityTitle: \"" ).append(personEthnicityTitle).append( "\"" );
 		sb.append( ", personRaceId: \"" ).append(personRaceId).append( "\"" );
 		sb.append( ", personRaceTitle: \"" ).append(personRaceTitle).append( "\"" );
+		sb.append( ", trafficPersonShortName: \"" ).append(trafficPersonShortName).append( "\"" );
+		sb.append( ", trafficPersonCompleteName: \"" ).append(trafficPersonCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

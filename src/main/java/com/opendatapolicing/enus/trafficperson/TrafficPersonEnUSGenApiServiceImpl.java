@@ -973,6 +973,19 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							}
 						}
 						break;
+					case "personAge":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personAge", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficPerson.personAge failed", b.cause())));
+							});
+						}));
+						break;
 					case "personTypeId":
 						futures.add(Future.future(a -> {
 							tx.preparedQuery(SiteContextEnUS.SQL_setD)
@@ -1554,6 +1567,19 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 								}
 							}
 						}
+						break;
+					case "personAge":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "personAge", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficPerson.personAge failed", b.cause())));
+							});
+						}));
 						break;
 					case "personTypeId":
 						futures.add(Future.future(a -> {
@@ -2653,6 +2679,34 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 									}
 								}
 							}
+						}
+						break;
+					case "setPersonAge":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "personAge")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficPerson.personAge failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setPersonAge(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "personAge", o2.jsonPersonAge())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficPerson.personAge failed", b.cause())));
+								});
+							}));
 						}
 						break;
 					case "setPersonTypeId":

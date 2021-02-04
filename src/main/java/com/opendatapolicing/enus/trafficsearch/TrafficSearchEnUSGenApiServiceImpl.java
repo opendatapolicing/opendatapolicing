@@ -1059,19 +1059,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							});
 						}));
 						break;
-					case "searchTypeTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchTypeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
-							});
-						}));
-						break;
 					case "searchVehicle":
 						futures.add(Future.future(a -> {
 							tx.preparedQuery(SiteContextEnUS.SQL_setD)
@@ -1787,19 +1774,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									a.handle(Future.succeededFuture());
 								else
 									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
-							});
-						}));
-						break;
-					case "searchTypeTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchTypeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
 							});
 						}));
 						break;
@@ -3236,34 +3210,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 										a.handle(Future.succeededFuture());
 									else
 										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setSearchTypeTitle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchTypeTitle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setSearchTypeTitle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchTypeTitle", o2.jsonSearchTypeTitle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeTitle failed", b.cause())));
 								});
 							}));
 						}

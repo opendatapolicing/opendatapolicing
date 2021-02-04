@@ -42,8 +42,7 @@ import com.opendatapolicing.enus.xml.UtilXml;
  * Keyword: classSimpleNameCluster
  * 
  * RoleUser: true
- * Role.frFR: SiteAdmin
- * Role.enUS: SiteAdmin
+ * Role.enUS: SiteService
  * RoleRead.enUS: User
  **/  
 
@@ -128,8 +127,6 @@ public class Cluster extends ClusterGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 2
-	 * HtmlCell: 1
 	 * DisplayName.enUS: archived
 	 */ 
 	protected void _archived(Wrap<Boolean> c) {
@@ -141,8 +138,6 @@ public class Cluster extends ClusterGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 2
-	 * HtmlCell: 2
 	 * DisplayName.enUS: deleted
 	 */ 
 	protected void _deleted(Wrap<Boolean> c) {

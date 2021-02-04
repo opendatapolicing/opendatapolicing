@@ -45,7 +45,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * PublicRead: true
  * 
  * Map.hackathonMission: to create a new Java class TrafficContraband to define the TrafficContraband Java class that collects search, search, and use-of-force police data publicly available to ensure transparency
- **/    
+ **/   
 public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 
 	/**

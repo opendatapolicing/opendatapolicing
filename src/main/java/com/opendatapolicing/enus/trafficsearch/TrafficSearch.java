@@ -65,7 +65,7 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Attribute: TrafficPerson.trafficSearchKeys
-	 * HtmlRow: 4
+	 * HtmlRow: 3
 	 * HtmlCell: 1
 	 * DisplayName.enUS: person key
 	 */          
@@ -94,8 +94,8 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Attribute: TrafficContraband.searchKey
-	 * HtmlRow: 4
-	 * HtmlCell: 1
+	 * HtmlRow: 3
+	 * HtmlCell: 2
 	 * DisplayName.enUS: contrabands
 	 */          
 	protected void _contrabandKeys(List<Long> w) {
@@ -106,8 +106,8 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Attribute: SearchBasis.searchKey
-	 * HtmlRow: 4
-	 * HtmlCell: 1
+	 * HtmlRow: 3
+	 * HtmlCell: 3
 	 * DisplayName.enUS: search bases
 	 */          
 	protected void _searchBasisKeys(List<Long> w) {
@@ -118,8 +118,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopAgencyTitle(Wrap<String> w) {
@@ -132,8 +130,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: stop date/time
 	 */ 
 	protected void _stopDateTime(Wrap<ZonedDateTime> w) {
@@ -158,8 +154,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: stop purpose title
 	 */ 
 	protected void _stopPurposeTitle(Wrap<String> w) {
@@ -184,8 +178,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopActionTitle(Wrap<String> w) {
@@ -198,8 +190,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: driver arrest
 	 */ 
 	protected void _stopDriverArrest(Wrap<Boolean> w) {
@@ -212,8 +202,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: passenger arrest
 	 */ 
 	protected void _stopPassengerArrest(Wrap<Boolean> w) {
@@ -226,8 +214,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: encounter force
 	 */ 
 	protected void _stopEncounterForce(Wrap<Boolean> w) {
@@ -240,8 +226,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: engage force
 	 */ 
 	protected void _stopEngageForce(Wrap<Boolean> w) {
@@ -254,8 +238,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: officer injury
 	 */ 
 	protected void _stopOfficerInjury(Wrap<Boolean> w) {
@@ -268,8 +250,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: driver injury
 	 */ 
 	protected void _stopDriverInjury(Wrap<Boolean> w) {
@@ -282,8 +262,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: passenger injury
 	 */ 
 	protected void _stopPassengerInjury(Wrap<Boolean> w) {
@@ -296,8 +274,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: officer ID
 	 */ 
 	protected void _stopOfficerId(Wrap<String> w) {
@@ -310,8 +286,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: location ID
 	 */ 
 	protected void _stopLocationId(Wrap<String> w) {
@@ -324,8 +298,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: city ID
 	 */ 
 	protected void _stopCityId(Wrap<String> w) {
@@ -337,8 +309,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person age
 	 */ 
 	protected void _personAge(Wrap<Integer> w) {
@@ -362,8 +332,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person type title
 	 */ 
 	protected void _personTypeTitle(Wrap<String> w) {
@@ -409,8 +377,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person gender title
 	 */ 
 	protected void _personGenderTitle(Wrap<String> w) {
@@ -456,8 +422,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person ethnicity title
 	 */ 
 	protected void _personEthnicityTitle(Wrap<String> w) {
@@ -481,8 +445,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person race title
 	 */ 
 	protected void _personRaceTitle(Wrap<String> w) {
@@ -515,8 +477,7 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 3
+	 * HtmlRow: 4
 	 * HtmlCell: 1
 	 * DisplayName.enUS: search type title
 	 */ 
@@ -540,8 +501,8 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 2
 	 * DisplayName.enUS: vehicle search
 	 */ 
 	protected void _searchVehicle(Wrap<Boolean> w) {
@@ -552,8 +513,8 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 3
 	 * DisplayName.enUS: driver search
 	 */ 
 	protected void _searchDriver(Wrap<Boolean> w) {
@@ -564,8 +525,8 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 4
 	 * DisplayName.enUS: passenger search
 	 */ 
 	protected void _searchPassenger(Wrap<Boolean> w) {
@@ -576,7 +537,7 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
+	 * HtmlRow: 5
 	 * HtmlCell: 1
 	 * DisplayName.enUS: property search
 	 */ 
@@ -588,8 +549,8 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 5
+	 * HtmlCell: 2
 	 * DisplayName.enUS: vehicle siezed
 	 */ 
 	protected void _searchVehicleSiezed(Wrap<Boolean> w) {
@@ -600,10 +561,10 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 5
+	 * HtmlCell: 3
 	 * DisplayName.enUS: personal property siezed
-	 */ 
+	 */
 	protected void _searchPersonalPropertySiezed(Wrap<Boolean> w) {
 	}
 
@@ -612,8 +573,8 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 5
+	 * HtmlCell: 4
 	 * DisplayName.enUS: other property siezed
 	 */ 
 	protected void _searchOtherPropertySiezed(Wrap<Boolean> w) {

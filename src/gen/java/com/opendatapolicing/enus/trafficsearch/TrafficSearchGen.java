@@ -3213,32 +3213,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personAge == null ? "" : StringEscapeUtils.escapeHtml4(strPersonAge());
 	}
 
-	public void inputPersonAge(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-	}
-
-	public void htmPersonAge(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person age").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficSearch", pk, "PersonAge ").f().sx(strPersonAge()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
-	}
-
 	//////////////////
 	// personTypeId //
 	//////////////////
@@ -3455,32 +3429,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 	public String htmPersonTypeTitle() {
 		return personTypeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeTitle());
-	}
-
-	public void inputPersonTypeTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-	}
-
-	public void htmPersonTypeTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person type title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficSearch", pk, "PersonTypeTitle ").f().sx(strPersonTypeTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
 	}
 
 	//////////////////////
@@ -3863,32 +3811,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personGenderTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderTitle());
 	}
 
-	public void inputPersonGenderTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-	}
-
-	public void htmPersonGenderTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person gender title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficSearch", pk, "PersonGenderTitle ").f().sx(strPersonGenderTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
-	}
-
 	////////////////////////
 	// personGenderFemale //
 	////////////////////////
@@ -4269,32 +4191,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personEthnicityTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityTitle());
 	}
 
-	public void inputPersonEthnicityTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-	}
-
-	public void htmPersonEthnicityTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person ethnicity title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficSearch", pk, "PersonEthnicityTitle ").f().sx(strPersonEthnicityTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
-	}
-
 	//////////////////
 	// personRaceId //
 	//////////////////
@@ -4511,32 +4407,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 	public String htmPersonRaceTitle() {
 		return personRaceTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceTitle());
-	}
-
-	public void inputPersonRaceTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-	}
-
-	public void htmPersonRaceTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person race title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficSearch", pk, "PersonRaceTitle ").f().sx(strPersonRaceTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
 	}
 
 	////////////////////
@@ -4851,67 +4721,27 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 	public void inputSearchTypeTitle(String classApiMethodMethod) {
 		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "search type title")
-				.a("id", classApiMethodMethod, "_searchTypeTitle");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setSearchTypeTitle classTrafficSearch inputTrafficSearch", pk, "SearchTypeTitle w3-input w3-border ");
-					a("name", "setSearchTypeTitle");
-				} else {
-					a("class", "valueSearchTypeTitle w3-input w3-border classTrafficSearch inputTrafficSearch", pk, "SearchTypeTitle w3-input w3-border ");
-					a("name", "searchTypeTitle");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchTypeTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_searchTypeTitle')); }, function() { addError($('#", classApiMethodMethod, "_searchTypeTitle')); }); ");
-				}
-				a("value", strSearchTypeTitle())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchTypeTitle ").f().sx(htmSearchTypeTitle()).g("span");
-		}
 	}
 
 	public void htmSearchTypeTitle(String classApiMethodMethod) {
 		TrafficSearch s = (TrafficSearch)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchTypeTitle").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchTypeTitle").a("class", "").f().sx("search type title").g("label");
+							e("label").a("class", "").f().sx("search type title").g("label");
 						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+						{ e("div").a("class", "w3-cell-row  ").f();
 							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchTypeTitle(classApiMethodMethod);
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varTrafficSearch", pk, "SearchTypeTitle ").f().sx(strSearchTypeTitle()).g("span");
+								} g("div");
 							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_searchTypeTitle')); $('#", classApiMethodMethod, "_searchTypeTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficSearchForm :input[name=pk]').val() }], 'setSearchTypeTitle', null, function() { addGlow($('#", classApiMethodMethod, "_searchTypeTitle')); }, function() { addError($('#", classApiMethodMethod, "_searchTypeTitle')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
 						} g("div");
 					} g("div");
 				} g("div");
-			} g("div");
+			}
 		} g("div");
 	}
 
@@ -6776,11 +6606,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			case "searchTypeNum":
 				if(val != null)
 					setSearchTypeNum(val);
-				saves.add(var);
-				return val;
-			case "searchTypeTitle":
-				if(val != null)
-					setSearchTypeTitle(val);
 				saves.add(var);
 				return val;
 			case "searchVehicle":

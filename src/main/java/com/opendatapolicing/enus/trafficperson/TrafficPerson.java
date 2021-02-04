@@ -64,7 +64,7 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Attribute: TrafficStop.personKeys
-	 * HtmlRow: 4
+	 * HtmlRow: 3
 	 * HtmlCell: 1
 	 * DisplayName.enUS: traffic stop key
 	 */          
@@ -93,8 +93,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopAgencyTitle(Wrap<String> w) {
@@ -107,8 +105,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: stop date/time
 	 */ 
 	protected void _stopDateTime(Wrap<ZonedDateTime> w) {
@@ -133,8 +129,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: stop purpose title
 	 */ 
 	protected void _stopPurposeTitle(Wrap<String> w) {
@@ -159,8 +153,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopActionTitle(Wrap<String> w) {
@@ -173,8 +165,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: driver arrest
 	 */ 
 	protected void _stopDriverArrest(Wrap<Boolean> w) {
@@ -187,8 +177,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: passenger arrest
 	 */ 
 	protected void _stopPassengerArrest(Wrap<Boolean> w) {
@@ -201,8 +189,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: encounter force
 	 */ 
 	protected void _stopEncounterForce(Wrap<Boolean> w) {
@@ -215,8 +201,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: engage force
 	 */ 
 	protected void _stopEngageForce(Wrap<Boolean> w) {
@@ -229,8 +213,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: officer injury
 	 */ 
 	protected void _stopOfficerInjury(Wrap<Boolean> w) {
@@ -243,8 +225,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: driver injury
 	 */ 
 	protected void _stopDriverInjury(Wrap<Boolean> w) {
@@ -257,8 +237,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: passenger injury
 	 */ 
 	protected void _stopPassengerInjury(Wrap<Boolean> w) {
@@ -271,8 +249,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: officer ID
 	 */ 
 	protected void _stopOfficerId(Wrap<String> w) {
@@ -285,8 +261,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: location ID
 	 */ 
 	protected void _stopLocationId(Wrap<String> w) {
@@ -299,8 +273,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: city ID
 	 */ 
 	protected void _stopCityId(Wrap<String> w) {
@@ -313,8 +285,8 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Attribute: TrafficSearch.personKey
-	 * HtmlRow: 4
-	 * HtmlCell: 1
+	 * HtmlRow: 3
+	 * HtmlCell: 2
 	 * DisplayName.enUS: traffic search keys
 	 */          
 	protected void _trafficSearchKeys(List<Long> c) {
@@ -324,8 +296,9 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 2
+	 * Define: true
 	 * DisplayName.enUS: person age
 	 */ 
 	protected void _personAge(Wrap<Integer> w) {
@@ -345,8 +318,8 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 3
 	 * DisplayName.enUS: person type title
 	 */ 
 	protected void _personTypeTitle(Wrap<String> w) {
@@ -402,8 +375,8 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 4
+	 * HtmlCell: 4
 	 * DisplayName.enUS: person gender title
 	 */ 
 	protected void _personGenderTitle(Wrap<String> w) {
@@ -459,7 +432,7 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
+	 * HtmlRow: 5
 	 * HtmlCell: 1
 	 * DisplayName.enUS: person ethnicity title
 	 */ 
@@ -486,8 +459,8 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
+	 * HtmlRow: 5
+	 * HtmlCell: 2
 	 * DisplayName.enUS: person race title
 	 */ 
 	protected void _personRaceTitle(Wrap<String> w) {
@@ -503,5 +476,38 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 		case "W":
 			w.o("White"); break;
 		}
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 */ 
+	protected void _trafficPersonShortName(Wrap<String> w) {
+		StringBuilder b = new StringBuilder();
+		b.append("person");
+		if(personAge != null)
+			b.append(" age ").append(strPersonAge());
+		b.append(" ").append(strPersonGenderTitle());
+		b.append(" ").append(strPersonRaceTitle());
+		b.append(" ").append(strPersonEthnicityTitle());
+		b.append(" ").append(strPersonTypeTitle());
+		w.o(b.toString().toLowerCase());
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * VarH2: true
+	 * VarTitle: true
+	 */ 
+	protected void _trafficPersonCompleteName(Wrap<String> c) {
+		c.o(trafficPersonShortName);
+	}
+
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(trafficPersonCompleteName);
 	}
 }

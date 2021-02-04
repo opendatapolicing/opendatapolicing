@@ -62,7 +62,8 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		c.o("");
+		if(trafficPerson_ != null && trafficPerson_.getTrafficPersonCompleteName() != null)
+			c.o(trafficPerson_.getTrafficPersonCompleteName());
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -70,8 +71,8 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficPerson_ != null && trafficPerson_.getObjectTitle() != null)
-			c.o(trafficPerson_.getObjectTitle());
+		if(trafficPerson_ != null && trafficPerson_.getTrafficPersonCompleteName() != null)
+			c.o(trafficPerson_.getTrafficPersonCompleteName());
 		else if(trafficPerson_ != null)
 			c.o("people");
 		else if(listTrafficPerson == null || listTrafficPerson.size() == 0)
@@ -157,29 +158,17 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmDeleted("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("Page");
-			o.htmStopDateTime("Page");
-			o.htmStopPurposeTitle("Page");
-			o.htmStopActionTitle("Page");
-			o.htmStopDriverArrest("Page");
-			o.htmStopPassengerArrest("Page");
-			o.htmStopEncounterForce("Page");
-			o.htmStopEngageForce("Page");
-			o.htmStopOfficerInjury("Page");
-			o.htmStopDriverInjury("Page");
-			o.htmStopPassengerInjury("Page");
-			o.htmStopOfficerId("Page");
-			o.htmStopLocationId("Page");
-			o.htmStopCityId("Page");
+			o.htmTrafficStopKey("Page");
+			o.htmTrafficSearchKeys("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonAge("Page");
 			o.htmPersonTypeTitle("Page");
 			o.htmPersonGenderTitle("Page");
-			o.htmPersonEthnicityTitle("Page");
-			o.htmPersonRaceTitle("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmTrafficStopKey("Page");
-			o.htmTrafficSearchKeys("Page");
+			o.htmPersonEthnicityTitle("Page");
+			o.htmPersonRaceTitle("Page");
 		} g("div");
 	}
 
@@ -195,29 +184,17 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("POST");
-			o.htmStopDateTime("POST");
-			o.htmStopPurposeTitle("POST");
-			o.htmStopActionTitle("POST");
-			o.htmStopDriverArrest("POST");
-			o.htmStopPassengerArrest("POST");
-			o.htmStopEncounterForce("POST");
-			o.htmStopEngageForce("POST");
-			o.htmStopOfficerInjury("POST");
-			o.htmStopDriverInjury("POST");
-			o.htmStopPassengerInjury("POST");
-			o.htmStopOfficerId("POST");
-			o.htmStopLocationId("POST");
-			o.htmStopCityId("POST");
+			o.htmTrafficStopKey("POST");
+			o.htmTrafficSearchKeys("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonAge("POST");
 			o.htmPersonTypeTitle("POST");
 			o.htmPersonGenderTitle("POST");
-			o.htmPersonEthnicityTitle("POST");
-			o.htmPersonRaceTitle("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmTrafficStopKey("POST");
-			o.htmTrafficSearchKeys("POST");
+			o.htmPersonEthnicityTitle("POST");
+			o.htmPersonRaceTitle("POST");
 		} g("div");
 	}
 
@@ -255,24 +232,11 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmDeleted("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("PUTCopy");
-			o.htmStopDateTime("PUTCopy");
-			o.htmStopPurposeTitle("PUTCopy");
-			o.htmStopActionTitle("PUTCopy");
-			o.htmStopDriverArrest("PUTCopy");
-			o.htmStopPassengerArrest("PUTCopy");
-			o.htmStopEncounterForce("PUTCopy");
-			o.htmStopEngageForce("PUTCopy");
-			o.htmStopOfficerInjury("PUTCopy");
-			o.htmStopDriverInjury("PUTCopy");
-			o.htmStopPassengerInjury("PUTCopy");
-			o.htmStopOfficerId("PUTCopy");
-			o.htmStopLocationId("PUTCopy");
-			o.htmStopCityId("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmTrafficStopKey("PUTCopy");
 			o.htmTrafficSearchKeys("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonAge("PUTCopy");
 		} g("div");
 	}
 
@@ -286,24 +250,11 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("PATCH");
-			o.htmStopDateTime("PATCH");
-			o.htmStopPurposeTitle("PATCH");
-			o.htmStopActionTitle("PATCH");
-			o.htmStopDriverArrest("PATCH");
-			o.htmStopPassengerArrest("PATCH");
-			o.htmStopEncounterForce("PATCH");
-			o.htmStopEngageForce("PATCH");
-			o.htmStopOfficerInjury("PATCH");
-			o.htmStopDriverInjury("PATCH");
-			o.htmStopPassengerInjury("PATCH");
-			o.htmStopOfficerId("PATCH");
-			o.htmStopLocationId("PATCH");
-			o.htmStopCityId("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmTrafficStopKey("PATCH");
 			o.htmTrafficSearchKeys("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonAge("PATCH");
 		} g("div");
 	}
 
@@ -319,9 +270,28 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmTrafficStopKey("Search");
+			o.htmTrafficSearchKeys("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonAge("Search");
+			o.htmPersonTypeTitle("Search");
+			o.htmPersonGenderTitle("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmPersonEthnicityTitle("Search");
+			o.htmPersonRaceTitle("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmInheritPk("Search");
+			o.htmUserId("Search");
+			o.htmUserKey("Search");
+			o.htmObjectTitle("Search");
 			o.htmStopAgencyTitle("Search");
 			o.htmStopDateTime("Search");
+			o.htmStopPurposeNum("Search");
 			o.htmStopPurposeTitle("Search");
+			o.htmStopActionNum("Search");
 			o.htmStopActionTitle("Search");
 			o.htmStopDriverArrest("Search");
 			o.htmStopPassengerArrest("Search");
@@ -333,23 +303,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmStopOfficerId("Search");
 			o.htmStopLocationId("Search");
 			o.htmStopCityId("Search");
-			o.htmPersonAge("Search");
-			o.htmPersonTypeTitle("Search");
-			o.htmPersonGenderTitle("Search");
-			o.htmPersonEthnicityTitle("Search");
-			o.htmPersonRaceTitle("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmTrafficStopKey("Search");
-			o.htmTrafficSearchKeys("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmInheritPk("Search");
-			o.htmUserId("Search");
-			o.htmUserKey("Search");
-			o.htmObjectTitle("Search");
-			o.htmStopPurposeNum("Search");
-			o.htmStopActionNum("Search");
 			o.htmPersonTypeId("Search");
 			o.htmPersonGenderId("Search");
 			o.htmPersonEthnicityId("Search");
@@ -890,7 +843,7 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficPerson")
 					.a("id", "suggestTrafficPerson", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficPersonObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListTrafficPerson", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestTrafficPersonObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficPersonCompleteName' } ], $('#suggestListTrafficPerson", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/person?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficPerson != null)
 					p.a("value", query2);
