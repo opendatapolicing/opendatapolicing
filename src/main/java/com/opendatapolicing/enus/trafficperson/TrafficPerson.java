@@ -495,7 +495,7 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 		w.o(b.toString().toLowerCase());
 	}
 
-	/**   
+	/**  
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true

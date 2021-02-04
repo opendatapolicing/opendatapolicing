@@ -151,11 +151,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmPk("Page");
 			o.htmCreated("Page");
 			o.htmModified("Page");
-			o.htmObjectId("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmTrafficStopKey("Page");
@@ -177,11 +172,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-			o.htmObjectId("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmTrafficStopKey("POST");
@@ -228,10 +218,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmTrafficStopKey("PUTCopy");
 			o.htmTrafficSearchKeys("PUTCopy");
 		} g("div");
@@ -244,10 +230,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
 			o.htmModified("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmTrafficStopKey("PATCH");
@@ -263,11 +245,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 			o.htmPk("Search");
 			o.htmCreated("Search");
 			o.htmModified("Search");
-			o.htmObjectId("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmTrafficStopKey("Search");
@@ -284,6 +261,8 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");

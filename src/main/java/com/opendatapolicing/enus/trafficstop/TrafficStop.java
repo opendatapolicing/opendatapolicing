@@ -94,7 +94,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * HtmlRow: 4
 	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
-	 */ 
+	 */
 	protected void _stopAgencyTitle(Wrap<String> w) {
 	}
 

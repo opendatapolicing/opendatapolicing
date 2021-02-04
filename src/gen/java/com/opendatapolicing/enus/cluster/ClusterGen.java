@@ -1838,32 +1838,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectId == null ? "" : StringEscapeUtils.escapeHtml4(strObjectId());
 	}
 
-	public void inputObjectId(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-	}
-
-	public void htmObjectId(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ s.e("div").a("class", "w3-padding ").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3- ").f();
-							s.e("label").a("class", "").f().sx("ID").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row  ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-								{ s.e("div").a("class", "w3-rest ").f();
-									s.e("span").a("class", "varCluster", pk, "ObjectId ").f().sx(strObjectId()).g("span");
-								} s.g("div");
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			}
-		} s.g("div");
-	}
-
 	///////////////////
 	// objectNameVar //
 	///////////////////

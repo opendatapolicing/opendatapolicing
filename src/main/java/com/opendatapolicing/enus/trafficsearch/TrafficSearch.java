@@ -68,7 +68,7 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * HtmlRow: 3
 	 * HtmlCell: 1
 	 * DisplayName.enUS: person key
-	 */          
+	 */         
 	protected void _personKey(Wrap<Long> w) {
 	}
 

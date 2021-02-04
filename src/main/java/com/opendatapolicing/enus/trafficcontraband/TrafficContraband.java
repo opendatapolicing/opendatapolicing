@@ -666,7 +666,7 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 		return "$" + super.strContrabandDollarAmount() + " worth";
 	}
 
-	/**   
+	/**  
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true

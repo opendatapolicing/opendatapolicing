@@ -61,7 +61,7 @@ public class Cluster extends ClusterGen<Object> {
 	 * PrimaryKey: true
 	 * Modify: false
 	 * HtmlRow: 1
-	 * HtmlCell: 3
+	 * HtmlCell: 1
 	 * DisplayName.enUS: primary key
 	 */
 	protected void _pk(Wrap<Long> c) {}
@@ -92,7 +92,7 @@ public class Cluster extends ClusterGen<Object> {
 	 * Modify: false
 	 * VarCreated: true
 	 * HtmlRow: 1
-	 * HtmlCell: 3
+	 * HtmlCell: 2
 	 * HtmlColumn: 2
 	 * DisplayName.enUS: created
 	 */
@@ -106,7 +106,7 @@ public class Cluster extends ClusterGen<Object> {
 	 * Modify: false
 	 * VarModified: true
 	 * HtmlRow: 1
-	 * HtmlCell: 4
+	 * HtmlCell: 3
 	 * DisplayName.enUS: modified
 	 */ 
 	protected void _modified(Wrap<ZonedDateTime> c) {
@@ -229,8 +229,6 @@ public class Cluster extends ClusterGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 * VarId: true
-	 * HtmlRow: 1
-	 * HtmlCell: 4
 	 * DisplayName.enUS: ID
 	 */ 
 	protected void _objectId(Wrap<String> c) {
