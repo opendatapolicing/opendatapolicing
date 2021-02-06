@@ -58,7 +58,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH1(Wrap<String> c) {
-			c.o("search basiss");
+			c.o("search bases");
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
@@ -74,11 +74,11 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 		if(searchBasis_ != null && searchBasis_.getSearchBasisCompleteName() != null)
 			c.o(searchBasis_.getSearchBasisCompleteName());
 		else if(searchBasis_ != null)
-			c.o("search basiss");
+			c.o("search bases");
 		else if(listSearchBasis == null || listSearchBasis.size() == 0)
 			c.o("no search basis found");
 		else
-			c.o("search basiss");
+			c.o("search bases");
 	}
 
 	@Override protected void _pageUri(Wrap<String> c) {
@@ -142,32 +142,8 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmPk("Page");
 			o.htmCreated("Page");
 			o.htmModified("Page");
-			o.htmObjectId("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("Page");
-			o.htmStopDateTime("Page");
-			o.htmStopPurposeTitle("Page");
-			o.htmStopActionTitle("Page");
-			o.htmStopDriverArrest("Page");
-			o.htmStopPassengerArrest("Page");
-			o.htmStopEncounterForce("Page");
-			o.htmStopEngageForce("Page");
-			o.htmStopOfficerInjury("Page");
-			o.htmStopDriverInjury("Page");
-			o.htmStopPassengerInjury("Page");
-			o.htmStopOfficerId("Page");
-			o.htmStopLocationId("Page");
-			o.htmStopCityId("Page");
-			o.htmPersonAge("Page");
-			o.htmPersonTypeTitle("Page");
-			o.htmPersonGenderTitle("Page");
-			o.htmPersonEthnicityTitle("Page");
-			o.htmPersonRaceTitle("Page");
 			o.htmSearchBasisTitle("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -180,32 +156,8 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-			o.htmObjectId("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("POST");
-			o.htmStopDateTime("POST");
-			o.htmStopPurposeTitle("POST");
-			o.htmStopActionTitle("POST");
-			o.htmStopDriverArrest("POST");
-			o.htmStopPassengerArrest("POST");
-			o.htmStopEncounterForce("POST");
-			o.htmStopEngageForce("POST");
-			o.htmStopOfficerInjury("POST");
-			o.htmStopDriverInjury("POST");
-			o.htmStopPassengerInjury("POST");
-			o.htmStopOfficerId("POST");
-			o.htmStopLocationId("POST");
-			o.htmStopCityId("POST");
-			o.htmPersonAge("POST");
-			o.htmPersonTypeTitle("POST");
-			o.htmPersonGenderTitle("POST");
-			o.htmPersonEthnicityTitle("POST");
-			o.htmPersonRaceTitle("POST");
 			o.htmSearchBasisTitle("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -243,24 +195,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("PUTCopy");
-			o.htmStopDateTime("PUTCopy");
-			o.htmStopPurposeTitle("PUTCopy");
-			o.htmStopActionTitle("PUTCopy");
-			o.htmStopDriverArrest("PUTCopy");
-			o.htmStopPassengerArrest("PUTCopy");
-			o.htmStopEncounterForce("PUTCopy");
-			o.htmStopEngageForce("PUTCopy");
-			o.htmStopOfficerInjury("PUTCopy");
-			o.htmStopDriverInjury("PUTCopy");
-			o.htmStopPassengerInjury("PUTCopy");
-			o.htmStopOfficerId("PUTCopy");
-			o.htmStopLocationId("PUTCopy");
-			o.htmStopCityId("PUTCopy");
 			o.htmSearchBasisTitle("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -274,24 +208,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("PATCH");
-			o.htmStopDateTime("PATCH");
-			o.htmStopPurposeTitle("PATCH");
-			o.htmStopActionTitle("PATCH");
-			o.htmStopDriverArrest("PATCH");
-			o.htmStopPassengerArrest("PATCH");
-			o.htmStopEncounterForce("PATCH");
-			o.htmStopEngageForce("PATCH");
-			o.htmStopOfficerInjury("PATCH");
-			o.htmStopDriverInjury("PATCH");
-			o.htmStopPassengerInjury("PATCH");
-			o.htmStopOfficerId("PATCH");
-			o.htmStopLocationId("PATCH");
-			o.htmStopCityId("PATCH");
 			o.htmSearchBasisTitle("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -304,16 +220,25 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmPk("Search");
 			o.htmCreated("Search");
 			o.htmModified("Search");
-			o.htmObjectId("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchBasisTitle("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchKey("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmInheritPk("Search");
 			o.htmArchived("Search");
 			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmUserId("Search");
+			o.htmUserKey("Search");
+			o.htmObjectTitle("Search");
 			o.htmStopAgencyTitle("Search");
 			o.htmStopDateTime("Search");
+			o.htmStopPurposeNum("Search");
 			o.htmStopPurposeTitle("Search");
+			o.htmStopActionNum("Search");
 			o.htmStopActionTitle("Search");
 			o.htmStopDriverArrest("Search");
 			o.htmStopPassengerArrest("Search");
@@ -325,23 +250,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmStopOfficerId("Search");
 			o.htmStopLocationId("Search");
 			o.htmStopCityId("Search");
-			o.htmPersonAge("Search");
-			o.htmPersonTypeTitle("Search");
-			o.htmPersonGenderTitle("Search");
-			o.htmPersonEthnicityTitle("Search");
-			o.htmPersonRaceTitle("Search");
-			o.htmSearchBasisTitle("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmSearchKey("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmInheritPk("Search");
-			o.htmUserId("Search");
-			o.htmUserKey("Search");
-			o.htmObjectTitle("Search");
-			o.htmStopPurposeNum("Search");
-			o.htmStopActionNum("Search");
 			o.htmPersonTypeId("Search");
 			o.htmPersonGenderId("Search");
 			o.htmPersonEthnicityId("Search");
@@ -361,7 +269,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 				{ e("a").a("href", "/search-basis").a("class", "w3-bar-item w3-btn w3-center w3-block w3-pale-green w3-hover-pale-green ").f();
 					if(contextIconCssClasses != null)
 						e("i").a("class", contextIconCssClasses + " site-menu-icon ").f().g("i");
-					e("span").a("class", " ").f().sx("search basiss").g("span");
+					e("span").a("class", " ").f().sx("search bases").g("span");
 				} g("a");
 			} g("h1");
 			e("div").a("class", "w3-padding-16 w3-card-4 w3-light-grey ").f();
@@ -640,14 +548,14 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 				.a("onclick", "$('#putimportSearchBasisModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-file-import ").f().g("i");
-				sx("Import search basiss");
+				sx("Import search bases");
 			} g("button");
 			{ e("div").a("id", "putimportSearchBasisModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
 						{ e("header").a("class", "w3-container w3-pale-green ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putimportSearchBasisModal').hide(); ").f().sx("×").g("span");
-							e("h2").a("class", "w3-padding ").f().sx("Import search basiss").g("h2");
+							e("h2").a("class", "w3-padding ").f().sx("Import search bases").g("h2");
 						} g("header");
 						{ e("div").a("class", "w3-container ").a("id", "putimportSearchBasisFormValues").f();
 							SearchBasis o = new SearchBasis();
@@ -660,7 +568,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 							e("button")
 								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
 								.a("onclick", "putimportSearchBasis($('#putimportSearchBasisForm')); ")
-								.f().sx("Import search basiss")
+								.f().sx("Import search bases")
 							.g("button");
 
 						} g("div");
@@ -674,14 +582,14 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 				.a("onclick", "$('#putmergeSearchBasisModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-code-merge ").f().g("i");
-				sx("Merge search basiss");
+				sx("Merge search bases");
 			} g("button");
 			{ e("div").a("id", "putmergeSearchBasisModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
 						{ e("header").a("class", "w3-container w3-pale-green ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putmergeSearchBasisModal').hide(); ").f().sx("×").g("span");
-							e("h2").a("class", "w3-padding ").f().sx("Merge search basiss").g("h2");
+							e("h2").a("class", "w3-padding ").f().sx("Merge search bases").g("h2");
 						} g("header");
 						{ e("div").a("class", "w3-container ").a("id", "putmergeSearchBasisFormValues").f();
 							SearchBasis o = new SearchBasis();
@@ -694,7 +602,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 							e("button")
 								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
 								.a("onclick", "putmergeSearchBasis($('#putmergeSearchBasisForm')); ")
-								.f().sx("Merge search basiss")
+								.f().sx("Merge search bases")
 							.g("button");
 
 						} g("div");
@@ -708,14 +616,14 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 				.a("onclick", "$('#putcopySearchBasisModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-copy ").f().g("i");
-				sx("Duplicate search basiss");
+				sx("Duplicate search bases");
 			} g("button");
 			{ e("div").a("id", "putcopySearchBasisModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
 						{ e("header").a("class", "w3-container w3-pale-green ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#putcopySearchBasisModal').hide(); ").f().sx("×").g("span");
-							e("h2").a("class", "w3-padding ").f().sx("Duplicate search basiss").g("h2");
+							e("h2").a("class", "w3-padding ").f().sx("Duplicate search bases").g("h2");
 						} g("header");
 						{ e("div").a("class", "w3-container ").a("id", "putcopySearchBasisFormValues").f();
 							SearchBasis o = new SearchBasis();
@@ -728,7 +636,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 							e("button")
 								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
 								.a("onclick", "putcopySearchBasis($('#putcopySearchBasisForm'), ", searchBasis_ == null ? "null" : searchBasis_.getPk(), "); ")
-								.f().sx("Duplicate search basiss")
+								.f().sx("Duplicate search bases")
 							.g("button");
 
 						} g("div");
@@ -776,14 +684,14 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 				.a("onclick", "$('#patchSearchBasisModal').show(); ")
 				.f();
 				e("i").a("class", "fas fa-edit ").f().g("i");
-				sx("Modify search basiss");
+				sx("Modify search bases");
 			} g("button");
 			{ e("div").a("id", "patchSearchBasisModal").a("class", "w3-modal w3-padding-32 ").f();
 				{ e("div").a("class", "w3-modal-content ").f();
 					{ e("div").a("class", "w3-card-4 ").f();
 						{ e("header").a("class", "w3-container w3-pale-green ").f();
 							e("span").a("class", "w3-button w3-display-topright ").a("onclick", "$('#patchSearchBasisModal').hide(); ").f().sx("×").g("span");
-							e("h2").a("class", "w3-padding ").f().sx("Modify search basiss").g("h2");
+							e("h2").a("class", "w3-padding ").f().sx("Modify search bases").g("h2");
 						} g("header");
 						{ e("div").a("class", "w3-container ").a("id", "patchSearchBasisFormValues").f();
 							SearchBasis o = new SearchBasis();
@@ -793,7 +701,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 							e("button")
 								.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-margin w3-pale-green ")
 								.a("onclick", "patchSearchBasis(null, $('#patchSearchBasisFormValues'), ", Optional.ofNullable(searchBasis_).map(SearchBasis::getPk).map(a -> a.toString()).orElse("null"), ", function() {}, function() {}); ")
-								.f().sx("Modify search basiss")
+								.f().sx("Modify search bases")
 							.g("button");
 
 						} g("div");
@@ -865,14 +773,14 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 					{ p.e("div").a("class", "").f();
 						{ p.e("button").a("id", "refreshAllSearchBasisGenPage", id).a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ").a("onclick", "patchSearchBasisVals([], {}, function() { addGlow($('#refreshAllSearchBasisGenPage", id, "')); }, function() { addError($('#refreshAllSearchBasisGenPage", id, "')); }); ").f();
 							p.e("i").a("class", "fas fa-sync-alt ").f().g("i");
-							p.sx("refresh all the search basiss");
+							p.sx("refresh all the search bases");
 						} p.g("button");
 					} p.g("div");
 			}
 			{ p.e("div").a("class", "w3-cell-row ").f();
 				{ p.e("div").a("class", "w3-cell ").f();
 					{ p.e("span").f();
-						p.sx("search search basiss: ");
+						p.sx("search search bases: ");
 					} p.g("span");
 				} p.g("div");
 			} p.g("div");
@@ -906,7 +814,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			{ p.e("div").a("class", "").f();
 				{ p.e("a").a("href", "/search-basis").a("class", "").f();
 					p.e("i").a("class", "far fa-newspaper ").f().g("i");
-					p.sx("see all the search basiss");
+					p.sx("see all the search bases");
 				} p.g("a");
 			} p.g("div");
 		} catch(Exception e) {

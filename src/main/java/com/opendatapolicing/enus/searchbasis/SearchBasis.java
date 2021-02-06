@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.searchbasis;  
+package com.opendatapolicing.enus.searchbasis; 
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -40,6 +40,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * IconGroup: regular
  * IconName: newspaper
  * NameVar.enUS: searchBasis
+ * NamePlural.enUS: search bases
  * 
  * Role.enUS: SiteService
  * PublicRead: true
@@ -54,7 +55,7 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Stored: true
 	 * Description.enUS: The primary key of the search basis in the database. 
 	 */           
-	protected void _contrabandKey(Wrap<Long> c) {
+	protected void _searchBasisKey(Wrap<Long> c) {
 		c.o(pk);
 	}
 
@@ -92,8 +93,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopAgencyTitle(Wrap<String> w) {
@@ -106,8 +105,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: stop date/time
 	 */ 
 	protected void _stopDateTime(Wrap<ZonedDateTime> w) {
@@ -132,8 +129,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: stop purpose title
 	 */ 
 	protected void _stopPurposeTitle(Wrap<String> w) {
@@ -158,8 +153,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopActionTitle(Wrap<String> w) {
@@ -172,8 +165,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: driver arrest
 	 */ 
 	protected void _stopDriverArrest(Wrap<Boolean> w) {
@@ -186,8 +177,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: passenger arrest
 	 */ 
 	protected void _stopPassengerArrest(Wrap<Boolean> w) {
@@ -200,8 +189,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: encounter force
 	 */ 
 	protected void _stopEncounterForce(Wrap<Boolean> w) {
@@ -214,8 +201,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: engage force
 	 */ 
 	protected void _stopEngageForce(Wrap<Boolean> w) {
@@ -228,8 +213,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: officer injury
 	 */ 
 	protected void _stopOfficerInjury(Wrap<Boolean> w) {
@@ -242,8 +225,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: driver injury
 	 */ 
 	protected void _stopDriverInjury(Wrap<Boolean> w) {
@@ -256,8 +237,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: passenger injury
 	 */ 
 	protected void _stopPassengerInjury(Wrap<Boolean> w) {
@@ -270,8 +249,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: officer ID
 	 */ 
 	protected void _stopOfficerId(Wrap<String> w) {
@@ -284,8 +261,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: location ID
 	 */ 
 	protected void _stopLocationId(Wrap<String> w) {
@@ -298,8 +273,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: city ID
 	 */ 
 	protected void _stopCityId(Wrap<String> w) {
@@ -311,8 +284,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person age
 	 */ 
 	protected void _personAge(Wrap<Integer> w) {
@@ -336,8 +307,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person type title
 	 */ 
 	protected void _personTypeTitle(Wrap<String> w) {
@@ -383,8 +352,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person gender title
 	 */ 
 	protected void _personGenderTitle(Wrap<String> w) {
@@ -430,8 +397,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person ethnicity title
 	 */ 
 	protected void _personEthnicityTitle(Wrap<String> w) {
@@ -455,8 +420,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: person race title
 	 */ 
 	protected void _personRaceTitle(Wrap<String> w) {
@@ -610,9 +573,6 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 			w.o("Witness Observation"); break;
 		}
 	}
-	@Override public String strSearchBasisTitle() {
-		return "basis of " + strSearchBasisTitle();
-	}
 
 	/**   
 	 * {@inheritDoc}
@@ -634,6 +594,14 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * VarTitle: true
 	 */ 
 	protected void _searchBasisCompleteName(Wrap<String> c) {
-		c.o(searchBasisShortName);
+		if(searchKey == null)
+			c.o(String.format("%s basis", searchBasisShortName));
+		else
+			c.o(String.format("%s basis of search %s", searchBasisShortName, searchKey));
+	}
+
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(searchBasisCompleteName);
 	}
 }

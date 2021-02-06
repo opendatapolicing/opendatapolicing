@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.state;
+package com.opendatapolicing.enus.state; 
 
 import java.util.List;
 

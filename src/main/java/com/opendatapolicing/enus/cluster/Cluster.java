@@ -44,7 +44,7 @@ import com.opendatapolicing.enus.xml.UtilXml;
  * RoleUser: true
  * Role.enUS: SiteService
  * RoleRead.enUS: User
- **/  
+ **/ 
 
 public class Cluster extends ClusterGen<Object> {
 
@@ -258,7 +258,7 @@ public class Cluster extends ClusterGen<Object> {
 			Class<?> cl = getClass();
 
 			try {
-				String o = toId((String)FieldUtils.getField(cl, cl.getSimpleName() + "_NameVar").get(this));
+				String o = toId(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase((String)FieldUtils.getField(cl, cl.getSimpleName() + "_NameVar").get(this)), "-"));
 				c.o(o);
 			} catch (Exception e) {
 				ExceptionUtils.rethrow(e);

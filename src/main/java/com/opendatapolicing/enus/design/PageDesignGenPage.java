@@ -300,11 +300,6 @@ public class PageDesignGenPage extends PageDesignGenPageGen<PageLayout> {
 			o.htmPk("Page");
 			o.htmCreated("Page");
 			o.htmModified("Page");
-			o.htmObjectId("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("Page");
@@ -326,11 +321,6 @@ public class PageDesignGenPage extends PageDesignGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-			o.htmObjectId("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("POST");
@@ -377,10 +367,6 @@ public class PageDesignGenPage extends PageDesignGenPageGen<PageLayout> {
 			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("PUTCopy");
 			o.htmDesignHidden("PUTCopy");
 		} g("div");
@@ -399,10 +385,6 @@ public class PageDesignGenPage extends PageDesignGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
 			o.htmModified("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("PATCH");
@@ -424,11 +406,6 @@ public class PageDesignGenPage extends PageDesignGenPageGen<PageLayout> {
 			o.htmPk("Search");
 			o.htmCreated("Search");
 			o.htmModified("Search");
-			o.htmObjectId("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("Search");
@@ -445,6 +422,8 @@ public class PageDesignGenPage extends PageDesignGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");

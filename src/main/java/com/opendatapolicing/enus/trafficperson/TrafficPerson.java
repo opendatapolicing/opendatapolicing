@@ -40,7 +40,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Color: pale-green
  * IconGroup: regular
  * IconName: newspaper
- * NameVar.enUS: trafficStop
+ * NameVar.enUS: person
  * 
  * Role.enUS: SiteService
  * PublicRead: true

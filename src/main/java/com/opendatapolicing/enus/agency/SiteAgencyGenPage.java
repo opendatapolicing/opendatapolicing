@@ -142,11 +142,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmPk("Page");
 			o.htmCreated("Page");
 			o.htmModified("Page");
-			o.htmObjectId("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("Page");
@@ -166,11 +161,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-			o.htmObjectId("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("POST");
@@ -215,10 +205,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -235,10 +221,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
 			o.htmModified("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("PATCH");
@@ -258,11 +240,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmPk("Search");
 			o.htmCreated("Search");
 			o.htmModified("Search");
-			o.htmObjectId("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("Search");
@@ -277,6 +254,8 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");

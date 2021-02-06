@@ -132,7 +132,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmPk("Page");
 			o.htmCreated("Page");
 			o.htmModified("Page");
-			o.htmObjectId("Page");
+//			o.htmObjectId("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("Page");
@@ -149,7 +149,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-			o.htmObjectId("POST");
+//			o.htmObjectId("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("POST");
@@ -220,7 +220,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmPk("Search");
 			o.htmCreated("Search");
 			o.htmModified("Search");
-			o.htmObjectId("Search");
+//			o.htmObjectId("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("Search");

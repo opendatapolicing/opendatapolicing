@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.design;  
+package com.opendatapolicing.enus.design; 
 
 import java.util.List;
 

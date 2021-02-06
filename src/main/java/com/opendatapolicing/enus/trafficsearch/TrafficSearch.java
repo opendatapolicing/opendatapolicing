@@ -40,6 +40,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * IconGroup: regular
  * IconName: newspaper
  * NameVar.enUS: trafficSearch
+ * NamePlural.enUS: traffic searches
  * 
  * Role.enUS: SiteService
  * PublicRead: true
@@ -588,6 +589,29 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * VarTitle: true
 	 */ 
 	protected void _trafficSearchCompleteName(Wrap<String> c) {
-		c.o(stopActionTitle + " during " + stopPurposeTitle + " traffic search");
+		StringBuilder b = new StringBuilder();
+		b.append(String.format("Search by %s", searchTypeTitle));
+		if(personKey != null)
+			b.append(String.format(" of person %s", personKey));
+		if(searchVehicle)
+			b.append(", vehicle searched");
+		if(searchDriver)
+			b.append(", driver searched");
+		if(searchPassenger)
+			b.append(", passenger searched");
+		if(searchProperty)
+			b.append(", property searched");
+		if(searchVehicleSiezed)
+			b.append(", vehicle siezed");
+		if(searchPersonalPropertySiezed)
+			b.append(", property siezed");
+		if(searchOtherPropertySiezed)
+			b.append(", other property siezed");
+		c.o(b.toString());
+	}
+
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(trafficSearchCompleteName);
 	}
 }

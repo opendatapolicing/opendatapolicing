@@ -72,104 +72,104 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	public static final String SearchBasis_A = "a ";
 	public static final String SearchBasis_TheName = "the search basis";
 	public static final String SearchBasis_NameSingular = "search basis";
-	public static final String SearchBasis_NamePlural = "search basiss";
+	public static final String SearchBasis_NamePlural = "search bases";
 	public static final String SearchBasis_NameActual = "current search basis";
-	public static final String SearchBasis_AllName = "all the search basiss";
-	public static final String SearchBasis_SearchAllNameBy = "search search basiss by ";
-	public static final String SearchBasis_Title = "search basiss";
-	public static final String SearchBasis_ThePluralName = "the search basiss";
+	public static final String SearchBasis_AllName = "all the search bases";
+	public static final String SearchBasis_SearchAllNameBy = "search search bases by ";
+	public static final String SearchBasis_Title = "search bases";
+	public static final String SearchBasis_ThePluralName = "the search bases";
 	public static final String SearchBasis_NoNameFound = "no search basis found";
 	public static final String SearchBasis_NameVar = "searchBasis";
 	public static final String SearchBasis_OfName = "of search basis";
 	public static final String SearchBasis_ANameAdjective = "a search basis";
 	public static final String SearchBasis_NameAdjectiveSingular = "search basis";
-	public static final String SearchBasis_NameAdjectivePlural = "search basiss";
+	public static final String SearchBasis_NameAdjectivePlural = "search bases";
 	public static final String SearchBasis_Color = "pale-green";
 	public static final String SearchBasis_IconGroup = "regular";
 	public static final String SearchBasis_IconName = "newspaper";
 
-	///////////////////
-	// contrabandKey //
-	///////////////////
+	////////////////////
+	// searchBasisKey //
+	////////////////////
 
-	/**	 The entity contrabandKey
+	/**	 The entity searchBasisKey
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
-	protected Long contrabandKey;
+	protected Long searchBasisKey;
 	@JsonIgnore
-	public Wrap<Long> contrabandKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("contrabandKey").o(contrabandKey);
+	public Wrap<Long> searchBasisKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("searchBasisKey").o(searchBasisKey);
 
-	/**	<br/> The entity contrabandKey
+	/**	<br/> The entity searchBasisKey
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contrabandKey">Find the entity contrabandKey in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisKey">Find the entity searchBasisKey in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _contrabandKey(Wrap<Long> c);
+	protected abstract void _searchBasisKey(Wrap<Long> c);
 
-	public Long getContrabandKey() {
-		return contrabandKey;
+	public Long getSearchBasisKey() {
+		return searchBasisKey;
 	}
 
-	public void setContrabandKey(Long contrabandKey) {
-		this.contrabandKey = contrabandKey;
-		this.contrabandKeyWrap.alreadyInitialized = true;
+	public void setSearchBasisKey(Long searchBasisKey) {
+		this.searchBasisKey = searchBasisKey;
+		this.searchBasisKeyWrap.alreadyInitialized = true;
 	}
-	public void setContrabandKey(String o) {
-		this.contrabandKey = SearchBasis.staticSetContrabandKey(siteRequest_, o);
-		this.contrabandKeyWrap.alreadyInitialized = true;
+	public void setSearchBasisKey(String o) {
+		this.searchBasisKey = SearchBasis.staticSetSearchBasisKey(siteRequest_, o);
+		this.searchBasisKeyWrap.alreadyInitialized = true;
 	}
-	public static Long staticSetContrabandKey(SiteRequestEnUS siteRequest_, String o) {
+	public static Long staticSetSearchBasisKey(SiteRequestEnUS siteRequest_, String o) {
 		if(NumberUtils.isParsable(o))
 			return Long.parseLong(o);
 		return null;
 	}
-	protected SearchBasis contrabandKeyInit() {
-		if(!contrabandKeyWrap.alreadyInitialized) {
-			_contrabandKey(contrabandKeyWrap);
-			if(contrabandKey == null)
-				setContrabandKey(contrabandKeyWrap.o);
+	protected SearchBasis searchBasisKeyInit() {
+		if(!searchBasisKeyWrap.alreadyInitialized) {
+			_searchBasisKey(searchBasisKeyWrap);
+			if(searchBasisKey == null)
+				setSearchBasisKey(searchBasisKeyWrap.o);
 		}
-		contrabandKeyWrap.alreadyInitialized(true);
+		searchBasisKeyWrap.alreadyInitialized(true);
 		return (SearchBasis)this;
 	}
 
-	public static Long staticSolrContrabandKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static Long staticSolrSearchBasisKey(SiteRequestEnUS siteRequest_, Long o) {
 		return o;
 	}
 
-	public static String staticSolrStrContrabandKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStrSearchBasisKey(SiteRequestEnUS siteRequest_, Long o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqContrabandKey(SiteRequestEnUS siteRequest_, String o) {
-		return SearchBasis.staticSolrStrContrabandKey(siteRequest_, SearchBasis.staticSolrContrabandKey(siteRequest_, SearchBasis.staticSetContrabandKey(siteRequest_, o)));
+	public static String staticSolrFqSearchBasisKey(SiteRequestEnUS siteRequest_, String o) {
+		return SearchBasis.staticSolrStrSearchBasisKey(siteRequest_, SearchBasis.staticSolrSearchBasisKey(siteRequest_, SearchBasis.staticSetSearchBasisKey(siteRequest_, o)));
 	}
 
-	public Long solrContrabandKey() {
-		return SearchBasis.staticSolrContrabandKey(siteRequest_, contrabandKey);
+	public Long solrSearchBasisKey() {
+		return SearchBasis.staticSolrSearchBasisKey(siteRequest_, searchBasisKey);
 	}
 
-	public String strContrabandKey() {
-		return contrabandKey == null ? "" : contrabandKey.toString();
+	public String strSearchBasisKey() {
+		return searchBasisKey == null ? "" : searchBasisKey.toString();
 	}
 
-	public String jsonContrabandKey() {
-		return contrabandKey == null ? "" : contrabandKey.toString();
+	public String jsonSearchBasisKey() {
+		return searchBasisKey == null ? "" : searchBasisKey.toString();
 	}
 
-	public String nomAffichageContrabandKey() {
+	public String nomAffichageSearchBasisKey() {
 		return null;
 	}
 
-	public String htmTooltipContrabandKey() {
+	public String htmTooltipSearchBasisKey() {
 		return null;
 	}
 
-	public String htmContrabandKey() {
-		return contrabandKey == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandKey());
+	public String htmSearchBasisKey() {
+		return searchBasisKey == null ? "" : StringEscapeUtils.escapeHtml4(strSearchBasisKey());
 	}
 
 	///////////////
@@ -2816,32 +2816,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personAge == null ? "" : StringEscapeUtils.escapeHtml4(strPersonAge());
 	}
 
-	public void inputPersonAge(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-	}
-
-	public void htmPersonAge(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person age").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varSearchBasis", pk, "PersonAge ").f().sx(strPersonAge()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
-	}
-
 	//////////////////
 	// personTypeId //
 	//////////////////
@@ -3058,32 +3032,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonTypeTitle() {
 		return personTypeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeTitle());
-	}
-
-	public void inputPersonTypeTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-	}
-
-	public void htmPersonTypeTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person type title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varSearchBasis", pk, "PersonTypeTitle ").f().sx(strPersonTypeTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
 	}
 
 	//////////////////////
@@ -3466,32 +3414,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personGenderTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderTitle());
 	}
 
-	public void inputPersonGenderTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-	}
-
-	public void htmPersonGenderTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person gender title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varSearchBasis", pk, "PersonGenderTitle ").f().sx(strPersonGenderTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
-	}
-
 	////////////////////////
 	// personGenderFemale //
 	////////////////////////
@@ -3872,32 +3794,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personEthnicityTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityTitle());
 	}
 
-	public void inputPersonEthnicityTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-	}
-
-	public void htmPersonEthnicityTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person ethnicity title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varSearchBasis", pk, "PersonEthnicityTitle ").f().sx(strPersonEthnicityTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
-	}
-
 	//////////////////
 	// personRaceId //
 	//////////////////
@@ -4114,32 +4010,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String htmPersonRaceTitle() {
 		return personRaceTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceTitle());
-	}
-
-	public void inputPersonRaceTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-	}
-
-	public void htmPersonRaceTitle(String classApiMethodMethod) {
-		SearchBasis s = (SearchBasis)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("person race title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varSearchBasis", pk, "PersonRaceTitle ").f().sx(strPersonRaceTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
 	}
 
 	////////////////////
@@ -5476,7 +5346,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public void initSearchBasis() {
-		contrabandKeyInit();
+		searchBasisKeyInit();
 		searchKeyInit();
 		trafficSearchSearchInit();
 		trafficSearch_Init();
@@ -5563,8 +5433,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	public Object obtainSearchBasis(String var) {
 		SearchBasis oSearchBasis = (SearchBasis)this;
 		switch(var) {
-			case "contrabandKey":
-				return oSearchBasis.contrabandKey;
+			case "searchBasisKey":
+				return oSearchBasis.searchBasisKey;
 			case "searchKey":
 				return oSearchBasis.searchKey;
 			case "trafficSearchSearch":
@@ -5702,8 +5572,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 	public static Object staticSetSearchBasis(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
-		case "contrabandKey":
-			return SearchBasis.staticSetContrabandKey(siteRequest_, o);
+		case "searchBasisKey":
+			return SearchBasis.staticSetSearchBasisKey(siteRequest_, o);
 		case "searchKey":
 			return SearchBasis.staticSetSearchKey(siteRequest_, o);
 		case "stopAgencyTitle":
@@ -5806,8 +5676,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 	public static Object staticSolrSearchBasis(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
-		case "contrabandKey":
-			return SearchBasis.staticSolrContrabandKey(siteRequest_, (Long)o);
+		case "searchBasisKey":
+			return SearchBasis.staticSolrSearchBasisKey(siteRequest_, (Long)o);
 		case "searchKey":
 			return SearchBasis.staticSolrSearchKey(siteRequest_, (Long)o);
 		case "stopAgencyTitle":
@@ -5910,8 +5780,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 	public static String staticSolrStrSearchBasis(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
-		case "contrabandKey":
-			return SearchBasis.staticSolrStrContrabandKey(siteRequest_, (Long)o);
+		case "searchBasisKey":
+			return SearchBasis.staticSolrStrSearchBasisKey(siteRequest_, (Long)o);
 		case "searchKey":
 			return SearchBasis.staticSolrStrSearchKey(siteRequest_, (Long)o);
 		case "stopAgencyTitle":
@@ -6014,8 +5884,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 	public static String staticSolrFqSearchBasis(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
-		case "contrabandKey":
-			return SearchBasis.staticSolrFqContrabandKey(siteRequest_, o);
+		case "searchBasisKey":
+			return SearchBasis.staticSolrFqSearchBasisKey(siteRequest_, o);
 		case "searchKey":
 			return SearchBasis.staticSolrFqSearchKey(siteRequest_, o);
 		case "stopAgencyTitle":
@@ -6262,10 +6132,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
 
-			if(saves.contains("contrabandKey")) {
-				Long contrabandKey = (Long)solrDocument.get("contrabandKey_stored_long");
-				if(contrabandKey != null)
-					oSearchBasis.setContrabandKey(contrabandKey);
+			if(saves.contains("searchBasisKey")) {
+				Long searchBasisKey = (Long)solrDocument.get("searchBasisKey_stored_long");
+				if(searchBasisKey != null)
+					oSearchBasis.setSearchBasisKey(searchBasisKey);
 			}
 
 			Long searchKey = (Long)solrDocument.get("searchKey_stored_long");
@@ -6596,9 +6466,9 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public void indexSearchBasis(SolrInputDocument document) {
-		if(contrabandKey != null) {
-			document.addField("contrabandKey_indexed_long", contrabandKey);
-			document.addField("contrabandKey_stored_long", contrabandKey);
+		if(searchBasisKey != null) {
+			document.addField("searchBasisKey_indexed_long", searchBasisKey);
+			document.addField("searchBasisKey_stored_long", searchBasisKey);
 		}
 		if(searchKey != null) {
 			document.addField("searchKey_indexed_long", searchKey);
@@ -6799,8 +6669,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public static String varIndexedSearchBasis(String entityVar) {
 		switch(entityVar) {
-			case "contrabandKey":
-				return "contrabandKey_indexed_long";
+			case "searchBasisKey":
+				return "searchBasisKey_indexed_long";
 			case "searchKey":
 				return "searchKey_indexed_long";
 			case "stopAgencyTitle":
@@ -6918,9 +6788,9 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	public void storeSearchBasis(SolrDocument solrDocument) {
 		SearchBasis oSearchBasis = (SearchBasis)this;
 
-		Long contrabandKey = (Long)solrDocument.get("contrabandKey_stored_long");
-		if(contrabandKey != null)
-			oSearchBasis.setContrabandKey(contrabandKey);
+		Long searchBasisKey = (Long)solrDocument.get("searchBasisKey_stored_long");
+		if(searchBasisKey != null)
+			oSearchBasis.setSearchBasisKey(searchBasisKey);
 
 		Long searchKey = (Long)solrDocument.get("searchKey_stored_long");
 		if(searchKey != null)
@@ -7110,8 +6980,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof SearchBasis) {
 			SearchBasis original = (SearchBasis)o;
-			if(!Objects.equals(contrabandKey, original.getContrabandKey()))
-				apiRequest.addVars("contrabandKey");
+			if(!Objects.equals(searchBasisKey, original.getSearchBasisKey()))
+				apiRequest.addVars("searchBasisKey");
 			if(!Objects.equals(searchKey, original.getSearchKey()))
 				apiRequest.addVars("searchKey");
 			if(!Objects.equals(stopAgencyTitle, original.getStopAgencyTitle()))
@@ -7209,7 +7079,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), contrabandKey, searchKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle, searchBasisShortName, searchBasisCompleteName);
+		return Objects.hash(super.hashCode(), searchBasisKey, searchKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle, searchBasisShortName, searchBasisCompleteName);
 	}
 
 	////////////
@@ -7223,7 +7093,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return false;
 		SearchBasis that = (SearchBasis)o;
 		return super.equals(o)
-				&& Objects.equals( contrabandKey, that.contrabandKey )
+				&& Objects.equals( searchBasisKey, that.searchBasisKey )
 				&& Objects.equals( searchKey, that.searchKey )
 				&& Objects.equals( stopAgencyTitle, that.stopAgencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
@@ -7278,7 +7148,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString() + "\n");
 		sb.append("SearchBasis { ");
-		sb.append( "contrabandKey: " ).append(contrabandKey);
+		sb.append( "searchBasisKey: " ).append(searchBasisKey);
 		sb.append( ", searchKey: " ).append(searchKey);
 		sb.append( ", stopAgencyTitle: \"" ).append(stopAgencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);

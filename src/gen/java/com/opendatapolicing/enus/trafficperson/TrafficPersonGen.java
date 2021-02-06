@@ -80,7 +80,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	public static final String TrafficPerson_Title = "people";
 	public static final String TrafficPerson_ThePluralName = "the people";
 	public static final String TrafficPerson_NoNameFound = "no person found";
-	public static final String TrafficPerson_NameVar = "trafficStop";
+	public static final String TrafficPerson_NameVar = "person";
 	public static final String TrafficPerson_OfName = "of person";
 	public static final String TrafficPerson_ANameAdjective = "a person";
 	public static final String TrafficPerson_NameAdjectiveSingular = "person";
