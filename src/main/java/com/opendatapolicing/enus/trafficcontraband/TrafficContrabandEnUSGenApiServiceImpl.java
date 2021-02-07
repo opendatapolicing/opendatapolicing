@@ -1553,6 +1553,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl implements TrafficContraband
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			TrafficContraband o2 = new TrafficContraband();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {

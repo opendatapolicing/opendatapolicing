@@ -124,7 +124,6 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * HtmlRow: 4
 	 * HtmlCell: 3
 	 * DisplayName.enUS: stop purpose title
@@ -168,7 +167,6 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * HtmlRow: 4
 	 * HtmlCell: 4
 	 * DisplayName.enUS: agency title
@@ -188,7 +186,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 		}
 	}
 
-	/**    
+	/**  
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
@@ -312,7 +310,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: TrafficPerson.trafficStopKeys
+	 * Attribute: TrafficPerson.trafficStopKey
 	 * HtmlRow: 7
 	 * HtmlCell: 3
 	 * DisplayName.enUS: people
@@ -328,7 +326,32 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * VarTitle: true
 	 */ 
 	protected void _trafficStopCompleteName(Wrap<String> c) {
-		c.o(stopActionTitle + " during " + stopPurposeTitle + " traffic stop");
+		StringBuilder b = new StringBuilder();
+		b.append(strStopDateTime());
+		if(stopPurposeTitle != null)
+			b.append(" ").append(stopPurposeTitle.toLowerCase());
+		if(stopActionTitle != null)
+			b.append(" with ").append(stopActionTitle.toLowerCase());
+		if(stopDriverArrest)
+			b.append(", driver arrested");
+		if(stopPassengerArrest)
+			b.append(", passenger arrested");
+		if(stopEncounterForce)
+			b.append(", force encountered");
+		if(stopEngageForce)
+			b.append(", force engaged");
+		if(stopOfficerInjury)
+			b.append(", officer injured");
+		if(stopDriverInjury)
+			b.append(", driver injured");
+		if(stopPassengerInjury)
+			b.append(", passenger injured");
+		c.o(b.toString());
+	}
+
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(trafficStopCompleteName);
 	}
 }
 

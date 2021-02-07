@@ -104,6 +104,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 
 	@Override public void htmlScriptsTrafficStopGenPage() {
 		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficStopPage.js").f().g("script");
+		e("script").a("src", staticBaseUrl, "/js/enUS/TrafficPersonPage.js").f().g("script");
 	}
 
 	@Override public void htmlScriptTrafficStopGenPage() {
@@ -123,6 +124,14 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		tl(1, "window.eventBus = new EventBus('/eventbus');");
 		tl(1, "var pk = ", Optional.ofNullable(siteRequest_.getRequestPk()).map(l -> l.toString()).orElse("null"), ";");
 		tl(1, "if(pk != null) {");
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			tl(2, "suggestTrafficStopPersonKeys([{'name':'fq','value':'trafficStopKey:' + pk}], $('#listTrafficStopPersonKeys_Page'), pk, true); ");
+		} else {
+			tl(2, "suggestTrafficStopPersonKeys([{'name':'fq','value':'trafficStopKey:' + pk}], $('#listTrafficStopPersonKeys_Page'), pk, false); ");
+		}
 		tl(1, "}");
 		tl(1, "websocketTrafficStop(websocketTrafficStopInner);");
 		l("});");
@@ -222,8 +231,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopAgencyTitle("PUTCopy");
 			o.htmStopDateTime("PUTCopy");
-			o.htmStopPurposeTitle("PUTCopy");
-			o.htmStopActionTitle("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopDriverArrest("PUTCopy");
@@ -240,6 +247,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopLocationId("PUTCopy");
 			o.htmStopCityId("PUTCopy");
+			o.htmPersonKeys("PUTCopy");
 		} g("div");
 	}
 
@@ -251,8 +259,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopAgencyTitle("PATCH");
 			o.htmStopDateTime("PATCH");
-			o.htmStopPurposeTitle("PATCH");
-			o.htmStopActionTitle("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopDriverArrest("PATCH");
@@ -269,6 +275,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopLocationId("PATCH");
 			o.htmStopCityId("PATCH");
+			o.htmPersonKeys("PATCH");
 		} g("div");
 	}
 

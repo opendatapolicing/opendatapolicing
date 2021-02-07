@@ -1397,6 +1397,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			SiteAgency o2 = new SiteAgency();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {

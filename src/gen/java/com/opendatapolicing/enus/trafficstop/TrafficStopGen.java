@@ -859,67 +859,27 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public void inputStopPurposeTitle(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "stop purpose title")
-				.a("id", classApiMethodMethod, "_stopPurposeTitle");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopPurposeTitle classTrafficStop inputTrafficStop", pk, "StopPurposeTitle w3-input w3-border ");
-					a("name", "setStopPurposeTitle");
-				} else {
-					a("class", "valueStopPurposeTitle w3-input w3-border classTrafficStop inputTrafficStop", pk, "StopPurposeTitle w3-input w3-border ");
-					a("name", "stopPurposeTitle");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPurposeTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeTitle')); }); ");
-				}
-				a("value", strStopPurposeTitle())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficStop", pk, "StopPurposeTitle ").f().sx(htmStopPurposeTitle()).g("span");
-		}
 	}
 
 	public void htmStopPurposeTitle(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopStopPurposeTitle").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopPurposeTitle").a("class", "").f().sx("stop purpose title").g("label");
+							e("label").a("class", "").f().sx("stop purpose title").g("label");
 						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+						{ e("div").a("class", "w3-cell-row  ").f();
 							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopPurposeTitle(classApiMethodMethod);
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varTrafficStop", pk, "StopPurposeTitle ").f().sx(strStopPurposeTitle()).g("span");
+								} g("div");
 							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); $('#", classApiMethodMethod, "_stopPurposeTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setStopPurposeTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeTitle')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
 						} g("div");
 					} g("div");
 				} g("div");
-			} g("div");
+			}
 		} g("div");
 	}
 
@@ -1151,67 +1111,27 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public void inputStopActionTitle(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "agency title")
-				.a("id", classApiMethodMethod, "_stopActionTitle");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopActionTitle classTrafficStop inputTrafficStop", pk, "StopActionTitle w3-input w3-border ");
-					a("name", "setStopActionTitle");
-				} else {
-					a("class", "valueStopActionTitle w3-input w3-border classTrafficStop inputTrafficStop", pk, "StopActionTitle w3-input w3-border ");
-					a("name", "stopActionTitle");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopActionTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopActionTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopActionTitle')); }); ");
-				}
-				a("value", strStopActionTitle())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficStop", pk, "StopActionTitle ").f().sx(htmStopActionTitle()).g("span");
-		}
 	}
 
 	public void htmStopActionTitle(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopStopActionTitle").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ e("div").a("class", "w3-padding ").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopActionTitle").a("class", "").f().sx("agency title").g("label");
+							e("label").a("class", "").f().sx("agency title").g("label");
 						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+						{ e("div").a("class", "w3-cell-row  ").f();
 							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopActionTitle(classApiMethodMethod);
+								{ e("div").a("class", "w3-rest ").f();
+									e("span").a("class", "varTrafficStop", pk, "StopActionTitle ").f().sx(strStopActionTitle()).g("span");
+								} g("div");
 							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopActionTitle')); $('#", classApiMethodMethod, "_stopActionTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setStopActionTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopActionTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopActionTitle')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
 						} g("div");
 					} g("div");
 				} g("div");
-			} g("div");
+			}
 		} g("div");
 	}
 
@@ -2764,27 +2684,85 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public void inputPersonKeys(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
+			if("PUTCopy".equals(classApiMethodMethod)) {
+				{ e("div").f();
+					e("input")
+						.a("type", "checkbox")
+						.a("id", classApiMethodMethod, "_personKeys_clear")
+						.a("class", "personKeys_clear ")
+						.fg();
+					e("label").a("for", "classApiMethodMethod, \"_personKeys_clear").f().sx("clear").g("label");
+				} g("div");
+			}
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "people")
+				.a("class", "value suggestPersonKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("name", "setPersonKeys")
+				.a("id", classApiMethodMethod, "_personKeys")
+				.a("autocomplete", "off");
+				a("oninput", "suggestTrafficStopPersonKeys($(this).val() ? searchTrafficPersonFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'trafficStopKey:" + pk + "'}", "], $('#listTrafficStopPersonKeys_", classApiMethodMethod, "'), ", pk, "); ");
+
+				fg();
+
+		} else {
+		}
 	}
 
 	public void htmPersonKeys(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopPersonKeys").f();
 					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("people").g("label");
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("a").a("href", "/person?fq=trafficStopKey:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
+								e("i").a("class", "far fa-newspaper ").f().g("i");
+								sx("people");
+							} g("a");
 						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
+						{ e("div").a("class", "w3-cell-row ").f();
+							{ e("h5").a("class", "w3-cell ").f();
+								sx("relate  to this traffic stop");
+							} g("h5");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
 							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficStop", pk, "PersonKeys ").f().sx(strPersonKeys()).g("span");
+								{ e("div").a("class", "w3-cell-row ").f();
+
+								inputPersonKeys(classApiMethodMethod);
 								} g("div");
+							} g("div");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listTrafficStopPersonKeys_", classApiMethodMethod).f();
+								} g("ul");
+								if(
+										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), TrafficPerson.ROLES)
+										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), TrafficPerson.ROLES)
+										) {
+									if("Page".equals(classApiMethodMethod)) {
+										{ e("div").a("class", "w3-cell-row ").f();
+											e("button")
+												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
+												.a("id", classApiMethodMethod, "_personKeys_add")
+												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postTrafficPersonVals({ trafficStopKey: \"", pk, "\" }, function() {}, function() { addError($('#", classApiMethodMethod, "personKeys')); });")
+												.f().sx("add a person")
+											.g("button");
+										} g("div");
+									}
+								}
 							} g("div");
 						} g("div");
 					} g("div");
 				} g("div");
-			}
+			} g("div");
 		} g("div");
 	}
 
@@ -3016,6 +2994,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public Object attributeTrafficStop(String var, Object val) {
 		TrafficStop oTrafficStop = (TrafficStop)this;
 		switch(var) {
+			case "personKeys":
+				oTrafficStop.addPersonKeys((Long)val);
+				if(!saves.contains(var))
+					saves.add(var);
+				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -3273,19 +3256,9 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 					setStopPurposeNum(val);
 				saves.add(var);
 				return val;
-			case "stopPurposeTitle":
-				if(val != null)
-					setStopPurposeTitle(val);
-				saves.add(var);
-				return val;
 			case "stopActionNum":
 				if(val != null)
 					setStopActionNum(val);
-				saves.add(var);
-				return val;
-			case "stopActionTitle":
-				if(val != null)
-					setStopActionTitle(val);
 				saves.add(var);
 				return val;
 			case "stopDriverArrest":
@@ -3463,11 +3436,9 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 					oTrafficStop.setStopCityId(stopCityId);
 			}
 
-			if(saves.contains("personKeys")) {
-				List<Long> personKeys = (List<Long>)solrDocument.get("personKeys_stored_longs");
-				if(personKeys != null)
-					oTrafficStop.personKeys.addAll(personKeys);
-			}
+			List<Long> personKeys = (List<Long>)solrDocument.get("personKeys_stored_longs");
+			if(personKeys != null)
+				oTrafficStop.personKeys.addAll(personKeys);
 
 			if(saves.contains("trafficStopCompleteName")) {
 				String trafficStopCompleteName = (String)solrDocument.get("trafficStopCompleteName_stored_string");

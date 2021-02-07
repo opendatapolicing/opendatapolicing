@@ -1399,6 +1399,7 @@ public class SiteStateEnUSGenApiServiceImpl implements SiteStateEnUSGenApiServic
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			SiteState o2 = new SiteState();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {

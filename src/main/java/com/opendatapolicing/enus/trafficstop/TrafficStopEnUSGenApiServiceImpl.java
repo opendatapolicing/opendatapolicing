@@ -767,19 +767,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							});
 						}));
 						break;
-					case "stopPurposeTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeTitle failed", b.cause())));
-							});
-						}));
-						break;
 					case "stopActionNum":
 						futures.add(Future.future(a -> {
 							tx.preparedQuery(SiteContextEnUS.SQL_setD)
@@ -790,19 +777,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 									a.handle(Future.succeededFuture());
 								else
 									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionNum failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopActionTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionTitle failed", b.cause())));
 							});
 						}));
 						break;
@@ -935,6 +909,25 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopCityId failed", b.cause())));
 							});
 						}));
+						break;
+					case "personKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_addA)
+										.execute(Tuple.of(pk, "personKeys", l, "trafficStopKey")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+								});
+							}));
+							if(!pks.contains(l)) {
+								pks.add(l);
+								classes.add("TrafficPerson");
+							}
+						}
 						break;
 					}
 				}
@@ -1232,19 +1225,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							});
 						}));
 						break;
-					case "stopPurposeTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeTitle failed", b.cause())));
-							});
-						}));
-						break;
 					case "stopActionNum":
 						futures.add(Future.future(a -> {
 							tx.preparedQuery(SiteContextEnUS.SQL_setD)
@@ -1255,19 +1235,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 									a.handle(Future.succeededFuture());
 								else
 									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionNum failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopActionTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionTitle failed", b.cause())));
 							});
 						}));
 						break;
@@ -1400,6 +1367,38 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopCityId failed", b.cause())));
 							});
 						}));
+						break;
+					case "personKeys":
+						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+							if(l != null) {
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(TrafficPerson.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("TrafficPerson");
+									}
+								}
+							}
+						}
 						break;
 					}
 				}
@@ -1660,6 +1659,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			TrafficStop o2 = new TrafficStop();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {
@@ -1859,34 +1859,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							}));
 						}
 						break;
-					case "setStopPurposeTitle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPurposeTitle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeTitle failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopPurposeTitle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPurposeTitle", o2.jsonStopPurposeTitle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeTitle failed", b.cause())));
-								});
-							}));
-						}
-						break;
 					case "setStopActionNum":
 						if(jsonObject.getString(methodName) == null) {
 							futures.add(Future.future(a -> {
@@ -1911,34 +1883,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 										a.handle(Future.succeededFuture());
 									else
 										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionNum failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopActionTitle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopActionTitle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionTitle failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopActionTitle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopActionTitle", o2.jsonStopActionTitle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionTitle failed", b.cause())));
 								});
 							}));
 						}
@@ -2221,6 +2165,164 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopCityId failed", b.cause())));
 								});
 							}));
+						}
+						break;
+					case "addPersonKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(TrafficPerson.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && !o.getPersonKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("TrafficPerson");
+									}
+								}
+							}
+						}
+						break;
+					case "addAllPersonKeys":
+						JsonArray addAllPersonKeysValues = jsonObject.getJsonArray(methodName);
+						if(addAllPersonKeysValues != null) {
+							for(Integer i = 0; i <  addAllPersonKeysValues.size(); i++) {
+								Long l = Long.parseLong(addAllPersonKeysValues.getString(i));
+								if(l != null) {
+									SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(TrafficPerson.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null && !o.getPersonKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("TrafficPerson");
+										}
+									}
+								}
+							}
+						}
+						break;
+					case "setPersonKeys":
+						JsonArray setPersonKeysValues = jsonObject.getJsonArray(methodName);
+						JsonArray setPersonKeysValues2 = new JsonArray();
+						if(setPersonKeysValues != null) {
+							for(Integer i = 0; i <  setPersonKeysValues.size(); i++) {
+								Long l = Long.parseLong(setPersonKeysValues.getString(i));
+								if(l != null) {
+									SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(TrafficPerson.class);
+									searchList.addFilterQuery("deleted_indexed_boolean:false");
+									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.initDeepSearchList(siteRequest);
+									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+									if(l2 != null)
+										setPersonKeysValues2.add(l2);
+									if(l2 != null && !o.getPersonKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_addA)
+												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+										});
+									}));
+										if(!pks.contains(l2)) {
+											pks.add(l2);
+											classes.add("TrafficPerson");
+										}
+									}
+								}
+							}
+						}
+						if(o.getPersonKeys() != null) {
+							for(Long l :  o.getPersonKeys()) {
+								if(l != null && (setPersonKeysValues2 == null || !setPersonKeysValues2.contains(l))) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(pk, "personKeys", l, "trafficStopKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+										});
+									}));
+								}
+							}
+						}
+						break;
+					case "removePersonKeys":
+						{
+							Long l = Long.parseLong(jsonObject.getString(methodName));
+							if(l != null) {
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								searchList.setQuery("*:*");
+								searchList.setStore(true);
+								searchList.setC(TrafficPerson.class);
+								searchList.addFilterQuery("deleted_indexed_boolean:false");
+								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.initDeepSearchList(siteRequest);
+								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+								if(l2 != null && o.getPersonKeys().contains(l2)) {
+									futures.add(Future.future(a -> {
+										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
+												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+												, b
+										-> {
+											if(b.succeeded())
+												a.handle(Future.succeededFuture());
+											else
+												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+										});
+									}));
+									if(!pks.contains(l2)) {
+										pks.add(l2);
+										classes.add("TrafficPerson");
+									}
+								}
+							}
 						}
 						break;
 				}
@@ -3382,6 +3484,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				searchList.setQuery("*:*");
 				searchList.setC(TrafficStop.class);
 				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
+				searchList.add("json.facet", "{personKeys:{terms:{field:personKeys_indexed_longs, limit:1000}}}");
 				searchList.setRows(1000);
 				searchList.initDeepSearchList(siteRequest);
 				List<Future> futures = new ArrayList<>();
@@ -3389,6 +3492,41 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
+
+					if("TrafficPerson".equals(classSimpleName2) && pk2 != null) {
+						SearchList<TrafficPerson> searchList2 = new SearchList<TrafficPerson>();
+						searchList2.setStore(true);
+						searchList2.setQuery("*:*");
+						searchList2.setC(TrafficPerson.class);
+						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+						searchList2.setRows(1);
+						searchList2.initDeepSearchList(siteRequest);
+						TrafficPerson o2 = searchList2.getList().stream().findFirst().orElse(null);
+
+						if(o2 != null) {
+							TrafficPersonEnUSGenApiServiceImpl service = new TrafficPersonEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficStop(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							ApiRequest apiRequest2 = new ApiRequest();
+							apiRequest2.setRows(1);
+							apiRequest2.setNumFound(1l);
+							apiRequest2.setNumPATCH(0L);
+							apiRequest2.initDeepApiRequest(siteRequest2);
+							siteRequest2.setApiRequest_(apiRequest2);
+							siteRequest2.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest2).toString());
+
+							o2.setPk(pk2);
+							o2.setSiteRequest_(siteRequest2);
+							futures.add(
+								service.patchTrafficPersonFuture(o2, false, a -> {
+									if(a.succeeded()) {
+									} else {
+										LOGGER.info(String.format("TrafficPerson %s failed. ", pk2));
+										eventHandler.handle(Future.failedFuture(a.cause()));
+									}
+								})
+							);
+						}
+					}
 				}
 
 				CompositeFuture.all(futures).setHandler(a -> {

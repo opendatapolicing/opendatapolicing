@@ -2127,6 +2127,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
 			TrafficSearch o2 = new TrafficSearch();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(o.getUserId() == null && siteRequest.getUserId() != null) {
