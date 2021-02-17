@@ -1,6 +1,5 @@
 package com.opendatapolicing.enus.vertx; 
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,6 +18,8 @@ import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
 import com.opendatapolicing.enus.cluster.ClusterEnUSGenApiService;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
+import com.opendatapolicing.enus.design.PageDesignEnUSGenApiService;
+import com.opendatapolicing.enus.html.part.HtmlPartEnUSGenApiService;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
@@ -68,7 +69,6 @@ import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-import io.vertx.ext.web.handler.sockjs.BridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.sstore.LocalSessionStore;
@@ -648,6 +648,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 		ClusterEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		SiteUserEnUSGenApiService.registerService(siteContextEnUS, vertx);
+		PageDesignEnUSGenApiService.registerService(siteContextEnUS, vertx);
+		HtmlPartEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		SiteStateEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		SiteAgencyEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		SearchBasisEnUSGenApiService.registerService(siteContextEnUS, vertx);

@@ -652,6 +652,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userId == null ? "" : userId;
 	}
 
+	public String sqlUserId() {
+		return userId;
+	}
+
 	public String jsonUserId() {
 		return userId == null ? "" : userId;
 	}
@@ -736,6 +740,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userKey == null ? "" : userKey.toString();
 	}
 
+	public Long sqlUserKey() {
+		return userKey;
+	}
+
 	public String jsonUserKey() {
 		return userKey == null ? "" : userKey.toString();
 	}
@@ -810,6 +818,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String strSessionId() {
 		return sessionId == null ? "" : sessionId;
+	}
+
+	public String sqlSessionId() {
+		return sessionId;
 	}
 
 	public String jsonSessionId() {
@@ -888,6 +900,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return sessionIdBefore == null ? "" : sessionIdBefore;
 	}
 
+	public String sqlSessionIdBefore() {
+		return sessionIdBefore;
+	}
+
 	public String jsonSessionIdBefore() {
 		return sessionIdBefore == null ? "" : sessionIdBefore;
 	}
@@ -962,6 +978,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String strUserName() {
 		return userName == null ? "" : userName;
+	}
+
+	public String sqlUserName() {
+		return userName;
 	}
 
 	public String jsonUserName() {
@@ -1040,6 +1060,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userLastName == null ? "" : userLastName;
 	}
 
+	public String sqlUserLastName() {
+		return userLastName;
+	}
+
 	public String jsonUserLastName() {
 		return userLastName == null ? "" : userLastName;
 	}
@@ -1114,6 +1138,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String strUserFirstName() {
 		return userFirstName == null ? "" : userFirstName;
+	}
+
+	public String sqlUserFirstName() {
+		return userFirstName;
 	}
 
 	public String jsonUserFirstName() {
@@ -1192,6 +1220,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userFullName == null ? "" : userFullName;
 	}
 
+	public String sqlUserFullName() {
+		return userFullName;
+	}
+
 	public String jsonUserFullName() {
 		return userFullName == null ? "" : userFullName;
 	}
@@ -1266,6 +1298,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String strUserEmail() {
 		return userEmail == null ? "" : userEmail;
+	}
+
+	public String sqlUserEmail() {
+		return userEmail;
 	}
 
 	public String jsonUserEmail() {
@@ -1363,6 +1399,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String strUserRealmRoles() {
 		return userRealmRoles == null ? "" : userRealmRoles.toString();
+	}
+
+	public List<String> sqlUserRealmRoles() {
+		return userRealmRoles;
 	}
 
 	public String jsonUserRealmRoles() {
@@ -1501,6 +1541,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String strUserResourceRoles() {
 		return userResourceRoles == null ? "" : userResourceRoles.toString();
+	}
+
+	public List<String> sqlUserResourceRoles() {
+		return userResourceRoles;
 	}
 
 	public String jsonUserResourceRoles() {
@@ -1707,6 +1751,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return pageAdmin == null ? "" : pageAdmin.toString();
 	}
 
+	public Boolean sqlPageAdmin() {
+		return pageAdmin;
+	}
+
 	public String jsonPageAdmin() {
 		return pageAdmin == null ? "" : pageAdmin.toString();
 	}
@@ -1791,6 +1839,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return requestPk == null ? "" : requestPk.toString();
 	}
 
+	public Long sqlRequestPk() {
+		return requestPk;
+	}
+
 	public String jsonRequestPk() {
 		return requestPk == null ? "" : requestPk.toString();
 	}
@@ -1867,6 +1919,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return requestUri == null ? "" : requestUri;
 	}
 
+	public String sqlRequestUri() {
+		return requestUri;
+	}
+
 	public String jsonRequestUri() {
 		return requestUri == null ? "" : requestUri;
 	}
@@ -1941,6 +1997,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String strRequestMethod() {
 		return requestMethod == null ? "" : requestMethod;
+	}
+
+	public String sqlRequestMethod() {
+		return requestMethod;
 	}
 
 	public String jsonRequestMethod() {
@@ -2211,6 +2271,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			else if(o instanceof Cluster) {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
+			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
 			}
 		}
 		return o;
@@ -2516,7 +2580,29 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return o != null;
 	}
 	public Object defineSiteRequestEnUS(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSiteRequestEnUS(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSiteRequestEnUS(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

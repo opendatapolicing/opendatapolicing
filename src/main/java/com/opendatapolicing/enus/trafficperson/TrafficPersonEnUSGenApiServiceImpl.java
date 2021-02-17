@@ -252,7 +252,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					);
 				}
 			});
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTImportTrafficPerson(siteRequest, eventHandler);
@@ -440,7 +440,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					);
 				}
 			});
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTMergeTrafficPerson(siteRequest, eventHandler);
@@ -594,7 +594,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 				})
 			);
 		});
-		CompositeFuture.all(futures).setHandler( a -> {
+		CompositeFuture.all(futures).onComplete( a -> {
 			if(a.succeeded()) {
 				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listTrafficPerson.size());
 				if(listTrafficPerson.next()) {
@@ -683,6 +683,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -1041,7 +1042,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					}
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
@@ -1208,8 +1209,11 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
+			TrafficPerson o2 = new TrafficPerson();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
@@ -1299,10 +1303,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(entityVar));
 							if(l != null) {
-								SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
+								SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop> searchList = new SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficStop.class);
+								searchList.setC(com.opendatapolicing.enus.trafficstop.TrafficStop.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -1539,10 +1543,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					case "trafficSearchKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+								SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficSearch.class);
+								searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -1636,7 +1640,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					}
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
@@ -1813,7 +1817,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 				})
 			);
 		});
-		CompositeFuture.all(futures).setHandler( a -> {
+		CompositeFuture.all(futures).onComplete( a -> {
 			if(a.succeeded()) {
 				if(listTrafficPerson.next(dt)) {
 					listPATCHTrafficPerson(apiRequest, listTrafficPerson, dt, eventHandler);
@@ -1888,6 +1892,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
@@ -2013,10 +2018,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							o2.setTrafficStopKey(jsonObject.getString(methodName));
 							Long l = o2.getTrafficStopKey();
 							if(l != null && !l.equals(o.getTrafficStopKey())) {
-								SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
+								SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop> searchList = new SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficStop.class);
+								searchList.setC(com.opendatapolicing.enus.trafficstop.TrafficStop.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2047,10 +2052,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							o2.setTrafficStopKey(jsonObject.getString(methodName));
 							Long l = o2.getTrafficStopKey();
 							if(l != null) {
-								SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
+								SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop> searchList = new SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficStop.class);
+								searchList.setC(com.opendatapolicing.enus.trafficstop.TrafficStop.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2528,10 +2533,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+								SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficSearch.class);
+								searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2563,10 +2568,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							for(Integer i = 0; i <  addAllTrafficSearchKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllTrafficSearchKeysValues.getString(i));
 								if(l != null) {
-									SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+									SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(TrafficSearch.class);
+									searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
 									searchList.addFilterQuery("deleted_indexed_boolean:false");
 									searchList.addFilterQuery("archived_indexed_boolean:false");
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2600,10 +2605,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							for(Integer i = 0; i <  setTrafficSearchKeysValues.size(); i++) {
 								Long l = Long.parseLong(setTrafficSearchKeysValues.getString(i));
 								if(l != null) {
-									SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+									SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(TrafficSearch.class);
+									searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
 									searchList.addFilterQuery("deleted_indexed_boolean:false");
 									searchList.addFilterQuery("archived_indexed_boolean:false");
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2653,10 +2658,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+								SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficSearch.class);
+								searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2824,7 +2829,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						break;
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					TrafficPerson o3 = new TrafficPerson();
 					o3.setSiteRequest_(o.getSiteRequest_());
@@ -3795,88 +3800,92 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 
 	public void aSearchTrafficPerson(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<TrafficPerson>>> eventHandler) {
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
-			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
-			String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-			SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
-			searchList.setPopulate(populate);
-			searchList.setStore(store);
-			searchList.setQuery("*:*");
-			searchList.setC(TrafficPerson.class);
-			searchList.setSiteRequest_(siteRequest);
-			if(entityList != null)
-				searchList.addFields(entityList);
-			searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
-
-			String id = operationRequest.getParams().getJsonObject("path").getString("id");
-			if(id != null) {
-				searchList.addFilterQuery("(id:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
-			}
-
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
-				String entityVar = null;
-				String valueIndexed = null;
-				String varIndexed = null;
-				String valueSort = null;
-				Integer valueStart = null;
-				Integer valueRows = null;
-				String paramName = paramRequest.getKey();
-				Object paramValuesObject = paramRequest.getValue();
-				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
-
-				try {
-					for(Object paramObject : paramObjects) {
-						switch(paramName) {
-							case "q":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								varIndexed = "*".equals(entityVar) ? entityVar : TrafficPerson.varSearchTrafficPerson(entityVar);
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-								aSearchTrafficPersonQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "fq":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								varIndexed = TrafficPerson.varIndexedTrafficPerson(entityVar);
-								aSearchTrafficPersonFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "sort":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
-								valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-								varIndexed = TrafficPerson.varIndexedTrafficPerson(entityVar);
-								aSearchTrafficPersonSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "start":
-								valueStart = (Integer)paramObject;
-								aSearchTrafficPersonStart(uri, apiMethod, searchList, valueStart);
-								break;
-							case "rows":
-								valueRows = (Integer)paramObject;
-								aSearchTrafficPersonRows(uri, apiMethod, searchList, valueRows);
-								break;
-							case "var":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								aSearchTrafficPersonVar(uri, apiMethod, searchList, entityVar, valueIndexed);
-								break;
-						}
-					}
-					aSearchTrafficPersonUri(uri, apiMethod, searchList);
-				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchTrafficPerson failed. ", e));
-					eventHandler.handle(Future.failedFuture(e));
-				}
-			});
-			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
-				searchList.addSort("created_indexed_date", ORDER.desc);
-			}
-			aSearchTrafficPerson2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
-			searchList.initDeepForClass(siteRequest);
+			SearchList<TrafficPerson> searchList = aSearchTrafficPersonList(siteRequest, populate, store, modify, uri, apiMethod);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
 			LOGGER.error(String.format("aSearchTrafficPerson failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
+	}
+
+	public SearchList<TrafficPerson> aSearchTrafficPersonList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+		OperationRequest operationRequest = siteRequest.getOperationRequest();
+		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
+		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
+		SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+		searchList.setPopulate(populate);
+		searchList.setStore(store);
+		searchList.setQuery("*:*");
+		searchList.setC(TrafficPerson.class);
+		searchList.setSiteRequest_(siteRequest);
+		if(entityList != null)
+			searchList.addFields(entityList);
+		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
+
+		String id = operationRequest.getParams().getJsonObject("path").getString("id");
+		if(id != null) {
+			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+		}
+
+		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			String entityVar = null;
+			String valueIndexed = null;
+			String varIndexed = null;
+			String valueSort = null;
+			Integer valueStart = null;
+			Integer valueRows = null;
+			String paramName = paramRequest.getKey();
+			Object paramValuesObject = paramRequest.getValue();
+			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+			try {
+				for(Object paramObject : paramObjects) {
+					switch(paramName) {
+						case "q":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							varIndexed = "*".equals(entityVar) ? entityVar : TrafficPerson.varSearchTrafficPerson(entityVar);
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+							aSearchTrafficPersonQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "fq":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							varIndexed = TrafficPerson.varIndexedTrafficPerson(entityVar);
+							aSearchTrafficPersonFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "sort":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+							valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+							varIndexed = TrafficPerson.varIndexedTrafficPerson(entityVar);
+							aSearchTrafficPersonSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "start":
+							valueStart = (Integer)paramObject;
+							aSearchTrafficPersonStart(uri, apiMethod, searchList, valueStart);
+							break;
+						case "rows":
+							valueRows = (Integer)paramObject;
+							aSearchTrafficPersonRows(uri, apiMethod, searchList, valueRows);
+							break;
+						case "var":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							aSearchTrafficPersonVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+							break;
+					}
+				}
+				aSearchTrafficPersonUri(uri, apiMethod, searchList);
+			} catch(Exception e) {
+				ExceptionUtils.rethrow(e);
+			}
+		});
+		if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+			searchList.addSort("created_indexed_date", ORDER.desc);
+		}
+		aSearchTrafficPerson2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+		searchList.initDeepForClass(siteRequest);
+		return searchList;
 	}
 	public void aSearchTrafficPerson2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<TrafficPerson> searchList) {
 	}
@@ -3894,11 +3903,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 				if(defineAsync.succeeded()) {
 					try {
 						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineTrafficPerson failed. ", e));
-								LOGGER.error(e);
+							for(Integer i = 0; i < definition.size(); i++) {
+								String columnName = definition.getColumnName(i);
+								Object columnValue = definition.getValue(i);
+								if(!"pk".equals(columnName)) {
+									try {
+										o.defineForClass(columnName, columnValue);
+									} catch(Exception e) {
+										LOGGER.error(String.format("defineTrafficPerson failed. ", e));
+										LOGGER.error(e);
+									}
+								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
@@ -4062,7 +4077,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					}
 				}
 
-				CompositeFuture.all(futures).setHandler(a -> {
+				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
 						TrafficPersonEnUSApiServiceImpl service = new TrafficPersonEnUSApiServiceImpl(siteRequest.getSiteContext_());
 						List<Future> futures2 = new ArrayList<>();
@@ -4080,7 +4095,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							);
 						}
 
-						CompositeFuture.all(futures2).setHandler(b -> {
+						CompositeFuture.all(futures2).onComplete(b -> {
 							if(b.succeeded()) {
 								eventHandler.handle(Future.succeededFuture());
 							} else {

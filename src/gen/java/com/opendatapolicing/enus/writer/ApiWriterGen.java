@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.lang.String;
@@ -197,6 +198,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return contextRows == null ? "" : contextRows.toString();
 	}
 
+	public Integer sqlContextRows() {
+		return contextRows;
+	}
+
 	public String jsonContextRows() {
 		return contextRows == null ? "" : contextRows.toString();
 	}
@@ -273,6 +278,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiMethod == null ? "" : classApiMethod;
 	}
 
+	public String sqlClassApiMethod() {
+		return classApiMethod;
+	}
+
 	public String jsonClassApiMethod() {
 		return classApiMethod == null ? "" : classApiMethod;
 	}
@@ -347,6 +356,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strOpenApiVersion() {
 		return openApiVersion == null ? "" : openApiVersion;
+	}
+
+	public String sqlOpenApiVersion() {
+		return openApiVersion;
 	}
 
 	public String jsonOpenApiVersion() {
@@ -491,6 +504,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classUris == null ? "" : classUris.toString();
 	}
 
+	public List<String> sqlClassUris() {
+		return classUris;
+	}
+
 	public String jsonClassUris() {
 		return classUris == null ? "" : classUris.toString();
 	}
@@ -573,6 +590,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strOpenApiVersionNumber() {
 		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
+	}
+
+	public Integer sqlOpenApiVersionNumber() {
+		return openApiVersionNumber;
 	}
 
 	public String jsonOpenApiVersionNumber() {
@@ -659,6 +680,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
 
+	public Integer sqlTabsSchema() {
+		return tabsSchema;
+	}
+
 	public String jsonTabsSchema() {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
@@ -741,6 +766,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strTabsResponses() {
 		return tabsResponses == null ? "" : tabsResponses.toString();
+	}
+
+	public Integer sqlTabsResponses() {
+		return tabsResponses;
 	}
 
 	public String jsonTabsResponses() {
@@ -1378,6 +1407,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiTag == null ? "" : classApiTag;
 	}
 
+	public String sqlClassApiTag() {
+		return classApiTag;
+	}
+
 	public String jsonClassApiTag() {
 		return classApiTag == null ? "" : classApiTag;
 	}
@@ -1457,6 +1490,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassExtendsBase() {
 		return classExtendsBase == null ? "" : classExtendsBase.toString();
+	}
+
+	public Boolean sqlClassExtendsBase() {
+		return classExtendsBase;
 	}
 
 	public String jsonClassExtendsBase() {
@@ -1540,6 +1577,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classIsBase == null ? "" : classIsBase.toString();
 	}
 
+	public Boolean sqlClassIsBase() {
+		return classIsBase;
+	}
+
 	public String jsonClassIsBase() {
 		return classIsBase == null ? "" : classIsBase.toString();
 	}
@@ -1614,6 +1655,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassSimpleName() {
 		return classSimpleName == null ? "" : classSimpleName;
+	}
+
+	public String sqlClassSimpleName() {
+		return classSimpleName;
 	}
 
 	public String jsonClassSimpleName() {
@@ -1692,6 +1737,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return appName == null ? "" : appName;
 	}
 
+	public String sqlAppName() {
+		return appName;
+	}
+
 	public String jsonAppName() {
 		return appName == null ? "" : appName;
 	}
@@ -1768,6 +1817,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classAbsolutePath == null ? "" : classAbsolutePath;
 	}
 
+	public String sqlClassAbsolutePath() {
+		return classAbsolutePath;
+	}
+
 	public String jsonClassAbsolutePath() {
 		return classAbsolutePath == null ? "" : classAbsolutePath;
 	}
@@ -1842,6 +1895,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassApiUriMethod() {
 		return classApiUriMethod == null ? "" : classApiUriMethod;
+	}
+
+	public String sqlClassApiUriMethod() {
+		return classApiUriMethod;
 	}
 
 	public String jsonClassApiUriMethod() {
@@ -1925,6 +1982,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleUserMethod == null ? "" : classRoleUserMethod.toString();
 	}
 
+	public Boolean sqlClassRoleUserMethod() {
+		return classRoleUserMethod;
+	}
+
 	public String jsonClassRoleUserMethod() {
 		return classRoleUserMethod == null ? "" : classRoleUserMethod.toString();
 	}
@@ -1999,6 +2060,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassApiMethodMethod() {
 		return classApiMethodMethod == null ? "" : classApiMethodMethod;
+	}
+
+	public String sqlClassApiMethodMethod() {
+		return classApiMethodMethod;
 	}
 
 	public String jsonClassApiMethodMethod() {
@@ -2077,6 +2142,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiMediaType200Method == null ? "" : classApiMediaType200Method;
 	}
 
+	public String sqlClassApiMediaType200Method() {
+		return classApiMediaType200Method;
+	}
+
 	public String jsonClassApiMediaType200Method() {
 		return classApiMediaType200Method == null ? "" : classApiMediaType200Method;
 	}
@@ -2151,6 +2220,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassApiOperationIdMethod() {
 		return classApiOperationIdMethod == null ? "" : classApiOperationIdMethod;
+	}
+
+	public String sqlClassApiOperationIdMethod() {
+		return classApiOperationIdMethod;
 	}
 
 	public String jsonClassApiOperationIdMethod() {
@@ -2229,6 +2302,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiOperationIdMethodRequest == null ? "" : classApiOperationIdMethodRequest;
 	}
 
+	public String sqlClassApiOperationIdMethodRequest() {
+		return classApiOperationIdMethodRequest;
+	}
+
 	public String jsonClassApiOperationIdMethodRequest() {
 		return classApiOperationIdMethodRequest == null ? "" : classApiOperationIdMethodRequest;
 	}
@@ -2303,6 +2380,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassApiOperationIdMethodResponse() {
 		return classApiOperationIdMethodResponse == null ? "" : classApiOperationIdMethodResponse;
+	}
+
+	public String sqlClassApiOperationIdMethodResponse() {
+		return classApiOperationIdMethodResponse;
 	}
 
 	public String jsonClassApiOperationIdMethodResponse() {
@@ -2381,6 +2462,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classSuperApiOperationIdMethodRequest == null ? "" : classSuperApiOperationIdMethodRequest;
 	}
 
+	public String sqlClassSuperApiOperationIdMethodRequest() {
+		return classSuperApiOperationIdMethodRequest;
+	}
+
 	public String jsonClassSuperApiOperationIdMethodRequest() {
 		return classSuperApiOperationIdMethodRequest == null ? "" : classSuperApiOperationIdMethodRequest;
 	}
@@ -2457,6 +2542,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classSuperApiOperationIdMethodResponse == null ? "" : classSuperApiOperationIdMethodResponse;
 	}
 
+	public String sqlClassSuperApiOperationIdMethodResponse() {
+		return classSuperApiOperationIdMethodResponse;
+	}
+
 	public String jsonClassSuperApiOperationIdMethodResponse() {
 		return classSuperApiOperationIdMethodResponse == null ? "" : classSuperApiOperationIdMethodResponse;
 	}
@@ -2531,6 +2620,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassPageCanonicalNameMethod() {
 		return classPageCanonicalNameMethod == null ? "" : classPageCanonicalNameMethod;
+	}
+
+	public String sqlClassPageCanonicalNameMethod() {
+		return classPageCanonicalNameMethod;
 	}
 
 	public String jsonClassPageCanonicalNameMethod() {
@@ -2612,6 +2705,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassKeywordsFound() {
 		return classKeywordsFound == null ? "" : classKeywordsFound.toString();
+	}
+
+	public Boolean sqlClassKeywordsFound() {
+		return classKeywordsFound;
 	}
 
 	public String jsonClassKeywordsFound() {
@@ -2713,6 +2810,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classKeywords == null ? "" : classKeywords.toString();
 	}
 
+	public List<String> sqlClassKeywords() {
+		return classKeywords;
+	}
+
 	public String jsonClassKeywords() {
 		return classKeywords == null ? "" : classKeywords.toString();
 	}
@@ -2792,6 +2893,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassPublicRead() {
 		return classPublicRead == null ? "" : classPublicRead.toString();
+	}
+
+	public Boolean sqlClassPublicRead() {
+		return classPublicRead;
 	}
 
 	public String jsonClassPublicRead() {
@@ -2875,6 +2980,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleSession == null ? "" : classRoleSession.toString();
 	}
 
+	public Boolean sqlClassRoleSession() {
+		return classRoleSession;
+	}
+
 	public String jsonClassRoleSession() {
 		return classRoleSession == null ? "" : classRoleSession.toString();
 	}
@@ -2956,6 +3065,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleUtilisateur == null ? "" : classRoleUtilisateur.toString();
 	}
 
+	public Boolean sqlClassRoleUtilisateur() {
+		return classRoleUtilisateur;
+	}
+
 	public String jsonClassRoleUtilisateur() {
 		return classRoleUtilisateur == null ? "" : classRoleUtilisateur.toString();
 	}
@@ -3035,6 +3148,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strClassRolesFound() {
 		return classRolesFound == null ? "" : classRolesFound.toString();
+	}
+
+	public Boolean sqlClassRolesFound() {
+		return classRolesFound;
 	}
 
 	public String jsonClassRolesFound() {
@@ -3136,6 +3253,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoles == null ? "" : classRoles.toString();
 	}
 
+	public List<String> sqlClassRoles() {
+		return classRoles;
+	}
+
 	public String jsonClassRoles() {
 		return classRoles == null ? "" : classRoles.toString();
 	}
@@ -3235,6 +3356,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRolesLanguage == null ? "" : classRolesLanguage.toString();
 	}
 
+	public List<String> sqlClassRolesLanguage() {
+		return classRolesLanguage;
+	}
+
 	public String jsonClassRolesLanguage() {
 		return classRolesLanguage == null ? "" : classRolesLanguage.toString();
 	}
@@ -3309,6 +3434,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String strLanguageName() {
 		return languageName == null ? "" : languageName;
+	}
+
+	public String sqlLanguageName() {
+		return languageName;
 	}
 
 	public String jsonLanguageName() {
@@ -3491,6 +3620,10 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			else if(o instanceof Cluster) {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
+			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
 			}
 		}
 		return o;
@@ -3958,7 +4091,29 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return o != null;
 	}
 	public Object defineApiWriter(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineApiWriter(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineApiWriter(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

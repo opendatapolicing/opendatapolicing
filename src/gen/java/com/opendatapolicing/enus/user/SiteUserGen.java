@@ -12,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
@@ -1522,6 +1523,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -1734,51 +1739,118 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineSiteUser(String var, String val) {
-		switch(var) {
-			case "userId":
+		switch(var.toLowerCase()) {
+			case "userid":
 				if(val != null)
 					setUserId(val);
-				saves.add(var);
+				saves.add("userId");
 				return val;
-			case "userKey":
+			case "userkey":
 				if(val != null)
 					setUserKey(val);
-				saves.add(var);
+				saves.add("userKey");
 				return val;
-			case "userName":
+			case "username":
 				if(val != null)
 					setUserName(val);
-				saves.add(var);
+				saves.add("userName");
 				return val;
-			case "userEmail":
+			case "useremail":
 				if(val != null)
 					setUserEmail(val);
-				saves.add(var);
+				saves.add("userEmail");
 				return val;
-			case "userFirstName":
+			case "userfirstname":
 				if(val != null)
 					setUserFirstName(val);
-				saves.add(var);
+				saves.add("userFirstName");
 				return val;
-			case "userLastName":
+			case "userlastname":
 				if(val != null)
 					setUserLastName(val);
-				saves.add(var);
+				saves.add("userLastName");
 				return val;
-			case "userFullName":
+			case "userfullname":
 				if(val != null)
 					setUserFullName(val);
-				saves.add(var);
+				saves.add("userFullName");
 				return val;
-			case "seeArchived":
+			case "seearchived":
 				if(val != null)
 					setSeeArchived(val);
-				saves.add(var);
+				saves.add("seeArchived");
 				return val;
-			case "seeDeleted":
+			case "seedeleted":
 				if(val != null)
 					setSeeDeleted(val);
-				saves.add(var);
+				saves.add("seeDeleted");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSiteUser(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSiteUser(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "userid":
+				if(val instanceof String)
+					setUserId((String)val);
+				saves.add("userId");
+				return val;
+			case "userkey":
+				if(val instanceof Long)
+					setUserKey((Long)val);
+				saves.add("userKey");
+				return val;
+			case "username":
+				if(val instanceof String)
+					setUserName((String)val);
+				saves.add("userName");
+				return val;
+			case "useremail":
+				if(val instanceof String)
+					setUserEmail((String)val);
+				saves.add("userEmail");
+				return val;
+			case "userfirstname":
+				if(val instanceof String)
+					setUserFirstName((String)val);
+				saves.add("userFirstName");
+				return val;
+			case "userlastname":
+				if(val instanceof String)
+					setUserLastName((String)val);
+				saves.add("userLastName");
+				return val;
+			case "userfullname":
+				if(val instanceof String)
+					setUserFullName((String)val);
+				saves.add("userFullName");
+				return val;
+			case "seearchived":
+				if(val instanceof Boolean)
+					setSeeArchived((Boolean)val);
+				saves.add("seeArchived");
+				return val;
+			case "seedeleted":
+				if(val instanceof Boolean)
+					setSeeDeleted((Boolean)val);
+				saves.add("seeDeleted");
 				return val;
 			default:
 				return super.defineCluster(var, val);

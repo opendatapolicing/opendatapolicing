@@ -1,88 +1,70 @@
 package com.opendatapolicing.enus.trafficstop;
 
-import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiServiceImpl;
-import com.opendatapolicing.enus.trafficperson.TrafficPerson;
-import com.opendatapolicing.enus.config.SiteConfig;
-import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
-import com.opendatapolicing.enus.user.SiteUser;
-import com.opendatapolicing.enus.request.api.ApiRequest;
-import com.opendatapolicing.enus.search.SearchResult;
-import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
-import java.io.IOException;
-import java.util.Collections;
+import java.net.URLDecoder;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import io.vertx.core.json.Json;
-import org.apache.solr.client.solrj.SolrQuery;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.commons.lang3.StringUtils;
-import java.security.Principal;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import java.io.PrintWriter;
-import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
-import java.util.Collection;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Date;
-import java.time.format.DateTimeFormatter;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.HashSet;
+import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.util.SimpleOrderedMap;
+import org.apache.solr.util.DateMathParser;
+
+import com.opendatapolicing.enus.config.SiteConfig;
+import com.opendatapolicing.enus.context.SiteContextEnUS;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.request.api.ApiRequest;
+import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.trafficperson.TrafficPerson;
+import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.user.SiteUser;
+import com.opendatapolicing.enus.user.SiteUserEnUSApiServiceImpl;
+import com.opendatapolicing.enus.writer.AllWriter;
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
-import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.Router;
-import io.vertx.core.Vertx;
-import io.vertx.ext.reactivestreams.ReactiveReadStream;
-import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import io.vertx.core.MultiMap;
-import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
-import io.vertx.ext.web.api.validation.ParameterTypeValidator;
-import io.vertx.ext.web.api.validation.ValidationException;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
-import io.vertx.pgclient.PgPool;
-import io.vertx.sqlclient.Transaction;
-import io.vertx.sqlclient.SqlConnection;
-import io.vertx.sqlclient.Tuple;
-import io.vertx.sqlclient.Row;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.WorkerExecutor;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.sql.Timestamp;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.web.api.OperationResponse;
-import io.vertx.core.CompositeFuture;
-import org.apache.http.client.utils.URLEncodedUtils;
-import java.nio.charset.Charset;
-import org.apache.http.NameValuePair;
-import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.net.URLDecoder;
-import java.time.ZonedDateTime;
-import org.apache.solr.common.util.SimpleOrderedMap;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import com.opendatapolicing.enus.user.SiteUserEnUSApiServiceImpl;
-import com.opendatapolicing.enus.search.SearchList;
-import com.opendatapolicing.enus.writer.AllWriter;
+import io.vertx.ext.mail.MailClient;
+import io.vertx.ext.mail.MailMessage;
+import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.OperationResponse;
+import io.vertx.pgclient.PgPool;
+import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.SqlConnection;
+import io.vertx.sqlclient.Transaction;
+import io.vertx.sqlclient.Tuple;
 
 
 /**
@@ -250,7 +232,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					);
 				}
 			});
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTImportTrafficStop(siteRequest, eventHandler);
@@ -438,7 +420,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					);
 				}
 			});
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTMergeTrafficStop(siteRequest, eventHandler);
@@ -592,7 +574,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				})
 			);
 		});
-		CompositeFuture.all(futures).setHandler( a -> {
+		CompositeFuture.all(futures).onComplete( a -> {
 			if(a.succeeded()) {
 				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listTrafficStop.size());
 				if(listTrafficStop.next()) {
@@ -681,6 +663,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -932,7 +915,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					}
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
@@ -1099,8 +1082,11 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
+			TrafficStop o2 = new TrafficStop();
+			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
@@ -1371,10 +1357,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					case "personKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficPerson.class);
+								searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -1403,7 +1389,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					}
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
@@ -1580,7 +1566,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				})
 			);
 		});
-		CompositeFuture.all(futures).setHandler( a -> {
+		CompositeFuture.all(futures).onComplete( a -> {
 			if(a.succeeded()) {
 				if(listTrafficStop.next(dt)) {
 					listPATCHTrafficStop(apiRequest, listTrafficStop, dt, eventHandler);
@@ -1655,6 +1641,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
+			Integer num = 1;
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
@@ -2171,10 +2158,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficPerson.class);
+								searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2206,10 +2193,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							for(Integer i = 0; i <  addAllPersonKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllPersonKeysValues.getString(i));
 								if(l != null) {
-									SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+									SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(TrafficPerson.class);
+									searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
 									searchList.addFilterQuery("deleted_indexed_boolean:false");
 									searchList.addFilterQuery("archived_indexed_boolean:false");
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2243,10 +2230,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							for(Integer i = 0; i <  setPersonKeysValues.size(); i++) {
 								Long l = Long.parseLong(setPersonKeysValues.getString(i));
 								if(l != null) {
-									SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+									SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(TrafficPerson.class);
+									searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
 									searchList.addFilterQuery("deleted_indexed_boolean:false");
 									searchList.addFilterQuery("archived_indexed_boolean:false");
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2296,10 +2283,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
+								SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(TrafficPerson.class);
+								searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
 								searchList.addFilterQuery("deleted_indexed_boolean:false");
 								searchList.addFilterQuery("archived_indexed_boolean:false");
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
@@ -2327,7 +2314,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						break;
 				}
 			}
-			CompositeFuture.all(futures).setHandler( a -> {
+			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					TrafficStop o3 = new TrafficStop();
 					o3.setSiteRequest_(o.getSiteRequest_());
@@ -3298,88 +3285,142 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 
 	public void aSearchTrafficStop(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<TrafficStop>>> eventHandler) {
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
-			String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
-			String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-			SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
-			searchList.setPopulate(populate);
-			searchList.setStore(store);
-			searchList.setQuery("*:*");
-			searchList.setC(TrafficStop.class);
-			searchList.setSiteRequest_(siteRequest);
-			if(entityList != null)
-				searchList.addFields(entityList);
-			searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
-
-			String id = operationRequest.getParams().getJsonObject("path").getString("id");
-			if(id != null) {
-				searchList.addFilterQuery("(id:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
-			}
-
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
-				String entityVar = null;
-				String valueIndexed = null;
-				String varIndexed = null;
-				String valueSort = null;
-				Integer valueStart = null;
-				Integer valueRows = null;
-				String paramName = paramRequest.getKey();
-				Object paramValuesObject = paramRequest.getValue();
-				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
-
-				try {
-					for(Object paramObject : paramObjects) {
-						switch(paramName) {
-							case "q":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								varIndexed = "*".equals(entityVar) ? entityVar : TrafficStop.varSearchTrafficStop(entityVar);
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-								aSearchTrafficStopQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "fq":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
-								aSearchTrafficStopFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "sort":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
-								valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-								varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
-								aSearchTrafficStopSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "start":
-								valueStart = (Integer)paramObject;
-								aSearchTrafficStopStart(uri, apiMethod, searchList, valueStart);
-								break;
-							case "rows":
-								valueRows = (Integer)paramObject;
-								aSearchTrafficStopRows(uri, apiMethod, searchList, valueRows);
-								break;
-							case "var":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								aSearchTrafficStopVar(uri, apiMethod, searchList, entityVar, valueIndexed);
-								break;
-						}
-					}
-					aSearchTrafficStopUri(uri, apiMethod, searchList);
-				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchTrafficStop failed. ", e));
-					eventHandler.handle(Future.failedFuture(e));
-				}
-			});
-			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
-				searchList.addSort("created_indexed_date", ORDER.desc);
-			}
-			aSearchTrafficStop2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
-			searchList.initDeepForClass(siteRequest);
+			SearchList<TrafficStop> searchList = aSearchTrafficStopList(siteRequest, populate, store, modify, uri, apiMethod);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
 			LOGGER.error(String.format("aSearchTrafficStop failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
 		}
+	}
+
+	public SearchList<TrafficStop> aSearchTrafficStopList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+		OperationRequest operationRequest = siteRequest.getOperationRequest();
+		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
+		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
+		SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
+		searchList.setPopulate(populate);
+		searchList.setStore(store);
+		searchList.setQuery("*:*");
+		searchList.setC(TrafficStop.class);
+		searchList.setSiteRequest_(siteRequest);
+		if(entityList != null)
+			searchList.addFields(entityList);
+		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
+
+		String id = operationRequest.getParams().getJsonObject("path").getString("id");
+		if(id != null) {
+			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+		}
+		Map<String, Object> facetMap = new HashMap<String, Object>();
+
+		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			String entityVar = null;
+			String valueIndexed = null;
+			String varIndexed = null;
+			String valueSort = null;
+			Integer valueStart = null;
+			Integer valueRows = null;
+			String paramName = paramRequest.getKey();
+			Object paramValuesObject = paramRequest.getValue();
+			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+			try {
+				for(Object paramObject : paramObjects) {
+					switch(paramName) {
+						case "q":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							varIndexed = "*".equals(entityVar) ? entityVar : TrafficStop.varSearchTrafficStop(entityVar);
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+							aSearchTrafficStopQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "fq":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
+							aSearchTrafficStopFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "sort":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+							valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+							varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
+							aSearchTrafficStopSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+							break;
+						case "facet.range.start":
+							Matcher mFacetRangeStart = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+							boolean foundFacetRangeStart = mFacetRangeStart.find();
+							if(foundFacetRangeStart) {
+								String solrLocalParams = mFacetRangeStart.group(1);
+								String dateMathStr = mFacetRangeStart.group(2).trim();
+								Date date = DateMathParser.parseMath(null, dateMathStr);
+								facetMap.put("facet.range.start=" + (solrLocalParams == null ? "" : solrLocalParams), date);
+							}
+							break;
+						case "facet.range.end":
+							Matcher mFacetRangeEnd = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+							boolean foundFacetRangeEnd = mFacetRangeEnd.find();
+							if(foundFacetRangeEnd) {
+								String solrLocalParams = mFacetRangeEnd.group(1);
+								String dateMathStr = mFacetRangeEnd.group(2).trim();
+								Date date = DateMathParser.parseMath(null, dateMathStr);
+								facetMap.put("facet.range.end=" + (solrLocalParams == null ? "" : solrLocalParams), date);
+							}
+							break;
+						case "facet.range.gap":
+							Matcher mFacetRangeGap = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+							boolean foundFacetRangeGap = mFacetRangeGap.find();
+							if(foundFacetRangeGap) {
+								String solrLocalParams = mFacetRangeGap.group(1);
+								String gap = mFacetRangeGap.group(2).trim();
+								facetMap.put("facet.range.gap=" + (solrLocalParams == null ? "" : solrLocalParams), gap);
+							}
+							break;
+						case "facet.range":
+							Matcher mFacetRange = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+							boolean foundFacetRange = mFacetRange.find();
+							if(foundFacetRange) {
+								String solrLocalParams = mFacetRange.group(1);
+								entityVar = mFacetRange.group(2).trim();
+								varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
+								if(varIndexed.endsWith("_indexed_date")) {
+									Date facetStart = (Date)facetMap.get("facet.range.start=" + (solrLocalParams == null ? "" : solrLocalParams));
+									Date facetEnd = (Date)facetMap.get("facet.range.end=" + (solrLocalParams == null ? "" : solrLocalParams));
+									String facetGap = (String)facetMap.get("facet.range.gap=" + (solrLocalParams == null ? "" : solrLocalParams));
+									searchList.addDateRangeFacet(
+											varIndexed
+											, facetStart
+											, facetEnd
+											, facetGap
+											);
+								}
+							}
+							break;
+						case "start":
+							valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+							aSearchTrafficStopStart(uri, apiMethod, searchList, valueStart);
+							break;
+						case "rows":
+							valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+							aSearchTrafficStopRows(uri, apiMethod, searchList, valueRows);
+							break;
+						case "var":
+							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+							aSearchTrafficStopVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+							break;
+					}
+				}
+				aSearchTrafficStopUri(uri, apiMethod, searchList);
+			} catch(Exception e) {
+				ExceptionUtils.rethrow(e);
+			}
+		});
+		if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+			searchList.addSort("created_indexed_date", ORDER.desc);
+		}
+		aSearchTrafficStop2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+		searchList.initDeepForClass(siteRequest);
+		return searchList;
 	}
 	public void aSearchTrafficStop2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<TrafficStop> searchList) {
 	}
@@ -3529,7 +3570,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					}
 				}
 
-				CompositeFuture.all(futures).setHandler(a -> {
+				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
 						TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(siteRequest.getSiteContext_());
 						List<Future> futures2 = new ArrayList<>();
@@ -3547,7 +3588,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							);
 						}
 
-						CompositeFuture.all(futures2).setHandler(b -> {
+						CompositeFuture.all(futures2).onComplete(b -> {
 							if(b.succeeded()) {
 								eventHandler.handle(Future.succeededFuture());
 							} else {

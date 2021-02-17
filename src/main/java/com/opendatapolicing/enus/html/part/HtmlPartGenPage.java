@@ -182,6 +182,10 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmLoginLogout("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("Page");
+			o.htmMapTo("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("Page");
 			o.htmSort2("Page");
 			o.htmSort3("Page");
@@ -241,6 +245,10 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmHtmlExclude("POST");
 			o.htmPdfExclude("POST");
 			o.htmLoginLogout("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("POST");
+			o.htmMapTo("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("POST");
@@ -327,6 +335,10 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmLoginLogout("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("PUTCopy");
+			o.htmMapTo("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("PUTCopy");
 			o.htmSort2("PUTCopy");
 			o.htmSort3("PUTCopy");
@@ -387,6 +399,10 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmLoginLogout("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("PATCH");
+			o.htmMapTo("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("PATCH");
 			o.htmSort2("PATCH");
 			o.htmSort3("PATCH");
@@ -437,6 +453,10 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmHtmlExclude("Search");
 			o.htmPdfExclude("Search");
 			o.htmLoginLogout("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmSearchUri("Search");
+			o.htmMapTo("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSort1("Search");

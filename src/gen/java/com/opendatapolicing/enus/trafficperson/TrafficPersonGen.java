@@ -8,6 +8,7 @@ import java.lang.Integer;
 import java.lang.Long;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
+import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import java.time.ZoneOffset;
 import io.vertx.core.logging.Logger;
@@ -24,6 +25,7 @@ import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.List;
+import java.time.OffsetDateTime;
 import org.apache.solr.client.solrj.SolrQuery;
 import java.util.Optional;
 import com.opendatapolicing.enus.cluster.Cluster;
@@ -277,11 +279,11 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "traffic stop key")
-				.a("class", "value suggestTrafficStopKey w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "valueObjectSuggest suggestTrafficStopKey w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setTrafficStopKey")
 				.a("id", classApiMethodMethod, "_trafficStopKey")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficPersonTrafficStopKey($(this).val() ? searchTrafficStopFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'personKeys:" + pk + "'}", "], $('#listTrafficPersonTrafficStopKey_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficPersonTrafficStopKey($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficStopCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'personKeys:" + pk + "'}", "], $('#listTrafficPersonTrafficStopKey_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -2866,11 +2868,11 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "traffic search keys")
-				.a("class", "value suggestTrafficSearchKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "valueObjectSuggest suggestTrafficSearchKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setTrafficSearchKeys")
 				.a("id", classApiMethodMethod, "_trafficSearchKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficPersonTrafficSearchKeys($(this).val() ? searchTrafficSearchFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'personKey:" + pk + "'}", "], $('#listTrafficPersonTrafficSearchKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficPersonTrafficSearchKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'personKey:" + pk + "'}", "], $('#listTrafficPersonTrafficSearchKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -4623,6 +4625,10 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -4729,13 +4735,13 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			case "trafficStopKey":
 				if(oTrafficPerson.getTrafficStopKey() == null)
 					oTrafficPerson.setTrafficStopKey((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("trafficStopKey"))
+					saves.add("trafficStopKey");
 				return val;
 			case "trafficSearchKeys":
 				oTrafficPerson.addTrafficSearchKeys((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("trafficSearchKeys"))
+					saves.add("trafficSearchKeys");
 				return val;
 			default:
 				return super.attributeCluster(var, val);
@@ -5090,111 +5096,250 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineTrafficPerson(String var, String val) {
-		switch(var) {
-			case "stopAgencyTitle":
+		switch(var.toLowerCase()) {
+			case "trafficstopkey":
+				if(val != null)
+					setTrafficStopKey(val);
+				saves.add("trafficStopKey");
+				return val;
+			case "stopagencytitle":
 				if(val != null)
 					setStopAgencyTitle(val);
-				saves.add(var);
+				saves.add("stopAgencyTitle");
 				return val;
-			case "stopDateTime":
+			case "stopdatetime":
 				if(val != null)
 					setStopDateTime(val);
-				saves.add(var);
+				saves.add("stopDateTime");
 				return val;
-			case "stopPurposeNum":
+			case "stoppurposenum":
 				if(val != null)
 					setStopPurposeNum(val);
-				saves.add(var);
+				saves.add("stopPurposeNum");
 				return val;
-			case "stopPurposeTitle":
+			case "stoppurposetitle":
 				if(val != null)
 					setStopPurposeTitle(val);
-				saves.add(var);
+				saves.add("stopPurposeTitle");
 				return val;
-			case "stopActionNum":
+			case "stopactionnum":
 				if(val != null)
 					setStopActionNum(val);
-				saves.add(var);
+				saves.add("stopActionNum");
 				return val;
-			case "stopActionTitle":
+			case "stopactiontitle":
 				if(val != null)
 					setStopActionTitle(val);
-				saves.add(var);
+				saves.add("stopActionTitle");
 				return val;
-			case "stopDriverArrest":
+			case "stopdriverarrest":
 				if(val != null)
 					setStopDriverArrest(val);
-				saves.add(var);
+				saves.add("stopDriverArrest");
 				return val;
-			case "stopPassengerArrest":
+			case "stoppassengerarrest":
 				if(val != null)
 					setStopPassengerArrest(val);
-				saves.add(var);
+				saves.add("stopPassengerArrest");
 				return val;
-			case "stopEncounterForce":
+			case "stopencounterforce":
 				if(val != null)
 					setStopEncounterForce(val);
-				saves.add(var);
+				saves.add("stopEncounterForce");
 				return val;
-			case "stopEngageForce":
+			case "stopengageforce":
 				if(val != null)
 					setStopEngageForce(val);
-				saves.add(var);
+				saves.add("stopEngageForce");
 				return val;
-			case "stopOfficerInjury":
+			case "stopofficerinjury":
 				if(val != null)
 					setStopOfficerInjury(val);
-				saves.add(var);
+				saves.add("stopOfficerInjury");
 				return val;
-			case "stopDriverInjury":
+			case "stopdriverinjury":
 				if(val != null)
 					setStopDriverInjury(val);
-				saves.add(var);
+				saves.add("stopDriverInjury");
 				return val;
-			case "stopPassengerInjury":
+			case "stoppassengerinjury":
 				if(val != null)
 					setStopPassengerInjury(val);
-				saves.add(var);
+				saves.add("stopPassengerInjury");
 				return val;
-			case "stopOfficerId":
+			case "stopofficerid":
 				if(val != null)
 					setStopOfficerId(val);
-				saves.add(var);
+				saves.add("stopOfficerId");
 				return val;
-			case "stopLocationId":
+			case "stoplocationid":
 				if(val != null)
 					setStopLocationId(val);
-				saves.add(var);
+				saves.add("stopLocationId");
 				return val;
-			case "stopCityId":
+			case "stopcityid":
 				if(val != null)
 					setStopCityId(val);
-				saves.add(var);
+				saves.add("stopCityId");
 				return val;
-			case "personAge":
+			case "personage":
 				if(val != null)
 					setPersonAge(val);
-				saves.add(var);
+				saves.add("personAge");
 				return val;
-			case "personTypeId":
+			case "persontypeid":
 				if(val != null)
 					setPersonTypeId(val);
-				saves.add(var);
+				saves.add("personTypeId");
 				return val;
-			case "personGenderId":
+			case "persongenderid":
 				if(val != null)
 					setPersonGenderId(val);
-				saves.add(var);
+				saves.add("personGenderId");
 				return val;
-			case "personEthnicityId":
+			case "personethnicityid":
 				if(val != null)
 					setPersonEthnicityId(val);
-				saves.add(var);
+				saves.add("personEthnicityId");
 				return val;
-			case "personRaceId":
+			case "personraceid":
 				if(val != null)
 					setPersonRaceId(val);
-				saves.add(var);
+				saves.add("personRaceId");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineTrafficPerson(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineTrafficPerson(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "trafficstopkey":
+				if(val instanceof Long)
+					setTrafficStopKey((Long)val);
+				saves.add("trafficStopKey");
+				return val;
+			case "stopagencytitle":
+				if(val instanceof String)
+					setStopAgencyTitle((String)val);
+				saves.add("stopAgencyTitle");
+				return val;
+			case "stopdatetime":
+				if(val instanceof ZonedDateTime)
+					setStopDateTime((ZonedDateTime)val);
+				else if(val instanceof OffsetDateTime)
+					setStopDateTime(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+				saves.add("stopDateTime");
+				return val;
+			case "stoppurposenum":
+				if(val instanceof Integer)
+					setStopPurposeNum((Integer)val);
+				saves.add("stopPurposeNum");
+				return val;
+			case "stoppurposetitle":
+				if(val instanceof String)
+					setStopPurposeTitle((String)val);
+				saves.add("stopPurposeTitle");
+				return val;
+			case "stopactionnum":
+				if(val instanceof Integer)
+					setStopActionNum((Integer)val);
+				saves.add("stopActionNum");
+				return val;
+			case "stopactiontitle":
+				if(val instanceof String)
+					setStopActionTitle((String)val);
+				saves.add("stopActionTitle");
+				return val;
+			case "stopdriverarrest":
+				if(val instanceof Boolean)
+					setStopDriverArrest((Boolean)val);
+				saves.add("stopDriverArrest");
+				return val;
+			case "stoppassengerarrest":
+				if(val instanceof Boolean)
+					setStopPassengerArrest((Boolean)val);
+				saves.add("stopPassengerArrest");
+				return val;
+			case "stopencounterforce":
+				if(val instanceof Boolean)
+					setStopEncounterForce((Boolean)val);
+				saves.add("stopEncounterForce");
+				return val;
+			case "stopengageforce":
+				if(val instanceof Boolean)
+					setStopEngageForce((Boolean)val);
+				saves.add("stopEngageForce");
+				return val;
+			case "stopofficerinjury":
+				if(val instanceof Boolean)
+					setStopOfficerInjury((Boolean)val);
+				saves.add("stopOfficerInjury");
+				return val;
+			case "stopdriverinjury":
+				if(val instanceof Boolean)
+					setStopDriverInjury((Boolean)val);
+				saves.add("stopDriverInjury");
+				return val;
+			case "stoppassengerinjury":
+				if(val instanceof Boolean)
+					setStopPassengerInjury((Boolean)val);
+				saves.add("stopPassengerInjury");
+				return val;
+			case "stopofficerid":
+				if(val instanceof String)
+					setStopOfficerId((String)val);
+				saves.add("stopOfficerId");
+				return val;
+			case "stoplocationid":
+				if(val instanceof String)
+					setStopLocationId((String)val);
+				saves.add("stopLocationId");
+				return val;
+			case "stopcityid":
+				if(val instanceof String)
+					setStopCityId((String)val);
+				saves.add("stopCityId");
+				return val;
+			case "personage":
+				if(val instanceof Integer)
+					setPersonAge((Integer)val);
+				saves.add("personAge");
+				return val;
+			case "persontypeid":
+				if(val instanceof String)
+					setPersonTypeId((String)val);
+				saves.add("personTypeId");
+				return val;
+			case "persongenderid":
+				if(val instanceof String)
+					setPersonGenderId((String)val);
+				saves.add("personGenderId");
+				return val;
+			case "personethnicityid":
+				if(val instanceof String)
+					setPersonEthnicityId((String)val);
+				saves.add("personEthnicityId");
+				return val;
+			case "personraceid":
+				if(val instanceof String)
+					setPersonRaceId((String)val);
+				saves.add("personRaceId");
 				return val;
 			default:
 				return super.defineCluster(var, val);

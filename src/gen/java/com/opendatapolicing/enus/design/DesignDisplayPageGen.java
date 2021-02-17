@@ -2,16 +2,20 @@ package com.opendatapolicing.enus.design;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.opendatapolicing.enus.html.part.HtmlPart;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
 import io.vertx.core.logging.LoggerFactory;
+import com.opendatapolicing.enus.search.SearchList;
 import java.util.ArrayList;
 import com.opendatapolicing.enus.design.DesignDisplayGenPage;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.lang.String;
 import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -23,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
+import java.util.List;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -37,6 +42,219 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
  **/
 public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DesignDisplayPage.class);
+
+	//////////////////
+	// pageDesignId //
+	//////////////////
+
+	/**	 The entity pageDesignId
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String pageDesignId;
+	@JsonIgnore
+	public Wrap<String> pageDesignIdWrap = new Wrap<String>().p(this).c(String.class).var("pageDesignId").o(pageDesignId);
+
+	/**	<br/> The entity pageDesignId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageDesignId">Find the entity pageDesignId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _pageDesignId(Wrap<String> c);
+
+	public String getPageDesignId() {
+		return pageDesignId;
+	}
+	public void setPageDesignId(String o) {
+		this.pageDesignId = DesignDisplayPage.staticSetPageDesignId(siteRequest_, o);
+		this.pageDesignIdWrap.alreadyInitialized = true;
+	}
+	public static String staticSetPageDesignId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected DesignDisplayPage pageDesignIdInit() {
+		if(!pageDesignIdWrap.alreadyInitialized) {
+			_pageDesignId(pageDesignIdWrap);
+			if(pageDesignId == null)
+				setPageDesignId(pageDesignIdWrap.o);
+		}
+		pageDesignIdWrap.alreadyInitialized(true);
+		return (DesignDisplayPage)this;
+	}
+
+	public static String staticSolrPageDesignId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrPageDesignId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPageDesignId(SiteRequestEnUS siteRequest_, String o) {
+		return DesignDisplayPage.staticSolrStrPageDesignId(siteRequest_, DesignDisplayPage.staticSolrPageDesignId(siteRequest_, DesignDisplayPage.staticSetPageDesignId(siteRequest_, o)));
+	}
+
+	public String solrPageDesignId() {
+		return DesignDisplayPage.staticSolrPageDesignId(siteRequest_, pageDesignId);
+	}
+
+	public String strPageDesignId() {
+		return pageDesignId == null ? "" : pageDesignId;
+	}
+
+	public String sqlPageDesignId() {
+		return pageDesignId;
+	}
+
+	public String jsonPageDesignId() {
+		return pageDesignId == null ? "" : pageDesignId;
+	}
+
+	public String nomAffichagePageDesignId() {
+		return null;
+	}
+
+	public String htmTooltipPageDesignId() {
+		return null;
+	}
+
+	public String htmPageDesignId() {
+		return pageDesignId == null ? "" : StringEscapeUtils.escapeHtml4(strPageDesignId());
+	}
+
+	////////////////////
+	// htmlPartSearch //
+	////////////////////
+
+	/**	 The entity htmlPartSearch
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<HtmlPart>(). 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<HtmlPart> htmlPartSearch = new SearchList<HtmlPart>();
+	@JsonIgnore
+	public Wrap<SearchList<HtmlPart>> htmlPartSearchWrap = new Wrap<SearchList<HtmlPart>>().p(this).c(SearchList.class).var("htmlPartSearch").o(htmlPartSearch);
+
+	/**	<br/> The entity htmlPartSearch
+	 *  It is constructed before being initialized with the constructor by default SearchList<HtmlPart>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlPartSearch">Find the entity htmlPartSearch in Solr</a>
+	 * <br/>
+	 * @param htmlPartSearch is the entity already constructed. 
+	 **/
+	protected abstract void _htmlPartSearch(SearchList<HtmlPart> l);
+
+	public SearchList<HtmlPart> getHtmlPartSearch() {
+		return htmlPartSearch;
+	}
+
+	public void setHtmlPartSearch(SearchList<HtmlPart> htmlPartSearch) {
+		this.htmlPartSearch = htmlPartSearch;
+		this.htmlPartSearchWrap.alreadyInitialized = true;
+	}
+	public static SearchList<HtmlPart> staticSetHtmlPartSearch(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected DesignDisplayPage htmlPartSearchInit() {
+		if(!htmlPartSearchWrap.alreadyInitialized) {
+			_htmlPartSearch(htmlPartSearch);
+		}
+		htmlPartSearch.initDeepForClass(siteRequest_);
+		htmlPartSearchWrap.alreadyInitialized(true);
+		return (DesignDisplayPage)this;
+	}
+
+	//////////////////
+	// htmlPartList //
+	//////////////////
+
+	/**	 The entity htmlPartList
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected List<HtmlPart> htmlPartList;
+	@JsonIgnore
+	public Wrap<List<HtmlPart>> htmlPartListWrap = new Wrap<List<HtmlPart>>().p(this).c(List.class).var("htmlPartList").o(htmlPartList);
+
+	/**	<br/> The entity htmlPartList
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlPartList">Find the entity htmlPartList in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _htmlPartList(Wrap<List<HtmlPart>> c);
+
+	public List<HtmlPart> getHtmlPartList() {
+		return htmlPartList;
+	}
+
+	public void setHtmlPartList(List<HtmlPart> htmlPartList) {
+		this.htmlPartList = htmlPartList;
+		this.htmlPartListWrap.alreadyInitialized = true;
+	}
+	public static HtmlPart staticSetHtmlPartList(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	public DesignDisplayPage addHtmlPartList(HtmlPart...objets) {
+		for(HtmlPart o : objets) {
+			addHtmlPartList(o);
+		}
+		return (DesignDisplayPage)this;
+	}
+	public DesignDisplayPage addHtmlPartList(HtmlPart o) {
+		if(o != null && !htmlPartList.contains(o))
+			this.htmlPartList.add(o);
+		return (DesignDisplayPage)this;
+	}
+	protected DesignDisplayPage htmlPartListInit() {
+		if(!htmlPartListWrap.alreadyInitialized) {
+			_htmlPartList(htmlPartListWrap);
+			if(htmlPartList == null)
+				setHtmlPartList(htmlPartListWrap.o);
+		}
+		htmlPartListWrap.alreadyInitialized(true);
+		return (DesignDisplayPage)this;
+	}
+
+	/////////////////
+	// requestVars //
+	/////////////////
+
+	/**	 The entity requestVars
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected Map<String, String> requestVars;
+	@JsonIgnore
+	public Wrap<Map<String, String>> requestVarsWrap = new Wrap<Map<String, String>>().p(this).c(Map.class).var("requestVars").o(requestVars);
+
+	/**	<br/> The entity requestVars
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:requestVars">Find the entity requestVars in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _requestVars(Wrap<Map<String, String>> w);
+
+	public Map<String, String> getRequestVars() {
+		return requestVars;
+	}
+
+	public void setRequestVars(Map<String, String> requestVars) {
+		this.requestVars = requestVars;
+		this.requestVarsWrap.alreadyInitialized = true;
+	}
+	public static Map<String, String> staticSetRequestVars(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected DesignDisplayPage requestVarsInit() {
+		if(!requestVarsWrap.alreadyInitialized) {
+			_requestVars(requestVarsWrap);
+			if(requestVars == null)
+				setRequestVars(requestVarsWrap.o);
+		}
+		requestVarsWrap.alreadyInitialized(true);
+		return (DesignDisplayPage)this;
+	}
 
 	//////////////
 	// initDeep //
@@ -59,6 +277,10 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	}
 
 	public void initDesignDisplayPage() {
+		pageDesignIdInit();
+		htmlPartSearchInit();
+		htmlPartListInit();
+		requestVarsInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -71,6 +293,8 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 
 	public void siteRequestDesignDisplayPage(SiteRequestEnUS siteRequest_) {
 			super.siteRequestDesignDisplayGenPage(siteRequest_);
+		if(htmlPartSearch != null)
+			htmlPartSearch.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -91,12 +315,24 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
 	public Object obtainDesignDisplayPage(String var) {
 		DesignDisplayPage oDesignDisplayPage = (DesignDisplayPage)this;
 		switch(var) {
+			case "pageDesignId":
+				return oDesignDisplayPage.pageDesignId;
+			case "htmlPartSearch":
+				return oDesignDisplayPage.htmlPartSearch;
+			case "htmlPartList":
+				return oDesignDisplayPage.htmlPartList;
+			case "requestVars":
+				return oDesignDisplayPage.requestVars;
 			default:
 				return super.obtainDesignDisplayGenPage(var);
 		}
@@ -136,6 +372,8 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	}
 	public static Object staticSetDesignDisplayPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "pageDesignId":
+			return DesignDisplayPage.staticSetPageDesignId(siteRequest_, o);
 			default:
 				return DesignDisplayGenPage.staticSetDesignDisplayGenPage(entityVar,  siteRequest_, o);
 		}
@@ -150,6 +388,8 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	}
 	public static Object staticSolrDesignDisplayPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "pageDesignId":
+			return DesignDisplayPage.staticSolrPageDesignId(siteRequest_, (String)o);
 			default:
 				return DesignDisplayGenPage.staticSolrDesignDisplayGenPage(entityVar,  siteRequest_, o);
 		}
@@ -164,6 +404,8 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	}
 	public static String staticSolrStrDesignDisplayPage(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "pageDesignId":
+			return DesignDisplayPage.staticSolrStrPageDesignId(siteRequest_, (String)o);
 			default:
 				return DesignDisplayGenPage.staticSolrStrDesignDisplayGenPage(entityVar,  siteRequest_, o);
 		}
@@ -178,6 +420,8 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	}
 	public static String staticSolrFqDesignDisplayPage(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "pageDesignId":
+			return DesignDisplayPage.staticSolrFqPageDesignId(siteRequest_, o);
 			default:
 				return DesignDisplayGenPage.staticSolrFqDesignDisplayGenPage(entityVar,  siteRequest_, o);
 		}
@@ -203,7 +447,29 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 		return o != null;
 	}
 	public Object defineDesignDisplayPage(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return super.defineDesignDisplayGenPage(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineDesignDisplayPage(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineDesignDisplayPage(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return super.defineDesignDisplayGenPage(var, val);
 		}

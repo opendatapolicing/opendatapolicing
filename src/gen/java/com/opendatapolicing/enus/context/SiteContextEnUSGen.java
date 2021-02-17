@@ -12,6 +12,7 @@ import io.vertx.core.WorkerExecutor;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
 import io.vertx.core.logging.Logger;
@@ -46,6 +47,277 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
  * <br/>
  **/
 public abstract class SiteContextEnUSGen<DEV> extends Object {
+
+/*
+CREATE TABLE PageDesign(
+	childDesignKeys  references PageDesign(pk)
+	, parentDesignKeys  references PageDesign(pk)
+	, htmlPartKeys  references HtmlPart(pk)
+	, pageDesignCompleteName 
+	, designHidden 
+	, pageContentType 
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SiteUser(
+	userId 
+	, userKey 
+	, userName 
+	, userEmail 
+	, userFirstName 
+	, userLastName 
+	, userFullName 
+	, seeArchived 
+	, seeDeleted 
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SiteAgency(
+	agencyName 
+	, stateKey  references SiteState(pk)
+	, imageLeft 
+	, imageTop 
+	, imageCoords 
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SiteState(
+	stateName 
+	, stateAbbreviation 
+	, imageLeft 
+	, imageTop 
+	, agencyKeys  references SiteAgency(pk)
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE TrafficContraband(
+	searchKey  references TrafficSearch(pk)
+	, contrabandOunces 
+	, contrabandPounds 
+	, contrabandPints 
+	, contrabandGallons 
+	, contrabandDosages 
+	, contrabandGrams 
+	, contrabandKilos 
+	, contrabandMoney 
+	, contrabandWeapons 
+	, contrabandDollarAmount 
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SearchBasis(
+	searchKey  references TrafficSearch(pk)
+	, stopAgencyTitle 
+	, stopDateTime 
+	, stopPurposeNum 
+	, stopPurposeTitle 
+	, stopActionNum 
+	, stopActionTitle 
+	, stopDriverArrest 
+	, stopPassengerArrest 
+	, stopEncounterForce 
+	, stopEngageForce 
+	, stopOfficerInjury 
+	, stopDriverInjury 
+	, stopPassengerInjury 
+	, stopOfficerId 
+	, stopLocationId 
+	, stopCityId 
+	, personTypeId 
+	, personGenderId 
+	, personEthnicityId 
+	, personRaceId 
+	, searchTypeNum 
+	, searchBasisId 
+	, searchBasisTitle 
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE TrafficSearch(
+	personKey  references TrafficPerson(pk)
+	, contrabandKeys  references TrafficContraband(pk)
+	, searchBasisKeys  references SearchBasis(pk)
+	, stopAgencyTitle 
+	, stopDateTime 
+	, stopPurposeNum 
+	, stopPurposeTitle 
+	, stopActionNum 
+	, stopActionTitle 
+	, stopDriverArrest 
+	, stopPassengerArrest 
+	, stopEncounterForce 
+	, stopEngageForce 
+	, stopOfficerInjury 
+	, stopDriverInjury 
+	, stopPassengerInjury 
+	, stopOfficerId 
+	, stopLocationId 
+	, stopCityId 
+	, personTypeId 
+	, personGenderId 
+	, personEthnicityId 
+	, personRaceId 
+	, searchTypeNum 
+	, searchVehicle 
+	, searchDriver 
+	, searchPassenger 
+	, searchProperty 
+	, searchVehicleSiezed 
+	, searchPersonalPropertySiezed 
+	, searchOtherPropertySiezed 
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE TrafficPerson(
+	trafficStopKey  references TrafficStop(pk)
+	, stopAgencyTitle 
+	, stopDateTime 
+	, stopPurposeNum 
+	, stopPurposeTitle 
+	, stopActionNum 
+	, stopActionTitle 
+	, stopDriverArrest 
+	, stopPassengerArrest 
+	, stopEncounterForce 
+	, stopEngageForce 
+	, stopOfficerInjury 
+	, stopDriverInjury 
+	, stopPassengerInjury 
+	, stopOfficerId 
+	, stopLocationId 
+	, stopCityId 
+	, personAge 
+	, personTypeId 
+	, personGenderId 
+	, personEthnicityId 
+	, personRaceId 
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE TrafficStop(
+	stopAgencyTitle text
+	, stopDateTime timestamp with time zone
+	, stopPurposeNum integer
+	, stopActionNum integer
+	, stopDriverArrest boolean
+	, stopPassengerArrest boolean
+	, stopEncounterForce boolean
+	, stopEngageForce boolean
+	, stopOfficerInjury boolean
+	, stopDriverInjury boolean
+	, stopPassengerInjury boolean
+	, stopOfficerId text
+	, stopLocationId text
+	, stopCityId text
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE Cluster(
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE HtmlPart(
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	, htmlLink text
+	, htmlElement text
+	, htmlId text
+	, htmlClasses text
+	, htmlStyle text
+	, htmlBefore text
+	, htmlAfter text
+	, htmlText text
+	, htmlVar text
+	, htmlVarSpan text
+	, htmlVarForm text
+	, htmlVarInput text
+	, htmlVarForEach text
+	, htmlVarHtml text
+	, htmlVarBase64Decode text
+	, htmlExclude boolean
+	, pdfExclude boolean
+	, loginLogout boolean
+	, searchClass text
+	, mapTo text
+	, sort1 double
+	, sort2 double
+	, sort3 double
+	, sort4 double
+	, sort5 double
+	, sort6 double
+	, sort7 double
+	, sort8 double
+	, sort9 double
+	, sort10 double
+	);
+*/
+
 	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteContextEnUS.class);
 
 	///////////
@@ -548,6 +820,10 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -682,7 +958,29 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 		return o != null;
 	}
 	public Object defineSiteContextEnUS(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSiteContextEnUS(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSiteContextEnUS(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

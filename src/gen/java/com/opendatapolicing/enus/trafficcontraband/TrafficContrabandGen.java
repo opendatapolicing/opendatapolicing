@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.lang.Long;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
+import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import java.time.ZoneOffset;
 import io.vertx.core.logging.Logger;
@@ -25,6 +26,7 @@ import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.List;
+import java.time.OffsetDateTime;
 import org.apache.solr.client.solrj.SolrQuery;
 import java.util.Optional;
 import com.opendatapolicing.enus.cluster.Cluster;
@@ -277,11 +279,11 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "search key")
-				.a("class", "value suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "valueObjectSuggest suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setSearchKey")
 				.a("id", classApiMethodMethod, "_searchKey")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficContrabandSearchKey($(this).val() ? searchTrafficSearchFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'contrabandKeys:" + pk + "'}", "], $('#listTrafficContrabandSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficContrabandSearchKey($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'contrabandKeys:" + pk + "'}", "], $('#listTrafficContrabandSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -5384,6 +5386,10 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -5528,8 +5534,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			case "searchKey":
 				if(oTrafficContraband.getSearchKey() == null)
 					oTrafficContraband.setSearchKey((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("searchKey"))
+					saves.add("searchKey");
 				return val;
 			default:
 				return super.attributeCluster(var, val);
@@ -6036,56 +6042,138 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineTrafficContraband(String var, String val) {
-		switch(var) {
-			case "contrabandOunces":
+		switch(var.toLowerCase()) {
+			case "searchkey":
+				if(val != null)
+					setSearchKey(val);
+				saves.add("searchKey");
+				return val;
+			case "contrabandounces":
 				if(val != null)
 					setContrabandOunces(val);
-				saves.add(var);
+				saves.add("contrabandOunces");
 				return val;
-			case "contrabandPounds":
+			case "contrabandpounds":
 				if(val != null)
 					setContrabandPounds(val);
-				saves.add(var);
+				saves.add("contrabandPounds");
 				return val;
-			case "contrabandPints":
+			case "contrabandpints":
 				if(val != null)
 					setContrabandPints(val);
-				saves.add(var);
+				saves.add("contrabandPints");
 				return val;
-			case "contrabandGallons":
+			case "contrabandgallons":
 				if(val != null)
 					setContrabandGallons(val);
-				saves.add(var);
+				saves.add("contrabandGallons");
 				return val;
-			case "contrabandDosages":
+			case "contrabanddosages":
 				if(val != null)
 					setContrabandDosages(val);
-				saves.add(var);
+				saves.add("contrabandDosages");
 				return val;
-			case "contrabandGrams":
+			case "contrabandgrams":
 				if(val != null)
 					setContrabandGrams(val);
-				saves.add(var);
+				saves.add("contrabandGrams");
 				return val;
-			case "contrabandKilos":
+			case "contrabandkilos":
 				if(val != null)
 					setContrabandKilos(val);
-				saves.add(var);
+				saves.add("contrabandKilos");
 				return val;
-			case "contrabandMoney":
+			case "contrabandmoney":
 				if(val != null)
 					setContrabandMoney(val);
-				saves.add(var);
+				saves.add("contrabandMoney");
 				return val;
-			case "contrabandWeapons":
+			case "contrabandweapons":
 				if(val != null)
 					setContrabandWeapons(val);
-				saves.add(var);
+				saves.add("contrabandWeapons");
 				return val;
-			case "contrabandDollarAmount":
+			case "contrabanddollaramount":
 				if(val != null)
 					setContrabandDollarAmount(val);
-				saves.add(var);
+				saves.add("contrabandDollarAmount");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineTrafficContraband(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineTrafficContraband(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "searchkey":
+				if(val instanceof Long)
+					setSearchKey((Long)val);
+				saves.add("searchKey");
+				return val;
+			case "contrabandounces":
+				if(val instanceof BigDecimal)
+					setContrabandOunces((BigDecimal)val);
+				saves.add("contrabandOunces");
+				return val;
+			case "contrabandpounds":
+				if(val instanceof BigDecimal)
+					setContrabandPounds((BigDecimal)val);
+				saves.add("contrabandPounds");
+				return val;
+			case "contrabandpints":
+				if(val instanceof BigDecimal)
+					setContrabandPints((BigDecimal)val);
+				saves.add("contrabandPints");
+				return val;
+			case "contrabandgallons":
+				if(val instanceof BigDecimal)
+					setContrabandGallons((BigDecimal)val);
+				saves.add("contrabandGallons");
+				return val;
+			case "contrabanddosages":
+				if(val instanceof BigDecimal)
+					setContrabandDosages((BigDecimal)val);
+				saves.add("contrabandDosages");
+				return val;
+			case "contrabandgrams":
+				if(val instanceof BigDecimal)
+					setContrabandGrams((BigDecimal)val);
+				saves.add("contrabandGrams");
+				return val;
+			case "contrabandkilos":
+				if(val instanceof BigDecimal)
+					setContrabandKilos((BigDecimal)val);
+				saves.add("contrabandKilos");
+				return val;
+			case "contrabandmoney":
+				if(val instanceof BigDecimal)
+					setContrabandMoney((BigDecimal)val);
+				saves.add("contrabandMoney");
+				return val;
+			case "contrabandweapons":
+				if(val instanceof BigDecimal)
+					setContrabandWeapons((BigDecimal)val);
+				saves.add("contrabandWeapons");
+				return val;
+			case "contrabanddollaramount":
+				if(val instanceof BigDecimal)
+					setContrabandDollarAmount((BigDecimal)val);
+				saves.add("contrabandDollarAmount");
 				return val;
 			default:
 				return super.defineCluster(var, val);

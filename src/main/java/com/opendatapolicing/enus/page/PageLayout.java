@@ -14,7 +14,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -30,16 +33,24 @@ import com.opendatapolicing.enus.design.PageDesignGenPage;
 import com.opendatapolicing.enus.html.part.HtmlPart;
 import com.opendatapolicing.enus.html.part.HtmlPartGenPage;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisGenPage;
 import com.opendatapolicing.enus.state.SiteStateGenPage;
 import com.opendatapolicing.enus.trafficcontraband.ContrabandGenPage;
 import com.opendatapolicing.enus.trafficperson.TrafficPersonGenPage;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearchGenPage;
+import com.opendatapolicing.enus.trafficstop.TrafficStop;
+import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSApiServiceImpl;
 import com.opendatapolicing.enus.trafficstop.TrafficStopGenPage;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.writer.AllWriter;
 import com.opendatapolicing.enus.xml.UtilXml;
+
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.api.OperationRequest;
 
 
 /**
@@ -82,6 +93,9 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 	protected void _staticBaseUrl(Wrap<String> c) {
 		c.o(siteRequest_.getSiteConfig_().getStaticBaseUrl()); 
+	}
+
+	protected void _map(Map<String, Object> m) {
 	}
 
 	protected void _pageSolrDocument(Wrap<SolrDocument> c) {
@@ -1070,6 +1084,63 @@ public class PageLayout extends PageLayoutGen<Object> {
 					if(htmlPart.getLoginLogout()) {
 						writeLoginLogout();
 						l();
+					}
+					String searchUri = htmlPart.getSearchUri();
+					String mapTo = htmlPart.getMapTo();
+					if(searchUri != null && mapTo != null) {
+
+						Matcher m = Pattern.compile("\\{\\{\\s*([^\\}\\s]+)\\s*\\}\\}").matcher(searchUri);
+						boolean found = m.find();
+						StringBuffer sb = new StringBuffer();
+
+						while(found) {
+							String var = m.group(1);
+							Object obtain = obtainForClass(var);
+							if(obtain != null)
+								m.appendReplacement(sb, obtain.toString());
+							found = m.find();
+						}
+						m.appendTail(sb);
+						searchUri = sb.toString();
+
+						SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+						siteRequest2.setVertx(siteRequest_.getVertx());
+						siteRequest2.setSiteContext_(siteRequest_.getSiteContext_());
+						siteRequest2.setSiteConfig_(siteRequest_.getSiteConfig_());
+						siteRequest2.setUserId(siteRequest_.getUserId());
+						siteRequest2.initDeepSiteRequestEnUS(siteRequest2);
+
+						if(searchUri.startsWith("/api/traffic-stop?")) {
+							TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(siteRequest_.getSiteContext_());
+							OperationRequest operationRequest = new OperationRequest();
+							siteRequest2.setOperationRequest(operationRequest);
+							JsonObject params = new JsonObject();
+							operationRequest.setParams(params);
+							JsonObject query = new JsonObject();
+							params.put("path", new JsonObject());
+							Map<String, List<String>> decodedParams = new QueryStringDecoder(searchUri).parameters();
+							for (Map.Entry<String, List<String>> entry : decodedParams.entrySet()) {
+								String key = entry.getKey();
+								if(query.containsKey(key) && entry.getValue() != null) {
+									JsonArray values = query.getJsonArray(key);
+									for(String value : entry.getValue()) {
+										values.add(value);
+									}
+								}
+								else {
+									JsonArray values = new JsonArray();
+									for(String value : entry.getValue()) {
+										values.add(value);
+									}
+									query.put(key, values);
+								}
+							}
+							query.put("query", query);
+							params.put("query", query);
+							SearchList<TrafficStop> searchList = service.aSearchTrafficStopList(siteRequest2, false, true, false, siteRequest_.getRequestUri(), "Search");
+							searchList.toString();
+							map.put(mapTo, searchList);
+						}
 					}
 					s(htmlPart.getHtmlAfter());
 				}

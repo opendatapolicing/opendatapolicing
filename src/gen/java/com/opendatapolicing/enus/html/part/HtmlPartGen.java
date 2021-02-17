@@ -13,6 +13,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
@@ -148,6 +149,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlPartKey == null ? "" : htmlPartKey.toString();
 	}
 
+	public Long sqlHtmlPartKey() {
+		return htmlPartKey;
+	}
+
 	public String jsonHtmlPartKey() {
 		return htmlPartKey == null ? "" : htmlPartKey.toString();
 	}
@@ -261,6 +266,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return pageDesignKeys == null ? "" : pageDesignKeys.toString();
 	}
 
+	public List<Long> sqlPageDesignKeys() {
+		return pageDesignKeys;
+	}
+
 	public String jsonPageDesignKeys() {
 		return pageDesignKeys == null ? "" : pageDesignKeys.toString();
 	}
@@ -297,11 +306,11 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "page designs")
-				.a("class", "value suggestPageDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "valueObjectSuggest suggestPageDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setPageDesignKeys")
 				.a("id", classApiMethodMethod, "_pageDesignKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestHtmlPartPageDesignKeys($(this).val() ? searchPageDesignFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'htmlPartKeys:" + pk + "'}", "], $('#listHtmlPartPageDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestHtmlPartPageDesignKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,pageDesignCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'htmlPartKeys:" + pk + "'}", "], $('#listHtmlPartPageDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -419,6 +428,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlLink() {
 		return htmlLink == null ? "" : htmlLink;
+	}
+
+	public String sqlHtmlLink() {
+		return htmlLink;
 	}
 
 	public String jsonHtmlLink() {
@@ -568,6 +581,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlElement == null ? "" : htmlElement;
 	}
 
+	public String sqlHtmlElement() {
+		return htmlElement;
+	}
+
 	public String jsonHtmlElement() {
 		return htmlElement == null ? "" : htmlElement;
 	}
@@ -713,6 +730,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlId() {
 		return htmlId == null ? "" : htmlId;
+	}
+
+	public String sqlHtmlId() {
+		return htmlId;
 	}
 
 	public String jsonHtmlId() {
@@ -862,6 +883,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlClasses == null ? "" : htmlClasses;
 	}
 
+	public String sqlHtmlClasses() {
+		return htmlClasses;
+	}
+
 	public String jsonHtmlClasses() {
 		return htmlClasses == null ? "" : htmlClasses;
 	}
@@ -1007,6 +1032,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlStyle() {
 		return htmlStyle == null ? "" : htmlStyle;
+	}
+
+	public String sqlHtmlStyle() {
+		return htmlStyle;
 	}
 
 	public String jsonHtmlStyle() {
@@ -1156,6 +1185,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlBefore == null ? "" : htmlBefore;
 	}
 
+	public String sqlHtmlBefore() {
+		return htmlBefore;
+	}
+
 	public String jsonHtmlBefore() {
 		return htmlBefore == null ? "" : htmlBefore;
 	}
@@ -1299,6 +1332,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlAfter() {
 		return htmlAfter == null ? "" : htmlAfter;
+	}
+
+	public String sqlHtmlAfter() {
+		return htmlAfter;
 	}
 
 	public String jsonHtmlAfter() {
@@ -1446,6 +1483,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlText == null ? "" : htmlText;
 	}
 
+	public String sqlHtmlText() {
+		return htmlText;
+	}
+
 	public String jsonHtmlText() {
 		return htmlText == null ? "" : htmlText;
 	}
@@ -1589,6 +1630,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlVar() {
 		return htmlVar == null ? "" : htmlVar;
+	}
+
+	public String sqlHtmlVar() {
+		return htmlVar;
 	}
 
 	public String jsonHtmlVar() {
@@ -1738,6 +1783,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlVarSpan == null ? "" : htmlVarSpan;
 	}
 
+	public String sqlHtmlVarSpan() {
+		return htmlVarSpan;
+	}
+
 	public String jsonHtmlVarSpan() {
 		return htmlVarSpan == null ? "" : htmlVarSpan;
 	}
@@ -1883,6 +1932,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlVarForm() {
 		return htmlVarForm == null ? "" : htmlVarForm;
+	}
+
+	public String sqlHtmlVarForm() {
+		return htmlVarForm;
 	}
 
 	public String jsonHtmlVarForm() {
@@ -2032,6 +2085,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlVarInput == null ? "" : htmlVarInput;
 	}
 
+	public String sqlHtmlVarInput() {
+		return htmlVarInput;
+	}
+
 	public String jsonHtmlVarInput() {
 		return htmlVarInput == null ? "" : htmlVarInput;
 	}
@@ -2177,6 +2234,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlVarForEach() {
 		return htmlVarForEach == null ? "" : htmlVarForEach;
+	}
+
+	public String sqlHtmlVarForEach() {
+		return htmlVarForEach;
 	}
 
 	public String jsonHtmlVarForEach() {
@@ -2326,6 +2387,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlVarHtml == null ? "" : htmlVarHtml;
 	}
 
+	public String sqlHtmlVarHtml() {
+		return htmlVarHtml;
+	}
+
 	public String jsonHtmlVarHtml() {
 		return htmlVarHtml == null ? "" : htmlVarHtml;
 	}
@@ -2471,6 +2536,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strHtmlVarBase64Decode() {
 		return htmlVarBase64Decode == null ? "" : htmlVarBase64Decode;
+	}
+
+	public String sqlHtmlVarBase64Decode() {
+		return htmlVarBase64Decode;
 	}
 
 	public String jsonHtmlVarBase64Decode() {
@@ -2625,6 +2694,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlExclude == null ? "" : htmlExclude.toString();
 	}
 
+	public Boolean sqlHtmlExclude() {
+		return htmlExclude;
+	}
+
 	public String jsonHtmlExclude() {
 		return htmlExclude == null ? "" : htmlExclude.toString();
 	}
@@ -2772,6 +2845,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strPdfExclude() {
 		return pdfExclude == null ? "" : pdfExclude.toString();
+	}
+
+	public Boolean sqlPdfExclude() {
+		return pdfExclude;
 	}
 
 	public String jsonPdfExclude() {
@@ -2923,6 +3000,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return loginLogout == null ? "" : loginLogout.toString();
 	}
 
+	public Boolean sqlLoginLogout() {
+		return loginLogout;
+	}
+
 	public String jsonLoginLogout() {
 		return loginLogout == null ? "" : loginLogout.toString();
 	}
@@ -3007,6 +3088,308 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		} g("div");
 	}
 
+	///////////////
+	// searchUri //
+	///////////////
+
+	/**	 The entity searchUri
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String searchUri;
+	@JsonIgnore
+	public Wrap<String> searchUriWrap = new Wrap<String>().p(this).c(String.class).var("searchUri").o(searchUri);
+
+	/**	<br/> The entity searchUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchUri">Find the entity searchUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _searchUri(Wrap<String> c);
+
+	public String getSearchUri() {
+		return searchUri;
+	}
+	public void setSearchUri(String o) {
+		this.searchUri = HtmlPart.staticSetSearchUri(siteRequest_, o);
+		this.searchUriWrap.alreadyInitialized = true;
+	}
+	public static String staticSetSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected HtmlPart searchUriInit() {
+		if(!searchUriWrap.alreadyInitialized) {
+			_searchUri(searchUriWrap);
+			if(searchUri == null)
+				setSearchUri(searchUriWrap.o);
+		}
+		searchUriWrap.alreadyInitialized(true);
+		return (HtmlPart)this;
+	}
+
+	public static String staticSolrSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqSearchUri(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrSearchUri(siteRequest_, HtmlPart.staticSolrSearchUri(siteRequest_, HtmlPart.staticSetSearchUri(siteRequest_, o)));
+	}
+
+	public String solrSearchUri() {
+		return HtmlPart.staticSolrSearchUri(siteRequest_, searchUri);
+	}
+
+	public String strSearchUri() {
+		return searchUri == null ? "" : searchUri;
+	}
+
+	public String sqlSearchUri() {
+		return searchUri;
+	}
+
+	public String jsonSearchUri() {
+		return searchUri == null ? "" : searchUri;
+	}
+
+	public String nomAffichageSearchUri() {
+		return "search uri";
+	}
+
+	public String htmTooltipSearchUri() {
+		return null;
+	}
+
+	public String htmSearchUri() {
+		return searchUri == null ? "" : StringEscapeUtils.escapeHtml4(strSearchUri());
+	}
+
+	public void inputSearchUri(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "search uri")
+				.a("id", classApiMethodMethod, "_searchUri");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setSearchUri classHtmlPart inputHtmlPart", pk, "SearchUri w3-input w3-border ");
+					a("name", "setSearchUri");
+				} else {
+					a("class", "valueSearchUri w3-input w3-border classHtmlPart inputHtmlPart", pk, "SearchUri w3-input w3-border ");
+					a("name", "searchUri");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchUri', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_searchUri')); }, function() { addError($('#", classApiMethodMethod, "_searchUri')); }); ");
+				}
+				a("value", strSearchUri())
+			.fg();
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+				e("span").a("class", "varHtmlPart", pk, "SearchUri ").f().sx(htmSearchUri()).g("span");
+			}
+		}
+	}
+
+	public void htmSearchUri(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "HtmlPartSearchUri").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+							e("label").a("for", classApiMethodMethod, "_searchUri").a("class", "").f().sx("search uri").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputSearchUri(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_searchUri')); $('#", classApiMethodMethod, "_searchUri').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#HtmlPartForm :input[name=pk]').val() }], 'setSearchUri', null, function() { addGlow($('#", classApiMethodMethod, "_searchUri')); }, function() { addError($('#", classApiMethodMethod, "_searchUri')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
+	///////////
+	// mapTo //
+	///////////
+
+	/**	 The entity mapTo
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String mapTo;
+	@JsonIgnore
+	public Wrap<String> mapToWrap = new Wrap<String>().p(this).c(String.class).var("mapTo").o(mapTo);
+
+	/**	<br/> The entity mapTo
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:mapTo">Find the entity mapTo in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _mapTo(Wrap<String> c);
+
+	public String getMapTo() {
+		return mapTo;
+	}
+	public void setMapTo(String o) {
+		this.mapTo = HtmlPart.staticSetMapTo(siteRequest_, o);
+		this.mapToWrap.alreadyInitialized = true;
+	}
+	public static String staticSetMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected HtmlPart mapToInit() {
+		if(!mapToWrap.alreadyInitialized) {
+			_mapTo(mapToWrap);
+			if(mapTo == null)
+				setMapTo(mapToWrap.o);
+		}
+		mapToWrap.alreadyInitialized(true);
+		return (HtmlPart)this;
+	}
+
+	public static String staticSolrMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqMapTo(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrMapTo(siteRequest_, HtmlPart.staticSolrMapTo(siteRequest_, HtmlPart.staticSetMapTo(siteRequest_, o)));
+	}
+
+	public String solrMapTo() {
+		return HtmlPart.staticSolrMapTo(siteRequest_, mapTo);
+	}
+
+	public String strMapTo() {
+		return mapTo == null ? "" : mapTo;
+	}
+
+	public String sqlMapTo() {
+		return mapTo;
+	}
+
+	public String jsonMapTo() {
+		return mapTo == null ? "" : mapTo;
+	}
+
+	public String nomAffichageMapTo() {
+		return "map to";
+	}
+
+	public String htmTooltipMapTo() {
+		return null;
+	}
+
+	public String htmMapTo() {
+		return mapTo == null ? "" : StringEscapeUtils.escapeHtml4(strMapTo());
+	}
+
+	public void inputMapTo(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "map to")
+				.a("id", classApiMethodMethod, "_mapTo");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setMapTo classHtmlPart inputHtmlPart", pk, "MapTo w3-input w3-border ");
+					a("name", "setMapTo");
+				} else {
+					a("class", "valueMapTo w3-input w3-border classHtmlPart inputHtmlPart", pk, "MapTo w3-input w3-border ");
+					a("name", "mapTo");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setMapTo', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_mapTo')); }, function() { addError($('#", classApiMethodMethod, "_mapTo')); }); ");
+				}
+				a("value", strMapTo())
+			.fg();
+
+		} else {
+			if(
+					CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+					|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+				e("span").a("class", "varHtmlPart", pk, "MapTo ").f().sx(htmMapTo()).g("span");
+			}
+		}
+	}
+
+	public void htmMapTo(String classApiMethodMethod) {
+		HtmlPart s = (HtmlPart)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "HtmlPartMapTo").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-khaki ").f();
+							e("label").a("for", classApiMethodMethod, "_mapTo").a("class", "").f().sx("map to").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputMapTo(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-khaki ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_mapTo')); $('#", classApiMethodMethod, "_mapTo').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#HtmlPartForm :input[name=pk]').val() }], 'setMapTo', null, function() { addGlow($('#", classApiMethodMethod, "_mapTo')); }, function() { addError($('#", classApiMethodMethod, "_mapTo')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
 	///////////
 	// sort1 //
 	///////////
@@ -3073,6 +3456,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strSort1() {
 		return sort1 == null ? "" : sort1.toString();
+	}
+
+	public Double sqlSort1() {
+		return sort1;
 	}
 
 	public String jsonSort1() {
@@ -3230,6 +3617,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort2 == null ? "" : sort2.toString();
 	}
 
+	public Double sqlSort2() {
+		return sort2;
+	}
+
 	public String jsonSort2() {
 		return sort2 == null ? "" : sort2.toString();
 	}
@@ -3383,6 +3774,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strSort3() {
 		return sort3 == null ? "" : sort3.toString();
+	}
+
+	public Double sqlSort3() {
+		return sort3;
 	}
 
 	public String jsonSort3() {
@@ -3540,6 +3935,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort4 == null ? "" : sort4.toString();
 	}
 
+	public Double sqlSort4() {
+		return sort4;
+	}
+
 	public String jsonSort4() {
 		return sort4 == null ? "" : sort4.toString();
 	}
@@ -3693,6 +4092,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strSort5() {
 		return sort5 == null ? "" : sort5.toString();
+	}
+
+	public Double sqlSort5() {
+		return sort5;
 	}
 
 	public String jsonSort5() {
@@ -3850,6 +4253,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort6 == null ? "" : sort6.toString();
 	}
 
+	public Double sqlSort6() {
+		return sort6;
+	}
+
 	public String jsonSort6() {
 		return sort6 == null ? "" : sort6.toString();
 	}
@@ -4003,6 +4410,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strSort7() {
 		return sort7 == null ? "" : sort7.toString();
+	}
+
+	public Double sqlSort7() {
+		return sort7;
 	}
 
 	public String jsonSort7() {
@@ -4160,6 +4571,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort8 == null ? "" : sort8.toString();
 	}
 
+	public Double sqlSort8() {
+		return sort8;
+	}
+
 	public String jsonSort8() {
 		return sort8 == null ? "" : sort8.toString();
 	}
@@ -4313,6 +4728,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String strSort9() {
 		return sort9 == null ? "" : sort9.toString();
+	}
+
+	public Double sqlSort9() {
+		return sort9;
 	}
 
 	public String jsonSort9() {
@@ -4470,6 +4889,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort10 == null ? "" : sort10.toString();
 	}
 
+	public Double sqlSort10() {
+		return sort10;
+	}
+
 	public String jsonSort10() {
 		return sort10 == null ? "" : sort10.toString();
 	}
@@ -4598,6 +5021,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		htmlExcludeInit();
 		pdfExcludeInit();
 		loginLogoutInit();
+		searchUriInit();
+		mapToInit();
 		sort1Init();
 		sort2Init();
 		sort3Init();
@@ -4639,6 +5064,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			else if(o instanceof Cluster) {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
+			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
 			}
 		}
 		return o;
@@ -4686,6 +5115,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				return oHtmlPart.pdfExclude;
 			case "loginLogout":
 				return oHtmlPart.loginLogout;
+			case "searchUri":
+				return oHtmlPart.searchUri;
+			case "mapTo":
+				return oHtmlPart.mapTo;
 			case "sort1":
 				return oHtmlPart.sort1;
 			case "sort2":
@@ -4733,8 +5166,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		switch(var) {
 			case "pageDesignKeys":
 				oHtmlPart.addPageDesignKeys((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("pageDesignKeys"))
+					saves.add("pageDesignKeys");
 				return val;
 			default:
 				return super.attributeCluster(var, val);
@@ -4790,6 +5223,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSetPdfExclude(siteRequest_, o);
 		case "loginLogout":
 			return HtmlPart.staticSetLoginLogout(siteRequest_, o);
+		case "searchUri":
+			return HtmlPart.staticSetSearchUri(siteRequest_, o);
+		case "mapTo":
+			return HtmlPart.staticSetMapTo(siteRequest_, o);
 		case "sort1":
 			return HtmlPart.staticSetSort1(siteRequest_, o);
 		case "sort2":
@@ -4864,6 +5301,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSolrPdfExclude(siteRequest_, (Boolean)o);
 		case "loginLogout":
 			return HtmlPart.staticSolrLoginLogout(siteRequest_, (Boolean)o);
+		case "searchUri":
+			return HtmlPart.staticSolrSearchUri(siteRequest_, (String)o);
+		case "mapTo":
+			return HtmlPart.staticSolrMapTo(siteRequest_, (String)o);
 		case "sort1":
 			return HtmlPart.staticSolrSort1(siteRequest_, (Double)o);
 		case "sort2":
@@ -4938,6 +5379,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSolrStrPdfExclude(siteRequest_, (Boolean)o);
 		case "loginLogout":
 			return HtmlPart.staticSolrStrLoginLogout(siteRequest_, (Boolean)o);
+		case "searchUri":
+			return HtmlPart.staticSolrStrSearchUri(siteRequest_, (String)o);
+		case "mapTo":
+			return HtmlPart.staticSolrStrMapTo(siteRequest_, (String)o);
 		case "sort1":
 			return HtmlPart.staticSolrStrSort1(siteRequest_, (Double)o);
 		case "sort2":
@@ -5012,6 +5457,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSolrFqPdfExclude(siteRequest_, o);
 		case "loginLogout":
 			return HtmlPart.staticSolrFqLoginLogout(siteRequest_, o);
+		case "searchUri":
+			return HtmlPart.staticSolrFqSearchUri(siteRequest_, o);
+		case "mapTo":
+			return HtmlPart.staticSolrFqMapTo(siteRequest_, o);
 		case "sort1":
 			return HtmlPart.staticSolrFqSort1(siteRequest_, o);
 		case "sort2":
@@ -5057,146 +5506,328 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineHtmlPart(String var, String val) {
-		switch(var) {
-			case "htmlLink":
+		switch(var.toLowerCase()) {
+			case "htmllink":
 				if(val != null)
 					setHtmlLink(val);
-				saves.add(var);
+				saves.add("htmlLink");
 				return val;
-			case "htmlElement":
+			case "htmlelement":
 				if(val != null)
 					setHtmlElement(val);
-				saves.add(var);
+				saves.add("htmlElement");
 				return val;
-			case "htmlId":
+			case "htmlid":
 				if(val != null)
 					setHtmlId(val);
-				saves.add(var);
+				saves.add("htmlId");
 				return val;
-			case "htmlClasses":
+			case "htmlclasses":
 				if(val != null)
 					setHtmlClasses(val);
-				saves.add(var);
+				saves.add("htmlClasses");
 				return val;
-			case "htmlStyle":
+			case "htmlstyle":
 				if(val != null)
 					setHtmlStyle(val);
-				saves.add(var);
+				saves.add("htmlStyle");
 				return val;
-			case "htmlBefore":
+			case "htmlbefore":
 				if(val != null)
 					setHtmlBefore(val);
-				saves.add(var);
+				saves.add("htmlBefore");
 				return val;
-			case "htmlAfter":
+			case "htmlafter":
 				if(val != null)
 					setHtmlAfter(val);
-				saves.add(var);
+				saves.add("htmlAfter");
 				return val;
-			case "htmlText":
+			case "htmltext":
 				if(val != null)
 					setHtmlText(val);
-				saves.add(var);
+				saves.add("htmlText");
 				return val;
-			case "htmlVar":
+			case "htmlvar":
 				if(val != null)
 					setHtmlVar(val);
-				saves.add(var);
+				saves.add("htmlVar");
 				return val;
-			case "htmlVarSpan":
+			case "htmlvarspan":
 				if(val != null)
 					setHtmlVarSpan(val);
-				saves.add(var);
+				saves.add("htmlVarSpan");
 				return val;
-			case "htmlVarForm":
+			case "htmlvarform":
 				if(val != null)
 					setHtmlVarForm(val);
-				saves.add(var);
+				saves.add("htmlVarForm");
 				return val;
-			case "htmlVarInput":
+			case "htmlvarinput":
 				if(val != null)
 					setHtmlVarInput(val);
-				saves.add(var);
+				saves.add("htmlVarInput");
 				return val;
-			case "htmlVarForEach":
+			case "htmlvarforeach":
 				if(val != null)
 					setHtmlVarForEach(val);
-				saves.add(var);
+				saves.add("htmlVarForEach");
 				return val;
-			case "htmlVarHtml":
+			case "htmlvarhtml":
 				if(val != null)
 					setHtmlVarHtml(val);
-				saves.add(var);
+				saves.add("htmlVarHtml");
 				return val;
-			case "htmlVarBase64Decode":
+			case "htmlvarbase64decode":
 				if(val != null)
 					setHtmlVarBase64Decode(val);
-				saves.add(var);
+				saves.add("htmlVarBase64Decode");
 				return val;
-			case "htmlExclude":
+			case "htmlexclude":
 				if(val != null)
 					setHtmlExclude(val);
-				saves.add(var);
+				saves.add("htmlExclude");
 				return val;
-			case "pdfExclude":
+			case "pdfexclude":
 				if(val != null)
 					setPdfExclude(val);
-				saves.add(var);
+				saves.add("pdfExclude");
 				return val;
-			case "loginLogout":
+			case "loginlogout":
 				if(val != null)
 					setLoginLogout(val);
-				saves.add(var);
+				saves.add("loginLogout");
+				return val;
+			case "searchuri":
+				if(val != null)
+					setSearchUri(val);
+				saves.add("searchUri");
+				return val;
+			case "mapto":
+				if(val != null)
+					setMapTo(val);
+				saves.add("mapTo");
 				return val;
 			case "sort1":
 				if(val != null)
 					setSort1(val);
-				saves.add(var);
+				saves.add("sort1");
 				return val;
 			case "sort2":
 				if(val != null)
 					setSort2(val);
-				saves.add(var);
+				saves.add("sort2");
 				return val;
 			case "sort3":
 				if(val != null)
 					setSort3(val);
-				saves.add(var);
+				saves.add("sort3");
 				return val;
 			case "sort4":
 				if(val != null)
 					setSort4(val);
-				saves.add(var);
+				saves.add("sort4");
 				return val;
 			case "sort5":
 				if(val != null)
 					setSort5(val);
-				saves.add(var);
+				saves.add("sort5");
 				return val;
 			case "sort6":
 				if(val != null)
 					setSort6(val);
-				saves.add(var);
+				saves.add("sort6");
 				return val;
 			case "sort7":
 				if(val != null)
 					setSort7(val);
-				saves.add(var);
+				saves.add("sort7");
 				return val;
 			case "sort8":
 				if(val != null)
 					setSort8(val);
-				saves.add(var);
+				saves.add("sort8");
 				return val;
 			case "sort9":
 				if(val != null)
 					setSort9(val);
-				saves.add(var);
+				saves.add("sort9");
 				return val;
 			case "sort10":
 				if(val != null)
 					setSort10(val);
-				saves.add(var);
+				saves.add("sort10");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineHtmlPart(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineHtmlPart(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "htmllink":
+				if(val instanceof String)
+					setHtmlLink((String)val);
+				saves.add("htmlLink");
+				return val;
+			case "htmlelement":
+				if(val instanceof String)
+					setHtmlElement((String)val);
+				saves.add("htmlElement");
+				return val;
+			case "htmlid":
+				if(val instanceof String)
+					setHtmlId((String)val);
+				saves.add("htmlId");
+				return val;
+			case "htmlclasses":
+				if(val instanceof String)
+					setHtmlClasses((String)val);
+				saves.add("htmlClasses");
+				return val;
+			case "htmlstyle":
+				if(val instanceof String)
+					setHtmlStyle((String)val);
+				saves.add("htmlStyle");
+				return val;
+			case "htmlbefore":
+				if(val instanceof String)
+					setHtmlBefore((String)val);
+				saves.add("htmlBefore");
+				return val;
+			case "htmlafter":
+				if(val instanceof String)
+					setHtmlAfter((String)val);
+				saves.add("htmlAfter");
+				return val;
+			case "htmltext":
+				if(val instanceof String)
+					setHtmlText((String)val);
+				saves.add("htmlText");
+				return val;
+			case "htmlvar":
+				if(val instanceof String)
+					setHtmlVar((String)val);
+				saves.add("htmlVar");
+				return val;
+			case "htmlvarspan":
+				if(val instanceof String)
+					setHtmlVarSpan((String)val);
+				saves.add("htmlVarSpan");
+				return val;
+			case "htmlvarform":
+				if(val instanceof String)
+					setHtmlVarForm((String)val);
+				saves.add("htmlVarForm");
+				return val;
+			case "htmlvarinput":
+				if(val instanceof String)
+					setHtmlVarInput((String)val);
+				saves.add("htmlVarInput");
+				return val;
+			case "htmlvarforeach":
+				if(val instanceof String)
+					setHtmlVarForEach((String)val);
+				saves.add("htmlVarForEach");
+				return val;
+			case "htmlvarhtml":
+				if(val instanceof String)
+					setHtmlVarHtml((String)val);
+				saves.add("htmlVarHtml");
+				return val;
+			case "htmlvarbase64decode":
+				if(val instanceof String)
+					setHtmlVarBase64Decode((String)val);
+				saves.add("htmlVarBase64Decode");
+				return val;
+			case "htmlexclude":
+				if(val instanceof Boolean)
+					setHtmlExclude((Boolean)val);
+				saves.add("htmlExclude");
+				return val;
+			case "pdfexclude":
+				if(val instanceof Boolean)
+					setPdfExclude((Boolean)val);
+				saves.add("pdfExclude");
+				return val;
+			case "loginlogout":
+				if(val instanceof Boolean)
+					setLoginLogout((Boolean)val);
+				saves.add("loginLogout");
+				return val;
+			case "searchuri":
+				if(val instanceof String)
+					setSearchUri((String)val);
+				saves.add("searchUri");
+				return val;
+			case "mapto":
+				if(val instanceof String)
+					setMapTo((String)val);
+				saves.add("mapTo");
+				return val;
+			case "sort1":
+				if(val instanceof Double)
+					setSort1((Double)val);
+				saves.add("sort1");
+				return val;
+			case "sort2":
+				if(val instanceof Double)
+					setSort2((Double)val);
+				saves.add("sort2");
+				return val;
+			case "sort3":
+				if(val instanceof Double)
+					setSort3((Double)val);
+				saves.add("sort3");
+				return val;
+			case "sort4":
+				if(val instanceof Double)
+					setSort4((Double)val);
+				saves.add("sort4");
+				return val;
+			case "sort5":
+				if(val instanceof Double)
+					setSort5((Double)val);
+				saves.add("sort5");
+				return val;
+			case "sort6":
+				if(val instanceof Double)
+					setSort6((Double)val);
+				saves.add("sort6");
+				return val;
+			case "sort7":
+				if(val instanceof Double)
+					setSort7((Double)val);
+				saves.add("sort7");
+				return val;
+			case "sort8":
+				if(val instanceof Double)
+					setSort8((Double)val);
+				saves.add("sort8");
+				return val;
+			case "sort9":
+				if(val instanceof Double)
+					setSort9((Double)val);
+				saves.add("sort9");
+				return val;
+			case "sort10":
+				if(val instanceof Double)
+					setSort10((Double)val);
+				saves.add("sort10");
 				return val;
 			default:
 				return super.defineCluster(var, val);
@@ -5331,6 +5962,18 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				Boolean loginLogout = (Boolean)solrDocument.get("loginLogout_stored_boolean");
 				if(loginLogout != null)
 					oHtmlPart.setLoginLogout(loginLogout);
+			}
+
+			if(saves.contains("searchUri")) {
+				String searchUri = (String)solrDocument.get("searchUri_stored_string");
+				if(searchUri != null)
+					oHtmlPart.setSearchUri(searchUri);
+			}
+
+			if(saves.contains("mapTo")) {
+				String mapTo = (String)solrDocument.get("mapTo_stored_string");
+				if(mapTo != null)
+					oHtmlPart.setMapTo(mapTo);
 			}
 
 			if(saves.contains("sort1")) {
@@ -5540,6 +6183,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			document.addField("loginLogout_indexed_boolean", loginLogout);
 			document.addField("loginLogout_stored_boolean", loginLogout);
 		}
+		if(searchUri != null) {
+			document.addField("searchUri_indexed_string", searchUri);
+			document.addField("searchUri_stored_string", searchUri);
+		}
+		if(mapTo != null) {
+			document.addField("mapTo_indexed_string", mapTo);
+			document.addField("mapTo_stored_string", mapTo);
+		}
 		if(sort1 != null) {
 			document.addField("sort1_indexed_double", sort1);
 			document.addField("sort1_stored_double", sort1);
@@ -5637,6 +6288,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				return "pdfExclude_indexed_boolean";
 			case "loginLogout":
 				return "loginLogout_indexed_boolean";
+			case "searchUri":
+				return "searchUri_indexed_string";
+			case "mapTo":
+				return "mapTo_indexed_string";
 			case "sort1":
 				return "sort1_indexed_double";
 			case "sort2":
@@ -5766,6 +6421,14 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		if(loginLogout != null)
 			oHtmlPart.setLoginLogout(loginLogout);
 
+		String searchUri = (String)solrDocument.get("searchUri_stored_string");
+		if(searchUri != null)
+			oHtmlPart.setSearchUri(searchUri);
+
+		String mapTo = (String)solrDocument.get("mapTo_stored_string");
+		if(mapTo != null)
+			oHtmlPart.setMapTo(mapTo);
+
 		Double sort1 = (Double)solrDocument.get("sort1_stored_double");
 		if(sort1 != null)
 			oHtmlPart.setSort1(sort1);
@@ -5858,6 +6521,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				apiRequest.addVars("pdfExclude");
 			if(!Objects.equals(loginLogout, original.getLoginLogout()))
 				apiRequest.addVars("loginLogout");
+			if(!Objects.equals(searchUri, original.getSearchUri()))
+				apiRequest.addVars("searchUri");
+			if(!Objects.equals(mapTo, original.getMapTo()))
+				apiRequest.addVars("mapTo");
 			if(!Objects.equals(sort1, original.getSort1()))
 				apiRequest.addVars("sort1");
 			if(!Objects.equals(sort2, original.getSort2()))
@@ -5887,7 +6554,7 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), htmlPartKey, pageDesignKeys, htmlLink, htmlElement, htmlId, htmlClasses, htmlStyle, htmlBefore, htmlAfter, htmlText, htmlVar, htmlVarSpan, htmlVarForm, htmlVarInput, htmlVarForEach, htmlVarHtml, htmlVarBase64Decode, htmlExclude, pdfExclude, loginLogout, sort1, sort2, sort3, sort4, sort5, sort6, sort7, sort8, sort9, sort10);
+		return Objects.hash(super.hashCode(), htmlPartKey, pageDesignKeys, htmlLink, htmlElement, htmlId, htmlClasses, htmlStyle, htmlBefore, htmlAfter, htmlText, htmlVar, htmlVarSpan, htmlVarForm, htmlVarInput, htmlVarForEach, htmlVarHtml, htmlVarBase64Decode, htmlExclude, pdfExclude, loginLogout, searchUri, mapTo, sort1, sort2, sort3, sort4, sort5, sort6, sort7, sort8, sort9, sort10);
 	}
 
 	////////////
@@ -5921,6 +6588,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				&& Objects.equals( htmlExclude, that.htmlExclude )
 				&& Objects.equals( pdfExclude, that.pdfExclude )
 				&& Objects.equals( loginLogout, that.loginLogout )
+				&& Objects.equals( searchUri, that.searchUri )
+				&& Objects.equals( mapTo, that.mapTo )
 				&& Objects.equals( sort1, that.sort1 )
 				&& Objects.equals( sort2, that.sort2 )
 				&& Objects.equals( sort3, that.sort3 )
@@ -5961,6 +6630,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		sb.append( ", htmlExclude: " ).append(htmlExclude);
 		sb.append( ", pdfExclude: " ).append(pdfExclude);
 		sb.append( ", loginLogout: " ).append(loginLogout);
+		sb.append( ", searchUri: \"" ).append(searchUri).append( "\"" );
+		sb.append( ", mapTo: \"" ).append(mapTo).append( "\"" );
 		sb.append( ", sort1: " ).append(sort1);
 		sb.append( ", sort2: " ).append(sort2);
 		sb.append( ", sort3: " ).append(sort3);

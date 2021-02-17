@@ -19,7 +19,7 @@ import io.vertx.pgclient.PgPool;
 
 /** 
  * Keyword: classSimpleNameSiteContext
- */    
+ */  
 public class SiteContextEnUS extends SiteContextEnUSGen<Object> {
 
 	protected Logger log = LoggerFactory.getLogger(getClass());

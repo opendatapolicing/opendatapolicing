@@ -44,7 +44,7 @@ import com.opendatapolicing.enus.xml.UtilXml;
  * RoleUser: true
  * Role.enUS: SiteService
  * RoleRead.enUS: User
- **/ 
+ **/  
 
 public class Cluster extends ClusterGen<Object> {
 

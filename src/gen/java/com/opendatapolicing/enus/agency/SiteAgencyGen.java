@@ -15,6 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.json.JsonObject;
 import java.lang.String;
@@ -492,11 +493,11 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "state")
-				.a("class", "value suggestStateKey w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "valueObjectSuggest suggestStateKey w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setStateKey")
 				.a("id", classApiMethodMethod, "_stateKey")
 				.a("autocomplete", "off");
-				a("oninput", "suggestSiteAgencyStateKey($(this).val() ? searchSiteStateFilters($(this.parentElement)) : [", pk == null ? "" : "{'name':'fq','value':'agencyKeys:" + pk + "'}", "], $('#listSiteAgencyStateKey_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestSiteAgencyStateKey($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,stateCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'agencyKeys:" + pk + "'}", "], $('#listSiteAgencyStateKey_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -1444,6 +1445,10 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -1504,8 +1509,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 			case "stateKey":
 				if(oSiteAgency.getStateKey() == null)
 					oSiteAgency.setStateKey((Long)val);
-				if(!saves.contains(var))
-					saves.add(var);
+				if(!saves.contains("stateKey"))
+					saves.add("stateKey");
 				return val;
 			default:
 				return super.attributeCluster(var, val);
@@ -1676,26 +1681,78 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return o != null;
 	}
 	public Object defineSiteAgency(String var, String val) {
-		switch(var) {
-			case "agencyName":
+		switch(var.toLowerCase()) {
+			case "agencyname":
 				if(val != null)
 					setAgencyName(val);
-				saves.add(var);
+				saves.add("agencyName");
 				return val;
-			case "imageLeft":
+			case "statekey":
+				if(val != null)
+					setStateKey(val);
+				saves.add("stateKey");
+				return val;
+			case "imageleft":
 				if(val != null)
 					setImageLeft(val);
-				saves.add(var);
+				saves.add("imageLeft");
 				return val;
-			case "imageTop":
+			case "imagetop":
 				if(val != null)
 					setImageTop(val);
-				saves.add(var);
+				saves.add("imageTop");
 				return val;
-			case "imageCoords":
+			case "imagecoords":
 				if(val != null)
 					setImageCoords(val);
-				saves.add(var);
+				saves.add("imageCoords");
+				return val;
+			default:
+				return super.defineCluster(var, val);
+		}
+	}
+
+	@Override public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSiteAgency(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSiteAgency(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "agencyname":
+				if(val instanceof String)
+					setAgencyName((String)val);
+				saves.add("agencyName");
+				return val;
+			case "statekey":
+				if(val instanceof Long)
+					setStateKey((Long)val);
+				saves.add("stateKey");
+				return val;
+			case "imageleft":
+				if(val instanceof Integer)
+					setImageLeft((Integer)val);
+				saves.add("imageLeft");
+				return val;
+			case "imagetop":
+				if(val instanceof Integer)
+					setImageTop((Integer)val);
+				saves.add("imageTop");
+				return val;
+			case "imagecoords":
+				if(val instanceof String)
+					setImageCoords((String)val);
+				saves.add("imageCoords");
 				return val;
 			default:
 				return super.defineCluster(var, val);

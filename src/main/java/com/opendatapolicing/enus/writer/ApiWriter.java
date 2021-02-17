@@ -649,7 +649,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(5, "schema:");
 				wPaths.tl(6, "type: array");
 				wPaths.tl(6, "items:");
-				wPaths.tl(7, "  type: string");
+				wPaths.tl(7, "type: string");
 				wPaths.tl(4, "- in: query");
 				wPaths.tl(5, "name: fl");
 				wPaths.tl(5, "description: ''");
@@ -663,7 +663,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(5, "schema:");
 				wPaths.tl(6, "type: array");
 				wPaths.tl(6, "items:");
-				wPaths.tl(7, "  type: string");
+				wPaths.tl(7, "type: string");
 				wPaths.tl(4, "- in: query");
 				wPaths.tl(5, "name: start");
 				wPaths.tl(5, "description: ''");
@@ -691,6 +691,46 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(6, "type: array");
 				wPaths.tl(6, "items:");
 				wPaths.tl(7, "  type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range.start");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range.end");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range.gap");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: facet.range.pivot");
+				wPaths.tl(5, "description: ''");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: array");
+				wPaths.tl(6, "items:");
+				wPaths.tl(7, "type: string");
 			}
 		}
 

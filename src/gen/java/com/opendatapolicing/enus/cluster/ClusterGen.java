@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
+import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import java.time.ZoneOffset;
 import io.vertx.core.logging.Logger;
@@ -22,6 +23,7 @@ import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.List;
+import java.time.OffsetDateTime;
 import org.apache.solr.client.solrj.SolrQuery;
 import java.util.Optional;
 import com.opendatapolicing.enus.cluster.Cluster;
@@ -2446,6 +2448,10 @@ public abstract class ClusterGen<DEV> extends Object {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -2800,41 +2806,102 @@ public abstract class ClusterGen<DEV> extends Object {
 		return o != null;
 	}
 	public Object defineCluster(String var, String val) {
-		switch(var) {
-			case "inheritPk":
+		switch(var.toLowerCase()) {
+			case "inheritpk":
 				if(val != null)
 					setInheritPk(val);
-				saves.add(var);
+				saves.add("inheritPk");
 				return val;
 			case "created":
 				if(val != null)
 					setCreated(val);
-				saves.add(var);
+				saves.add("created");
 				return val;
 			case "modified":
 				if(val != null)
 					setModified(val);
-				saves.add(var);
+				saves.add("modified");
 				return val;
 			case "archived":
 				if(val != null)
 					setArchived(val);
-				saves.add(var);
+				saves.add("archived");
 				return val;
 			case "deleted":
 				if(val != null)
 					setDeleted(val);
-				saves.add(var);
+				saves.add("deleted");
 				return val;
-			case "userId":
+			case "userid":
 				if(val != null)
 					setUserId(val);
-				saves.add(var);
+				saves.add("userId");
 				return val;
-			case "userKey":
+			case "userkey":
 				if(val != null)
 					setUserKey(val);
-				saves.add(var);
+				saves.add("userKey");
+				return val;
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineCluster(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineCluster(String var, Object val) {
+		switch(var.toLowerCase()) {
+			case "inheritpk":
+				if(val instanceof Long)
+					setInheritPk((Long)val);
+				saves.add("inheritPk");
+				return val;
+			case "created":
+				if(val instanceof ZonedDateTime)
+					setCreated((ZonedDateTime)val);
+				else if(val instanceof OffsetDateTime)
+					setCreated(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+				saves.add("created");
+				return val;
+			case "modified":
+				if(val instanceof ZonedDateTime)
+					setModified((ZonedDateTime)val);
+				else if(val instanceof OffsetDateTime)
+					setModified(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+				saves.add("modified");
+				return val;
+			case "archived":
+				if(val instanceof Boolean)
+					setArchived((Boolean)val);
+				saves.add("archived");
+				return val;
+			case "deleted":
+				if(val instanceof Boolean)
+					setDeleted((Boolean)val);
+				saves.add("deleted");
+				return val;
+			case "userid":
+				if(val instanceof String)
+					setUserId((String)val);
+				saves.add("userId");
+				return val;
+			case "userkey":
+				if(val instanceof Long)
+					setUserKey((Long)val);
+				saves.add("userKey");
 				return val;
 			default:
 				return null;

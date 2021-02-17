@@ -24,12 +24,16 @@ import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.writer.AllWriter;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.oauth2.KeycloakHelper;
+import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
 import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.OperationResponse;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Transaction;
 
@@ -106,8 +110,8 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 
 	protected void _jsonPrincipal(Wrap<JsonObject> c) {
 		if(userVertx != null) {
-			JsonObject o = KeycloakHelper.parseToken(userVertx.getString("access_token"));
-			c.o(o);
+			OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext_.getAuthProvider(), userVertx);
+			c.o(token.accessToken());
 		}
 	}
 

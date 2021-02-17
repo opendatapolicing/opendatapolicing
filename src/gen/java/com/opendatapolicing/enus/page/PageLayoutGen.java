@@ -15,6 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.lang.String;
@@ -35,6 +36,7 @@ import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
 import java.util.List;
 import java.time.temporal.ChronoUnit;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
@@ -153,6 +155,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return siteBaseUrl == null ? "" : siteBaseUrl;
 	}
 
+	public String sqlSiteBaseUrl() {
+		return siteBaseUrl;
+	}
+
 	public String jsonSiteBaseUrl() {
 		return siteBaseUrl == null ? "" : siteBaseUrl;
 	}
@@ -229,6 +235,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return staticBaseUrl == null ? "" : staticBaseUrl;
 	}
 
+	public String sqlStaticBaseUrl() {
+		return staticBaseUrl;
+	}
+
 	public String jsonStaticBaseUrl() {
 		return staticBaseUrl == null ? "" : staticBaseUrl;
 	}
@@ -243,6 +253,45 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String htmStaticBaseUrl() {
 		return staticBaseUrl == null ? "" : StringEscapeUtils.escapeHtml4(strStaticBaseUrl());
+	}
+
+	/////////
+	// map //
+	/////////
+
+	/**	 The entity map
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut Map<String, Object>(). 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected Map<String, Object> map = new HashMap<String, Object>();
+	@JsonIgnore
+	public Wrap<Map<String, Object>> mapWrap = new Wrap<Map<String, Object>>().p(this).c(Map.class).var("map").o(map);
+
+	/**	<br/> The entity map
+	 *  It is constructed before being initialized with the constructor by default Map<String, Object>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:map">Find the entity map in Solr</a>
+	 * <br/>
+	 * @param map is the entity already constructed. 
+	 **/
+	protected abstract void _map(Map<String, Object> m);
+
+	public Map<String, Object> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<String, Object> map) {
+		this.map = map;
+		this.mapWrap.alreadyInitialized = true;
+	}
+	public static Map<String, Object> staticSetMap(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected PageLayout mapInit() {
+		if(!mapWrap.alreadyInitialized) {
+			_map(map);
+		}
+		mapWrap.alreadyInitialized(true);
+		return (PageLayout)this;
 	}
 
 	//////////////////////
@@ -389,6 +438,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return contextIconGroup == null ? "" : contextIconGroup;
 	}
 
+	public String sqlContextIconGroup() {
+		return contextIconGroup;
+	}
+
 	public String jsonContextIconGroup() {
 		return contextIconGroup == null ? "" : contextIconGroup;
 	}
@@ -465,6 +518,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return contextIconName == null ? "" : contextIconName;
 	}
 
+	public String sqlContextIconName() {
+		return contextIconName;
+	}
+
 	public String jsonContextIconName() {
 		return contextIconName == null ? "" : contextIconName;
 	}
@@ -539,6 +596,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strContextIconCssClasses() {
 		return contextIconCssClasses == null ? "" : contextIconCssClasses;
+	}
+
+	public String sqlContextIconCssClasses() {
+		return contextIconCssClasses;
 	}
 
 	public String jsonContextIconCssClasses() {
@@ -622,6 +683,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageVisibleToBots == null ? "" : pageVisibleToBots.toString();
 	}
 
+	public Boolean sqlPageVisibleToBots() {
+		return pageVisibleToBots;
+	}
+
 	public String jsonPageVisibleToBots() {
 		return pageVisibleToBots == null ? "" : pageVisibleToBots.toString();
 	}
@@ -696,6 +761,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageH1() {
 		return pageH1 == null ? "" : pageH1;
+	}
+
+	public String sqlPageH1() {
+		return pageH1;
 	}
 
 	public String jsonPageH1() {
@@ -774,6 +843,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageH2 == null ? "" : pageH2;
 	}
 
+	public String sqlPageH2() {
+		return pageH2;
+	}
+
 	public String jsonPageH2() {
 		return pageH2 == null ? "" : pageH2;
 	}
@@ -848,6 +921,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageH3() {
 		return pageH3 == null ? "" : pageH3;
+	}
+
+	public String sqlPageH3() {
+		return pageH3;
 	}
 
 	public String jsonPageH3() {
@@ -926,6 +1003,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return _pageH1Short == null ? "" : _pageH1Short;
 	}
 
+	public String sql_pageH1Short() {
+		return _pageH1Short;
+	}
+
 	public String json_pageH1Short() {
 		return _pageH1Short == null ? "" : _pageH1Short;
 	}
@@ -1000,6 +1081,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String str_pageH2Short() {
 		return _pageH2Short == null ? "" : _pageH2Short;
+	}
+
+	public String sql_pageH2Short() {
+		return _pageH2Short;
 	}
 
 	public String json_pageH2Short() {
@@ -1078,6 +1163,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return _pageH3Short == null ? "" : _pageH3Short;
 	}
 
+	public String sql_pageH3Short() {
+		return _pageH3Short;
+	}
+
 	public String json_pageH3Short() {
 		return _pageH3Short == null ? "" : _pageH3Short;
 	}
@@ -1154,6 +1243,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageTitle == null ? "" : pageTitle;
 	}
 
+	public String sqlPageTitle() {
+		return pageTitle;
+	}
+
 	public String jsonPageTitle() {
 		return pageTitle == null ? "" : pageTitle;
 	}
@@ -1228,6 +1321,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageUri() {
 		return pageUri == null ? "" : pageUri;
+	}
+
+	public String sqlPageUri() {
+		return pageUri;
 	}
 
 	public String jsonPageUri() {
@@ -1327,6 +1424,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageUris == null ? "" : pageUris.toString();
 	}
 
+	public List<String> sqlPageUris() {
+		return pageUris;
+	}
+
 	public String jsonPageUris() {
 		return pageUris == null ? "" : pageUris.toString();
 	}
@@ -1401,6 +1502,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageUrl() {
 		return pageUrl == null ? "" : pageUrl;
+	}
+
+	public String sqlPageUrl() {
+		return pageUrl;
 	}
 
 	public String jsonPageUrl() {
@@ -1479,6 +1584,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageUri == null ? "" : pageImageUri;
 	}
 
+	public String sqlPageImageUri() {
+		return pageImageUri;
+	}
+
 	public String jsonPageImageUri() {
 		return pageImageUri == null ? "" : pageImageUri;
 	}
@@ -1553,6 +1662,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageImageUrl() {
 		return pageImageUrl == null ? "" : pageImageUrl;
+	}
+
+	public String sqlPageImageUrl() {
+		return pageImageUrl;
 	}
 
 	public String jsonPageImageUrl() {
@@ -1631,6 +1744,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageVideoId == null ? "" : pageVideoId;
 	}
 
+	public String sqlPageVideoId() {
+		return pageVideoId;
+	}
+
 	public String jsonPageVideoId() {
 		return pageVideoId == null ? "" : pageVideoId;
 	}
@@ -1707,6 +1824,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageVideoUrl == null ? "" : pageVideoUrl;
 	}
 
+	public String sqlPageVideoUrl() {
+		return pageVideoUrl;
+	}
+
 	public String jsonPageVideoUrl() {
 		return pageVideoUrl == null ? "" : pageVideoUrl;
 	}
@@ -1781,6 +1902,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageVideoUrlEmbed() {
 		return pageVideoUrlEmbed == null ? "" : pageVideoUrlEmbed;
+	}
+
+	public String sqlPageVideoUrlEmbed() {
+		return pageVideoUrlEmbed;
 	}
 
 	public String jsonPageVideoUrlEmbed() {
@@ -1867,6 +1992,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageWidth == null ? "" : pageImageWidth.toString();
 	}
 
+	public Integer sqlPageImageWidth() {
+		return pageImageWidth;
+	}
+
 	public String jsonPageImageWidth() {
 		return pageImageWidth == null ? "" : pageImageWidth.toString();
 	}
@@ -1951,6 +2080,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageHeight == null ? "" : pageImageHeight.toString();
 	}
 
+	public Integer sqlPageImageHeight() {
+		return pageImageHeight;
+	}
+
 	public String jsonPageImageHeight() {
 		return pageImageHeight == null ? "" : pageImageHeight.toString();
 	}
@@ -2027,6 +2160,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageContentType == null ? "" : pageImageContentType;
 	}
 
+	public String sqlPageImageContentType() {
+		return pageImageContentType;
+	}
+
 	public String jsonPageImageContentType() {
 		return pageImageContentType == null ? "" : pageImageContentType;
 	}
@@ -2101,6 +2238,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageContentType() {
 		return pageContentType == null ? "" : pageContentType;
+	}
+
+	public String sqlPageContentType() {
+		return pageContentType;
 	}
 
 	public String jsonPageContentType() {
@@ -2194,6 +2335,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageCreated == null ? "" : pageCreated.format(DateTimeFormatter.ofPattern("EEE MMM d, yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
 	}
 
+	public LocalDateTime sqlPageCreated() {
+		return pageCreated;
+	}
+
 	public String jsonPageCreated() {
 		return pageCreated == null ? "" : pageCreated.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
@@ -2285,6 +2430,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageModified == null ? "" : pageModified.format(DateTimeFormatter.ofPattern("EEE MMM d, yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
 	}
 
+	public LocalDateTime sqlPageModified() {
+		return pageModified;
+	}
+
 	public String jsonPageModified() {
 		return pageModified == null ? "" : pageModified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
@@ -2359,6 +2508,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageKeywords() {
 		return pageKeywords == null ? "" : pageKeywords;
+	}
+
+	public String sqlPageKeywords() {
+		return pageKeywords;
 	}
 
 	public String jsonPageKeywords() {
@@ -2437,6 +2590,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageDescription == null ? "" : pageDescription;
 	}
 
+	public String sqlPageDescription() {
+		return pageDescription;
+	}
+
 	public String jsonPageDescription() {
 		return pageDescription == null ? "" : pageDescription;
 	}
@@ -2511,6 +2668,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageHomeUri() {
 		return pageHomeUri == null ? "" : pageHomeUri;
+	}
+
+	public String sqlPageHomeUri() {
+		return pageHomeUri;
 	}
 
 	public String jsonPageHomeUri() {
@@ -2589,6 +2750,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageSchoolUri == null ? "" : pageSchoolUri;
 	}
 
+	public String sqlPageSchoolUri() {
+		return pageSchoolUri;
+	}
+
 	public String jsonPageSchoolUri() {
 		return pageSchoolUri == null ? "" : pageSchoolUri;
 	}
@@ -2663,6 +2828,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String strPageUserUri() {
 		return pageUserUri == null ? "" : pageUserUri;
+	}
+
+	public String sqlPageUserUri() {
+		return pageUserUri;
 	}
 
 	public String jsonPageUserUri() {
@@ -2741,6 +2910,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageLogoutUri == null ? "" : pageLogoutUri;
 	}
 
+	public String sqlPageLogoutUri() {
+		return pageLogoutUri;
+	}
+
 	public String jsonPageLogoutUri() {
 		return pageLogoutUri == null ? "" : pageLogoutUri;
 	}
@@ -2780,6 +2953,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		siteRequest_Init();
 		siteBaseUrlInit();
 		staticBaseUrlInit();
+		mapInit();
 		pageSolrDocumentInit();
 		wInit();
 		contextIconGroupInit();
@@ -2846,6 +3020,10 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -2858,6 +3036,8 @@ public abstract class PageLayoutGen<DEV> extends Object {
 				return oPageLayout.siteBaseUrl;
 			case "staticBaseUrl":
 				return oPageLayout.staticBaseUrl;
+			case "map":
+				return oPageLayout.map;
 			case "pageSolrDocument":
 				return oPageLayout.pageSolrDocument;
 			case "w":
@@ -3294,7 +3474,29 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o != null;
 	}
 	public Object definePageLayout(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = definePageLayout(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object definePageLayout(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.lang.String;
@@ -32,6 +33,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Class;
+import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
@@ -551,6 +553,47 @@ public abstract class SearchListGen<DEV> {
 		return (SearchList)this;
 	}
 
+	///////////
+	// first //
+	///////////
+
+	/**	 The entity first
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected Object first;
+	@JsonIgnore
+	public Wrap<Object> firstWrap = new Wrap<Object>().p(this).c(Object.class).var("first").o(first);
+
+	/**	<br/> The entity first
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:first">Find the entity first in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _first(Wrap<Object> w);
+
+	public Object getFirst() {
+		return first;
+	}
+
+	public void setFirst(Object first) {
+		this.first = first;
+		this.firstWrap.alreadyInitialized = true;
+	}
+	public static Object staticSetFirst(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SearchList firstInit() {
+		if(!firstWrap.alreadyInitialized) {
+			_first(firstWrap);
+			if(first == null)
+				setFirst(firstWrap.o);
+		}
+		firstWrap.alreadyInitialized(true);
+		return (SearchList)this;
+	}
+
 	//////////////
 	// initDeep //
 	//////////////
@@ -580,6 +623,7 @@ public abstract class SearchListGen<DEV> {
 		queryResponseInit();
 		solrDocumentListInit();
 		listInit();
+		firstInit();
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -611,6 +655,10 @@ public abstract class SearchListGen<DEV> {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -635,6 +683,8 @@ public abstract class SearchListGen<DEV> {
 				return oSearchList.solrDocumentList;
 			case "list":
 				return oSearchList.list;
+			case "first":
+				return oSearchList.first;
 			default:
 				return null;
 		}
@@ -765,7 +815,29 @@ public abstract class SearchListGen<DEV> {
 		return o != null;
 	}
 	public Object defineSearchList(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineSearchList(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineSearchList(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}

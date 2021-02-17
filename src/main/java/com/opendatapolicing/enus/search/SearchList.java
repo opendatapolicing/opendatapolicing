@@ -141,6 +141,11 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		}
 	}
 
+	protected void _first(Wrap<Object> w) {
+		if(list.size() > 0)
+			w.o(list.get(0));
+	}
+
 	public DEV first() {
 		if(list.size() > 0)
 			return list.get(0);

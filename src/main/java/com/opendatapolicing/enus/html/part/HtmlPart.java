@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.html.part;
+package com.opendatapolicing.enus.html.part;   
 
 import java.util.List;
 
@@ -326,12 +326,36 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 
 	/**
 	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * DisplayName.enUS: search uri
+	 * Define: true
+	 * HtmlRow: 13
+	 * HtmlCell: 1
+	*/            
+	protected void _searchUri(Wrap<String> c) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * DisplayName.enUS: map to
+	 * Define: true
+	 * HtmlRow: 13
+	 * HtmlCell: 2
+	 */            
+	protected void _mapTo(Wrap<String> c) {
+	}
+
+	/**
+	 * {@inheritDoc}
 	 * Var.enUS: sort1
 	 * Indexed: true
 	 * Stored: true
 	 * DisplayName.enUS: sort1
 	 * Define: true
-	 * HtmlRow: 13
+	 * HtmlRow: 14
 	 * HtmlCell: 1
 	 */               
 	protected void _sort1(Wrap<Double> c) {
@@ -344,7 +368,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort2
 	 * Define: true
-	 * HtmlRow: 13
+	 * HtmlRow: 14
 	 * HtmlCell: 2
 	 */               
 	protected void _sort2(Wrap<Double> c) {
@@ -357,7 +381,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort3
 	 * Define: true
-	 * HtmlRow: 13
+	 * HtmlRow: 14
 	 * HtmlCell: 3
 	 */               
 	protected void _sort3(Wrap<Double> c) {
@@ -370,7 +394,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort4
 	 * Define: true
-	 * HtmlRow: 13
+	 * HtmlRow: 14
 	 * HtmlCell: 4
 	 */               
 	protected void _sort4(Wrap<Double> c) {
@@ -383,7 +407,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort5
 	 * Define: true
-	 * HtmlRow: 13
+	 * HtmlRow: 14
 	 * HtmlCell: 5
 	 */               
 	protected void _sort5(Wrap<Double> c) {
@@ -396,7 +420,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort6
 	 * Define: true
-	 * HtmlRow: 14
+	 * HtmlRow: 15
 	 * HtmlCell: 6
 	 */              
 	protected void _sort6(Wrap<Double> c) {
@@ -409,7 +433,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort7
 	 * Define: true
-	 * HtmlRow: 14
+	 * HtmlRow: 15
 	 * HtmlCell: 7
 	 */               
 	protected void _sort7(Wrap<Double> c) {
@@ -422,7 +446,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort8
 	 * Define: true
-	 * HtmlRow: 14
+	 * HtmlRow: 15
 	 * HtmlCell: 8
 	 */               
 	protected void _sort8(Wrap<Double> c) {
@@ -435,7 +459,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort9
 	 * Define: true
-	 * HtmlRow: 14
+	 * HtmlRow: 15
 	 * HtmlCell: 9
 	 */               
 	protected void _sort9(Wrap<Double> c) {
@@ -448,7 +472,7 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: sort10
 	 * Define: true
-	 * HtmlRow: 14
+	 * HtmlRow: 15
 	 * HtmlCell: 10
 	 */              
 	protected void _sort10(Wrap<Double> c) {

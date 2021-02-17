@@ -16,6 +16,7 @@ import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.time.ZoneOffset;
@@ -35,6 +36,7 @@ import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import java.util.List;
 import java.time.temporal.ChronoUnit;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
@@ -1166,6 +1168,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
 			}
+			else if(o instanceof Map) {
+				Map<?, ?> map = (Map<?, ?>)o;
+				o = map.get(v);
+			}
 		}
 		return o;
 	}
@@ -1392,7 +1398,29 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return o != null;
 	}
 	public Object defineApiRequest(String var, String val) {
-		switch(var) {
+		switch(var.toLowerCase()) {
+			default:
+				return null;
+		}
+	}
+
+	public boolean defineForClass(String var, Object val) {
+		String[] vars = StringUtils.split(var, ".");
+		Object o = null;
+		if(val != null) {
+			for(String v : vars) {
+				if(o == null)
+					o = defineApiRequest(v, val);
+				else if(o instanceof Cluster) {
+					Cluster oCluster = (Cluster)o;
+					o = oCluster.defineForClass(v, val);
+				}
+			}
+		}
+		return o != null;
+	}
+	public Object defineApiRequest(String var, Object val) {
+		switch(var.toLowerCase()) {
 			default:
 				return null;
 		}
