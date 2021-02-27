@@ -144,6 +144,10 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Page");
+			o.htmDeleted("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("Page");
 			o.htmStateAbbreviation("Page");
 		} g("div");
@@ -161,6 +165,10 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("POST");
+			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("POST");
@@ -205,6 +213,10 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PUTCopy");
+			o.htmDeleted("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("PUTCopy");
 			o.htmStateAbbreviation("PUTCopy");
 		} g("div");
@@ -221,6 +233,10 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
 			o.htmModified("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PATCH");
+			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("PATCH");
@@ -242,6 +258,10 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("Search");
 			o.htmStateAbbreviation("Search");
 		} g("div");
@@ -254,8 +274,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");

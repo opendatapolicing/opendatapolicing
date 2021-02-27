@@ -4,82 +4,65 @@
 # Milestone: Data Backup/Restore
 # Column: Data Backup/Restore
 
-- name: Sign in to the application through the SSO server
-  hosts: "{{ target }}"
-  connection: local
-  vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
-  roles:
-    - { role: project_login }
-
 - name: Backup the opendatapolicing page-design data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: page-design, DATA_URI: /api/admin/page-design, DATA_ROWS: 500 }
 
 - name: Backup the opendatapolicing html-part data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: html-part, DATA_URI: /api/html-part, DATA_ROWS: 500 }
 
 - name: Backup the opendatapolicing state data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: state, DATA_URI: /api/admin/state, DATA_ROWS: 500 }
 
 - name: Backup the opendatapolicing agency data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: agency, DATA_URI: /api/admin/agency, DATA_ROWS: 500 }
 
 - name: Backup the opendatapolicing traffic-stop data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: traffic-stop, DATA_URI: /api/admin/traffic-stop, DATA_ROWS: 500 }
 
 - name: Backup the opendatapolicing traffic-search data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: traffic-search, DATA_URI: /api/admin/traffic-search, DATA_ROWS: 500 }
 
-- name: Backup the opendatapolicing traffic-person data.
+- name: Backup the opendatapolicing person data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
-    - { role: project_backup, DATA_NAME_VAR: traffic-person, DATA_URI: /api/admin/traffic-person, DATA_ROWS: 500 }
+    - { role: project_backup, DATA_NAME_VAR: person, DATA_URI: /api/admin/person, DATA_ROWS: 500 }
 
-- name: Backup the opendatapolicing traffic-contraband data.
+- name: Backup the opendatapolicing contraband data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
-    - { role: project_backup, DATA_NAME_VAR: traffic-contraband, DATA_URI: /api/admin/traffic-contraband, DATA_ROWS: 500 }
+    - { role: project_backup, DATA_NAME_VAR: contraband, DATA_URI: /api/admin/contraband, DATA_ROWS: 500 }
 
 - name: Backup the opendatapolicing search-basis data.
   hosts: "{{ target }}"
-  connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "{{ ODP_ANSIBLE_INVENTORY }}/vaults/{{ VAULT_ID }}/vault"
   roles:
     - { role: project_backup, DATA_NAME_VAR: search-basis, DATA_URI: /api/admin/search-basis, DATA_ROWS: 500 }

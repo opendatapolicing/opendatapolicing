@@ -1,70 +1,98 @@
 package com.opendatapolicing.enus.trafficstop;
 
-import java.net.URLDecoder;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.trafficperson.TrafficPerson;
+import com.opendatapolicing.enus.config.SiteConfig;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.context.SiteContextEnUS;
+import com.opendatapolicing.enus.user.SiteUser;
+import com.opendatapolicing.enus.request.api.ApiRequest;
+import com.opendatapolicing.enus.search.SearchResult;
+import io.vertx.core.WorkerExecutor;
+import io.vertx.ext.mail.MailClient;
+import io.vertx.ext.mail.MailMessage;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import io.vertx.core.json.Json;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrDocument;
+import org.apache.commons.lang3.StringUtils;
+import java.security.Principal;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.util.SimpleOrderedMap;
-import org.apache.solr.util.DateMathParser;
-
-import com.opendatapolicing.enus.config.SiteConfig;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
-import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.opendatapolicing.enus.request.api.ApiRequest;
-import com.opendatapolicing.enus.search.SearchList;
-import com.opendatapolicing.enus.trafficperson.TrafficPerson;
-import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiServiceImpl;
-import com.opendatapolicing.enus.user.SiteUser;
-import com.opendatapolicing.enus.user.SiteUserEnUSApiServiceImpl;
-import com.opendatapolicing.enus.writer.AllWriter;
-
-import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
+import org.apache.solr.common.SolrDocument;
+import java.util.Collection;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
 import io.vertx.core.Handler;
-import io.vertx.core.MultiMap;
-import io.vertx.core.Promise;
+import io.vertx.ext.web.RoutingContext;
+import org.apache.commons.lang3.math.NumberUtils;
+import io.vertx.ext.web.Router;
 import io.vertx.core.Vertx;
-import io.vertx.core.WorkerExecutor;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
+import io.vertx.ext.reactivestreams.ReactiveReadStream;
+import io.vertx.ext.reactivestreams.ReactiveWriteStream;
+import io.vertx.core.MultiMap;
+import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.web.api.OperationResponse;
+import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
+import io.vertx.ext.web.api.validation.ParameterTypeValidator;
+import io.vertx.ext.web.api.validation.ValidationException;
+import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
 import io.vertx.pgclient.PgPool;
-import io.vertx.sqlclient.Row;
-import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Transaction;
+import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
+import io.vertx.sqlclient.Row;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.sql.Timestamp;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.ext.web.api.OperationResponse;
+import io.vertx.core.CompositeFuture;
+import org.apache.http.client.utils.URLEncodedUtils;
+import java.nio.charset.Charset;
+import org.apache.http.NameValuePair;
+import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.net.URLDecoder;
+import org.apache.solr.util.DateMathParser;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.PivotField;
+import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
+import java.util.Map.Entry;
+import java.util.Iterator;
+import java.time.ZonedDateTime;
+import org.apache.solr.common.util.SimpleOrderedMap;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import com.opendatapolicing.enus.user.SiteUserEnUSApiServiceImpl;
+import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.writer.AllWriter;
 
 
 /**
@@ -737,6 +765,19 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							});
 						}));
 						break;
+					case "stopYear":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopYear", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
+							});
+						}));
+						break;
 					case "stopPurposeNum":
 						futures.add(Future.future(a -> {
 							tx.preparedQuery(SiteContextEnUS.SQL_setD)
@@ -1195,6 +1236,19 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 									a.handle(Future.succeededFuture());
 								else
 									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDateTime failed", b.cause())));
+							});
+						}));
+						break;
+					case "stopYear":
+						futures.add(Future.future(a -> {
+							tx.preparedQuery(SiteContextEnUS.SQL_setD)
+									.execute(Tuple.of(pk, "stopYear", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
+									, b
+							-> {
+								if(b.succeeded())
+									a.handle(Future.succeededFuture());
+								else
+									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
 							});
 						}));
 						break;
@@ -1814,6 +1868,34 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 										a.handle(Future.succeededFuture());
 									else
 										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDateTime failed", b.cause())));
+								});
+							}));
+						}
+						break;
+					case "setStopYear":
+						if(jsonObject.getString(methodName) == null) {
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
+										.execute(Tuple.of(pk, "stopYear")
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
+								});
+							}));
+						} else {
+							o2.setStopYear(jsonObject.getString(methodName));
+							futures.add(Future.future(a -> {
+								tx.preparedQuery(SiteContextEnUS.SQL_setD)
+										.execute(Tuple.of(pk, "stopYear", o2.jsonStopYear())
+										, b
+								-> {
+									if(b.succeeded())
+										a.handle(Future.succeededFuture());
+									else
+										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
 								});
 							}));
 						}
@@ -2496,17 +2578,19 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
 			Exception exceptionSearch = responseSearch.getException();
+			List<String> fls = listTrafficStop.getFields();
 
 			JsonObject json = new JsonObject();
 			json.put("startNum", startNum);
 			json.put("foundNum", foundNum);
 			json.put("returnedNum", returnedNum);
-			json.put("searchTime", searchTime);
-			json.put("transmissionTime", transmissionTime);
+			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
+				json.put("searchTime", searchTime);
+				json.put("transmissionTime", transmissionTime);
+			}
 			JsonArray l = new JsonArray();
 			listTrafficStop.getList().stream().forEach(o -> {
 				JsonObject json2 = JsonObject.mapFrom(o);
-				List<String> fls = listTrafficStop.getFields();
 				if(fls.size() > 0) {
 					Set<String> fieldNames = new HashSet<String>();
 					fieldNames.addAll(json2.fieldNames());
@@ -2526,6 +2610,65 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
+
+			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
+			if(facetRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				json.put("facet_ranges", rangeJson);
+				for(RangeFacet rangeFacet : facetRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonArray rangeFacetCountsList = new JsonArray();
+					rangeFacetJson.put("counts", rangeFacetCountsList);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						countJson.put("value", count.getValue());
+						countJson.put("count", count.getCount());
+						rangeFacetCountsList.add(countJson);
+					}
+				}
+			}
+
+			NamedList<List<PivotField>> facetPivot = responseSearch.getFacetPivot();
+			if(facetPivot != null) {
+				JsonObject facetPivotJson = new JsonObject();
+				json.put("facet_pivot", facetPivotJson);
+				Iterator<Entry<String, List<PivotField>>> facetPivotIterator = responseSearch.getFacetPivot().iterator();
+				while(facetPivotIterator.hasNext()) {
+					Entry<String, List<PivotField>> pivotEntry = facetPivotIterator.next();
+					List<PivotField> pivotFields = pivotEntry.getValue();
+					String[] varsIndexed = pivotEntry.getKey().trim().split(",");
+					String[] entityVars = new String[varsIndexed.length];
+					for(Integer i = 0; i < entityVars.length; i++) {
+						String entityIndexed = varsIndexed[i];
+						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexed_");
+					}
+					JsonArray pivotArray = new JsonArray();
+					facetPivotJson.put(StringUtils.join(entityVars, ","), pivotArray);
+					responsePivotSearchTrafficStop(pivotFields, pivotArray);
+				}
+			}
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
@@ -2533,6 +2676,43 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 		} catch(Exception e) {
 			LOGGER.error(String.format("response200SearchTrafficStop failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+	public void responsePivotSearchTrafficStop(List<PivotField> pivotFields, JsonArray pivotArray) {
+		for(PivotField pivotField : pivotFields) {
+			String entityIndexed = pivotField.getField();
+			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexed_");
+			JsonObject pivotJson = new JsonObject();
+			pivotArray.add(pivotJson);
+			pivotJson.put("field", entityVar);
+			pivotJson.put("value", pivotField.getValue());
+			pivotJson.put("count", pivotField.getCount());
+			List<RangeFacet> pivotRanges = pivotField.getFacetRanges();
+			List<PivotField> pivotFields2 = pivotField.getPivot();
+			if(pivotRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				pivotJson.put("ranges", rangeJson);
+				for(RangeFacet rangeFacet : pivotRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonArray rangeFacetCountsList = new JsonArray();
+					rangeFacetJson.put("counts", rangeFacetCountsList);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						countJson.put("value", count.getValue());
+						countJson.put("count", count.getCount());
+						rangeFacetCountsList.add(countJson);
+					}
+				}
+			}
+			if(pivotFields2 != null) {
+				JsonArray pivotArray2 = new JsonArray();
+				pivotJson.put("pivot", pivotArray2);
+				responsePivotSearchTrafficStop(pivotFields2, pivotArray2);
+			}
 		}
 	}
 
@@ -2606,17 +2786,19 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
 			Exception exceptionSearch = responseSearch.getException();
+			List<String> fls = listTrafficStop.getFields();
 
 			JsonObject json = new JsonObject();
 			json.put("startNum", startNum);
 			json.put("foundNum", foundNum);
 			json.put("returnedNum", returnedNum);
-			json.put("searchTime", searchTime);
-			json.put("transmissionTime", transmissionTime);
+			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
+				json.put("searchTime", searchTime);
+				json.put("transmissionTime", transmissionTime);
+			}
 			JsonArray l = new JsonArray();
 			listTrafficStop.getList().stream().forEach(o -> {
 				JsonObject json2 = JsonObject.mapFrom(o);
-				List<String> fls = listTrafficStop.getFields();
 				if(fls.size() > 0) {
 					Set<String> fieldNames = new HashSet<String>();
 					fieldNames.addAll(json2.fieldNames());
@@ -2636,6 +2818,65 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
+
+			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
+			if(facetRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				json.put("facet_ranges", rangeJson);
+				for(RangeFacet rangeFacet : facetRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonArray rangeFacetCountsList = new JsonArray();
+					rangeFacetJson.put("counts", rangeFacetCountsList);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						countJson.put("value", count.getValue());
+						countJson.put("count", count.getCount());
+						rangeFacetCountsList.add(countJson);
+					}
+				}
+			}
+
+			NamedList<List<PivotField>> facetPivot = responseSearch.getFacetPivot();
+			if(facetPivot != null) {
+				JsonObject facetPivotJson = new JsonObject();
+				json.put("facet_pivot", facetPivotJson);
+				Iterator<Entry<String, List<PivotField>>> facetPivotIterator = responseSearch.getFacetPivot().iterator();
+				while(facetPivotIterator.hasNext()) {
+					Entry<String, List<PivotField>> pivotEntry = facetPivotIterator.next();
+					List<PivotField> pivotFields = pivotEntry.getValue();
+					String[] varsIndexed = pivotEntry.getKey().trim().split(",");
+					String[] entityVars = new String[varsIndexed.length];
+					for(Integer i = 0; i < entityVars.length; i++) {
+						String entityIndexed = varsIndexed[i];
+						entityVars[i] = StringUtils.substringBefore(entityIndexed, "_indexed_");
+					}
+					JsonArray pivotArray = new JsonArray();
+					facetPivotJson.put(StringUtils.join(entityVars, ","), pivotArray);
+					responsePivotAdminSearchTrafficStop(pivotFields, pivotArray);
+				}
+			}
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
@@ -2643,6 +2884,43 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 		} catch(Exception e) {
 			LOGGER.error(String.format("response200AdminSearchTrafficStop failed. ", e));
 			eventHandler.handle(Future.failedFuture(e));
+		}
+	}
+	public void responsePivotAdminSearchTrafficStop(List<PivotField> pivotFields, JsonArray pivotArray) {
+		for(PivotField pivotField : pivotFields) {
+			String entityIndexed = pivotField.getField();
+			String entityVar = StringUtils.substringBefore(entityIndexed, "_indexed_");
+			JsonObject pivotJson = new JsonObject();
+			pivotArray.add(pivotJson);
+			pivotJson.put("field", entityVar);
+			pivotJson.put("value", pivotField.getValue());
+			pivotJson.put("count", pivotField.getCount());
+			List<RangeFacet> pivotRanges = pivotField.getFacetRanges();
+			List<PivotField> pivotFields2 = pivotField.getPivot();
+			if(pivotRanges != null) {
+				JsonObject rangeJson = new JsonObject();
+				pivotJson.put("ranges", rangeJson);
+				for(RangeFacet rangeFacet : pivotRanges) {
+					JsonObject rangeFacetJson = new JsonObject();
+					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
+					rangeJson.put(rangeFacetVar, rangeFacetJson);
+					JsonArray rangeFacetCountsList = new JsonArray();
+					rangeFacetJson.put("counts", rangeFacetCountsList);
+					List<?> rangeFacetCounts = rangeFacet.getCounts();
+					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
+						countJson.put("value", count.getValue());
+						countJson.put("count", count.getCount());
+						rangeFacetCountsList.add(countJson);
+					}
+				}
+			}
+			if(pivotFields2 != null) {
+				JsonArray pivotArray2 = new JsonArray();
+				pivotJson.put("pivot", pivotArray2);
+				responsePivotAdminSearchTrafficStop(pivotFields2, pivotArray2);
+			}
 		}
 	}
 
@@ -3308,10 +3586,11 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
 		String id = operationRequest.getParams().getJsonObject("path").getString("id");
-		if(id != null) {
+		if(id != null && NumberUtils.isCreatable(id)) {
 			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+		} else if(id != null) {
+			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
 		}
-		Map<String, Object> facetMap = new HashMap<String, Object>();
 
 		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 			String entityVar = null;
@@ -3325,92 +3604,91 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
 
 			try {
-				for(Object paramObject : paramObjects) {
-					switch(paramName) {
-						case "q":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							varIndexed = "*".equals(entityVar) ? entityVar : TrafficStop.varSearchTrafficStop(entityVar);
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-							aSearchTrafficStopQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "fq":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
-							aSearchTrafficStopFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "sort":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
-							valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-							varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
-							aSearchTrafficStopSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-							break;
-						case "facet.range.start":
-							Matcher mFacetRangeStart = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
-							boolean foundFacetRangeStart = mFacetRangeStart.find();
-							if(foundFacetRangeStart) {
-								String solrLocalParams = mFacetRangeStart.group(1);
-								String dateMathStr = mFacetRangeStart.group(2).trim();
-								Date date = DateMathParser.parseMath(null, dateMathStr);
-								facetMap.put("facet.range.start=" + (solrLocalParams == null ? "" : solrLocalParams), date);
-							}
-							break;
-						case "facet.range.end":
-							Matcher mFacetRangeEnd = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
-							boolean foundFacetRangeEnd = mFacetRangeEnd.find();
-							if(foundFacetRangeEnd) {
-								String solrLocalParams = mFacetRangeEnd.group(1);
-								String dateMathStr = mFacetRangeEnd.group(2).trim();
-								Date date = DateMathParser.parseMath(null, dateMathStr);
-								facetMap.put("facet.range.end=" + (solrLocalParams == null ? "" : solrLocalParams), date);
-							}
-							break;
-						case "facet.range.gap":
-							Matcher mFacetRangeGap = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
-							boolean foundFacetRangeGap = mFacetRangeGap.find();
-							if(foundFacetRangeGap) {
-								String solrLocalParams = mFacetRangeGap.group(1);
-								String gap = mFacetRangeGap.group(2).trim();
-								facetMap.put("facet.range.gap=" + (solrLocalParams == null ? "" : solrLocalParams), gap);
-							}
-							break;
-						case "facet.range":
-							Matcher mFacetRange = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
-							boolean foundFacetRange = mFacetRange.find();
-							if(foundFacetRange) {
-								String solrLocalParams = mFacetRange.group(1);
-								entityVar = mFacetRange.group(2).trim();
-								varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
-								if(varIndexed.endsWith("_indexed_date")) {
-									Date facetStart = (Date)facetMap.get("facet.range.start=" + (solrLocalParams == null ? "" : solrLocalParams));
-									Date facetEnd = (Date)facetMap.get("facet.range.end=" + (solrLocalParams == null ? "" : solrLocalParams));
-									String facetGap = (String)facetMap.get("facet.range.gap=" + (solrLocalParams == null ? "" : solrLocalParams));
-									searchList.addDateRangeFacet(
-											varIndexed
-											, facetStart
-											, facetEnd
-											, facetGap
-											);
-								}
-							}
-							break;
-						case "start":
-							valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-							aSearchTrafficStopStart(uri, apiMethod, searchList, valueStart);
-							break;
-						case "rows":
-							valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-							aSearchTrafficStopRows(uri, apiMethod, searchList, valueRows);
-							break;
-						case "var":
-							entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-							valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-							aSearchTrafficStopVar(uri, apiMethod, searchList, entityVar, valueIndexed);
-							break;
+				if("facet.pivot".equals(paramName)) {
+					Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
+					boolean foundFacetPivot = mFacetPivot.find();
+					if(foundFacetPivot) {
+						String solrLocalParams = mFacetPivot.group(1);
+						String[] entityVars = mFacetPivot.group(2).trim().split(",");
+						String[] varsIndexed = new String[entityVars.length];
+						for(Integer i = 0; i < entityVars.length; i++) {
+							entityVar = entityVars[i];
+							varsIndexed[i] = TrafficStop.varIndexedTrafficStop(entityVar);
+						}
+						searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
 					}
+				} else {
+					for(Object paramObject : paramObjects) {
+						switch(paramName) {
+							case "q":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+								varIndexed = "*".equals(entityVar) ? entityVar : TrafficStop.varSearchTrafficStop(entityVar);
+								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+								valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+								aSearchTrafficStopQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								break;
+							case "fq":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+								varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
+								aSearchTrafficStopFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								break;
+							case "sort":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+								valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+								varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
+								aSearchTrafficStopSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								break;
+							case "start":
+								valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+								aSearchTrafficStopStart(uri, apiMethod, searchList, valueStart);
+								break;
+							case "rows":
+								valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+								aSearchTrafficStopRows(uri, apiMethod, searchList, valueRows);
+								break;
+							case "facet":
+								searchList.add("facet", ((Boolean)paramObject).toString());
+								break;
+							case "facet.range.start":
+								String startMathStr = (String)paramObject;
+								Date start = DateMathParser.parseMath(null, startMathStr);
+								searchList.add("facet.range.start", start.toInstant().toString());
+								break;
+							case "facet.range.end":
+								String endMathStr = (String)paramObject;
+								Date end = DateMathParser.parseMath(null, endMathStr);
+								searchList.add("facet.range.end", end.toInstant().toString());
+								break;
+							case "facet.range.gap":
+								String gap = (String)paramObject;
+								searchList.add("facet.range.gap", gap);
+								break;
+							case "facet.range":
+								Matcher mFacetRange = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+								boolean foundFacetRange = mFacetRange.find();
+								if(foundFacetRange) {
+									String solrLocalParams = mFacetRange.group(1);
+									entityVar = mFacetRange.group(2).trim();
+									varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
+									searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
+								}
+								break;
+							case "facet.field":
+								entityVar = (String)paramObject;
+								varIndexed = TrafficStop.varIndexedTrafficStop(entityVar);
+								if(varIndexed != null)
+									searchList.addFacetField(varIndexed);
+								break;
+							case "var":
+								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+								aSearchTrafficStopVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+								break;
+						}
+					}
+					aSearchTrafficStopUri(uri, apiMethod, searchList);
 				}
-				aSearchTrafficStopUri(uri, apiMethod, searchList);
 			} catch(Exception e) {
 				ExceptionUtils.rethrow(e);
 			}

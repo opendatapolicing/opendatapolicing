@@ -158,6 +158,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchBasisKey == null ? "" : searchBasisKey.toString();
 	}
 
+	public Long sqlSearchBasisKey() {
+		return searchBasisKey;
+	}
+
 	public String jsonSearchBasisKey() {
 		return searchBasisKey == null ? "" : searchBasisKey.toString();
 	}
@@ -240,6 +244,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strSearchKey() {
 		return searchKey == null ? "" : searchKey.toString();
+	}
+
+	public Long sqlSearchKey() {
+		return searchKey;
 	}
 
 	public String jsonSearchKey() {
@@ -484,6 +492,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopAgencyTitle == null ? "" : stopAgencyTitle;
 	}
 
+	public String sqlStopAgencyTitle() {
+		return stopAgencyTitle;
+	}
+
 	public String jsonStopAgencyTitle() {
 		return stopAgencyTitle == null ? "" : stopAgencyTitle;
 	}
@@ -641,6 +653,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
 	}
 
+	public OffsetDateTime sqlStopDateTime() {
+		return stopDateTime == null ? null : stopDateTime.toOffsetDateTime();
+	}
+
 	public String jsonStopDateTime() {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
@@ -784,6 +800,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopPurposeNum == null ? "" : stopPurposeNum.toString();
 	}
 
+	public Integer sqlStopPurposeNum() {
+		return stopPurposeNum;
+	}
+
 	public String jsonStopPurposeNum() {
 		return stopPurposeNum == null ? "" : stopPurposeNum.toString();
 	}
@@ -924,6 +944,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strStopPurposeTitle() {
 		return stopPurposeTitle == null ? "" : stopPurposeTitle;
+	}
+
+	public String sqlStopPurposeTitle() {
+		return stopPurposeTitle;
 	}
 
 	public String jsonStopPurposeTitle() {
@@ -1076,6 +1100,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopActionNum == null ? "" : stopActionNum.toString();
 	}
 
+	public Integer sqlStopActionNum() {
+		return stopActionNum;
+	}
+
 	public String jsonStopActionNum() {
 		return stopActionNum == null ? "" : stopActionNum.toString();
 	}
@@ -1216,6 +1244,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strStopActionTitle() {
 		return stopActionTitle == null ? "" : stopActionTitle;
+	}
+
+	public String sqlStopActionTitle() {
+		return stopActionTitle;
 	}
 
 	public String jsonStopActionTitle() {
@@ -1365,6 +1397,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopDriverArrest == null ? "" : stopDriverArrest.toString();
 	}
 
+	public Boolean sqlStopDriverArrest() {
+		return stopDriverArrest;
+	}
+
 	public String jsonStopDriverArrest() {
 		return stopDriverArrest == null ? "" : stopDriverArrest.toString();
 	}
@@ -1507,6 +1543,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strStopPassengerArrest() {
 		return stopPassengerArrest == null ? "" : stopPassengerArrest.toString();
+	}
+
+	public Boolean sqlStopPassengerArrest() {
+		return stopPassengerArrest;
 	}
 
 	public String jsonStopPassengerArrest() {
@@ -1653,6 +1693,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopEncounterForce == null ? "" : stopEncounterForce.toString();
 	}
 
+	public Boolean sqlStopEncounterForce() {
+		return stopEncounterForce;
+	}
+
 	public String jsonStopEncounterForce() {
 		return stopEncounterForce == null ? "" : stopEncounterForce.toString();
 	}
@@ -1795,6 +1839,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strStopEngageForce() {
 		return stopEngageForce == null ? "" : stopEngageForce.toString();
+	}
+
+	public Boolean sqlStopEngageForce() {
+		return stopEngageForce;
 	}
 
 	public String jsonStopEngageForce() {
@@ -1941,6 +1989,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopOfficerInjury == null ? "" : stopOfficerInjury.toString();
 	}
 
+	public Boolean sqlStopOfficerInjury() {
+		return stopOfficerInjury;
+	}
+
 	public String jsonStopOfficerInjury() {
 		return stopOfficerInjury == null ? "" : stopOfficerInjury.toString();
 	}
@@ -2083,6 +2135,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strStopDriverInjury() {
 		return stopDriverInjury == null ? "" : stopDriverInjury.toString();
+	}
+
+	public Boolean sqlStopDriverInjury() {
+		return stopDriverInjury;
 	}
 
 	public String jsonStopDriverInjury() {
@@ -2229,6 +2285,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
 
+	public Boolean sqlStopPassengerInjury() {
+		return stopPassengerInjury;
+	}
+
 	public String jsonStopPassengerInjury() {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
@@ -2366,6 +2426,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strStopOfficerId() {
 		return stopOfficerId == null ? "" : stopOfficerId;
+	}
+
+	public String sqlStopOfficerId() {
+		return stopOfficerId;
 	}
 
 	public String jsonStopOfficerId() {
@@ -2510,6 +2574,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
 
+	public String sqlStopLocationId() {
+		return stopLocationId;
+	}
+
 	public String jsonStopLocationId() {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
@@ -2650,6 +2718,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strStopCityId() {
 		return stopCityId == null ? "" : stopCityId;
+	}
+
+	public String sqlStopCityId() {
+		return stopCityId;
 	}
 
 	public String jsonStopCityId() {
@@ -2802,6 +2874,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personAge == null ? "" : personAge.toString();
 	}
 
+	public Integer sqlPersonAge() {
+		return personAge;
+	}
+
 	public String jsonPersonAge() {
 		return personAge == null ? "" : personAge.toString();
 	}
@@ -2876,6 +2952,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strPersonTypeId() {
 		return personTypeId == null ? "" : personTypeId;
+	}
+
+	public String sqlPersonTypeId() {
+		return personTypeId;
 	}
 
 	public String jsonPersonTypeId() {
@@ -3020,6 +3100,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personTypeTitle == null ? "" : personTypeTitle;
 	}
 
+	public String sqlPersonTypeTitle() {
+		return personTypeTitle;
+	}
+
 	public String jsonPersonTypeTitle() {
 		return personTypeTitle == null ? "" : personTypeTitle;
 	}
@@ -3099,6 +3183,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strPersonTypeDriver() {
 		return personTypeDriver == null ? "" : personTypeDriver.toString();
+	}
+
+	public Boolean sqlPersonTypeDriver() {
+		return personTypeDriver;
 	}
 
 	public String jsonPersonTypeDriver() {
@@ -3182,6 +3270,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personTypePassenger == null ? "" : personTypePassenger.toString();
 	}
 
+	public Boolean sqlPersonTypePassenger() {
+		return personTypePassenger;
+	}
+
 	public String jsonPersonTypePassenger() {
 		return personTypePassenger == null ? "" : personTypePassenger.toString();
 	}
@@ -3256,6 +3348,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strPersonGenderId() {
 		return personGenderId == null ? "" : personGenderId;
+	}
+
+	public String sqlPersonGenderId() {
+		return personGenderId;
 	}
 
 	public String jsonPersonGenderId() {
@@ -3400,6 +3496,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personGenderTitle == null ? "" : personGenderTitle;
 	}
 
+	public String sqlPersonGenderTitle() {
+		return personGenderTitle;
+	}
+
 	public String jsonPersonGenderTitle() {
 		return personGenderTitle == null ? "" : personGenderTitle;
 	}
@@ -3479,6 +3579,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strPersonGenderFemale() {
 		return personGenderFemale == null ? "" : personGenderFemale.toString();
+	}
+
+	public Boolean sqlPersonGenderFemale() {
+		return personGenderFemale;
 	}
 
 	public String jsonPersonGenderFemale() {
@@ -3562,6 +3666,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personGenderMale == null ? "" : personGenderMale.toString();
 	}
 
+	public Boolean sqlPersonGenderMale() {
+		return personGenderMale;
+	}
+
 	public String jsonPersonGenderMale() {
 		return personGenderMale == null ? "" : personGenderMale.toString();
 	}
@@ -3636,6 +3744,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strPersonEthnicityId() {
 		return personEthnicityId == null ? "" : personEthnicityId;
+	}
+
+	public String sqlPersonEthnicityId() {
+		return personEthnicityId;
 	}
 
 	public String jsonPersonEthnicityId() {
@@ -3780,6 +3892,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personEthnicityTitle == null ? "" : personEthnicityTitle;
 	}
 
+	public String sqlPersonEthnicityTitle() {
+		return personEthnicityTitle;
+	}
+
 	public String jsonPersonEthnicityTitle() {
 		return personEthnicityTitle == null ? "" : personEthnicityTitle;
 	}
@@ -3854,6 +3970,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strPersonRaceId() {
 		return personRaceId == null ? "" : personRaceId;
+	}
+
+	public String sqlPersonRaceId() {
+		return personRaceId;
 	}
 
 	public String jsonPersonRaceId() {
@@ -3998,6 +4118,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personRaceTitle == null ? "" : personRaceTitle;
 	}
 
+	public String sqlPersonRaceTitle() {
+		return personRaceTitle;
+	}
+
 	public String jsonPersonRaceTitle() {
 		return personRaceTitle == null ? "" : personRaceTitle;
 	}
@@ -4082,6 +4206,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
 	}
 
+	public Long sqlTrafficStopKey() {
+		return trafficStopKey;
+	}
+
 	public String jsonTrafficStopKey() {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
 	}
@@ -4164,6 +4292,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strSearchTypeNum() {
 		return searchTypeNum == null ? "" : searchTypeNum.toString();
+	}
+
+	public Integer sqlSearchTypeNum() {
+		return searchTypeNum;
 	}
 
 	public String jsonSearchTypeNum() {
@@ -4308,6 +4440,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchTypeTitle == null ? "" : searchTypeTitle;
 	}
 
+	public String sqlSearchTypeTitle() {
+		return searchTypeTitle;
+	}
+
 	public String jsonSearchTypeTitle() {
 		return searchTypeTitle == null ? "" : searchTypeTitle;
 	}
@@ -4387,6 +4523,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strSearchVehicle() {
 		return searchVehicle == null ? "" : searchVehicle.toString();
+	}
+
+	public Boolean sqlSearchVehicle() {
+		return searchVehicle;
 	}
 
 	public String jsonSearchVehicle() {
@@ -4470,6 +4610,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchDriver == null ? "" : searchDriver.toString();
 	}
 
+	public Boolean sqlSearchDriver() {
+		return searchDriver;
+	}
+
 	public String jsonSearchDriver() {
 		return searchDriver == null ? "" : searchDriver.toString();
 	}
@@ -4549,6 +4693,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strSearchPassenger() {
 		return searchPassenger == null ? "" : searchPassenger.toString();
+	}
+
+	public Boolean sqlSearchPassenger() {
+		return searchPassenger;
 	}
 
 	public String jsonSearchPassenger() {
@@ -4632,6 +4780,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchProperty == null ? "" : searchProperty.toString();
 	}
 
+	public Boolean sqlSearchProperty() {
+		return searchProperty;
+	}
+
 	public String jsonSearchProperty() {
 		return searchProperty == null ? "" : searchProperty.toString();
 	}
@@ -4711,6 +4863,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strSearchVehicleSiezed() {
 		return searchVehicleSiezed == null ? "" : searchVehicleSiezed.toString();
+	}
+
+	public Boolean sqlSearchVehicleSiezed() {
+		return searchVehicleSiezed;
 	}
 
 	public String jsonSearchVehicleSiezed() {
@@ -4794,6 +4950,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchPersonalPropertySiezed == null ? "" : searchPersonalPropertySiezed.toString();
 	}
 
+	public Boolean sqlSearchPersonalPropertySiezed() {
+		return searchPersonalPropertySiezed;
+	}
+
 	public String jsonSearchPersonalPropertySiezed() {
 		return searchPersonalPropertySiezed == null ? "" : searchPersonalPropertySiezed.toString();
 	}
@@ -4875,6 +5035,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchOtherPropertySiezed == null ? "" : searchOtherPropertySiezed.toString();
 	}
 
+	public Boolean sqlSearchOtherPropertySiezed() {
+		return searchOtherPropertySiezed;
+	}
+
 	public String jsonSearchOtherPropertySiezed() {
 		return searchOtherPropertySiezed == null ? "" : searchOtherPropertySiezed.toString();
 	}
@@ -4949,6 +5113,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strSearchBasisId() {
 		return searchBasisId == null ? "" : searchBasisId;
+	}
+
+	public String sqlSearchBasisId() {
+		return searchBasisId;
 	}
 
 	public String jsonSearchBasisId() {
@@ -5093,6 +5261,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchBasisTitle == null ? "" : searchBasisTitle;
 	}
 
+	public String sqlSearchBasisTitle() {
+		return searchBasisTitle;
+	}
+
 	public String jsonSearchBasisTitle() {
 		return searchBasisTitle == null ? "" : searchBasisTitle;
 	}
@@ -5235,6 +5407,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchBasisShortName == null ? "" : searchBasisShortName;
 	}
 
+	public String sqlSearchBasisShortName() {
+		return searchBasisShortName;
+	}
+
 	public String jsonSearchBasisShortName() {
 		return searchBasisShortName == null ? "" : searchBasisShortName;
 	}
@@ -5309,6 +5485,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 
 	public String strSearchBasisCompleteName() {
 		return searchBasisCompleteName == null ? "" : searchBasisCompleteName;
+	}
+
+	public String sqlSearchBasisCompleteName() {
+		return searchBasisCompleteName;
 	}
 
 	public String jsonSearchBasisCompleteName() {

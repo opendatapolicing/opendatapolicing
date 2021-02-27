@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.html.part;   
+package com.opendatapolicing.enus.html.part;    
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * 
  * Role.enUS: SiteAdmin
  * 
-*/    
+*/      
 public class HtmlPart extends HtmlPartGen<Cluster> {
 
 	/**

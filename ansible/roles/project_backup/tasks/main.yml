@@ -16,20 +16,20 @@
     state: absent
   with_fileglob: "{{PROJECT_BACKUP_DIR_ENUS}}/{{DATA_NAME_VAR}}*"
 
-- name: Get restore site access token
-  shell: curl -X POST -u "{{AUTH_RESOURCE}}:{{AUTH_SECRET}}" -d "grant_type=client_credentials" "{{AUTH_URL}}/realms/{{AUTH_REALM}}/protocol/openid-connect/token"
-  register: AUTH_TOKEN
-
-- name: Request {{DATA_NAME_VAR}} data
-  shell: "curl -X GET -H 'Authorization: Bearer {{(AUTH_TOKEN.stdout | from_json).access_token}}' '{{PROJECT_SITE_BASE_URL_ENUS}}{{DATA_URI}}?rows=0'"
-  register: REQUEST_DATA
-
-- debug: 
-    var: AUTH_TOKEN
-
-- debug: 
-    var: REQUEST_DATA
-
-- name: Request and encrypt the {{DATA_NAME_VAR}} response data
-  shell: "curl -X GET -H 'Authorization: Bearer {{(AUTH_TOKEN.stdout | from_json).access_token}}' '{{PROJECT_SITE_BASE_URL_ENUS}}{{DATA_URI}}?fl=saves&rows={{DATA_ROWS}}&start={{item}}' > '{{PROJECT_BACKUP_DIR_ENUS}}/{{DATA_NAME_VAR}}{{item}}.json'"
-  with_sequence: "start=0 end={{(REQUEST_DATA.stdout | from_json).foundNum}} stride={{DATA_ROWS}}"
+- name: Restore site access token
+  include_role:
+    name: project_login
+  when: ACCESS_TOKEN is not defined
+- name: Call get_num tasks
+  include_tasks: get_num.yml
+  ignore_errors: true
+- name: Restore site access token again
+  include_role:
+    name: project_login
+  when: REQUEST_NUM.failed | default(false)
+- name: Call get_num tasks
+  include_tasks: get_num.yml
+  when: REQUEST_NUM.failed | default(false)
+- name: Call project_backup tasks
+  include_tasks: project_backup.yml
+  with_sequence: "start=0 end={{ REQUEST_NUM.json.foundNum }} stride={{ DATA_ROWS }}"

@@ -323,11 +323,13 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person type title
 	 */ 
 	protected void _personTypeTitle(Wrap<String> w) {
-		switch(personTypeId) {
-		case "D":
-			w.o("Driver"); break;
-		case "P":
-			w.o("Passenger"); break;
+		if(personTypeId != null) {
+			switch(personTypeId) {
+			case "D":
+				w.o("Driver"); break;
+			case "P":
+				w.o("Passenger"); break;
+			}
 		}
 	}
 
@@ -338,11 +340,13 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person was driver
 	 */ 
 	protected void _personTypeDriver(Wrap<Boolean> w) {
-		switch(personTypeId) {
-		case "D":
-			w.o(true); break;
-		default:
-			w.o(false); break;
+		if(personTypeId != null) {
+			switch(personTypeId) {
+			case "D":
+				w.o(true); break;
+			default:
+				w.o(false); break;
+			}
 		}
 	}
 
@@ -353,11 +357,13 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person was passenger
 	 */ 
 	protected void _personTypePassenger(Wrap<Boolean> w) {
-		switch(personTypeId) {
-		case "P":
-			w.o(true); break;
-		default:
-			w.o(false); break;
+		if(personTypeId != null) {
+			switch(personTypeId) {
+			case "P":
+				w.o(true); break;
+			default:
+				w.o(false); break;
+			}
 		}
 	}
 

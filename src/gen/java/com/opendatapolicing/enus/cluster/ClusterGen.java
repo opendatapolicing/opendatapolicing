@@ -176,6 +176,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pk == null ? "" : pk.toString();
 	}
 
+	public Long sqlPk() {
+		return pk;
+	}
+
 	public String jsonPk() {
 		return pk == null ? "" : pk.toString();
 	}
@@ -285,6 +289,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strInheritPk() {
 		return inheritPk == null ? "" : inheritPk.toString();
+	}
+
+	public Long sqlInheritPk() {
+		return inheritPk;
 	}
 
 	public String jsonInheritPk() {
@@ -425,6 +433,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return id == null ? "" : id;
 	}
 
+	public String sqlId() {
+		return id;
+	}
+
 	public String jsonId() {
 		return id == null ? "" : id;
 	}
@@ -514,6 +526,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strCreated() {
 		return created == null ? "" : created.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
+	}
+
+	public OffsetDateTime sqlCreated() {
+		return created == null ? null : created.toOffsetDateTime();
 	}
 
 	public String jsonCreated() {
@@ -632,6 +648,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return modified == null ? "" : modified.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
 	}
 
+	public OffsetDateTime sqlModified() {
+		return modified == null ? null : modified.toOffsetDateTime();
+	}
+
 	public String jsonModified() {
 		return modified == null ? "" : modified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
@@ -733,6 +753,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return modifiedIsoOffsetDateTime == null ? "" : modifiedIsoOffsetDateTime;
 	}
 
+	public String sqlModifiedIsoOffsetDateTime() {
+		return modifiedIsoOffsetDateTime;
+	}
+
 	public String jsonModifiedIsoOffsetDateTime() {
 		return modifiedIsoOffsetDateTime == null ? "" : modifiedIsoOffsetDateTime;
 	}
@@ -812,6 +836,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strArchived() {
 		return archived == null ? "" : archived.toString();
+	}
+
+	public Boolean sqlArchived() {
+		return archived;
 	}
 
 	public String jsonArchived() {
@@ -958,6 +986,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return deleted == null ? "" : deleted.toString();
 	}
 
+	public Boolean sqlDeleted() {
+		return deleted;
+	}
+
 	public String jsonDeleted() {
 		return deleted == null ? "" : deleted.toString();
 	}
@@ -1097,6 +1129,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalName == null ? "" : classCanonicalName;
 	}
 
+	public String sqlClassCanonicalName() {
+		return classCanonicalName;
+	}
+
 	public String jsonClassCanonicalName() {
 		return classCanonicalName == null ? "" : classCanonicalName;
 	}
@@ -1171,6 +1207,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strClassSimpleName() {
 		return classSimpleName == null ? "" : classSimpleName;
+	}
+
+	public String sqlClassSimpleName() {
+		return classSimpleName;
 	}
 
 	public String jsonClassSimpleName() {
@@ -1270,6 +1310,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
 
+	public List<String> sqlClassCanonicalNames() {
+		return classCanonicalNames;
+	}
+
 	public String jsonClassCanonicalNames() {
 		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
@@ -1346,6 +1390,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return sessionId == null ? "" : sessionId;
 	}
 
+	public String sqlSessionId() {
+		return sessionId;
+	}
+
 	public String jsonSessionId() {
 		return sessionId == null ? "" : sessionId;
 	}
@@ -1420,6 +1468,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strUserId() {
 		return userId == null ? "" : userId;
+	}
+
+	public String sqlUserId() {
+		return userId;
 	}
 
 	public String jsonUserId() {
@@ -1527,6 +1579,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strUserKey() {
 		return userKey == null ? "" : userKey.toString();
+	}
+
+	public Long sqlUserKey() {
+		return userKey;
 	}
 
 	public String jsonUserKey() {
@@ -1649,6 +1705,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return saves == null ? "" : saves.toString();
 	}
 
+	public List<String> sqlSaves() {
+		return saves;
+	}
+
 	public String jsonSaves() {
 		return saves == null ? "" : saves.toString();
 	}
@@ -1723,6 +1783,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strObjectTitle() {
 		return objectTitle == null ? "" : objectTitle;
+	}
+
+	public String sqlObjectTitle() {
+		return objectTitle;
 	}
 
 	public String jsonObjectTitle() {
@@ -1824,6 +1888,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectId == null ? "" : objectId;
 	}
 
+	public String sqlObjectId() {
+		return objectId;
+	}
+
 	public String jsonObjectId() {
 		return objectId == null ? "" : objectId;
 	}
@@ -1898,6 +1966,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strObjectNameVar() {
 		return objectNameVar == null ? "" : objectNameVar;
+	}
+
+	public String sqlObjectNameVar() {
+		return objectNameVar;
 	}
 
 	public String jsonObjectNameVar() {
@@ -1976,6 +2048,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectSuggest == null ? "" : objectSuggest;
 	}
 
+	public String sqlObjectSuggest() {
+		return objectSuggest;
+	}
+
 	public String jsonObjectSuggest() {
 		return objectSuggest == null ? "" : objectSuggest;
 	}
@@ -2050,6 +2126,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strObjectText() {
 		return objectText == null ? "" : objectText;
+	}
+
+	public String sqlObjectText() {
+		return objectText;
 	}
 
 	public String jsonObjectText() {
@@ -2128,6 +2208,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pageUrlId == null ? "" : pageUrlId;
 	}
 
+	public String sqlPageUrlId() {
+		return pageUrlId;
+	}
+
 	public String jsonPageUrlId() {
 		return pageUrlId == null ? "" : pageUrlId;
 	}
@@ -2202,6 +2286,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strPageUrlPk() {
 		return pageUrlPk == null ? "" : pageUrlPk;
+	}
+
+	public String sqlPageUrlPk() {
+		return pageUrlPk;
 	}
 
 	public String jsonPageUrlPk() {
@@ -2280,6 +2368,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pageUrlApi == null ? "" : pageUrlApi;
 	}
 
+	public String sqlPageUrlApi() {
+		return pageUrlApi;
+	}
+
 	public String jsonPageUrlApi() {
 		return pageUrlApi == null ? "" : pageUrlApi;
 	}
@@ -2354,6 +2446,10 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String strPageH1() {
 		return pageH1 == null ? "" : pageH1;
+	}
+
+	public String sqlPageH1() {
+		return pageH1;
 	}
 
 	public String jsonPageH1() {

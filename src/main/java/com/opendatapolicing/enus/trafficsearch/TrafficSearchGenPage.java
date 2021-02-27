@@ -162,6 +162,10 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Page");
+			o.htmDeleted("Page");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("Page");
 			o.htmContrabandKeys("Page");
 			o.htmSearchBasisKeys("Page");
@@ -185,6 +189,10 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("POST");
+			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("POST");
@@ -235,6 +243,10 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PUTCopy");
+			o.htmDeleted("PUTCopy");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("PUTCopy");
 			o.htmContrabandKeys("PUTCopy");
 			o.htmSearchBasisKeys("PUTCopy");
@@ -256,6 +268,10 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
 			o.htmModified("PATCH");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("PATCH");
+			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("PATCH");
@@ -282,6 +298,10 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
+			o.htmArchived("Search");
+			o.htmDeleted("Search");
+		} g("div");
+		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("Search");
 			o.htmContrabandKeys("Search");
 			o.htmSearchBasisKeys("Search");
@@ -300,8 +320,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
 			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");

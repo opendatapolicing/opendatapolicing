@@ -1,0 +1,13 @@
+---
+# Label: project_backup_get_num_tasks
+# Title: create the Ansible task for getting the number found of a type of data
+# Mission: create the Ansible task for getting the number found of a type of data
+# Milestone: Data Backup/Restore
+# Column: Data Backup/Restore
+
+- name: Request {{DATA_NAME_VAR}} data
+  uri:
+    url: "{{ PROJECT_SITE_BASE_URL_ENUS }}{{ DATA_URI }}?rows=0"
+    headers:
+      Authorization: "Bearer {{ AUTH_TOKEN.json.access_token | default('') }}"
+  register: REQUEST_NUM

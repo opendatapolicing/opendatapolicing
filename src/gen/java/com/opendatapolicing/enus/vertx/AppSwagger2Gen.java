@@ -228,6 +228,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return appPath == null ? "" : appPath;
 	}
 
+	public String sqlAppPath() {
+		return appPath;
+	}
+
 	public String jsonAppPath() {
 		return appPath == null ? "" : appPath;
 	}
@@ -302,6 +306,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public String strAppName() {
 		return appName == null ? "" : appName;
+	}
+
+	public String sqlAppName() {
+		return appName;
 	}
 
 	public String jsonAppName() {
@@ -380,6 +388,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return languageName == null ? "" : languageName;
 	}
 
+	public String sqlLanguageName() {
+		return languageName;
+	}
+
 	public String jsonLanguageName() {
 		return languageName == null ? "" : languageName;
 	}
@@ -454,6 +466,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public String strOpenApiVersion() {
 		return openApiVersion == null ? "" : openApiVersion;
+	}
+
+	public String sqlOpenApiVersion() {
+		return openApiVersion;
 	}
 
 	public String jsonOpenApiVersion() {
@@ -540,6 +556,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
 	}
 
+	public Integer sqlOpenApiVersionNumber() {
+		return openApiVersionNumber;
+	}
+
 	public String jsonOpenApiVersionNumber() {
 		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
 	}
@@ -624,6 +644,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
 
+	public Integer sqlTabsSchema() {
+		return tabsSchema;
+	}
+
 	public String jsonTabsSchema() {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
@@ -700,6 +724,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return apiVersion == null ? "" : apiVersion;
 	}
 
+	public String sqlApiVersion() {
+		return apiVersion;
+	}
+
 	public String jsonApiVersion() {
 		return apiVersion == null ? "" : apiVersion;
 	}
@@ -774,6 +802,10 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public String strOpenApiYamlPath() {
 		return openApiYamlPath == null ? "" : openApiYamlPath;
+	}
+
+	public String sqlOpenApiYamlPath() {
+		return openApiYamlPath;
 	}
 
 	public String jsonOpenApiYamlPath() {

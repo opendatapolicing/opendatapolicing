@@ -171,6 +171,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return created == null ? "" : created.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
 	}
 
+	public OffsetDateTime sqlCreated() {
+		return created == null ? null : created.toOffsetDateTime();
+	}
+
 	public String jsonCreated() {
 		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
@@ -253,6 +257,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String strRows() {
 		return rows == null ? "" : rows.toString();
+	}
+
+	public Integer sqlRows() {
+		return rows;
 	}
 
 	public String jsonRows() {
@@ -339,6 +347,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return numFound == null ? "" : numFound.toString();
 	}
 
+	public Long sqlNumFound() {
+		return numFound;
+	}
+
 	public String jsonNumFound() {
 		return numFound == null ? "" : numFound.toString();
 	}
@@ -423,6 +435,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return numPATCH == null ? "" : numPATCH.toString();
 	}
 
+	public Long sqlNumPATCH() {
+		return numPATCH;
+	}
+
 	public String jsonNumPATCH() {
 		return numPATCH == null ? "" : numPATCH.toString();
 	}
@@ -499,6 +515,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return uuid == null ? "" : uuid;
 	}
 
+	public String sqlUuid() {
+		return uuid;
+	}
+
 	public String jsonUuid() {
 		return uuid == null ? "" : uuid;
 	}
@@ -573,6 +593,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String strId() {
 		return id == null ? "" : id;
+	}
+
+	public String sqlId() {
+		return id;
 	}
 
 	public String jsonId() {
@@ -654,6 +678,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String strEmpty() {
 		return empty == null ? "" : empty.toString();
+	}
+
+	public Boolean sqlEmpty() {
+		return empty;
 	}
 
 	public String jsonEmpty() {
@@ -738,6 +766,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String strPk() {
 		return pk == null ? "" : pk.toString();
+	}
+
+	public Long sqlPk() {
+		return pk;
 	}
 
 	public String jsonPk() {
@@ -894,6 +926,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return pks == null ? "" : pks.toString();
 	}
 
+	public List<Long> sqlPks() {
+		return pks;
+	}
+
 	public String jsonPks() {
 		return pks == null ? "" : pks.toString();
 	}
@@ -991,6 +1027,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return classes == null ? "" : classes.toString();
 	}
 
+	public List<String> sqlClasses() {
+		return classes;
+	}
+
 	public String jsonClasses() {
 		return classes == null ? "" : classes.toString();
 	}
@@ -1086,6 +1126,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String strVars() {
 		return vars == null ? "" : vars.toString();
+	}
+
+	public List<String> sqlVars() {
+		return vars;
 	}
 
 	public String jsonVars() {

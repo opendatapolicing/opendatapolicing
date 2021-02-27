@@ -88,7 +88,6 @@ public class DesignDisplayPage extends DesignDisplayPageGen<DesignDisplayGenPage
 			else if(o instanceof SearchList) {
 				SearchList<?> searchList = (SearchList)o;
 				o = searchList.obtainForClass(v);
-				searchList.getList();
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;

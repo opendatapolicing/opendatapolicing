@@ -159,6 +159,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
 	}
 
+	public Long sqlTrafficStopKey() {
+		return trafficStopKey;
+	}
+
 	public String jsonTrafficStopKey() {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
 	}
@@ -241,6 +245,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strAgencyKey() {
 		return agencyKey == null ? "" : agencyKey.toString();
+	}
+
+	public Long sqlAgencyKey() {
+		return agencyKey;
 	}
 
 	public String jsonAgencyKey() {
@@ -401,6 +409,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopAgencyTitle == null ? "" : stopAgencyTitle;
 	}
 
+	public String sqlStopAgencyTitle() {
+		return stopAgencyTitle;
+	}
+
 	public String jsonStopAgencyTitle() {
 		return stopAgencyTitle == null ? "" : stopAgencyTitle;
 	}
@@ -558,6 +570,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz", Locale.forLanguageTag("en-US")));
 	}
 
+	public OffsetDateTime sqlStopDateTime() {
+		return stopDateTime == null ? null : stopDateTime.toOffsetDateTime();
+	}
+
 	public String jsonStopDateTime() {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
@@ -620,6 +636,160 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 											.a("tabindex", "-1")
 											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopDateTime')); $('#", classApiMethodMethod, "_stopDateTime').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setStopDateTime', null, function() { addGlow($('#", classApiMethodMethod, "_stopDateTime')); }, function() { addError($('#", classApiMethodMethod, "_stopDateTime')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
+	//////////////
+	// stopYear //
+	//////////////
+
+	/**	 The entity stopYear
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Integer stopYear;
+	@JsonIgnore
+	public Wrap<Integer> stopYearWrap = new Wrap<Integer>().p(this).c(Integer.class).var("stopYear").o(stopYear);
+
+	/**	<br/> The entity stopYear
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopYear">Find the entity stopYear in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _stopYear(Wrap<Integer> w);
+
+	public Integer getStopYear() {
+		return stopYear;
+	}
+
+	public void setStopYear(Integer stopYear) {
+		this.stopYear = stopYear;
+		this.stopYearWrap.alreadyInitialized = true;
+	}
+	public void setStopYear(String o) {
+		this.stopYear = TrafficStop.staticSetStopYear(siteRequest_, o);
+		this.stopYearWrap.alreadyInitialized = true;
+	}
+	public static Integer staticSetStopYear(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Integer.parseInt(o);
+		return null;
+	}
+	protected TrafficStop stopYearInit() {
+		if(!stopYearWrap.alreadyInitialized) {
+			_stopYear(stopYearWrap);
+			if(stopYear == null)
+				setStopYear(stopYearWrap.o);
+		}
+		stopYearWrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	public static Integer staticSolrStopYear(SiteRequestEnUS siteRequest_, Integer o) {
+		return o;
+	}
+
+	public static String staticSolrStrStopYear(SiteRequestEnUS siteRequest_, Integer o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqStopYear(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficStop.staticSolrStrStopYear(siteRequest_, TrafficStop.staticSolrStopYear(siteRequest_, TrafficStop.staticSetStopYear(siteRequest_, o)));
+	}
+
+	public Integer solrStopYear() {
+		return TrafficStop.staticSolrStopYear(siteRequest_, stopYear);
+	}
+
+	public String strStopYear() {
+		return stopYear == null ? "" : stopYear.toString();
+	}
+
+	public Integer sqlStopYear() {
+		return stopYear;
+	}
+
+	public String jsonStopYear() {
+		return stopYear == null ? "" : stopYear.toString();
+	}
+
+	public String nomAffichageStopYear() {
+		return "stop year";
+	}
+
+	public String htmTooltipStopYear() {
+		return null;
+	}
+
+	public String htmStopYear() {
+		return stopYear == null ? "" : StringEscapeUtils.escapeHtml4(strStopYear());
+	}
+
+	public void inputStopYear(String classApiMethodMethod) {
+		TrafficStop s = (TrafficStop)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("placeholder", "stop year")
+				.a("id", classApiMethodMethod, "_stopYear");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStopYear classTrafficStop inputTrafficStop", pk, "StopYear w3-input w3-border ");
+					a("name", "setStopYear");
+				} else {
+					a("class", "valueStopYear w3-input w3-border classTrafficStop inputTrafficStop", pk, "StopYear w3-input w3-border ");
+					a("name", "stopYear");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopYear', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopYear')); }, function() { addError($('#", classApiMethodMethod, "_stopYear')); }); ");
+				}
+				a("value", strStopYear())
+			.fg();
+
+		} else {
+			e("span").a("class", "varTrafficStop", pk, "StopYear ").f().sx(htmStopYear()).g("span");
+		}
+	}
+
+	public void htmStopYear(String classApiMethodMethod) {
+		TrafficStop s = (TrafficStop)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopStopYear").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
+							e("label").a("for", classApiMethodMethod, "_stopYear").a("class", "").f().sx("stop year").g("label");
+						} g("div");
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStopYear(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopYear')); $('#", classApiMethodMethod, "_stopYear').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setStopYear', null, function() { addGlow($('#", classApiMethodMethod, "_stopYear')); }, function() { addError($('#", classApiMethodMethod, "_stopYear')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
 										} g("button");
@@ -699,6 +869,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strStopPurposeNum() {
 		return stopPurposeNum == null ? "" : stopPurposeNum.toString();
+	}
+
+	public Integer sqlStopPurposeNum() {
+		return stopPurposeNum;
 	}
 
 	public String jsonStopPurposeNum() {
@@ -843,6 +1017,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopPurposeTitle == null ? "" : stopPurposeTitle;
 	}
 
+	public String sqlStopPurposeTitle() {
+		return stopPurposeTitle;
+	}
+
 	public String jsonStopPurposeTitle() {
 		return stopPurposeTitle == null ? "" : stopPurposeTitle;
 	}
@@ -951,6 +1129,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strStopActionNum() {
 		return stopActionNum == null ? "" : stopActionNum.toString();
+	}
+
+	public Integer sqlStopActionNum() {
+		return stopActionNum;
 	}
 
 	public String jsonStopActionNum() {
@@ -1095,6 +1277,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopActionTitle == null ? "" : stopActionTitle;
 	}
 
+	public String sqlStopActionTitle() {
+		return stopActionTitle;
+	}
+
 	public String jsonStopActionTitle() {
 		return stopActionTitle == null ? "" : stopActionTitle;
 	}
@@ -1200,6 +1386,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strStopDriverArrest() {
 		return stopDriverArrest == null ? "" : stopDriverArrest.toString();
+	}
+
+	public Boolean sqlStopDriverArrest() {
+		return stopDriverArrest;
 	}
 
 	public String jsonStopDriverArrest() {
@@ -1346,6 +1536,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopPassengerArrest == null ? "" : stopPassengerArrest.toString();
 	}
 
+	public Boolean sqlStopPassengerArrest() {
+		return stopPassengerArrest;
+	}
+
 	public String jsonStopPassengerArrest() {
 		return stopPassengerArrest == null ? "" : stopPassengerArrest.toString();
 	}
@@ -1488,6 +1682,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strStopEncounterForce() {
 		return stopEncounterForce == null ? "" : stopEncounterForce.toString();
+	}
+
+	public Boolean sqlStopEncounterForce() {
+		return stopEncounterForce;
 	}
 
 	public String jsonStopEncounterForce() {
@@ -1634,6 +1832,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopEngageForce == null ? "" : stopEngageForce.toString();
 	}
 
+	public Boolean sqlStopEngageForce() {
+		return stopEngageForce;
+	}
+
 	public String jsonStopEngageForce() {
 		return stopEngageForce == null ? "" : stopEngageForce.toString();
 	}
@@ -1776,6 +1978,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strStopOfficerInjury() {
 		return stopOfficerInjury == null ? "" : stopOfficerInjury.toString();
+	}
+
+	public Boolean sqlStopOfficerInjury() {
+		return stopOfficerInjury;
 	}
 
 	public String jsonStopOfficerInjury() {
@@ -1922,6 +2128,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopDriverInjury == null ? "" : stopDriverInjury.toString();
 	}
 
+	public Boolean sqlStopDriverInjury() {
+		return stopDriverInjury;
+	}
+
 	public String jsonStopDriverInjury() {
 		return stopDriverInjury == null ? "" : stopDriverInjury.toString();
 	}
@@ -2066,6 +2276,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
 
+	public Boolean sqlStopPassengerInjury() {
+		return stopPassengerInjury;
+	}
+
 	public String jsonStopPassengerInjury() {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
@@ -2203,6 +2417,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strStopOfficerId() {
 		return stopOfficerId == null ? "" : stopOfficerId;
+	}
+
+	public String sqlStopOfficerId() {
+		return stopOfficerId;
 	}
 
 	public String jsonStopOfficerId() {
@@ -2347,6 +2565,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
 
+	public String sqlStopLocationId() {
+		return stopLocationId;
+	}
+
 	public String jsonStopLocationId() {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
@@ -2487,6 +2709,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String strStopCityId() {
 		return stopCityId == null ? "" : stopCityId;
+	}
+
+	public String sqlStopCityId() {
+		return stopCityId;
 	}
 
 	public String jsonStopCityId() {
@@ -2668,6 +2894,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return personKeys == null ? "" : personKeys.toString();
 	}
 
+	public List<Long> sqlPersonKeys() {
+		return personKeys;
+	}
+
 	public String jsonPersonKeys() {
 		return personKeys == null ? "" : personKeys.toString();
 	}
@@ -2768,6 +2998,148 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		} g("div");
 	}
 
+	//////////////////
+	// personSearch //
+	//////////////////
+
+	/**	 The entity personSearch
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<TrafficPerson>(). 
+	 */
+	@JsonIgnore
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<TrafficPerson> personSearch = new SearchList<TrafficPerson>();
+	@JsonIgnore
+	public Wrap<SearchList<TrafficPerson>> personSearchWrap = new Wrap<SearchList<TrafficPerson>>().p(this).c(SearchList.class).var("personSearch").o(personSearch);
+
+	/**	<br/> The entity personSearch
+	 *  It is constructed before being initialized with the constructor by default SearchList<TrafficPerson>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personSearch">Find the entity personSearch in Solr</a>
+	 * <br/>
+	 * @param personSearch is the entity already constructed. 
+	 **/
+	protected abstract void _personSearch(SearchList<TrafficPerson> l);
+
+	public SearchList<TrafficPerson> getPersonSearch() {
+		return personSearch;
+	}
+
+	public void setPersonSearch(SearchList<TrafficPerson> personSearch) {
+		this.personSearch = personSearch;
+		this.personSearchWrap.alreadyInitialized = true;
+	}
+	public static SearchList<TrafficPerson> staticSetPersonSearch(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected TrafficStop personSearchInit() {
+		if(!personSearchWrap.alreadyInitialized) {
+			_personSearch(personSearch);
+		}
+		personSearch.initDeepForClass(siteRequest_);
+		personSearchWrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	//////////////////////
+	// personRaceTitles //
+	//////////////////////
+
+	/**	 The entity personRaceTitles
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected List<String> personRaceTitles = new ArrayList<String>();
+	@JsonIgnore
+	public Wrap<List<String>> personRaceTitlesWrap = new Wrap<List<String>>().p(this).c(List.class).var("personRaceTitles").o(personRaceTitles);
+
+	/**	<br/> The entity personRaceTitles
+	 *  It is constructed before being initialized with the constructor by default List<String>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personRaceTitles">Find the entity personRaceTitles in Solr</a>
+	 * <br/>
+	 * @param personRaceTitles is the entity already constructed. 
+	 **/
+	protected abstract void _personRaceTitles(List<String> l);
+
+	public List<String> getPersonRaceTitles() {
+		return personRaceTitles;
+	}
+
+	public void setPersonRaceTitles(List<String> personRaceTitles) {
+		this.personRaceTitles = personRaceTitles;
+		this.personRaceTitlesWrap.alreadyInitialized = true;
+	}
+	public static String staticSetPersonRaceTitles(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	public TrafficStop addPersonRaceTitles(String...objets) {
+		for(String o : objets) {
+			addPersonRaceTitles(o);
+		}
+		return (TrafficStop)this;
+	}
+	public TrafficStop addPersonRaceTitles(String o) {
+		if(o != null && !personRaceTitles.contains(o))
+			this.personRaceTitles.add(o);
+		return (TrafficStop)this;
+	}
+	public void setPersonRaceTitles(JsonArray objets) {
+		personRaceTitles.clear();
+		for(int i = 0; i < objets.size(); i++) {
+			String o = objets.getString(i);
+			addPersonRaceTitles(o);
+		}
+	}
+	protected TrafficStop personRaceTitlesInit() {
+		if(!personRaceTitlesWrap.alreadyInitialized) {
+			_personRaceTitles(personRaceTitles);
+		}
+		personRaceTitlesWrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	public static String staticSolrPersonRaceTitles(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrPersonRaceTitles(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqPersonRaceTitles(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficStop.staticSolrStrPersonRaceTitles(siteRequest_, TrafficStop.staticSolrPersonRaceTitles(siteRequest_, TrafficStop.staticSetPersonRaceTitles(siteRequest_, o)));
+	}
+
+	public List<String> solrPersonRaceTitles() {
+		List<String> l = new ArrayList<String>();
+		for(String o : personRaceTitles) {
+			l.add(TrafficStop.staticSolrPersonRaceTitles(siteRequest_, o));
+		}
+		return l;
+	}
+
+	public String strPersonRaceTitles() {
+		return personRaceTitles == null ? "" : personRaceTitles.toString();
+	}
+
+	public List<String> sqlPersonRaceTitles() {
+		return personRaceTitles;
+	}
+
+	public String jsonPersonRaceTitles() {
+		return personRaceTitles == null ? "" : personRaceTitles.toString();
+	}
+
+	public String nomAffichagePersonRaceTitles() {
+		return null;
+	}
+
+	public String htmTooltipPersonRaceTitles() {
+		return null;
+	}
+
+	public String htmPersonRaceTitles() {
+		return personRaceTitles == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceTitles());
+	}
+
 	/////////////////////////////
 	// trafficStopCompleteName //
 	/////////////////////////////
@@ -2828,6 +3200,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return trafficStopCompleteName == null ? "" : trafficStopCompleteName;
 	}
 
+	public String sqlTrafficStopCompleteName() {
+		return trafficStopCompleteName;
+	}
+
 	public String jsonTrafficStopCompleteName() {
 		return trafficStopCompleteName == null ? "" : trafficStopCompleteName;
 	}
@@ -2871,6 +3247,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		agency_Init();
 		stopAgencyTitleInit();
 		stopDateTimeInit();
+		stopYearInit();
 		stopPurposeNumInit();
 		stopPurposeTitleInit();
 		stopActionNumInit();
@@ -2886,6 +3263,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		stopLocationIdInit();
 		stopCityIdInit();
 		personKeysInit();
+		personSearchInit();
+		personRaceTitlesInit();
 		trafficStopCompleteNameInit();
 	}
 
@@ -2901,6 +3280,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			super.siteRequestCluster(siteRequest_);
 		if(agencySearch != null)
 			agencySearch.setSiteRequest_(siteRequest_);
+		if(personSearch != null)
+			personSearch.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -2943,6 +3324,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				return oTrafficStop.stopAgencyTitle;
 			case "stopDateTime":
 				return oTrafficStop.stopDateTime;
+			case "stopYear":
+				return oTrafficStop.stopYear;
 			case "stopPurposeNum":
 				return oTrafficStop.stopPurposeNum;
 			case "stopPurposeTitle":
@@ -2973,6 +3356,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				return oTrafficStop.stopCityId;
 			case "personKeys":
 				return oTrafficStop.personKeys;
+			case "personSearch":
+				return oTrafficStop.personSearch;
+			case "personRaceTitles":
+				return oTrafficStop.personRaceTitles;
 			case "trafficStopCompleteName":
 				return oTrafficStop.trafficStopCompleteName;
 			default:
@@ -3027,6 +3414,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSetStopAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
 			return TrafficStop.staticSetStopDateTime(siteRequest_, o);
+		case "stopYear":
+			return TrafficStop.staticSetStopYear(siteRequest_, o);
 		case "stopPurposeNum":
 			return TrafficStop.staticSetStopPurposeNum(siteRequest_, o);
 		case "stopPurposeTitle":
@@ -3057,6 +3446,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSetStopCityId(siteRequest_, o);
 		case "personKeys":
 			return TrafficStop.staticSetPersonKeys(siteRequest_, o);
+		case "personRaceTitles":
+			return TrafficStop.staticSetPersonRaceTitles(siteRequest_, o);
 		case "trafficStopCompleteName":
 			return TrafficStop.staticSetTrafficStopCompleteName(siteRequest_, o);
 			default:
@@ -3081,6 +3472,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSolrStopAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
 			return TrafficStop.staticSolrStopDateTime(siteRequest_, (ZonedDateTime)o);
+		case "stopYear":
+			return TrafficStop.staticSolrStopYear(siteRequest_, (Integer)o);
 		case "stopPurposeNum":
 			return TrafficStop.staticSolrStopPurposeNum(siteRequest_, (Integer)o);
 		case "stopPurposeTitle":
@@ -3111,6 +3504,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSolrStopCityId(siteRequest_, (String)o);
 		case "personKeys":
 			return TrafficStop.staticSolrPersonKeys(siteRequest_, (Long)o);
+		case "personRaceTitles":
+			return TrafficStop.staticSolrPersonRaceTitles(siteRequest_, (String)o);
 		case "trafficStopCompleteName":
 			return TrafficStop.staticSolrTrafficStopCompleteName(siteRequest_, (String)o);
 			default:
@@ -3135,6 +3530,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSolrStrStopAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
 			return TrafficStop.staticSolrStrStopDateTime(siteRequest_, (Date)o);
+		case "stopYear":
+			return TrafficStop.staticSolrStrStopYear(siteRequest_, (Integer)o);
 		case "stopPurposeNum":
 			return TrafficStop.staticSolrStrStopPurposeNum(siteRequest_, (Integer)o);
 		case "stopPurposeTitle":
@@ -3165,6 +3562,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSolrStrStopCityId(siteRequest_, (String)o);
 		case "personKeys":
 			return TrafficStop.staticSolrStrPersonKeys(siteRequest_, (Long)o);
+		case "personRaceTitles":
+			return TrafficStop.staticSolrStrPersonRaceTitles(siteRequest_, (String)o);
 		case "trafficStopCompleteName":
 			return TrafficStop.staticSolrStrTrafficStopCompleteName(siteRequest_, (String)o);
 			default:
@@ -3189,6 +3588,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSolrFqStopAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
 			return TrafficStop.staticSolrFqStopDateTime(siteRequest_, o);
+		case "stopYear":
+			return TrafficStop.staticSolrFqStopYear(siteRequest_, o);
 		case "stopPurposeNum":
 			return TrafficStop.staticSolrFqStopPurposeNum(siteRequest_, o);
 		case "stopPurposeTitle":
@@ -3219,6 +3620,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return TrafficStop.staticSolrFqStopCityId(siteRequest_, o);
 		case "personKeys":
 			return TrafficStop.staticSolrFqPersonKeys(siteRequest_, o);
+		case "personRaceTitles":
+			return TrafficStop.staticSolrFqPersonRaceTitles(siteRequest_, o);
 		case "trafficStopCompleteName":
 			return TrafficStop.staticSolrFqTrafficStopCompleteName(siteRequest_, o);
 			default:
@@ -3256,6 +3659,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				if(val != null)
 					setStopDateTime(val);
 				saves.add("stopDateTime");
+				return val;
+			case "stopyear":
+				if(val != null)
+					setStopYear(val);
+				saves.add("stopYear");
 				return val;
 			case "stoppurposenum":
 				if(val != null)
@@ -3350,6 +3758,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				else if(val instanceof OffsetDateTime)
 					setStopDateTime(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
 				saves.add("stopDateTime");
+				return val;
+			case "stopyear":
+				if(val instanceof Integer)
+					setStopYear((Integer)val);
+				saves.add("stopYear");
 				return val;
 			case "stoppurposenum":
 				if(val instanceof Integer)
@@ -3452,6 +3865,12 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 					oTrafficStop.setStopDateTime(stopDateTime);
 			}
 
+			if(saves.contains("stopYear")) {
+				Integer stopYear = (Integer)solrDocument.get("stopYear_stored_int");
+				if(stopYear != null)
+					oTrafficStop.setStopYear(stopYear);
+			}
+
 			if(saves.contains("stopPurposeNum")) {
 				Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_stored_int");
 				if(stopPurposeNum != null)
@@ -3539,6 +3958,12 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			List<Long> personKeys = (List<Long>)solrDocument.get("personKeys_stored_longs");
 			if(personKeys != null)
 				oTrafficStop.personKeys.addAll(personKeys);
+
+			if(saves.contains("personRaceTitles")) {
+				List<String> personRaceTitles = (List<String>)solrDocument.get("personRaceTitles_stored_strings");
+				if(personRaceTitles != null)
+					oTrafficStop.personRaceTitles.addAll(personRaceTitles);
+			}
 
 			if(saves.contains("trafficStopCompleteName")) {
 				String trafficStopCompleteName = (String)solrDocument.get("trafficStopCompleteName_stored_string");
@@ -3628,6 +4053,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			document.addField("stopDateTime_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
 			document.addField("stopDateTime_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
 		}
+		if(stopYear != null) {
+			document.addField("stopYear_indexed_int", stopYear);
+			document.addField("stopYear_stored_int", stopYear);
+		}
 		if(stopPurposeNum != null) {
 			document.addField("stopPurposeNum_indexed_int", stopPurposeNum);
 			document.addField("stopPurposeNum_stored_int", stopPurposeNum);
@@ -3692,6 +4121,14 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				document.addField("personKeys_stored_longs", o);
 			}
 		}
+		if(personRaceTitles != null) {
+			for(java.lang.String o : personRaceTitles) {
+				document.addField("personRaceTitles_indexed_strings", o);
+			}
+			for(java.lang.String o : personRaceTitles) {
+				document.addField("personRaceTitles_stored_strings", o);
+			}
+		}
 		if(trafficStopCompleteName != null) {
 			document.addField("trafficStopCompleteName_indexed_string", trafficStopCompleteName);
 			document.addField("trafficStopCompleteName_stored_string", trafficStopCompleteName);
@@ -3727,6 +4164,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				return "stopAgencyTitle_indexed_string";
 			case "stopDateTime":
 				return "stopDateTime_indexed_date";
+			case "stopYear":
+				return "stopYear_indexed_int";
 			case "stopPurposeNum":
 				return "stopPurposeNum_indexed_int";
 			case "stopPurposeTitle":
@@ -3757,6 +4196,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				return "stopCityId_indexed_string";
 			case "personKeys":
 				return "personKeys_indexed_longs";
+			case "personRaceTitles":
+				return "personRaceTitles_indexed_strings";
 			case "trafficStopCompleteName":
 				return "trafficStopCompleteName_indexed_string";
 			default:
@@ -3803,6 +4244,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		Date stopDateTime = (Date)solrDocument.get("stopDateTime_stored_date");
 		if(stopDateTime != null)
 			oTrafficStop.setStopDateTime(stopDateTime);
+
+		Integer stopYear = (Integer)solrDocument.get("stopYear_stored_int");
+		if(stopYear != null)
+			oTrafficStop.setStopYear(stopYear);
 
 		Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_stored_int");
 		if(stopPurposeNum != null)
@@ -3864,6 +4309,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		if(personKeys != null)
 			oTrafficStop.personKeys.addAll(personKeys);
 
+		List<String> personRaceTitles = (List<String>)solrDocument.get("personRaceTitles_stored_strings");
+		if(personRaceTitles != null)
+			oTrafficStop.personRaceTitles.addAll(personRaceTitles);
+
 		String trafficStopCompleteName = (String)solrDocument.get("trafficStopCompleteName_stored_string");
 		if(trafficStopCompleteName != null)
 			oTrafficStop.setTrafficStopCompleteName(trafficStopCompleteName);
@@ -3888,6 +4337,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				apiRequest.addVars("stopAgencyTitle");
 			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
 				apiRequest.addVars("stopDateTime");
+			if(!Objects.equals(stopYear, original.getStopYear()))
+				apiRequest.addVars("stopYear");
 			if(!Objects.equals(stopPurposeNum, original.getStopPurposeNum()))
 				apiRequest.addVars("stopPurposeNum");
 			if(!Objects.equals(stopPurposeTitle, original.getStopPurposeTitle()))
@@ -3918,6 +4369,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				apiRequest.addVars("stopCityId");
 			if(!Objects.equals(personKeys, original.getPersonKeys()))
 				apiRequest.addVars("personKeys");
+			if(!Objects.equals(personRaceTitles, original.getPersonRaceTitles()))
+				apiRequest.addVars("personRaceTitles");
 			if(!Objects.equals(trafficStopCompleteName, original.getTrafficStopCompleteName()))
 				apiRequest.addVars("trafficStopCompleteName");
 			super.apiRequestCluster();
@@ -3929,7 +4382,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), trafficStopKey, agencyKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personKeys, trafficStopCompleteName);
+		return Objects.hash(super.hashCode(), trafficStopKey, agencyKey, stopAgencyTitle, stopDateTime, stopYear, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personKeys, personRaceTitles, trafficStopCompleteName);
 	}
 
 	////////////
@@ -3947,6 +4400,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				&& Objects.equals( agencyKey, that.agencyKey )
 				&& Objects.equals( stopAgencyTitle, that.stopAgencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
+				&& Objects.equals( stopYear, that.stopYear )
 				&& Objects.equals( stopPurposeNum, that.stopPurposeNum )
 				&& Objects.equals( stopPurposeTitle, that.stopPurposeTitle )
 				&& Objects.equals( stopActionNum, that.stopActionNum )
@@ -3962,6 +4416,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				&& Objects.equals( stopLocationId, that.stopLocationId )
 				&& Objects.equals( stopCityId, that.stopCityId )
 				&& Objects.equals( personKeys, that.personKeys )
+				&& Objects.equals( personRaceTitles, that.personRaceTitles )
 				&& Objects.equals( trafficStopCompleteName, that.trafficStopCompleteName );
 	}
 
@@ -3977,6 +4432,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		sb.append( ", agencyKey: " ).append(agencyKey);
 		sb.append( ", stopAgencyTitle: \"" ).append(stopAgencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);
+		sb.append( ", stopYear: " ).append(stopYear);
 		sb.append( ", stopPurposeNum: " ).append(stopPurposeNum);
 		sb.append( ", stopPurposeTitle: \"" ).append(stopPurposeTitle).append( "\"" );
 		sb.append( ", stopActionNum: " ).append(stopActionNum);
@@ -3992,6 +4448,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		sb.append( ", stopLocationId: \"" ).append(stopLocationId).append( "\"" );
 		sb.append( ", stopCityId: \"" ).append(stopCityId).append( "\"" );
 		sb.append( ", personKeys: " ).append(personKeys);
+		sb.append( ", personRaceTitles: " ).append(personRaceTitles);
 		sb.append( ", trafficStopCompleteName: \"" ).append(trafficStopCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();

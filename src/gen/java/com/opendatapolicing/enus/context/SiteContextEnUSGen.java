@@ -49,32 +49,16 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 public abstract class SiteContextEnUSGen<DEV> extends Object {
 
 /*
-CREATE TABLE PageDesign(
-	childDesignKeys  references PageDesign(pk)
-	, parentDesignKeys  references PageDesign(pk)
-	, htmlPartKeys  references HtmlPart(pk)
-	, pageDesignCompleteName 
-	, designHidden 
-	, pageContentType 
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, modified timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userId text
-	, userKey bigint
-	);
 CREATE TABLE SiteUser(
-	userId 
-	, userKey 
-	, userName 
-	, userEmail 
-	, userFirstName 
-	, userLastName 
-	, userFullName 
-	, seeArchived 
-	, seeDeleted 
+	userId text
+	, userKey bigint
+	, userName text
+	, userEmail text
+	, userFirstName text
+	, userLastName text
+	, userFullName text
+	, seeArchived boolean
+	, seeDeleted boolean
 	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
@@ -85,47 +69,11 @@ CREATE TABLE SiteUser(
 	, userKey bigint
 	);
 CREATE TABLE SiteAgency(
-	agencyName 
-	, stateKey  references SiteState(pk)
-	, imageLeft 
-	, imageTop 
-	, imageCoords 
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, modified timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userId text
-	, userKey bigint
-	);
-CREATE TABLE SiteState(
-	stateName 
-	, stateAbbreviation 
-	, imageLeft 
-	, imageTop 
-	, agencyKeys  references SiteAgency(pk)
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, modified timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userId text
-	, userKey bigint
-	);
-CREATE TABLE TrafficContraband(
-	searchKey  references TrafficSearch(pk)
-	, contrabandOunces 
-	, contrabandPounds 
-	, contrabandPints 
-	, contrabandGallons 
-	, contrabandDosages 
-	, contrabandGrams 
-	, contrabandKilos 
-	, contrabandMoney 
-	, contrabandWeapons 
-	, contrabandDollarAmount 
+	agencyName text
+	, stateKey bigint references SiteState(pk)
+	, imageLeft integer
+	, imageTop integer
+	, imageCoords text
 	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
@@ -136,117 +84,13 @@ CREATE TABLE TrafficContraband(
 	, userKey bigint
 	);
 CREATE TABLE SearchBasis(
-	searchKey  references TrafficSearch(pk)
-	, stopAgencyTitle 
-	, stopDateTime 
-	, stopPurposeNum 
-	, stopPurposeTitle 
-	, stopActionNum 
-	, stopActionTitle 
-	, stopDriverArrest 
-	, stopPassengerArrest 
-	, stopEncounterForce 
-	, stopEngageForce 
-	, stopOfficerInjury 
-	, stopDriverInjury 
-	, stopPassengerInjury 
-	, stopOfficerId 
-	, stopLocationId 
-	, stopCityId 
-	, personTypeId 
-	, personGenderId 
-	, personEthnicityId 
-	, personRaceId 
-	, searchTypeNum 
-	, searchBasisId 
-	, searchBasisTitle 
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, modified timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userId text
-	, userKey bigint
-	);
-CREATE TABLE TrafficSearch(
-	personKey  references TrafficPerson(pk)
-	, contrabandKeys  references TrafficContraband(pk)
-	, searchBasisKeys  references SearchBasis(pk)
-	, stopAgencyTitle 
-	, stopDateTime 
-	, stopPurposeNum 
-	, stopPurposeTitle 
-	, stopActionNum 
-	, stopActionTitle 
-	, stopDriverArrest 
-	, stopPassengerArrest 
-	, stopEncounterForce 
-	, stopEngageForce 
-	, stopOfficerInjury 
-	, stopDriverInjury 
-	, stopPassengerInjury 
-	, stopOfficerId 
-	, stopLocationId 
-	, stopCityId 
-	, personTypeId 
-	, personGenderId 
-	, personEthnicityId 
-	, personRaceId 
-	, searchTypeNum 
-	, searchVehicle 
-	, searchDriver 
-	, searchPassenger 
-	, searchProperty 
-	, searchVehicleSiezed 
-	, searchPersonalPropertySiezed 
-	, searchOtherPropertySiezed 
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, modified timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userId text
-	, userKey bigint
-	);
-CREATE TABLE TrafficPerson(
-	trafficStopKey  references TrafficStop(pk)
-	, stopAgencyTitle 
-	, stopDateTime 
-	, stopPurposeNum 
-	, stopPurposeTitle 
-	, stopActionNum 
-	, stopActionTitle 
-	, stopDriverArrest 
-	, stopPassengerArrest 
-	, stopEncounterForce 
-	, stopEngageForce 
-	, stopOfficerInjury 
-	, stopDriverInjury 
-	, stopPassengerInjury 
-	, stopOfficerId 
-	, stopLocationId 
-	, stopCityId 
-	, personAge 
-	, personTypeId 
-	, personGenderId 
-	, personEthnicityId 
-	, personRaceId 
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, modified timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userId text
-	, userKey bigint
-	);
-CREATE TABLE TrafficStop(
-	stopAgencyTitle text
+	searchKey bigint references TrafficSearch(pk)
+	, stopAgencyTitle text
 	, stopDateTime timestamp with time zone
 	, stopPurposeNum integer
+	, stopPurposeTitle text
 	, stopActionNum integer
+	, stopActionTitle text
 	, stopDriverArrest boolean
 	, stopPassengerArrest boolean
 	, stopEncounterForce boolean
@@ -257,6 +101,100 @@ CREATE TABLE TrafficStop(
 	, stopOfficerId text
 	, stopLocationId text
 	, stopCityId text
+	, personTypeId text
+	, personGenderId text
+	, personEthnicityId text
+	, personRaceId text
+	, searchTypeNum integer
+	, searchBasisId text
+	, searchBasisTitle text
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE SiteState(
+	stateName text
+	, stateAbbreviation text
+	, imageLeft integer
+	, imageTop integer
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE TrafficContraband(
+	searchKey bigint references TrafficSearch(pk)
+	, contrabandOunces double
+	, contrabandPounds double
+	, contrabandPints double
+	, contrabandGallons double
+	, contrabandDosages double
+	, contrabandGrams double
+	, contrabandKilos double
+	, contrabandMoney double
+	, contrabandWeapons double
+	, contrabandDollarAmount double
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE TrafficSearch(
+	personKey bigint references TrafficPerson(pk)
+	, stopAgencyTitle text
+	, stopDateTime timestamp with time zone
+	, stopPurposeNum integer
+	, stopPurposeTitle text
+	, stopActionNum integer
+	, stopActionTitle text
+	, stopDriverArrest boolean
+	, stopPassengerArrest boolean
+	, stopEncounterForce boolean
+	, stopEngageForce boolean
+	, stopOfficerInjury boolean
+	, stopDriverInjury boolean
+	, stopPassengerInjury boolean
+	, stopOfficerId text
+	, stopLocationId text
+	, stopCityId text
+	, personTypeId text
+	, personGenderId text
+	, personEthnicityId text
+	, personRaceId text
+	, searchTypeNum integer
+	, searchVehicle boolean
+	, searchDriver boolean
+	, searchPassenger boolean
+	, searchProperty boolean
+	, searchVehicleSiezed boolean
+	, searchPersonalPropertySiezed boolean
+	, searchOtherPropertySiezed boolean
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	);
+CREATE TABLE PageDesign(
+	pageDesignCompleteName text
+	, designHidden boolean
+	, pageContentType text
 	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
@@ -303,7 +241,7 @@ CREATE TABLE HtmlPart(
 	, htmlExclude boolean
 	, pdfExclude boolean
 	, loginLogout boolean
-	, searchClass text
+	, searchUri text
 	, mapTo text
 	, sort1 double
 	, sort2 double
@@ -315,6 +253,72 @@ CREATE TABLE HtmlPart(
 	, sort8 double
 	, sort9 double
 	, sort10 double
+	);
+CREATE TABLE TrafficStop(
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	, stopAgencyTitle text
+	, stopDateTime timestamp with time zone
+	, stopPurposeNum integer
+	, stopActionNum integer
+	, stopDriverArrest boolean
+	, stopPassengerArrest boolean
+	, stopEncounterForce boolean
+	, stopEngageForce boolean
+	, stopOfficerInjury boolean
+	, stopDriverInjury boolean
+	, stopPassengerInjury boolean
+	, stopOfficerId text
+	, stopLocationId text
+	, stopCityId text
+	);
+CREATE TABLE TrafficPerson(
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, modified timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userId text
+	, userKey bigint
+	, trafficStopKey bigint references TrafficStop(pk)
+	, stopAgencyTitle text
+	, stopDateTime timestamp with time zone
+	, stopPurposeNum integer
+	, stopPurposeTitle text
+	, stopActionNum integer
+	, stopActionTitle text
+	, stopDriverArrest boolean
+	, stopPassengerArrest boolean
+	, stopEncounterForce boolean
+	, stopEngageForce boolean
+	, stopOfficerInjury boolean
+	, stopDriverInjury boolean
+	, stopPassengerInjury boolean
+	, stopOfficerId text
+	, stopLocationId text
+	, stopCityId text
+	, personAge integer
+	, personTypeId text
+	, personGenderId text
+	, personEthnicityId text
+	, personRaceId text
+	);
+CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references PageDesign(pk)
+	, pk2 bigint references PageDesign(pk)
+	);
+CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references HtmlPart(pk)
+	, pk2 bigint references PageDesign(pk)
 	);
 */
 

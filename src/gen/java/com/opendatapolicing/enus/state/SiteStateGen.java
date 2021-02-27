@@ -148,6 +148,10 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		return stateKey == null ? "" : stateKey.toString();
 	}
 
+	public Long sqlStateKey() {
+		return stateKey;
+	}
+
 	public String jsonStateKey() {
 		return stateKey == null ? "" : stateKey.toString();
 	}
@@ -222,6 +226,10 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String strStateName() {
 		return stateName == null ? "" : stateName;
+	}
+
+	public String sqlStateName() {
+		return stateName;
 	}
 
 	public String jsonStateName() {
@@ -364,6 +372,10 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String strStateAbbreviation() {
 		return stateAbbreviation == null ? "" : stateAbbreviation;
+	}
+
+	public String sqlStateAbbreviation() {
+		return stateAbbreviation;
 	}
 
 	public String jsonStateAbbreviation() {
@@ -516,6 +528,10 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		return imageLeft == null ? "" : imageLeft.toString();
 	}
 
+	public Integer sqlImageLeft() {
+		return imageLeft;
+	}
+
 	public String jsonImageLeft() {
 		return imageLeft == null ? "" : imageLeft.toString();
 	}
@@ -664,6 +680,10 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String strImageTop() {
 		return imageTop == null ? "" : imageTop.toString();
+	}
+
+	public Integer sqlImageTop() {
+		return imageTop;
 	}
 
 	public String jsonImageTop() {
@@ -845,6 +865,10 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		return agencyKeys == null ? "" : agencyKeys.toString();
 	}
 
+	public List<Long> sqlAgencyKeys() {
+		return agencyKeys;
+	}
+
 	public String jsonAgencyKeys() {
 		return agencyKeys == null ? "" : agencyKeys.toString();
 	}
@@ -1003,6 +1027,10 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 
 	public String strStateCompleteName() {
 		return stateCompleteName == null ? "" : stateCompleteName;
+	}
+
+	public String sqlStateCompleteName() {
+		return stateCompleteName;
 	}
 
 	public String jsonStateCompleteName() {

@@ -6,7 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -17,6 +19,8 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.FacetParams;
+
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -287,6 +291,26 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 
 	public SolrQuery addDateRangeFacet(String field, Date start, Date end, String gap) {
 		return solrQuery.addDateRangeFacet(field, start, end, gap);
+	}
+
+  /**
+   * Add a numeric range facet.
+   *
+   * @param field The field
+   * @param start The start of range
+   * @param end The end of the range
+   * @param gap The gap between each count
+   * @return this
+   */
+	public SolrQuery addDateRangeFacet(String field, Date start, Date end, String gap, String pivot) {
+		add(FacetParams.FACET_RANGE, field);
+		add(String.format(Locale.ROOT, "f.%s.%s", field, FacetParams.FACET_RANGE_START), start.toInstant().toString());
+		add(String.format(Locale.ROOT, "f.%s.%s", field, FacetParams.FACET_RANGE_END), end.toInstant().toString());
+		add(String.format(Locale.ROOT, "f.%s.%s", field, FacetParams.FACET_RANGE_GAP), gap);
+		if(pivot != null)
+			add(String.format(Locale.ROOT, "f.%s.%s", field, FacetParams.FACET_RANGE + ".pivot"), pivot);
+		this.set(FacetParams.FACET, true);
+		return solrQuery;
 	}
 
 	public SolrQuery addIntervalFacets(String field, String[] intervals) {

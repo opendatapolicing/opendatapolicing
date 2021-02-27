@@ -5,6 +5,15 @@
 # Milestone: Data Backup/Restore
 # Column: Data Backup/Restore
 
-- name: Get restore site access token
-  shell: curl -X POST -u "{{AUTH_RESOURCE}}:{{AUTH_SECRET}}" -d "grant_type=client_credentials" "{{AUTH_URL}}/realms/{{AUTH_REALM}}/protocol/openid-connect/token"
+- name: Restore site access token
+  uri:
+    url: "{{ AUTH_URL }}/realms/{{ AUTH_REALM }}/protocol/openid-connect/token"
+    method: POST
+    url_username: "{{ AUTH_RESOURCE }}"
+    url_password: "{{ AUTH_SECRET }}"
+    force_basic_auth: true
+    body_format: form-urlencoded
+    body:
+      grant_type: client_credentials
   register: AUTH_TOKEN
+

@@ -1,0 +1,22 @@
+---
+- name: Request the {{ DATA_NAME_VAR }} {{ (item | int) + 1 }}-{{ (item | int) + DATA_ROWS }} response data
+  uri:
+    url: "{{ PROJECT_SITE_BASE_URL_ENUS }}{{ DATA_URI }}?fl=saves&rows={{ DATA_ROWS }}&start={{ item }}"
+    dest: "{{ PROJECT_BACKUP_DIR_ENUS }}/{{ DATA_NAME_VAR }}{{ item }}.json"
+    headers:
+      Authorization: "Bearer {{ AUTH_TOKEN.json.access_token }}"
+  ignore_errors: true
+  register: REQUEST_DATA
+- name: Restore site access token again
+  include_role:
+    name: project_login
+  when: REQUEST_DATA.failed | default(false)
+- name: Request the {{ DATA_NAME_VAR }} {{ (item | int) + 1 }}-{{ (item | int) + DATA_ROWS }} response data again
+  uri:
+    url: "{{ PROJECT_SITE_BASE_URL_ENUS }}{{ DATA_URI }}?fl=saves&rows={{ DATA_ROWS }}&start={{ item }}"
+    dest: "{{ PROJECT_BACKUP_DIR_ENUS }}/{{ DATA_NAME_VAR }}{{ item }}.json"
+    headers:
+      Authorization: "Bearer {{ AUTH_TOKEN.json.access_token }}"
+  register: REQUEST_DATA
+  when: REQUEST_DATA.failed | default(false)
+

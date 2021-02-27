@@ -191,6 +191,10 @@ public abstract class SearchListGen<DEV> {
 		return store == null ? "" : store.toString();
 	}
 
+	public Boolean sqlStore() {
+		return store;
+	}
+
 	public String jsonStore() {
 		return store == null ? "" : store.toString();
 	}
@@ -270,6 +274,10 @@ public abstract class SearchListGen<DEV> {
 
 	public String strPopulate() {
 		return populate == null ? "" : populate.toString();
+	}
+
+	public Boolean sqlPopulate() {
+		return populate;
 	}
 
 	public String jsonPopulate() {
@@ -367,6 +375,10 @@ public abstract class SearchListGen<DEV> {
 
 	public String strFields() {
 		return fields == null ? "" : fields.toString();
+	}
+
+	public List<String> sqlFields() {
+		return fields;
 	}
 
 	public String jsonFields() {

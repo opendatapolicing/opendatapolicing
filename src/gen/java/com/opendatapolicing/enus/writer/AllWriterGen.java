@@ -146,6 +146,10 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return tabStr == null ? "" : tabStr;
 	}
 
+	public String sqlTabStr() {
+		return tabStr;
+	}
+
 	public String jsonTabStr() {
 		return tabStr == null ? "" : tabStr;
 	}
@@ -389,6 +393,10 @@ public abstract class AllWriterGen<DEV> extends Object {
 
 	public String strEmpty() {
 		return empty == null ? "" : empty.toString();
+	}
+
+	public Boolean sqlEmpty() {
+		return empty;
 	}
 
 	public String jsonEmpty() {

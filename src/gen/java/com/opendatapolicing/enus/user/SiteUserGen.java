@@ -174,6 +174,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userKeys == null ? "" : userKeys.toString();
 	}
 
+	public List<Long> sqlUserKeys() {
+		return userKeys;
+	}
+
 	public String jsonUserKeys() {
 		return userKeys == null ? "" : userKeys.toString();
 	}
@@ -248,6 +252,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String strUserId() {
 		return userId == null ? "" : userId;
+	}
+
+	public String sqlUserId() {
+		return userId;
 	}
 
 	public String jsonUserId() {
@@ -400,6 +408,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userKey == null ? "" : userKey.toString();
 	}
 
+	public Long sqlUserKey() {
+		return userKey;
+	}
+
 	public String jsonUserKey() {
 		return userKey == null ? "" : userKey.toString();
 	}
@@ -542,6 +554,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userName == null ? "" : userName;
 	}
 
+	public String sqlUserName() {
+		return userName;
+	}
+
 	public String jsonUserName() {
 		return userName == null ? "" : userName;
 	}
@@ -678,6 +694,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String strUserEmail() {
 		return userEmail == null ? "" : userEmail;
+	}
+
+	public String sqlUserEmail() {
+		return userEmail;
 	}
 
 	public String jsonUserEmail() {
@@ -818,6 +838,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userFirstName == null ? "" : userFirstName;
 	}
 
+	public String sqlUserFirstName() {
+		return userFirstName;
+	}
+
 	public String jsonUserFirstName() {
 		return userFirstName == null ? "" : userFirstName;
 	}
@@ -956,6 +980,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userLastName == null ? "" : userLastName;
 	}
 
+	public String sqlUserLastName() {
+		return userLastName;
+	}
+
 	public String jsonUserLastName() {
 		return userLastName == null ? "" : userLastName;
 	}
@@ -1092,6 +1120,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String strUserFullName() {
 		return userFullName == null ? "" : userFullName;
+	}
+
+	public String sqlUserFullName() {
+		return userFullName;
 	}
 
 	public String jsonUserFullName() {
@@ -1237,6 +1269,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return seeArchived == null ? "" : seeArchived.toString();
 	}
 
+	public Boolean sqlSeeArchived() {
+		return seeArchived;
+	}
+
 	public String jsonSeeArchived() {
 		return seeArchived == null ? "" : seeArchived.toString();
 	}
@@ -1379,6 +1415,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String strSeeDeleted() {
 		return seeDeleted == null ? "" : seeDeleted.toString();
+	}
+
+	public Boolean sqlSeeDeleted() {
+		return seeDeleted;
 	}
 
 	public String jsonSeeDeleted() {

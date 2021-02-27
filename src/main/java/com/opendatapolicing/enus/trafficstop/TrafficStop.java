@@ -1,11 +1,15 @@
-package com.opendatapolicing.enus.trafficstop;  
+package com.opendatapolicing.enus.trafficstop;            
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FacetField.Count;
+
 import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.trafficperson.TrafficPerson;
 import com.opendatapolicing.enus.wrap.Wrap;
 
 /**
@@ -108,6 +112,18 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * DisplayName.enUS: stop date/time
 	 */ 
 	protected void _stopDateTime(Wrap<ZonedDateTime> w) {
+	}
+
+	/**    
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * DisplayName.enUS: stop year
+	 */ 
+	protected void _stopYear(Wrap<Integer> w) {
+		if(stopDateTime != null)
+			w.o(stopDateTime.getYear());
 	}
 
 	/**    
@@ -314,8 +330,34 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * HtmlRow: 7
 	 * HtmlCell: 3
 	 * DisplayName.enUS: people
-	 */       
+	 */ 
 	protected void _personKeys(List<Long> c) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */ 
+	protected void _personSearch(SearchList<TrafficPerson> l) {
+		l.setQuery("*:*");
+		l.addFilterQuery("trafficStopKey_indexed_long:" + pk);
+		l.setC(TrafficPerson.class);
+		l.setRows(0);
+		l.addFacetField("personRaceTitle_indexed_string");
+		l.setStore(true);
+	}
+
+	/** 
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 */
+	protected void _personRaceTitles(List<String> l) {
+		FacetField field = personSearch.getQueryResponse().getFacetField("personRaceTitle_indexed_string");
+		for(Count count : field.getValues()) {
+			if(count.getCount() > 0)
+				l.add(count.getName());
+		}
 	}
 
 	/**   

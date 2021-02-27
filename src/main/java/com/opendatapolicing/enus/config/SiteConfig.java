@@ -340,9 +340,9 @@ public class SiteConfig extends SiteConfigGen<Object> implements Serializable {
 	protected void _jdbcMaxPoolSize(Wrap<Integer> c) {
 		Integer o;
 		if(config == null)
-			o = NumberUtils.toInt(System.getenv(c.var), 15);
+			o = NumberUtils.toInt(System.getenv(c.var), 5);
 		else
-			o = config.getInt(prefixEscaped + c.var, 15);
+			o = config.getInt(prefixEscaped + c.var, 5);
 		c.o(o);
 	}
 

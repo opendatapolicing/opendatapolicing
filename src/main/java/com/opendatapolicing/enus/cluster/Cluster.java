@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.cluster;
+package com.opendatapolicing.enus.cluster; 
 
 import java.text.Normalizer;
 import java.time.ZoneId;
@@ -127,6 +127,8 @@ public class Cluster extends ClusterGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 2
+	 * HtmlCell: 1
 	 * DisplayName.enUS: archived
 	 */ 
 	protected void _archived(Wrap<Boolean> c) {
@@ -138,6 +140,8 @@ public class Cluster extends ClusterGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 2
+	 * HtmlCell: 2
 	 * DisplayName.enUS: deleted
 	 */ 
 	protected void _deleted(Wrap<Boolean> c) {

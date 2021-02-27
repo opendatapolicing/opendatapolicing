@@ -192,6 +192,10 @@ public abstract class SearchResultGen<DEV> extends Object {
 		return resultIndex == null ? "" : resultIndex.toString();
 	}
 
+	public Long sqlResultIndex() {
+		return resultIndex;
+	}
+
 	public String jsonResultIndex() {
 		return resultIndex == null ? "" : resultIndex.toString();
 	}
