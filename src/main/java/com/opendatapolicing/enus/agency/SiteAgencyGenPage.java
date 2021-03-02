@@ -210,7 +210,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 	public void htmlFormPUTCopySiteAgency(SiteAgency o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
-			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PUTCopy");
@@ -232,7 +231,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 	public void htmlFormPATCHSiteAgency(SiteAgency o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
@@ -274,7 +272,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 		} g("div");

@@ -14041,1629 +14041,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/requestBodies/ErrorResponse'
-  /api/admin/traffic-search:
-    get:
-      operationId: adminsearchTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/AdminSearchTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-  /api/traffic-search:
-    post:
-      operationId: postTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/POSTTrafficSearchRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/POSTTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-    patch:
-      operationId: patchTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PATCHTrafficSearchRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/PATCHTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-    get:
-      operationId: searchTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/SearchTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-  /api/traffic-search/copy:
-    put:
-      operationId: putcopyTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopyTrafficSearchRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/PUTCopyTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-  /api/traffic-search/import:
-    put:
-      operationId: putimportTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTImportTrafficSearchRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/PUTImportTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-  /api/traffic-search/merge:
-    put:
-      operationId: putmergeTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeTrafficSearchRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/PUTMergeTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-  /api/traffic-search/{id}:
-    get:
-      operationId: getTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - name: id
-          in: path
-          description: >+
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/GETTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-  /traffic-search:
-    get:
-      operationId: searchpageTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: >+
-          content:
-            text/html; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/SearchPageTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-  /traffic-search/{id}:
-    get:
-      operationId: searchpageTrafficSearchId
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - name: id
-          in: path
-          description: >+
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 100
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: >+
-          content:
-            text/html; charset=utf-8:
-              schema:
-                $ref: '#/components/requestBodies/SearchPageTrafficSearchResponse'
-        '400':
-          description: >+
-                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
-                or invalid Parameters</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '401':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
-                credentials are missing or invalid</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '403':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
-                request operation is not configured to access this
-                resource</td><td>Channel/Country/Business provided in the request is
-                not supported currently</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '404':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
-                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
-                requested resource was not found</td><td>Empty resource/resource not
-                found</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
-        '500':
-          description: >+
-                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
-                request failed due to an internal error/server
-                unavailability</td></tr></table>
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/requestBodies/ErrorResponse'
   /api/admin/traffic-stop:
     get:
       operationId: adminsearchTrafficStop
@@ -17287,6 +15664,1629 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/requestBodies/ErrorResponse'
+  /api/admin/traffic-search:
+    get:
+      operationId: adminsearchTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/AdminSearchTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+  /api/traffic-search:
+    post:
+      operationId: postTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/POSTTrafficSearchRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/POSTTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+    patch:
+      operationId: patchTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PATCHTrafficSearchRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/PATCHTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+    get:
+      operationId: searchTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/SearchTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+  /api/traffic-search/copy:
+    put:
+      operationId: putcopyTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTCopyTrafficSearchRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/PUTCopyTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+  /api/traffic-search/import:
+    put:
+      operationId: putimportTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTImportTrafficSearchRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/PUTImportTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+  /api/traffic-search/merge:
+    put:
+      operationId: putmergeTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      security:
+        - openIdConnect:
+          - DefaultAuthScope
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTMergeTrafficSearchRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/PUTMergeTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+  /api/traffic-search/{id}:
+    get:
+      operationId: getTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/GETTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+  /traffic-search:
+    get:
+      operationId: searchpageTrafficSearch
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/SearchPageTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+  /traffic-search/{id}:
+    get:
+      operationId: searchpageTrafficSearchId
+      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
+      description: >+
+      summary: >+
+      tags:
+        - Traffic Search
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: ''
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: ''
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: ''
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 0
+        - in: query
+          name: var
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: facet
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: boolean
+        - in: query
+          name: facet.range.start
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: ''
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/requestBodies/SearchPageTrafficSearchResponse'
+        '400':
+          description: >+
+                <table><table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>invalidRequest</td><td>Missing
+                or invalid Parameters</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '401':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>error</td><td>unAuthorized</td><td>Authorization
+                credentials are missing or invalid</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '403':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>accessNotConfigured</td><td>The
+                request operation is not configured to access this
+                resource</td><td>Channel/Country/Business provided in the request is
+                not supported currently</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '404':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td><td>More
+                Info</td></tr><tr><td>error</td><td>resourceNotFound</td><td>The
+                requested resource was not found</td><td>Empty resource/resource not
+                found</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
+        '500':
+          description: >+
+                <table><tr><td>Type</td><td>Code</td><td>Details</td></tr><tr><td>fatal</td><td>serverUnavailable</td><td>The
+                request failed due to an internal error/server
+                unavailability</td></tr></table>
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/requestBodies/ErrorResponse'
 components:
   securitySchemes:
     openIdConnect:
@@ -17873,76 +17873,6 @@ components:
         text/html; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchPageTrafficPersonResponse'
-    AdminSearchTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/AdminSearchTrafficSearchResponse'
-    POSTTrafficSearchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/POSTTrafficSearchRequest'
-    POSTTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/POSTTrafficSearchResponse'
-    PATCHTrafficSearchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PATCHTrafficSearchRequest'
-    PATCHTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PATCHTrafficSearchResponse'
-    SearchTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/SearchTrafficSearchResponse'
-    PUTCopyTrafficSearchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficSearchRequest'
-    PUTCopyTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficSearchResponse'
-    PUTImportTrafficSearchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTImportTrafficSearchRequest'
-    PUTImportTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTImportTrafficSearchResponse'
-    PUTMergeTrafficSearchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficSearchRequest'
-    PUTMergeTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficSearchResponse'
-    GETTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/GETTrafficSearchResponse'
-    SearchPageTrafficSearchResponse:
-      content:
-        text/html; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/SearchPageTrafficSearchResponse'
     AdminSearchTrafficStopResponse:
       content:
         application/json; charset=utf-8:
@@ -18013,6 +17943,76 @@ components:
         text/html; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchPageTrafficStopResponse'
+    AdminSearchTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/AdminSearchTrafficSearchResponse'
+    POSTTrafficSearchRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/POSTTrafficSearchRequest'
+    POSTTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/POSTTrafficSearchResponse'
+    PATCHTrafficSearchRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PATCHTrafficSearchRequest'
+    PATCHTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PATCHTrafficSearchResponse'
+    SearchTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchTrafficSearchResponse'
+    PUTCopyTrafficSearchRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTCopyTrafficSearchRequest'
+    PUTCopyTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTCopyTrafficSearchResponse'
+    PUTImportTrafficSearchRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTImportTrafficSearchRequest'
+    PUTImportTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTImportTrafficSearchResponse'
+    PUTMergeTrafficSearchRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTMergeTrafficSearchRequest'
+    PUTMergeTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTMergeTrafficSearchResponse'
+    GETTrafficSearchResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/GETTrafficSearchResponse'
+    SearchPageTrafficSearchResponse:
+      content:
+        text/html; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchPageTrafficSearchResponse'
   schemas:
     HomePageSearchPagePageDesignResponse:
       allOf:
@@ -26444,6 +26444,1025 @@ components:
     SearchPageTrafficPersonResponse:
       allOf:
         - type: string
+    AdminSearchTrafficStopResponse:
+      allOf:
+        - type: array
+          items:
+            type: object
+            properties:
+              trafficStopKey:
+                type: string
+              agencyKey:
+                type: string
+              stopAgencyTitle:
+                type: string
+              stopDateTime:
+                type: string
+              stopYear:
+                type: string
+              stopPurposeNum:
+                type: string
+              stopPurposeTitle:
+                type: string
+              stopActionNum:
+                type: string
+              stopActionTitle:
+                type: string
+              stopDriverArrest:
+                type: boolean
+              stopPassengerArrest:
+                type: boolean
+              stopEncounterForce:
+                type: boolean
+              stopEngageForce:
+                type: boolean
+              stopOfficerInjury:
+                type: boolean
+              stopDriverInjury:
+                type: boolean
+              stopPassengerInjury:
+                type: boolean
+              stopOfficerId:
+                type: string
+              stopLocationId:
+                type: string
+              stopCityId:
+                type: string
+              personKeys:
+                type: array
+                items:
+                  type: string
+              personRaceTitles:
+                type: array
+                items:
+                  type: string
+              trafficSearchRaceTitles:
+                type: array
+                items:
+                  type: string
+              trafficStopCompleteName:
+                type: string
+    POSTTrafficStopRequest:
+      allOf:
+        - $ref: "#/components/schemas/POSTClusterRequest"
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    POSTTrafficStopResponse:
+      allOf:
+        - $ref: "#/components/schemas/POSTClusterResponse"
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    PATCHTrafficStopRequest:
+      allOf:
+        - $ref: "#/components/schemas/PATCHClusterRequest"
+        - type: object
+          properties:
+            setTrafficStopKey:
+              type: string
+              nullable: true
+            removeTrafficStopKey:
+              type: string
+            removeAllTrafficStopKey:
+              type: string
+            setAgencyKey:
+              type: string
+              nullable: true
+            removeAgencyKey:
+              type: string
+            removeAllAgencyKey:
+              type: string
+            setStopAgencyTitle:
+              type: string
+              nullable: true
+            removeStopAgencyTitle:
+              type: string
+            removeAllStopAgencyTitle:
+              type: string
+            setStopDateTime:
+              type: string
+              nullable: true
+            removeStopDateTime:
+              type: string
+            removeAllStopDateTime:
+              type: string
+            setStopYear:
+              type: string
+              nullable: true
+            removeStopYear:
+              type: string
+            removeAllStopYear:
+              type: string
+            setStopPurposeNum:
+              type: string
+              nullable: true
+            removeStopPurposeNum:
+              type: string
+            removeAllStopPurposeNum:
+              type: string
+            setStopPurposeTitle:
+              type: string
+              nullable: true
+            removeStopPurposeTitle:
+              type: string
+            removeAllStopPurposeTitle:
+              type: string
+            setStopActionNum:
+              type: string
+              nullable: true
+            removeStopActionNum:
+              type: string
+            removeAllStopActionNum:
+              type: string
+            setStopActionTitle:
+              type: string
+              nullable: true
+            removeStopActionTitle:
+              type: string
+            removeAllStopActionTitle:
+              type: string
+            setStopDriverArrest:
+              type: boolean
+              nullable: true
+            removeStopDriverArrest:
+              type: boolean
+            removeAllStopDriverArrest:
+              type: boolean
+            setStopPassengerArrest:
+              type: boolean
+              nullable: true
+            removeStopPassengerArrest:
+              type: boolean
+            removeAllStopPassengerArrest:
+              type: boolean
+            setStopEncounterForce:
+              type: boolean
+              nullable: true
+            removeStopEncounterForce:
+              type: boolean
+            removeAllStopEncounterForce:
+              type: boolean
+            setStopEngageForce:
+              type: boolean
+              nullable: true
+            removeStopEngageForce:
+              type: boolean
+            removeAllStopEngageForce:
+              type: boolean
+            setStopOfficerInjury:
+              type: boolean
+              nullable: true
+            removeStopOfficerInjury:
+              type: boolean
+            removeAllStopOfficerInjury:
+              type: boolean
+            setStopDriverInjury:
+              type: boolean
+              nullable: true
+            removeStopDriverInjury:
+              type: boolean
+            removeAllStopDriverInjury:
+              type: boolean
+            setStopPassengerInjury:
+              type: boolean
+              nullable: true
+            removeStopPassengerInjury:
+              type: boolean
+            removeAllStopPassengerInjury:
+              type: boolean
+            setStopOfficerId:
+              type: string
+              nullable: true
+            removeStopOfficerId:
+              type: string
+            removeAllStopOfficerId:
+              type: string
+            setStopLocationId:
+              type: string
+              nullable: true
+            removeStopLocationId:
+              type: string
+            removeAllStopLocationId:
+              type: string
+            setStopCityId:
+              type: string
+              nullable: true
+            removeStopCityId:
+              type: string
+            removeAllStopCityId:
+              type: string
+            setPersonKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonKeys:
+              type: string
+            removeAllPersonKeys:
+              type: array
+              items:
+                type: string
+            addPersonKeys:
+              type: string
+            addAllPersonKeys:
+              type: array
+              items:
+                type: string
+            setPersonRaceTitles:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonRaceTitles:
+              type: string
+            removeAllPersonRaceTitles:
+              type: array
+              items:
+                type: string
+            addPersonRaceTitles:
+              type: string
+            addAllPersonRaceTitles:
+              type: array
+              items:
+                type: string
+            setTrafficSearchRaceTitles:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeTrafficSearchRaceTitles:
+              type: string
+            removeAllTrafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            addTrafficSearchRaceTitles:
+              type: string
+            addAllTrafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            setTrafficStopCompleteName:
+              type: string
+              nullable: true
+            removeTrafficStopCompleteName:
+              type: string
+            removeAllTrafficStopCompleteName:
+              type: string
+    PATCHTrafficStopResponse:
+      allOf:
+        - $ref: "#/components/schemas/PATCHClusterResponse"
+        - type: object
+          properties:
+            setTrafficStopKey:
+              type: string
+              nullable: true
+            removeTrafficStopKey:
+              type: string
+            removeAllTrafficStopKey:
+              type: string
+            setAgencyKey:
+              type: string
+              nullable: true
+            removeAgencyKey:
+              type: string
+            removeAllAgencyKey:
+              type: string
+            setStopAgencyTitle:
+              type: string
+              nullable: true
+            removeStopAgencyTitle:
+              type: string
+            removeAllStopAgencyTitle:
+              type: string
+            setStopDateTime:
+              type: string
+              nullable: true
+            removeStopDateTime:
+              type: string
+            removeAllStopDateTime:
+              type: string
+            setStopYear:
+              type: string
+              nullable: true
+            removeStopYear:
+              type: string
+            removeAllStopYear:
+              type: string
+            setStopPurposeNum:
+              type: string
+              nullable: true
+            removeStopPurposeNum:
+              type: string
+            removeAllStopPurposeNum:
+              type: string
+            setStopPurposeTitle:
+              type: string
+              nullable: true
+            removeStopPurposeTitle:
+              type: string
+            removeAllStopPurposeTitle:
+              type: string
+            setStopActionNum:
+              type: string
+              nullable: true
+            removeStopActionNum:
+              type: string
+            removeAllStopActionNum:
+              type: string
+            setStopActionTitle:
+              type: string
+              nullable: true
+            removeStopActionTitle:
+              type: string
+            removeAllStopActionTitle:
+              type: string
+            setStopDriverArrest:
+              type: boolean
+              nullable: true
+            removeStopDriverArrest:
+              type: boolean
+            removeAllStopDriverArrest:
+              type: boolean
+            setStopPassengerArrest:
+              type: boolean
+              nullable: true
+            removeStopPassengerArrest:
+              type: boolean
+            removeAllStopPassengerArrest:
+              type: boolean
+            setStopEncounterForce:
+              type: boolean
+              nullable: true
+            removeStopEncounterForce:
+              type: boolean
+            removeAllStopEncounterForce:
+              type: boolean
+            setStopEngageForce:
+              type: boolean
+              nullable: true
+            removeStopEngageForce:
+              type: boolean
+            removeAllStopEngageForce:
+              type: boolean
+            setStopOfficerInjury:
+              type: boolean
+              nullable: true
+            removeStopOfficerInjury:
+              type: boolean
+            removeAllStopOfficerInjury:
+              type: boolean
+            setStopDriverInjury:
+              type: boolean
+              nullable: true
+            removeStopDriverInjury:
+              type: boolean
+            removeAllStopDriverInjury:
+              type: boolean
+            setStopPassengerInjury:
+              type: boolean
+              nullable: true
+            removeStopPassengerInjury:
+              type: boolean
+            removeAllStopPassengerInjury:
+              type: boolean
+            setStopOfficerId:
+              type: string
+              nullable: true
+            removeStopOfficerId:
+              type: string
+            removeAllStopOfficerId:
+              type: string
+            setStopLocationId:
+              type: string
+              nullable: true
+            removeStopLocationId:
+              type: string
+            removeAllStopLocationId:
+              type: string
+            setStopCityId:
+              type: string
+              nullable: true
+            removeStopCityId:
+              type: string
+            removeAllStopCityId:
+              type: string
+            setPersonKeys:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonKeys:
+              type: string
+            removeAllPersonKeys:
+              type: array
+              items:
+                type: string
+            addPersonKeys:
+              type: string
+            addAllPersonKeys:
+              type: array
+              items:
+                type: string
+            setPersonRaceTitles:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonRaceTitles:
+              type: string
+            removeAllPersonRaceTitles:
+              type: array
+              items:
+                type: string
+            addPersonRaceTitles:
+              type: string
+            addAllPersonRaceTitles:
+              type: array
+              items:
+                type: string
+            setTrafficSearchRaceTitles:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeTrafficSearchRaceTitles:
+              type: string
+            removeAllTrafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            addTrafficSearchRaceTitles:
+              type: string
+            addAllTrafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            setTrafficStopCompleteName:
+              type: string
+              nullable: true
+            removeTrafficStopCompleteName:
+              type: string
+            removeAllTrafficStopCompleteName:
+              type: string
+    SearchTrafficStopResponse:
+      allOf:
+        - $ref: "#/components/schemas/SearchClusterResponse"
+        - type: array
+          items:
+            type: object
+            properties:
+              trafficStopKey:
+                type: string
+              agencyKey:
+                type: string
+              stopAgencyTitle:
+                type: string
+              stopDateTime:
+                type: string
+              stopYear:
+                type: string
+              stopPurposeNum:
+                type: string
+              stopPurposeTitle:
+                type: string
+              stopActionNum:
+                type: string
+              stopActionTitle:
+                type: string
+              stopDriverArrest:
+                type: boolean
+              stopPassengerArrest:
+                type: boolean
+              stopEncounterForce:
+                type: boolean
+              stopEngageForce:
+                type: boolean
+              stopOfficerInjury:
+                type: boolean
+              stopDriverInjury:
+                type: boolean
+              stopPassengerInjury:
+                type: boolean
+              stopOfficerId:
+                type: string
+              stopLocationId:
+                type: string
+              stopCityId:
+                type: string
+              personKeys:
+                type: array
+                items:
+                  type: string
+              personRaceTitles:
+                type: array
+                items:
+                  type: string
+              trafficSearchRaceTitles:
+                type: array
+                items:
+                  type: string
+              trafficStopCompleteName:
+                type: string
+    PUTCopyTrafficStopRequest:
+      allOf:
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    PUTCopyTrafficStopResponse:
+      allOf:
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    PUTImportTrafficStopRequest:
+      allOf:
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    PUTImportTrafficStopResponse:
+      allOf:
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    PUTMergeTrafficStopRequest:
+      allOf:
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    PUTMergeTrafficStopResponse:
+      allOf:
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    GETTrafficStopResponse:
+      allOf:
+        - $ref: "#/components/schemas/GETClusterResponse"
+        - type: object
+          properties:
+            trafficStopKey:
+              type: string
+            agencyKey:
+              type: string
+            stopAgencyTitle:
+              type: string
+            stopDateTime:
+              type: string
+            stopYear:
+              type: string
+            stopPurposeNum:
+              type: string
+            stopPurposeTitle:
+              type: string
+            stopActionNum:
+              type: string
+            stopActionTitle:
+              type: string
+            stopDriverArrest:
+              type: boolean
+            stopPassengerArrest:
+              type: boolean
+            stopEncounterForce:
+              type: boolean
+            stopEngageForce:
+              type: boolean
+            stopOfficerInjury:
+              type: boolean
+            stopDriverInjury:
+              type: boolean
+            stopPassengerInjury:
+              type: boolean
+            stopOfficerId:
+              type: string
+            stopLocationId:
+              type: string
+            stopCityId:
+              type: string
+            personKeys:
+              type: array
+              items:
+                type: string
+            personRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficSearchRaceTitles:
+              type: array
+              items:
+                type: string
+            trafficStopCompleteName:
+              type: string
+    SearchPageTrafficStopResponse:
+      allOf:
+        - type: string
     AdminSearchTrafficSearchResponse:
       allOf:
         - type: array
@@ -28175,911 +29194,6 @@ components:
             trafficSearchCompleteName:
               type: string
     SearchPageTrafficSearchResponse:
-      allOf:
-        - type: string
-    AdminSearchTrafficStopResponse:
-      allOf:
-        - type: array
-          items:
-            type: object
-            properties:
-              trafficStopKey:
-                type: string
-              agencyKey:
-                type: string
-              stopAgencyTitle:
-                type: string
-              stopDateTime:
-                type: string
-              stopPurposeNum:
-                type: string
-              stopPurposeTitle:
-                type: string
-              stopActionNum:
-                type: string
-              stopActionTitle:
-                type: string
-              stopDriverArrest:
-                type: boolean
-              stopPassengerArrest:
-                type: boolean
-              stopEncounterForce:
-                type: boolean
-              stopEngageForce:
-                type: boolean
-              stopOfficerInjury:
-                type: boolean
-              stopDriverInjury:
-                type: boolean
-              stopPassengerInjury:
-                type: boolean
-              stopOfficerId:
-                type: string
-              stopLocationId:
-                type: string
-              stopCityId:
-                type: string
-              personKeys:
-                type: array
-                items:
-                  type: string
-              personRaceTitles:
-                type: array
-                items:
-                  type: string
-              trafficStopCompleteName:
-                type: string
-    POSTTrafficStopRequest:
-      allOf:
-        - $ref: "#/components/schemas/POSTClusterRequest"
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    POSTTrafficStopResponse:
-      allOf:
-        - $ref: "#/components/schemas/POSTClusterResponse"
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    PATCHTrafficStopRequest:
-      allOf:
-        - $ref: "#/components/schemas/PATCHClusterRequest"
-        - type: object
-          properties:
-            setTrafficStopKey:
-              type: string
-              nullable: true
-            removeTrafficStopKey:
-              type: string
-            removeAllTrafficStopKey:
-              type: string
-            setAgencyKey:
-              type: string
-              nullable: true
-            removeAgencyKey:
-              type: string
-            removeAllAgencyKey:
-              type: string
-            setStopAgencyTitle:
-              type: string
-              nullable: true
-            removeStopAgencyTitle:
-              type: string
-            removeAllStopAgencyTitle:
-              type: string
-            setStopDateTime:
-              type: string
-              nullable: true
-            removeStopDateTime:
-              type: string
-            removeAllStopDateTime:
-              type: string
-            setStopPurposeNum:
-              type: string
-              nullable: true
-            removeStopPurposeNum:
-              type: string
-            removeAllStopPurposeNum:
-              type: string
-            setStopPurposeTitle:
-              type: string
-              nullable: true
-            removeStopPurposeTitle:
-              type: string
-            removeAllStopPurposeTitle:
-              type: string
-            setStopActionNum:
-              type: string
-              nullable: true
-            removeStopActionNum:
-              type: string
-            removeAllStopActionNum:
-              type: string
-            setStopActionTitle:
-              type: string
-              nullable: true
-            removeStopActionTitle:
-              type: string
-            removeAllStopActionTitle:
-              type: string
-            setStopDriverArrest:
-              type: boolean
-              nullable: true
-            removeStopDriverArrest:
-              type: boolean
-            removeAllStopDriverArrest:
-              type: boolean
-            setStopPassengerArrest:
-              type: boolean
-              nullable: true
-            removeStopPassengerArrest:
-              type: boolean
-            removeAllStopPassengerArrest:
-              type: boolean
-            setStopEncounterForce:
-              type: boolean
-              nullable: true
-            removeStopEncounterForce:
-              type: boolean
-            removeAllStopEncounterForce:
-              type: boolean
-            setStopEngageForce:
-              type: boolean
-              nullable: true
-            removeStopEngageForce:
-              type: boolean
-            removeAllStopEngageForce:
-              type: boolean
-            setStopOfficerInjury:
-              type: boolean
-              nullable: true
-            removeStopOfficerInjury:
-              type: boolean
-            removeAllStopOfficerInjury:
-              type: boolean
-            setStopDriverInjury:
-              type: boolean
-              nullable: true
-            removeStopDriverInjury:
-              type: boolean
-            removeAllStopDriverInjury:
-              type: boolean
-            setStopPassengerInjury:
-              type: boolean
-              nullable: true
-            removeStopPassengerInjury:
-              type: boolean
-            removeAllStopPassengerInjury:
-              type: boolean
-            setStopOfficerId:
-              type: string
-              nullable: true
-            removeStopOfficerId:
-              type: string
-            removeAllStopOfficerId:
-              type: string
-            setStopLocationId:
-              type: string
-              nullable: true
-            removeStopLocationId:
-              type: string
-            removeAllStopLocationId:
-              type: string
-            setStopCityId:
-              type: string
-              nullable: true
-            removeStopCityId:
-              type: string
-            removeAllStopCityId:
-              type: string
-            setPersonKeys:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removePersonKeys:
-              type: string
-            removeAllPersonKeys:
-              type: array
-              items:
-                type: string
-            addPersonKeys:
-              type: string
-            addAllPersonKeys:
-              type: array
-              items:
-                type: string
-            setPersonRaceTitles:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removePersonRaceTitles:
-              type: string
-            removeAllPersonRaceTitles:
-              type: array
-              items:
-                type: string
-            addPersonRaceTitles:
-              type: string
-            addAllPersonRaceTitles:
-              type: array
-              items:
-                type: string
-            setTrafficStopCompleteName:
-              type: string
-              nullable: true
-            removeTrafficStopCompleteName:
-              type: string
-            removeAllTrafficStopCompleteName:
-              type: string
-    PATCHTrafficStopResponse:
-      allOf:
-        - $ref: "#/components/schemas/PATCHClusterResponse"
-        - type: object
-          properties:
-            setTrafficStopKey:
-              type: string
-              nullable: true
-            removeTrafficStopKey:
-              type: string
-            removeAllTrafficStopKey:
-              type: string
-            setAgencyKey:
-              type: string
-              nullable: true
-            removeAgencyKey:
-              type: string
-            removeAllAgencyKey:
-              type: string
-            setStopAgencyTitle:
-              type: string
-              nullable: true
-            removeStopAgencyTitle:
-              type: string
-            removeAllStopAgencyTitle:
-              type: string
-            setStopDateTime:
-              type: string
-              nullable: true
-            removeStopDateTime:
-              type: string
-            removeAllStopDateTime:
-              type: string
-            setStopPurposeNum:
-              type: string
-              nullable: true
-            removeStopPurposeNum:
-              type: string
-            removeAllStopPurposeNum:
-              type: string
-            setStopPurposeTitle:
-              type: string
-              nullable: true
-            removeStopPurposeTitle:
-              type: string
-            removeAllStopPurposeTitle:
-              type: string
-            setStopActionNum:
-              type: string
-              nullable: true
-            removeStopActionNum:
-              type: string
-            removeAllStopActionNum:
-              type: string
-            setStopActionTitle:
-              type: string
-              nullable: true
-            removeStopActionTitle:
-              type: string
-            removeAllStopActionTitle:
-              type: string
-            setStopDriverArrest:
-              type: boolean
-              nullable: true
-            removeStopDriverArrest:
-              type: boolean
-            removeAllStopDriverArrest:
-              type: boolean
-            setStopPassengerArrest:
-              type: boolean
-              nullable: true
-            removeStopPassengerArrest:
-              type: boolean
-            removeAllStopPassengerArrest:
-              type: boolean
-            setStopEncounterForce:
-              type: boolean
-              nullable: true
-            removeStopEncounterForce:
-              type: boolean
-            removeAllStopEncounterForce:
-              type: boolean
-            setStopEngageForce:
-              type: boolean
-              nullable: true
-            removeStopEngageForce:
-              type: boolean
-            removeAllStopEngageForce:
-              type: boolean
-            setStopOfficerInjury:
-              type: boolean
-              nullable: true
-            removeStopOfficerInjury:
-              type: boolean
-            removeAllStopOfficerInjury:
-              type: boolean
-            setStopDriverInjury:
-              type: boolean
-              nullable: true
-            removeStopDriverInjury:
-              type: boolean
-            removeAllStopDriverInjury:
-              type: boolean
-            setStopPassengerInjury:
-              type: boolean
-              nullable: true
-            removeStopPassengerInjury:
-              type: boolean
-            removeAllStopPassengerInjury:
-              type: boolean
-            setStopOfficerId:
-              type: string
-              nullable: true
-            removeStopOfficerId:
-              type: string
-            removeAllStopOfficerId:
-              type: string
-            setStopLocationId:
-              type: string
-              nullable: true
-            removeStopLocationId:
-              type: string
-            removeAllStopLocationId:
-              type: string
-            setStopCityId:
-              type: string
-              nullable: true
-            removeStopCityId:
-              type: string
-            removeAllStopCityId:
-              type: string
-            setPersonKeys:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removePersonKeys:
-              type: string
-            removeAllPersonKeys:
-              type: array
-              items:
-                type: string
-            addPersonKeys:
-              type: string
-            addAllPersonKeys:
-              type: array
-              items:
-                type: string
-            setPersonRaceTitles:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removePersonRaceTitles:
-              type: string
-            removeAllPersonRaceTitles:
-              type: array
-              items:
-                type: string
-            addPersonRaceTitles:
-              type: string
-            addAllPersonRaceTitles:
-              type: array
-              items:
-                type: string
-            setTrafficStopCompleteName:
-              type: string
-              nullable: true
-            removeTrafficStopCompleteName:
-              type: string
-            removeAllTrafficStopCompleteName:
-              type: string
-    SearchTrafficStopResponse:
-      allOf:
-        - $ref: "#/components/schemas/SearchClusterResponse"
-        - type: array
-          items:
-            type: object
-            properties:
-              trafficStopKey:
-                type: string
-              agencyKey:
-                type: string
-              stopAgencyTitle:
-                type: string
-              stopDateTime:
-                type: string
-              stopPurposeNum:
-                type: string
-              stopPurposeTitle:
-                type: string
-              stopActionNum:
-                type: string
-              stopActionTitle:
-                type: string
-              stopDriverArrest:
-                type: boolean
-              stopPassengerArrest:
-                type: boolean
-              stopEncounterForce:
-                type: boolean
-              stopEngageForce:
-                type: boolean
-              stopOfficerInjury:
-                type: boolean
-              stopDriverInjury:
-                type: boolean
-              stopPassengerInjury:
-                type: boolean
-              stopOfficerId:
-                type: string
-              stopLocationId:
-                type: string
-              stopCityId:
-                type: string
-              personKeys:
-                type: array
-                items:
-                  type: string
-              personRaceTitles:
-                type: array
-                items:
-                  type: string
-              trafficStopCompleteName:
-                type: string
-    PUTCopyTrafficStopRequest:
-      allOf:
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    PUTCopyTrafficStopResponse:
-      allOf:
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    PUTImportTrafficStopRequest:
-      allOf:
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    PUTImportTrafficStopResponse:
-      allOf:
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    PUTMergeTrafficStopRequest:
-      allOf:
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    PUTMergeTrafficStopResponse:
-      allOf:
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    GETTrafficStopResponse:
-      allOf:
-        - $ref: "#/components/schemas/GETClusterResponse"
-        - type: object
-          properties:
-            trafficStopKey:
-              type: string
-            agencyKey:
-              type: string
-            stopAgencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personKeys:
-              type: array
-              items:
-                type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficStopCompleteName:
-              type: string
-    SearchPageTrafficStopResponse:
       allOf:
         - type: string
     ErrorResponse:

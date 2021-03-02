@@ -692,6 +692,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE TrafficStop SET ");
+			List<Object> bParams = new ArrayList<Object>();
+			TrafficStop o2 = new TrafficStop();
+			o2.setSiteRequest_(siteRequest);
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -701,255 +705,185 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					String entityVar = entityVars.getString(i);
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "stopAgencyTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopAgencyTitle failed", b.cause())));
-							});
-						}));
+						o2.setStopAgencyTitle(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopAgencyTitle=$" + num);
+						num++;
+						bParams.add(o2.sqlStopAgencyTitle());
 						break;
 					case "stopDateTime":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDateTime failed", b.cause())));
-							});
-						}));
+						o2.setStopDateTime(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopDateTime=$" + num);
+						num++;
+						bParams.add(o2.sqlStopDateTime());
 						break;
 					case "stopYear":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopYear", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
-							});
-						}));
+						o2.setStopYear(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopYear=$" + num);
+						num++;
+						bParams.add(o2.sqlStopYear());
 						break;
 					case "stopPurposeNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeNum failed", b.cause())));
-							});
-						}));
+						o2.setStopPurposeNum(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopPurposeNum=$" + num);
+						num++;
+						bParams.add(o2.sqlStopPurposeNum());
 						break;
 					case "stopActionNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionNum failed", b.cause())));
-							});
-						}));
+						o2.setStopActionNum(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopActionNum=$" + num);
+						num++;
+						bParams.add(o2.sqlStopActionNum());
 						break;
 					case "stopDriverArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverArrest failed", b.cause())));
-							});
-						}));
+						o2.setStopDriverArrest(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopDriverArrest=$" + num);
+						num++;
+						bParams.add(o2.sqlStopDriverArrest());
 						break;
 					case "stopPassengerArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerArrest failed", b.cause())));
-							});
-						}));
+						o2.setStopPassengerArrest(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopPassengerArrest=$" + num);
+						num++;
+						bParams.add(o2.sqlStopPassengerArrest());
 						break;
 					case "stopEncounterForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEncounterForce failed", b.cause())));
-							});
-						}));
+						o2.setStopEncounterForce(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopEncounterForce=$" + num);
+						num++;
+						bParams.add(o2.sqlStopEncounterForce());
 						break;
 					case "stopEngageForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEngageForce failed", b.cause())));
-							});
-						}));
+						o2.setStopEngageForce(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopEngageForce=$" + num);
+						num++;
+						bParams.add(o2.sqlStopEngageForce());
 						break;
 					case "stopOfficerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerInjury failed", b.cause())));
-							});
-						}));
+						o2.setStopOfficerInjury(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopOfficerInjury=$" + num);
+						num++;
+						bParams.add(o2.sqlStopOfficerInjury());
 						break;
 					case "stopDriverInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverInjury failed", b.cause())));
-							});
-						}));
+						o2.setStopDriverInjury(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopDriverInjury=$" + num);
+						num++;
+						bParams.add(o2.sqlStopDriverInjury());
 						break;
 					case "stopPassengerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerInjury failed", b.cause())));
-							});
-						}));
+						o2.setStopPassengerInjury(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopPassengerInjury=$" + num);
+						num++;
+						bParams.add(o2.sqlStopPassengerInjury());
 						break;
 					case "stopOfficerId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerId failed", b.cause())));
-							});
-						}));
+						o2.setStopOfficerId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopOfficerId=$" + num);
+						num++;
+						bParams.add(o2.sqlStopOfficerId());
 						break;
 					case "stopLocationId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopLocationId failed", b.cause())));
-							});
-						}));
+						o2.setStopLocationId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopLocationId=$" + num);
+						num++;
+						bParams.add(o2.sqlStopLocationId());
 						break;
 					case "stopCityId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopCityId failed", b.cause())));
-							});
-						}));
+						o2.setStopCityId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopCityId=$" + num);
+						num++;
+						bParams.add(o2.sqlStopCityId());
 						break;
 					case "personKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_addA)
-										.execute(Tuple.of(pk, "personKeys", l, "trafficStopKey")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
-								});
-							}));
-							if(!pks.contains(l)) {
-								pks.add(l);
-								classes.add("TrafficPerson");
+						{
+							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+								futures.add(Future.future(a -> {
+									tx.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=$1 WHERE pk=$2")
+											.execute(Tuple.of(pk, l)
+											, b
+									-> {
+										if(b.succeeded())
+											a.handle(Future.succeededFuture());
+										else
+											a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
+									});
+								}));
+								if(!pks.contains(l)) {
+									pks.add(l);
+									classes.add("TrafficPerson");
+								}
 							}
 						}
 						break;
@@ -1124,6 +1058,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE TrafficStop SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			TrafficStop o2 = new TrafficStop();
@@ -1131,43 +1067,20 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("sessionId=$" + num);
+				num++;
+				bParams.add(siteRequest.getSessionId());
 			}
 			if(siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			if(jsonObject != null) {
@@ -1175,238 +1088,166 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "stopAgencyTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopAgencyTitle failed", b.cause())));
-							});
-						}));
+						o2.setStopAgencyTitle(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopAgencyTitle=$" + num);
+						num++;
+						bParams.add(o2.sqlStopAgencyTitle());
 						break;
 					case "stopDateTime":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDateTime failed", b.cause())));
-							});
-						}));
+						o2.setStopDateTime(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopDateTime=$" + num);
+						num++;
+						bParams.add(o2.sqlStopDateTime());
 						break;
 					case "stopYear":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopYear", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
-							});
-						}));
+						o2.setStopYear(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopYear=$" + num);
+						num++;
+						bParams.add(o2.sqlStopYear());
 						break;
 					case "stopPurposeNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeNum failed", b.cause())));
-							});
-						}));
+						o2.setStopPurposeNum(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopPurposeNum=$" + num);
+						num++;
+						bParams.add(o2.sqlStopPurposeNum());
 						break;
 					case "stopActionNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionNum failed", b.cause())));
-							});
-						}));
+						o2.setStopActionNum(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopActionNum=$" + num);
+						num++;
+						bParams.add(o2.sqlStopActionNum());
 						break;
 					case "stopDriverArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverArrest failed", b.cause())));
-							});
-						}));
+						o2.setStopDriverArrest(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopDriverArrest=$" + num);
+						num++;
+						bParams.add(o2.sqlStopDriverArrest());
 						break;
 					case "stopPassengerArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerArrest failed", b.cause())));
-							});
-						}));
+						o2.setStopPassengerArrest(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopPassengerArrest=$" + num);
+						num++;
+						bParams.add(o2.sqlStopPassengerArrest());
 						break;
 					case "stopEncounterForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEncounterForce failed", b.cause())));
-							});
-						}));
+						o2.setStopEncounterForce(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopEncounterForce=$" + num);
+						num++;
+						bParams.add(o2.sqlStopEncounterForce());
 						break;
 					case "stopEngageForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEngageForce failed", b.cause())));
-							});
-						}));
+						o2.setStopEngageForce(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopEngageForce=$" + num);
+						num++;
+						bParams.add(o2.sqlStopEngageForce());
 						break;
 					case "stopOfficerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerInjury failed", b.cause())));
-							});
-						}));
+						o2.setStopOfficerInjury(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopOfficerInjury=$" + num);
+						num++;
+						bParams.add(o2.sqlStopOfficerInjury());
 						break;
 					case "stopDriverInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverInjury failed", b.cause())));
-							});
-						}));
+						o2.setStopDriverInjury(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopDriverInjury=$" + num);
+						num++;
+						bParams.add(o2.sqlStopDriverInjury());
 						break;
 					case "stopPassengerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerInjury failed", b.cause())));
-							});
-						}));
+						o2.setStopPassengerInjury(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopPassengerInjury=$" + num);
+						num++;
+						bParams.add(o2.sqlStopPassengerInjury());
 						break;
 					case "stopOfficerId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerId failed", b.cause())));
-							});
-						}));
+						o2.setStopOfficerId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopOfficerId=$" + num);
+						num++;
+						bParams.add(o2.sqlStopOfficerId());
 						break;
 					case "stopLocationId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopLocationId failed", b.cause())));
-							});
-						}));
+						o2.setStopLocationId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopLocationId=$" + num);
+						num++;
+						bParams.add(o2.sqlStopLocationId());
 						break;
 					case "stopCityId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficStop.stopCityId failed", b.cause())));
-							});
-						}));
+						o2.setStopCityId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("stopCityId=$" + num);
+						num++;
+						bParams.add(o2.sqlStopCityId());
 						break;
 					case "personKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
@@ -1422,8 +1263,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+										tx.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -1442,6 +1283,22 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						break;
 					}
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -1696,6 +1553,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE TrafficStop SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
@@ -1703,538 +1562,159 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
-			if(o.getUserId() == null && siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0)
+					bSql.append(", ");
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			for(String methodName : methodNames) {
 				switch(methodName) {
 					case "setInheritPk":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "inheritPk")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.inheritPk failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.inheritPk failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("inheritPk=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "archived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.archived failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.archived failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("archived=$" + num);
+							num++;
+							bParams.add(o2.sqlArchived());
 						break;
 					case "setDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "deleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.deleted failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.deleted failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("deleted=$" + num);
+							num++;
+							bParams.add(o2.sqlDeleted());
 						break;
 					case "setStopAgencyTitle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopAgencyTitle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopAgencyTitle failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopAgencyTitle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopAgencyTitle", o2.jsonStopAgencyTitle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopAgencyTitle failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopAgencyTitle=$" + num);
+							num++;
+							bParams.add(o2.sqlStopAgencyTitle());
 						break;
 					case "setStopDateTime":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopDateTime")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDateTime failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopDateTime(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopDateTime", o2.jsonStopDateTime())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDateTime failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopDateTime=$" + num);
+							num++;
+							bParams.add(o2.sqlStopDateTime());
 						break;
 					case "setStopYear":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopYear")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopYear(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopYear", o2.jsonStopYear())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopYear failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopYear=$" + num);
+							num++;
+							bParams.add(o2.sqlStopYear());
 						break;
 					case "setStopPurposeNum":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPurposeNum")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeNum failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopPurposeNum(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPurposeNum", o2.jsonStopPurposeNum())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPurposeNum failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopPurposeNum=$" + num);
+							num++;
+							bParams.add(o2.sqlStopPurposeNum());
 						break;
 					case "setStopActionNum":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopActionNum")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionNum failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopActionNum(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopActionNum", o2.jsonStopActionNum())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopActionNum failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopActionNum=$" + num);
+							num++;
+							bParams.add(o2.sqlStopActionNum());
 						break;
 					case "setStopDriverArrest":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopDriverArrest")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverArrest failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopDriverArrest(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopDriverArrest", o2.jsonStopDriverArrest())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverArrest failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopDriverArrest=$" + num);
+							num++;
+							bParams.add(o2.sqlStopDriverArrest());
 						break;
 					case "setStopPassengerArrest":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPassengerArrest")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerArrest failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopPassengerArrest(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPassengerArrest", o2.jsonStopPassengerArrest())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerArrest failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopPassengerArrest=$" + num);
+							num++;
+							bParams.add(o2.sqlStopPassengerArrest());
 						break;
 					case "setStopEncounterForce":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopEncounterForce")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEncounterForce failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopEncounterForce(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopEncounterForce", o2.jsonStopEncounterForce())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEncounterForce failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopEncounterForce=$" + num);
+							num++;
+							bParams.add(o2.sqlStopEncounterForce());
 						break;
 					case "setStopEngageForce":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopEngageForce")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEngageForce failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopEngageForce(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopEngageForce", o2.jsonStopEngageForce())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopEngageForce failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopEngageForce=$" + num);
+							num++;
+							bParams.add(o2.sqlStopEngageForce());
 						break;
 					case "setStopOfficerInjury":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopOfficerInjury")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerInjury failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopOfficerInjury(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopOfficerInjury", o2.jsonStopOfficerInjury())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerInjury failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopOfficerInjury=$" + num);
+							num++;
+							bParams.add(o2.sqlStopOfficerInjury());
 						break;
 					case "setStopDriverInjury":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopDriverInjury")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverInjury failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopDriverInjury(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopDriverInjury", o2.jsonStopDriverInjury())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopDriverInjury failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopDriverInjury=$" + num);
+							num++;
+							bParams.add(o2.sqlStopDriverInjury());
 						break;
 					case "setStopPassengerInjury":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPassengerInjury")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerInjury failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopPassengerInjury(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPassengerInjury", o2.jsonStopPassengerInjury())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopPassengerInjury failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopPassengerInjury=$" + num);
+							num++;
+							bParams.add(o2.sqlStopPassengerInjury());
 						break;
 					case "setStopOfficerId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopOfficerId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerId failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopOfficerId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopOfficerId", o2.jsonStopOfficerId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopOfficerId failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopOfficerId=$" + num);
+							num++;
+							bParams.add(o2.sqlStopOfficerId());
 						break;
 					case "setStopLocationId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopLocationId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopLocationId failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopLocationId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopLocationId", o2.jsonStopLocationId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopLocationId failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopLocationId=$" + num);
+							num++;
+							bParams.add(o2.sqlStopLocationId());
 						break;
 					case "setStopCityId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopCityId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopCityId failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setStopCityId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopCityId", o2.jsonStopCityId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficStop.stopCityId failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("stopCityId=$" + num);
+							num++;
+							bParams.add(o2.sqlStopCityId());
 						break;
 					case "addPersonKeys":
 						{
@@ -2251,8 +1731,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !o.getPersonKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+										tx.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2286,8 +1766,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null && !o.getPersonKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+										tx.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2325,8 +1805,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 										setPersonKeysValues2.add(l2);
 									if(l2 != null && !o.getPersonKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+										tx.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2347,8 +1827,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							for(Long l :  o.getPersonKeys()) {
 								if(l != null && (setPersonKeysValues2 == null || !setPersonKeysValues2.contains(l))) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "personKeys", l, "trafficStopKey")
+										tx.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=null WHERE pk=$1")
+												.execute(Tuple.of(l)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2376,8 +1856,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && o.getPersonKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "personKeys", l2, "trafficStopKey")
+										tx.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=null WHERE pk=$1")
+												.execute(Tuple.of(l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2395,6 +1875,22 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						}
 						break;
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+				bParams.add(pk);
+				num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -3075,11 +2571,12 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 		try {
 			Transaction tx = siteRequest.getTx();
 			String userId = siteRequest.getUserId();
+			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(SiteContextEnUS.SQL_create)
+			tx.preparedQuery("INSERT INTO TrafficStop(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(TrafficStop.class.getCanonicalName(), userId, created.toOffsetDateTime())
+					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -3287,8 +2784,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 
 	public void userTrafficStop(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
-			String userId = siteRequest.getUserId();
-			if(userId == null) {
+			Long userKey = siteRequest.getUserKey();
+			if(userKey == null) {
 				eventHandler.handle(Future.succeededFuture());
 			} else {
 				sqlConnectionTrafficStop(siteRequest, a -> {
@@ -3296,9 +2793,9 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						sqlTransactionTrafficStop(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
 										.collecting(Collectors.toList())
-										.execute(Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
+										.execute(Tuple.of(userKey)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -3369,7 +2866,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 												searchList.setQuery("*:*");
 												searchList.setStore(true);
 												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
 												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
 												searchList.initDeepSearchList(siteRequest);
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
@@ -3708,7 +3205,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_define)
+			tx.preparedQuery("SELECT * FROM TrafficStop WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -3716,11 +3213,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				if(defineAsync.succeeded()) {
 					try {
 						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineTrafficStop failed. ", e));
-								LOGGER.error(e);
+							for(Integer i = 0; i < definition.size(); i++) {
+								String columnName = definition.getColumnName(i);
+								Object columnValue = definition.getValue(i);
+								if(!"pk".equals(columnName)) {
+									try {
+										o.defineForClass(columnName, columnValue);
+									} catch(Exception e) {
+										LOGGER.error(String.format("defineTrafficStop failed. ", e));
+										LOGGER.error(e);
+									}
+								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
@@ -3744,19 +3247,16 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+			tx.preparedQuery("SELECT pk as pk2, 'personKeys' from TrafficPerson where trafficStopKey=$1")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk, pk)
+					.execute(Tuple.of(pk)
 					, attributeAsync
 			-> {
 				try {
 					if(attributeAsync.succeeded()) {
 						if(attributeAsync.result() != null) {
 							for(Row definition : attributeAsync.result().value()) {
-								if(pk.equals(definition.getLong(0)))
-									o.attributeForClass(definition.getString(2), definition.getLong(1));
-								else
-									o.attributeForClass(definition.getString(3), definition.getLong(0));
+								o.attributeForClass(definition.getString(1), definition.getLong(0));
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());

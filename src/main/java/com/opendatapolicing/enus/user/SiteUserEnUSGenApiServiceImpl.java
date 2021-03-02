@@ -81,6 +81,7 @@ import java.util.regex.Matcher;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
 import java.util.Map.Entry;
 import java.util.Iterator;
 import java.time.ZonedDateTime;
@@ -209,6 +210,24 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
 
 			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
 			if(facetRanges != null) {
@@ -492,6 +511,8 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteUser SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
@@ -499,378 +520,121 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
-			if(o.getUserId() == null && siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-
-				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("addUserKeys")).orElse(null);
-				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
-					userKeys.add(siteRequest.getUserKey().toString());
-				else
-					jsonObject.put("addUserKeys", new JsonArray().add(siteRequest.getUserKey().toString()));
+				if(bParams.size() > 0)
+					bSql.append(", ");
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			for(String methodName : methodNames) {
 				switch(methodName) {
 					case "setInheritPk":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "inheritPk")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("inheritPk=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "archived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("archived=$" + num);
+							num++;
+							bParams.add(o2.sqlArchived());
 						break;
 					case "setDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "deleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("deleted=$" + num);
+							num++;
+							bParams.add(o2.sqlDeleted());
 						break;
 					case "setUserId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userId failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setUserId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userId", o2.jsonUserId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setUserKey":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userKey")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userKey failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setUserKey(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userKey", o2.jsonUserKey())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userKey failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("userId=$" + num);
+							num++;
+							bParams.add(o2.sqlUserId());
 						break;
 					case "setUserName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userName failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setUserName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userName", o2.jsonUserName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userName failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("userName=$" + num);
+							num++;
+							bParams.add(o2.sqlUserName());
 						break;
 					case "setUserEmail":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userEmail")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setUserEmail(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userEmail", o2.jsonUserEmail())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("userEmail=$" + num);
+							num++;
+							bParams.add(o2.sqlUserEmail());
 						break;
 					case "setUserFirstName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userFirstName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setUserFirstName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userFirstName", o2.jsonUserFirstName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("userFirstName=$" + num);
+							num++;
+							bParams.add(o2.sqlUserFirstName());
 						break;
 					case "setUserLastName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userLastName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setUserLastName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userLastName", o2.jsonUserLastName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("userLastName=$" + num);
+							num++;
+							bParams.add(o2.sqlUserLastName());
 						break;
 					case "setUserFullName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "userFullName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setUserFullName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "userFullName", o2.jsonUserFullName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("userFullName=$" + num);
+							num++;
+							bParams.add(o2.sqlUserFullName());
 						break;
 					case "setSeeArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "seeArchived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeArchived failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSeeArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "seeArchived", o2.jsonSeeArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeArchived failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("seeArchived=$" + num);
+							num++;
+							bParams.add(o2.sqlSeeArchived());
 						break;
 					case "setSeeDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "seeDeleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeDeleted failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSeeDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "seeDeleted", o2.jsonSeeDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteUser.seeDeleted failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("seeDeleted=$" + num);
+							num++;
+							bParams.add(o2.sqlSeeDeleted());
 						break;
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+				bParams.add(pk);
+				num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -1026,6 +790,8 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteUser SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			SiteUser o2 = new SiteUser();
@@ -1033,43 +799,20 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("sessionId=$" + num);
+				num++;
+				bParams.add(siteRequest.getSessionId());
 			}
 			if(siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 
 				JsonArray userKeys = Optional.ofNullable(jsonObject.getJsonArray("userKeys")).orElse(null);
 				if(userKeys != null && !userKeys.contains(siteRequest.getUserKey()))
@@ -1083,163 +826,122 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "userId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userId failed", b.cause())));
-							});
-						}));
-						break;
-					case "userKey":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userKey", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userKey failed", b.cause())));
-							});
-						}));
+						o2.setUserId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("userId=$" + num);
+						num++;
+						bParams.add(o2.sqlUserId());
 						break;
 					case "userName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userName failed", b.cause())));
-							});
-						}));
+						o2.setUserName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("userName=$" + num);
+						num++;
+						bParams.add(o2.sqlUserName());
 						break;
 					case "userEmail":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userEmail", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userEmail failed", b.cause())));
-							});
-						}));
+						o2.setUserEmail(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("userEmail=$" + num);
+						num++;
+						bParams.add(o2.sqlUserEmail());
 						break;
 					case "userFirstName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userFirstName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userFirstName failed", b.cause())));
-							});
-						}));
+						o2.setUserFirstName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("userFirstName=$" + num);
+						num++;
+						bParams.add(o2.sqlUserFirstName());
 						break;
 					case "userLastName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userLastName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userLastName failed", b.cause())));
-							});
-						}));
+						o2.setUserLastName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("userLastName=$" + num);
+						num++;
+						bParams.add(o2.sqlUserLastName());
 						break;
 					case "userFullName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "userFullName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.userFullName failed", b.cause())));
-							});
-						}));
+						o2.setUserFullName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("userFullName=$" + num);
+						num++;
+						bParams.add(o2.sqlUserFullName());
 						break;
 					case "seeArchived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "seeArchived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.seeArchived failed", b.cause())));
-							});
-						}));
+						o2.setSeeArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("seeArchived=$" + num);
+						num++;
+						bParams.add(o2.sqlSeeArchived());
 						break;
 					case "seeDeleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "seeDeleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteUser.seeDeleted failed", b.cause())));
-							});
-						}));
+						o2.setSeeDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("seeDeleted=$" + num);
+						num++;
+						bParams.add(o2.sqlSeeDeleted());
 						break;
 					}
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -1433,11 +1135,12 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 		try {
 			Transaction tx = siteRequest.getTx();
 			String userId = siteRequest.getUserId();
+			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(SiteContextEnUS.SQL_create)
+			tx.preparedQuery("INSERT INTO SiteUser(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(SiteUser.class.getCanonicalName(), userId, created.toOffsetDateTime())
+					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -1645,8 +1348,8 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 
 	public void userSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
-			String userId = siteRequest.getUserId();
-			if(userId == null) {
+			Long userKey = siteRequest.getUserKey();
+			if(userKey == null) {
 				eventHandler.handle(Future.succeededFuture());
 			} else {
 				sqlConnectionSiteUser(siteRequest, a -> {
@@ -1654,9 +1357,9 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 						sqlTransactionSiteUser(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
 										.collecting(Collectors.toList())
-										.execute(Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
+										.execute(Tuple.of(userKey)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -1727,7 +1430,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 												searchList.setQuery("*:*");
 												searchList.setStore(true);
 												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
 												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
 												searchList.initDeepSearchList(siteRequest);
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
@@ -2044,6 +1747,12 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 									searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
 								}
 								break;
+							case "facet.field":
+								entityVar = (String)paramObject;
+								varIndexed = SiteUser.varIndexedSiteUser(entityVar);
+								if(varIndexed != null)
+									searchList.addFacetField(varIndexed);
+								break;
 							case "var":
 								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
 								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
@@ -2072,7 +1781,7 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_define)
+			tx.preparedQuery("SELECT * FROM SiteUser WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -2080,11 +1789,17 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				if(defineAsync.succeeded()) {
 					try {
 						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineSiteUser failed. ", e));
-								LOGGER.error(e);
+							for(Integer i = 0; i < definition.size(); i++) {
+								String columnName = definition.getColumnName(i);
+								Object columnValue = definition.getValue(i);
+								if(!"pk".equals(columnName)) {
+									try {
+										o.defineForClass(columnName, columnValue);
+									} catch(Exception e) {
+										LOGGER.error(String.format("defineSiteUser failed. ", e));
+										LOGGER.error(e);
+									}
+								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());

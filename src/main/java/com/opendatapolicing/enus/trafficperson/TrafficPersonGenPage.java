@@ -223,7 +223,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	public void htmlFormPUTCopyTrafficPerson(TrafficPerson o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
-			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PUTCopy");
@@ -241,7 +240,6 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 	public void htmlFormPATCHTrafficPerson(TrafficPerson o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
@@ -281,25 +279,8 @@ public class TrafficPersonGenPage extends TrafficPersonGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
-			o.htmStopAgencyTitle("Search");
-			o.htmStopDateTime("Search");
-			o.htmStopPurposeNum("Search");
-			o.htmStopPurposeTitle("Search");
-			o.htmStopActionNum("Search");
-			o.htmStopActionTitle("Search");
-			o.htmStopDriverArrest("Search");
-			o.htmStopPassengerArrest("Search");
-			o.htmStopEncounterForce("Search");
-			o.htmStopEngageForce("Search");
-			o.htmStopOfficerInjury("Search");
-			o.htmStopDriverInjury("Search");
-			o.htmStopPassengerInjury("Search");
-			o.htmStopOfficerId("Search");
-			o.htmStopLocationId("Search");
-			o.htmStopCityId("Search");
 			o.htmPersonTypeId("Search");
 			o.htmPersonGenderId("Search");
 			o.htmPersonEthnicityId("Search");

@@ -157,10 +157,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return agencyKey == null ? "" : agencyKey.toString();
 	}
 
-	public String nomAffichageAgencyKey() {
-		return null;
-	}
-
 	public String htmTooltipAgencyKey() {
 		return null;
 	}
@@ -235,10 +231,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 
 	public String jsonAgencyName() {
 		return agencyName == null ? "" : agencyName;
-	}
-
-	public String nomAffichageAgencyName() {
-		return "name";
 	}
 
 	public String htmTooltipAgencyName() {
@@ -473,10 +465,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return stateKey == null ? "" : stateKey.toString();
 	}
 
-	public String nomAffichageStateKey() {
-		return "state";
-	}
-
 	public String htmTooltipStateKey() {
 		return null;
 	}
@@ -645,10 +633,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return imageLeft == null ? "" : imageLeft.toString();
 	}
 
-	public String nomAffichageImageLeft() {
-		return "image left pixels";
-	}
-
 	public String htmTooltipImageLeft() {
 		return null;
 	}
@@ -799,10 +783,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return imageTop == null ? "" : imageTop.toString();
 	}
 
-	public String nomAffichageImageTop() {
-		return "image top pixels";
-	}
-
 	public String htmTooltipImageTop() {
 		return null;
 	}
@@ -945,10 +925,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return imageCoords == null ? "" : imageCoords;
 	}
 
-	public String nomAffichageImageCoords() {
-		return "image map coordinates";
-	}
-
 	public String htmTooltipImageCoords() {
 		return null;
 	}
@@ -1089,10 +1065,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return stateId == null ? "" : stateId;
 	}
 
-	public String nomAffichageStateId() {
-		return null;
-	}
-
 	public String htmTooltipStateId() {
 		return null;
 	}
@@ -1167,10 +1139,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 
 	public String jsonStateName() {
 		return stateName == null ? "" : stateName;
-	}
-
-	public String nomAffichageStateName() {
-		return null;
 	}
 
 	public String htmTooltipStateName() {
@@ -1249,10 +1217,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return stateAbbreviation == null ? "" : stateAbbreviation;
 	}
 
-	public String nomAffichageStateAbbreviation() {
-		return null;
-	}
-
 	public String htmTooltipStateAbbreviation() {
 		return null;
 	}
@@ -1329,10 +1293,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return agencyOnlyName == null ? "" : agencyOnlyName;
 	}
 
-	public String nomAffichageAgencyOnlyName() {
-		return null;
-	}
-
 	public String htmTooltipAgencyOnlyName() {
 		return null;
 	}
@@ -1407,10 +1367,6 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 
 	public String jsonAgencyCompleteName() {
 		return agencyCompleteName == null ? "" : agencyCompleteName;
-	}
-
-	public String nomAffichageAgencyCompleteName() {
-		return null;
 	}
 
 	public String htmTooltipAgencyCompleteName() {

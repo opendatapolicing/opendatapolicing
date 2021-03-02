@@ -206,10 +206,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return contextRows == null ? "" : contextRows.toString();
 	}
 
-	public String nomAffichageContextRows() {
-		return null;
-	}
-
 	public String htmTooltipContextRows() {
 		return null;
 	}
@@ -286,10 +282,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiMethod == null ? "" : classApiMethod;
 	}
 
-	public String nomAffichageClassApiMethod() {
-		return null;
-	}
-
 	public String htmTooltipClassApiMethod() {
 		return null;
 	}
@@ -364,10 +356,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonOpenApiVersion() {
 		return openApiVersion == null ? "" : openApiVersion;
-	}
-
-	public String nomAffichageOpenApiVersion() {
-		return null;
 	}
 
 	public String htmTooltipOpenApiVersion() {
@@ -512,10 +500,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classUris == null ? "" : classUris.toString();
 	}
 
-	public String nomAffichageClassUris() {
-		return null;
-	}
-
 	public String htmTooltipClassUris() {
 		return null;
 	}
@@ -598,10 +582,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonOpenApiVersionNumber() {
 		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
-	}
-
-	public String nomAffichageOpenApiVersionNumber() {
-		return null;
 	}
 
 	public String htmTooltipOpenApiVersionNumber() {
@@ -688,10 +668,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
 
-	public String nomAffichageTabsSchema() {
-		return null;
-	}
-
 	public String htmTooltipTabsSchema() {
 		return null;
 	}
@@ -774,10 +750,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonTabsResponses() {
 		return tabsResponses == null ? "" : tabsResponses.toString();
-	}
-
-	public String nomAffichageTabsResponses() {
-		return null;
 	}
 
 	public String htmTooltipTabsResponses() {
@@ -1415,10 +1387,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiTag == null ? "" : classApiTag;
 	}
 
-	public String nomAffichageClassApiTag() {
-		return null;
-	}
-
 	public String htmTooltipClassApiTag() {
 		return null;
 	}
@@ -1498,10 +1466,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassExtendsBase() {
 		return classExtendsBase == null ? "" : classExtendsBase.toString();
-	}
-
-	public String nomAffichageClassExtendsBase() {
-		return null;
 	}
 
 	public String htmTooltipClassExtendsBase() {
@@ -1585,10 +1549,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classIsBase == null ? "" : classIsBase.toString();
 	}
 
-	public String nomAffichageClassIsBase() {
-		return null;
-	}
-
 	public String htmTooltipClassIsBase() {
 		return null;
 	}
@@ -1663,10 +1623,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassSimpleName() {
 		return classSimpleName == null ? "" : classSimpleName;
-	}
-
-	public String nomAffichageClassSimpleName() {
-		return null;
 	}
 
 	public String htmTooltipClassSimpleName() {
@@ -1745,10 +1701,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return appName == null ? "" : appName;
 	}
 
-	public String nomAffichageAppName() {
-		return null;
-	}
-
 	public String htmTooltipAppName() {
 		return null;
 	}
@@ -1825,10 +1777,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classAbsolutePath == null ? "" : classAbsolutePath;
 	}
 
-	public String nomAffichageClassAbsolutePath() {
-		return null;
-	}
-
 	public String htmTooltipClassAbsolutePath() {
 		return null;
 	}
@@ -1903,10 +1851,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassApiUriMethod() {
 		return classApiUriMethod == null ? "" : classApiUriMethod;
-	}
-
-	public String nomAffichageClassApiUriMethod() {
-		return null;
 	}
 
 	public String htmTooltipClassApiUriMethod() {
@@ -1990,10 +1934,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleUserMethod == null ? "" : classRoleUserMethod.toString();
 	}
 
-	public String nomAffichageClassRoleUserMethod() {
-		return null;
-	}
-
 	public String htmTooltipClassRoleUserMethod() {
 		return null;
 	}
@@ -2068,10 +2008,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassApiMethodMethod() {
 		return classApiMethodMethod == null ? "" : classApiMethodMethod;
-	}
-
-	public String nomAffichageClassApiMethodMethod() {
-		return null;
 	}
 
 	public String htmTooltipClassApiMethodMethod() {
@@ -2150,10 +2086,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiMediaType200Method == null ? "" : classApiMediaType200Method;
 	}
 
-	public String nomAffichageClassApiMediaType200Method() {
-		return null;
-	}
-
 	public String htmTooltipClassApiMediaType200Method() {
 		return null;
 	}
@@ -2228,10 +2160,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassApiOperationIdMethod() {
 		return classApiOperationIdMethod == null ? "" : classApiOperationIdMethod;
-	}
-
-	public String nomAffichageClassApiOperationIdMethod() {
-		return null;
 	}
 
 	public String htmTooltipClassApiOperationIdMethod() {
@@ -2310,10 +2238,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classApiOperationIdMethodRequest == null ? "" : classApiOperationIdMethodRequest;
 	}
 
-	public String nomAffichageClassApiOperationIdMethodRequest() {
-		return null;
-	}
-
 	public String htmTooltipClassApiOperationIdMethodRequest() {
 		return null;
 	}
@@ -2388,10 +2312,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassApiOperationIdMethodResponse() {
 		return classApiOperationIdMethodResponse == null ? "" : classApiOperationIdMethodResponse;
-	}
-
-	public String nomAffichageClassApiOperationIdMethodResponse() {
-		return null;
 	}
 
 	public String htmTooltipClassApiOperationIdMethodResponse() {
@@ -2470,10 +2390,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classSuperApiOperationIdMethodRequest == null ? "" : classSuperApiOperationIdMethodRequest;
 	}
 
-	public String nomAffichageClassSuperApiOperationIdMethodRequest() {
-		return null;
-	}
-
 	public String htmTooltipClassSuperApiOperationIdMethodRequest() {
 		return null;
 	}
@@ -2550,10 +2466,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classSuperApiOperationIdMethodResponse == null ? "" : classSuperApiOperationIdMethodResponse;
 	}
 
-	public String nomAffichageClassSuperApiOperationIdMethodResponse() {
-		return null;
-	}
-
 	public String htmTooltipClassSuperApiOperationIdMethodResponse() {
 		return null;
 	}
@@ -2628,10 +2540,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassPageCanonicalNameMethod() {
 		return classPageCanonicalNameMethod == null ? "" : classPageCanonicalNameMethod;
-	}
-
-	public String nomAffichageClassPageCanonicalNameMethod() {
-		return null;
 	}
 
 	public String htmTooltipClassPageCanonicalNameMethod() {
@@ -2713,10 +2621,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassKeywordsFound() {
 		return classKeywordsFound == null ? "" : classKeywordsFound.toString();
-	}
-
-	public String nomAffichageClassKeywordsFound() {
-		return null;
 	}
 
 	public String htmTooltipClassKeywordsFound() {
@@ -2818,10 +2722,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classKeywords == null ? "" : classKeywords.toString();
 	}
 
-	public String nomAffichageClassKeywords() {
-		return null;
-	}
-
 	public String htmTooltipClassKeywords() {
 		return null;
 	}
@@ -2901,10 +2801,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassPublicRead() {
 		return classPublicRead == null ? "" : classPublicRead.toString();
-	}
-
-	public String nomAffichageClassPublicRead() {
-		return null;
 	}
 
 	public String htmTooltipClassPublicRead() {
@@ -2988,10 +2884,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleSession == null ? "" : classRoleSession.toString();
 	}
 
-	public String nomAffichageClassRoleSession() {
-		return null;
-	}
-
 	public String htmTooltipClassRoleSession() {
 		return null;
 	}
@@ -3073,10 +2965,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleUtilisateur == null ? "" : classRoleUtilisateur.toString();
 	}
 
-	public String nomAffichageClassRoleUtilisateur() {
-		return null;
-	}
-
 	public String htmTooltipClassRoleUtilisateur() {
 		return null;
 	}
@@ -3156,10 +3044,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonClassRolesFound() {
 		return classRolesFound == null ? "" : classRolesFound.toString();
-	}
-
-	public String nomAffichageClassRolesFound() {
-		return null;
 	}
 
 	public String htmTooltipClassRolesFound() {
@@ -3261,10 +3145,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoles == null ? "" : classRoles.toString();
 	}
 
-	public String nomAffichageClassRoles() {
-		return null;
-	}
-
 	public String htmTooltipClassRoles() {
 		return null;
 	}
@@ -3364,10 +3244,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRolesLanguage == null ? "" : classRolesLanguage.toString();
 	}
 
-	public String nomAffichageClassRolesLanguage() {
-		return null;
-	}
-
 	public String htmTooltipClassRolesLanguage() {
 		return null;
 	}
@@ -3442,10 +3318,6 @@ public abstract class ApiWriterGen<DEV> extends Object {
 
 	public String jsonLanguageName() {
 		return languageName == null ? "" : languageName;
-	}
-
-	public String nomAffichageLanguageName() {
-		return null;
 	}
 
 	public String htmTooltipLanguageName() {

@@ -13,6 +13,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Api: true
  * Indexed: true
  * Saved: true
+ * Map.Integer.sqlSort: 6
  * 
  * ApiTag.enUS: State
  * ApiUri.enUS: /api/agency

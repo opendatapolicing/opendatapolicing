@@ -154,10 +154,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 		return tabStr == null ? "" : tabStr;
 	}
 
-	public String nomAffichageTabStr() {
-		return null;
-	}
-
 	public String htmTooltipTabStr() {
 		return null;
 	}
@@ -401,10 +397,6 @@ public abstract class AllWriterGen<DEV> extends Object {
 
 	public String jsonEmpty() {
 		return empty == null ? "" : empty.toString();
-	}
-
-	public String nomAffichageEmpty() {
-		return null;
 	}
 
 	public String htmTooltipEmpty() {

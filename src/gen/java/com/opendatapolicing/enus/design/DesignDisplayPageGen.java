@@ -111,10 +111,6 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 		return pageDesignId == null ? "" : pageDesignId;
 	}
 
-	public String nomAffichagePageDesignId() {
-		return null;
-	}
-
 	public String htmTooltipPageDesignId() {
 		return null;
 	}

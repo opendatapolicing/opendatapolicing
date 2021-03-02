@@ -163,10 +163,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return siteBaseUrl == null ? "" : siteBaseUrl;
 	}
 
-	public String nomAffichageSiteBaseUrl() {
-		return null;
-	}
-
 	public String htmTooltipSiteBaseUrl() {
 		return null;
 	}
@@ -241,10 +237,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonStaticBaseUrl() {
 		return staticBaseUrl == null ? "" : staticBaseUrl;
-	}
-
-	public String nomAffichageStaticBaseUrl() {
-		return null;
 	}
 
 	public String htmTooltipStaticBaseUrl() {
@@ -446,10 +438,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return contextIconGroup == null ? "" : contextIconGroup;
 	}
 
-	public String nomAffichageContextIconGroup() {
-		return null;
-	}
-
 	public String htmTooltipContextIconGroup() {
 		return null;
 	}
@@ -526,10 +514,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return contextIconName == null ? "" : contextIconName;
 	}
 
-	public String nomAffichageContextIconName() {
-		return null;
-	}
-
 	public String htmTooltipContextIconName() {
 		return null;
 	}
@@ -604,10 +588,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonContextIconCssClasses() {
 		return contextIconCssClasses == null ? "" : contextIconCssClasses;
-	}
-
-	public String nomAffichageContextIconCssClasses() {
-		return null;
 	}
 
 	public String htmTooltipContextIconCssClasses() {
@@ -691,10 +671,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageVisibleToBots == null ? "" : pageVisibleToBots.toString();
 	}
 
-	public String nomAffichagePageVisibleToBots() {
-		return null;
-	}
-
 	public String htmTooltipPageVisibleToBots() {
 		return null;
 	}
@@ -769,10 +745,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageH1() {
 		return pageH1 == null ? "" : pageH1;
-	}
-
-	public String nomAffichagePageH1() {
-		return null;
 	}
 
 	public String htmTooltipPageH1() {
@@ -851,10 +823,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageH2 == null ? "" : pageH2;
 	}
 
-	public String nomAffichagePageH2() {
-		return null;
-	}
-
 	public String htmTooltipPageH2() {
 		return null;
 	}
@@ -929,10 +897,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageH3() {
 		return pageH3 == null ? "" : pageH3;
-	}
-
-	public String nomAffichagePageH3() {
-		return null;
 	}
 
 	public String htmTooltipPageH3() {
@@ -1011,10 +975,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return _pageH1Short == null ? "" : _pageH1Short;
 	}
 
-	public String nomAffichage_pageH1Short() {
-		return null;
-	}
-
 	public String htmTooltip_pageH1Short() {
 		return null;
 	}
@@ -1089,10 +1049,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String json_pageH2Short() {
 		return _pageH2Short == null ? "" : _pageH2Short;
-	}
-
-	public String nomAffichage_pageH2Short() {
-		return null;
 	}
 
 	public String htmTooltip_pageH2Short() {
@@ -1171,10 +1127,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return _pageH3Short == null ? "" : _pageH3Short;
 	}
 
-	public String nomAffichage_pageH3Short() {
-		return null;
-	}
-
 	public String htmTooltip_pageH3Short() {
 		return null;
 	}
@@ -1251,10 +1203,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageTitle == null ? "" : pageTitle;
 	}
 
-	public String nomAffichagePageTitle() {
-		return null;
-	}
-
 	public String htmTooltipPageTitle() {
 		return null;
 	}
@@ -1329,10 +1277,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageUri() {
 		return pageUri == null ? "" : pageUri;
-	}
-
-	public String nomAffichagePageUri() {
-		return null;
 	}
 
 	public String htmTooltipPageUri() {
@@ -1432,10 +1376,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageUris == null ? "" : pageUris.toString();
 	}
 
-	public String nomAffichagePageUris() {
-		return null;
-	}
-
 	public String htmTooltipPageUris() {
 		return null;
 	}
@@ -1510,10 +1450,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageUrl() {
 		return pageUrl == null ? "" : pageUrl;
-	}
-
-	public String nomAffichagePageUrl() {
-		return null;
 	}
 
 	public String htmTooltipPageUrl() {
@@ -1592,10 +1528,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageUri == null ? "" : pageImageUri;
 	}
 
-	public String nomAffichagePageImageUri() {
-		return null;
-	}
-
 	public String htmTooltipPageImageUri() {
 		return null;
 	}
@@ -1670,10 +1602,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageImageUrl() {
 		return pageImageUrl == null ? "" : pageImageUrl;
-	}
-
-	public String nomAffichagePageImageUrl() {
-		return null;
 	}
 
 	public String htmTooltipPageImageUrl() {
@@ -1752,10 +1680,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageVideoId == null ? "" : pageVideoId;
 	}
 
-	public String nomAffichagePageVideoId() {
-		return null;
-	}
-
 	public String htmTooltipPageVideoId() {
 		return null;
 	}
@@ -1832,10 +1756,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageVideoUrl == null ? "" : pageVideoUrl;
 	}
 
-	public String nomAffichagePageVideoUrl() {
-		return null;
-	}
-
 	public String htmTooltipPageVideoUrl() {
 		return null;
 	}
@@ -1910,10 +1830,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageVideoUrlEmbed() {
 		return pageVideoUrlEmbed == null ? "" : pageVideoUrlEmbed;
-	}
-
-	public String nomAffichagePageVideoUrlEmbed() {
-		return null;
 	}
 
 	public String htmTooltipPageVideoUrlEmbed() {
@@ -2000,10 +1916,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageWidth == null ? "" : pageImageWidth.toString();
 	}
 
-	public String nomAffichagePageImageWidth() {
-		return null;
-	}
-
 	public String htmTooltipPageImageWidth() {
 		return null;
 	}
@@ -2088,10 +2000,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageHeight == null ? "" : pageImageHeight.toString();
 	}
 
-	public String nomAffichagePageImageHeight() {
-		return null;
-	}
-
 	public String htmTooltipPageImageHeight() {
 		return null;
 	}
@@ -2168,10 +2076,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageImageContentType == null ? "" : pageImageContentType;
 	}
 
-	public String nomAffichagePageImageContentType() {
-		return null;
-	}
-
 	public String htmTooltipPageImageContentType() {
 		return null;
 	}
@@ -2246,10 +2150,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageContentType() {
 		return pageContentType == null ? "" : pageContentType;
-	}
-
-	public String nomAffichagePageContentType() {
-		return null;
 	}
 
 	public String htmTooltipPageContentType() {
@@ -2343,10 +2243,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageCreated == null ? "" : pageCreated.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String nomAffichagePageCreated() {
-		return null;
-	}
-
 	public String htmTooltipPageCreated() {
 		return null;
 	}
@@ -2438,10 +2334,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageModified == null ? "" : pageModified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String nomAffichagePageModified() {
-		return null;
-	}
-
 	public String htmTooltipPageModified() {
 		return null;
 	}
@@ -2516,10 +2408,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageKeywords() {
 		return pageKeywords == null ? "" : pageKeywords;
-	}
-
-	public String nomAffichagePageKeywords() {
-		return null;
 	}
 
 	public String htmTooltipPageKeywords() {
@@ -2598,10 +2486,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageDescription == null ? "" : pageDescription;
 	}
 
-	public String nomAffichagePageDescription() {
-		return null;
-	}
-
 	public String htmTooltipPageDescription() {
 		return null;
 	}
@@ -2676,10 +2560,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageHomeUri() {
 		return pageHomeUri == null ? "" : pageHomeUri;
-	}
-
-	public String nomAffichagePageHomeUri() {
-		return null;
 	}
 
 	public String htmTooltipPageHomeUri() {
@@ -2758,10 +2638,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageSchoolUri == null ? "" : pageSchoolUri;
 	}
 
-	public String nomAffichagePageSchoolUri() {
-		return null;
-	}
-
 	public String htmTooltipPageSchoolUri() {
 		return null;
 	}
@@ -2838,10 +2714,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return pageUserUri == null ? "" : pageUserUri;
 	}
 
-	public String nomAffichagePageUserUri() {
-		return null;
-	}
-
 	public String htmTooltipPageUserUri() {
 		return null;
 	}
@@ -2916,10 +2788,6 @@ public abstract class PageLayoutGen<DEV> extends Object {
 
 	public String jsonPageLogoutUri() {
 		return pageLogoutUri == null ? "" : pageLogoutUri;
-	}
-
-	public String nomAffichagePageLogoutUri() {
-		return null;
 	}
 
 	public String htmTooltipPageLogoutUri() {

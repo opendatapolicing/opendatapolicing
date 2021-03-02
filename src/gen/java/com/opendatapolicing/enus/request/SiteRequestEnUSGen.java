@@ -660,10 +660,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userId == null ? "" : userId;
 	}
 
-	public String nomAffichageUserId() {
-		return null;
-	}
-
 	public String htmTooltipUserId() {
 		return null;
 	}
@@ -748,10 +744,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userKey == null ? "" : userKey.toString();
 	}
 
-	public String nomAffichageUserKey() {
-		return null;
-	}
-
 	public String htmTooltipUserKey() {
 		return null;
 	}
@@ -826,10 +818,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String jsonSessionId() {
 		return sessionId == null ? "" : sessionId;
-	}
-
-	public String nomAffichageSessionId() {
-		return null;
 	}
 
 	public String htmTooltipSessionId() {
@@ -908,10 +896,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return sessionIdBefore == null ? "" : sessionIdBefore;
 	}
 
-	public String nomAffichageSessionIdBefore() {
-		return null;
-	}
-
 	public String htmTooltipSessionIdBefore() {
 		return null;
 	}
@@ -986,10 +970,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String jsonUserName() {
 		return userName == null ? "" : userName;
-	}
-
-	public String nomAffichageUserName() {
-		return null;
 	}
 
 	public String htmTooltipUserName() {
@@ -1068,10 +1048,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userLastName == null ? "" : userLastName;
 	}
 
-	public String nomAffichageUserLastName() {
-		return null;
-	}
-
 	public String htmTooltipUserLastName() {
 		return null;
 	}
@@ -1146,10 +1122,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String jsonUserFirstName() {
 		return userFirstName == null ? "" : userFirstName;
-	}
-
-	public String nomAffichageUserFirstName() {
-		return null;
 	}
 
 	public String htmTooltipUserFirstName() {
@@ -1228,10 +1200,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userFullName == null ? "" : userFullName;
 	}
 
-	public String nomAffichageUserFullName() {
-		return null;
-	}
-
 	public String htmTooltipUserFullName() {
 		return null;
 	}
@@ -1306,10 +1274,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String jsonUserEmail() {
 		return userEmail == null ? "" : userEmail;
-	}
-
-	public String nomAffichageUserEmail() {
-		return null;
 	}
 
 	public String htmTooltipUserEmail() {
@@ -1407,10 +1371,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String jsonUserRealmRoles() {
 		return userRealmRoles == null ? "" : userRealmRoles.toString();
-	}
-
-	public String nomAffichageUserRealmRoles() {
-		return null;
 	}
 
 	public String htmTooltipUserRealmRoles() {
@@ -1549,10 +1509,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String jsonUserResourceRoles() {
 		return userResourceRoles == null ? "" : userResourceRoles.toString();
-	}
-
-	public String nomAffichageUserResourceRoles() {
-		return null;
 	}
 
 	public String htmTooltipUserResourceRoles() {
@@ -1759,10 +1715,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return pageAdmin == null ? "" : pageAdmin.toString();
 	}
 
-	public String nomAffichagePageAdmin() {
-		return null;
-	}
-
 	public String htmTooltipPageAdmin() {
 		return null;
 	}
@@ -1847,10 +1799,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return requestPk == null ? "" : requestPk.toString();
 	}
 
-	public String nomAffichageRequestPk() {
-		return null;
-	}
-
 	public String htmTooltipRequestPk() {
 		return null;
 	}
@@ -1927,10 +1875,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return requestUri == null ? "" : requestUri;
 	}
 
-	public String nomAffichageRequestUri() {
-		return null;
-	}
-
 	public String htmTooltipRequestUri() {
 		return null;
 	}
@@ -2005,10 +1949,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 
 	public String jsonRequestMethod() {
 		return requestMethod == null ? "" : requestMethod;
-	}
-
-	public String nomAffichageRequestMethod() {
-		return null;
 	}
 
 	public String htmTooltipRequestMethod() {

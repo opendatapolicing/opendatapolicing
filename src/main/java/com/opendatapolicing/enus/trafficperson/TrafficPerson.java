@@ -13,6 +13,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Api: true
  * Indexed: true
  * Saved: true
+ * Map.Integer.sqlSort: 8
  * 
  * ApiTag.enUS: Person
  * ApiUri.enUS: /api/person
@@ -92,7 +93,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopAgencyTitle(Wrap<String> w) {
@@ -104,7 +104,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: stop date/time
 	 */ 
 	protected void _stopDateTime(Wrap<ZonedDateTime> w) {
@@ -116,7 +115,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: stop purpose number
 	 */ 
 	protected void _stopPurposeNum(Wrap<Integer> w) {
@@ -128,7 +126,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: stop purpose title
 	 */ 
 	protected void _stopPurposeTitle(Wrap<String> w) {
@@ -140,7 +137,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: stop action number
 	 */ 
 	protected void _stopActionNum(Wrap<Integer> w) {
@@ -152,7 +148,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopActionTitle(Wrap<String> w) {
@@ -164,7 +159,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: driver arrest
 	 */ 
 	protected void _stopDriverArrest(Wrap<Boolean> w) {
@@ -176,7 +170,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: passenger arrest
 	 */ 
 	protected void _stopPassengerArrest(Wrap<Boolean> w) {
@@ -188,7 +181,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: encounter force
 	 */ 
 	protected void _stopEncounterForce(Wrap<Boolean> w) {
@@ -200,7 +192,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: engage force
 	 */ 
 	protected void _stopEngageForce(Wrap<Boolean> w) {
@@ -212,7 +203,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: officer injury
 	 */ 
 	protected void _stopOfficerInjury(Wrap<Boolean> w) {
@@ -224,7 +214,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: driver injury
 	 */ 
 	protected void _stopDriverInjury(Wrap<Boolean> w) {
@@ -236,7 +225,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: passenger injury
 	 */ 
 	protected void _stopPassengerInjury(Wrap<Boolean> w) {
@@ -248,7 +236,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: officer ID
 	 */ 
 	protected void _stopOfficerId(Wrap<String> w) {
@@ -260,7 +247,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: location ID
 	 */ 
 	protected void _stopLocationId(Wrap<String> w) {
@@ -272,7 +258,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * DisplayName.enUS: city ID
 	 */ 
 	protected void _stopCityId(Wrap<String> w) {

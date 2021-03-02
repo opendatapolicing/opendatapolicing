@@ -179,10 +179,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String nomAffichageCreated() {
-		return null;
-	}
-
 	public String htmTooltipCreated() {
 		return null;
 	}
@@ -265,10 +261,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String jsonRows() {
 		return rows == null ? "" : rows.toString();
-	}
-
-	public String nomAffichageRows() {
-		return null;
 	}
 
 	public String htmTooltipRows() {
@@ -355,10 +347,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return numFound == null ? "" : numFound.toString();
 	}
 
-	public String nomAffichageNumFound() {
-		return null;
-	}
-
 	public String htmTooltipNumFound() {
 		return null;
 	}
@@ -443,10 +431,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return numPATCH == null ? "" : numPATCH.toString();
 	}
 
-	public String nomAffichageNumPATCH() {
-		return null;
-	}
-
 	public String htmTooltipNumPATCH() {
 		return null;
 	}
@@ -523,10 +507,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return uuid == null ? "" : uuid;
 	}
 
-	public String nomAffichageUuid() {
-		return null;
-	}
-
 	public String htmTooltipUuid() {
 		return null;
 	}
@@ -601,10 +581,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String jsonId() {
 		return id == null ? "" : id;
-	}
-
-	public String nomAffichageId() {
-		return null;
 	}
 
 	public String htmTooltipId() {
@@ -686,10 +662,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String jsonEmpty() {
 		return empty == null ? "" : empty.toString();
-	}
-
-	public String nomAffichageEmpty() {
-		return null;
 	}
 
 	public String htmTooltipEmpty() {
@@ -774,10 +746,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String jsonPk() {
 		return pk == null ? "" : pk.toString();
-	}
-
-	public String nomAffichagePk() {
-		return null;
 	}
 
 	public String htmTooltipPk() {
@@ -934,10 +902,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return pks == null ? "" : pks.toString();
 	}
 
-	public String nomAffichagePks() {
-		return null;
-	}
-
 	public String htmTooltipPks() {
 		return null;
 	}
@@ -1035,10 +999,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return classes == null ? "" : classes.toString();
 	}
 
-	public String nomAffichageClasses() {
-		return null;
-	}
-
 	public String htmTooltipClasses() {
 		return null;
 	}
@@ -1134,10 +1094,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String jsonVars() {
 		return vars == null ? "" : vars.toString();
-	}
-
-	public String nomAffichageVars() {
-		return null;
 	}
 
 	public String htmTooltipVars() {

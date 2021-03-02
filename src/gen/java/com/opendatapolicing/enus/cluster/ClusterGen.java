@@ -8,19 +8,17 @@ import java.lang.Long;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
 import java.util.Map;
-import io.vertx.core.json.JsonObject;
 import java.time.ZoneOffset;
 import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import java.math.MathContext;
-import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
+import com.opendatapolicing.enus.context.SiteContextEnUS;
 import java.util.Objects;
 import java.util.List;
 import java.time.OffsetDateTime;
@@ -184,10 +182,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pk == null ? "" : pk.toString();
 	}
 
-	public String nomAffichagePk() {
-		return "primary key";
-	}
-
 	public String htmTooltipPk() {
 		return null;
 	}
@@ -297,10 +291,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonInheritPk() {
 		return inheritPk == null ? "" : inheritPk.toString();
-	}
-
-	public String nomAffichageInheritPk() {
-		return null;
 	}
 
 	public String htmTooltipInheritPk() {
@@ -441,10 +431,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return id == null ? "" : id;
 	}
 
-	public String nomAffichageId() {
-		return null;
-	}
-
 	public String htmTooltipId() {
 		return null;
 	}
@@ -534,10 +520,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonCreated() {
 		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
-	}
-
-	public String nomAffichageCreated() {
-		return "created";
 	}
 
 	public String htmTooltipCreated() {
@@ -656,10 +638,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return modified == null ? "" : modified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String nomAffichageModified() {
-		return "modified";
-	}
-
 	public String htmTooltipModified() {
 		return null;
 	}
@@ -676,20 +654,22 @@ public abstract class ClusterGen<DEV> extends Object {
 	public void htmModified(String classApiMethodMethod) {
 		Cluster s = (Cluster)this;
 		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ s.e("div").a("class", "w3-padding ").f();
-				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterModified").f();
+			if("Page".equals(classApiMethodMethod)) {
+				{ s.e("div").a("class", "w3-padding ").f();
 					{ s.e("div").a("class", "w3-card ").f();
 						{ s.e("div").a("class", "w3-cell-row w3- ").f();
-							s.e("label").a("for", classApiMethodMethod, "_modified").a("class", "").f().sx("modified").g("label");
+							s.e("label").a("class", "").f().sx("modified").g("label");
 						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
+						{ s.e("div").a("class", "w3-cell-row  ").f();
 							{ s.e("div").a("class", "w3-cell ").f();
-								inputModified(classApiMethodMethod);
+								{ s.e("div").a("class", "w3-rest ").f();
+									s.e("span").a("class", "varCluster", pk, "Modified ").f().sx(strModified()).g("span");
+								} s.g("div");
 							} s.g("div");
 						} s.g("div");
 					} s.g("div");
 				} s.g("div");
-			} s.g("div");
+			}
 		} s.g("div");
 	}
 
@@ -759,10 +739,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonModifiedIsoOffsetDateTime() {
 		return modifiedIsoOffsetDateTime == null ? "" : modifiedIsoOffsetDateTime;
-	}
-
-	public String nomAffichageModifiedIsoOffsetDateTime() {
-		return null;
 	}
 
 	public String htmTooltipModifiedIsoOffsetDateTime() {
@@ -844,10 +820,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonArchived() {
 		return archived == null ? "" : archived.toString();
-	}
-
-	public String nomAffichageArchived() {
-		return "archived";
 	}
 
 	public String htmTooltipArchived() {
@@ -994,10 +966,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return deleted == null ? "" : deleted.toString();
 	}
 
-	public String nomAffichageDeleted() {
-		return "deleted";
-	}
-
 	public String htmTooltipDeleted() {
 		return null;
 	}
@@ -1137,10 +1105,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalName == null ? "" : classCanonicalName;
 	}
 
-	public String nomAffichageClassCanonicalName() {
-		return null;
-	}
-
 	public String htmTooltipClassCanonicalName() {
 		return null;
 	}
@@ -1215,10 +1179,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonClassSimpleName() {
 		return classSimpleName == null ? "" : classSimpleName;
-	}
-
-	public String nomAffichageClassSimpleName() {
-		return null;
 	}
 
 	public String htmTooltipClassSimpleName() {
@@ -1318,10 +1278,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
 
-	public String nomAffichageClassCanonicalNames() {
-		return null;
-	}
-
 	public String htmTooltipClassCanonicalNames() {
 		return null;
 	}
@@ -1398,119 +1354,12 @@ public abstract class ClusterGen<DEV> extends Object {
 		return sessionId == null ? "" : sessionId;
 	}
 
-	public String nomAffichageSessionId() {
-		return null;
-	}
-
 	public String htmTooltipSessionId() {
 		return null;
 	}
 
 	public String htmSessionId() {
 		return sessionId == null ? "" : StringEscapeUtils.escapeHtml4(strSessionId());
-	}
-
-	////////////
-	// userId //
-	////////////
-
-	/**	 The entity userId
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String userId;
-	@JsonIgnore
-	public Wrap<String> userIdWrap = new Wrap<String>().p(this).c(String.class).var("userId").o(userId);
-
-	/**	<br/> The entity userId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userId">Find the entity userId in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _userId(Wrap<String> c);
-
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String o) {
-		this.userId = Cluster.staticSetUserId(siteRequest_, o);
-		this.userIdWrap.alreadyInitialized = true;
-	}
-	public static String staticSetUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster userIdInit() {
-		if(!userIdWrap.alreadyInitialized) {
-			_userId(userIdWrap);
-			if(userId == null)
-				setUserId(userIdWrap.o);
-		}
-		userIdWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrUserId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqUserId(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrUserId(siteRequest_, Cluster.staticSolrUserId(siteRequest_, Cluster.staticSetUserId(siteRequest_, o)));
-	}
-
-	public String solrUserId() {
-		return Cluster.staticSolrUserId(siteRequest_, userId);
-	}
-
-	public String strUserId() {
-		return userId == null ? "" : userId;
-	}
-
-	public String sqlUserId() {
-		return userId;
-	}
-
-	public String jsonUserId() {
-		return userId == null ? "" : userId;
-	}
-
-	public String nomAffichageUserId() {
-		return null;
-	}
-
-	public String htmTooltipUserId() {
-		return null;
-	}
-
-	public String htmUserId() {
-		return userId == null ? "" : StringEscapeUtils.escapeHtml4(strUserId());
-	}
-
-	public void inputUserId(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		s.e("span").a("class", "varCluster", pk, "UserId ").f().sx(htmUserId()).g("span");
-	}
-
-	public void htmUserId(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ s.e("div").a("class", "w3-padding ").f();
-				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterUserId").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-
-								inputUserId(classApiMethodMethod);
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			} s.g("div");
-		} s.g("div");
 	}
 
 	/////////////
@@ -1587,10 +1436,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonUserKey() {
 		return userKey == null ? "" : userKey.toString();
-	}
-
-	public String nomAffichageUserKey() {
-		return null;
 	}
 
 	public String htmTooltipUserKey() {
@@ -1713,10 +1558,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return saves == null ? "" : saves.toString();
 	}
 
-	public String nomAffichageSaves() {
-		return null;
-	}
-
 	public String htmTooltipSaves() {
 		return null;
 	}
@@ -1791,10 +1632,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonObjectTitle() {
 		return objectTitle == null ? "" : objectTitle;
-	}
-
-	public String nomAffichageObjectTitle() {
-		return null;
 	}
 
 	public String htmTooltipObjectTitle() {
@@ -1896,10 +1733,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectId == null ? "" : objectId;
 	}
 
-	public String nomAffichageObjectId() {
-		return "ID";
-	}
-
 	public String htmTooltipObjectId() {
 		return null;
 	}
@@ -1974,10 +1807,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonObjectNameVar() {
 		return objectNameVar == null ? "" : objectNameVar;
-	}
-
-	public String nomAffichageObjectNameVar() {
-		return null;
 	}
 
 	public String htmTooltipObjectNameVar() {
@@ -2056,10 +1885,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectSuggest == null ? "" : objectSuggest;
 	}
 
-	public String nomAffichageObjectSuggest() {
-		return null;
-	}
-
 	public String htmTooltipObjectSuggest() {
 		return null;
 	}
@@ -2134,10 +1959,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonObjectText() {
 		return objectText == null ? "" : objectText;
-	}
-
-	public String nomAffichageObjectText() {
-		return null;
 	}
 
 	public String htmTooltipObjectText() {
@@ -2216,10 +2037,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pageUrlId == null ? "" : pageUrlId;
 	}
 
-	public String nomAffichagePageUrlId() {
-		return null;
-	}
-
 	public String htmTooltipPageUrlId() {
 		return null;
 	}
@@ -2294,10 +2111,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String jsonPageUrlPk() {
 		return pageUrlPk == null ? "" : pageUrlPk;
-	}
-
-	public String nomAffichagePageUrlPk() {
-		return null;
 	}
 
 	public String htmTooltipPageUrlPk() {
@@ -2376,10 +2189,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pageUrlApi == null ? "" : pageUrlApi;
 	}
 
-	public String nomAffichagePageUrlApi() {
-		return null;
-	}
-
 	public String htmTooltipPageUrlApi() {
 		return null;
 	}
@@ -2456,10 +2265,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pageH1 == null ? "" : pageH1;
 	}
 
-	public String nomAffichagePageH1() {
-		return null;
-	}
-
 	public String htmTooltipPageH1() {
 		return null;
 	}
@@ -2501,7 +2306,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		classSimpleNameInit();
 		classCanonicalNamesInit();
 		sessionIdInit();
-		userIdInit();
 		userKeyInit();
 		savesInit();
 		objectTitleInit();
@@ -2580,8 +2384,6 @@ public abstract class ClusterGen<DEV> extends Object {
 				return oCluster.classCanonicalNames;
 			case "sessionId":
 				return oCluster.sessionId;
-			case "userId":
-				return oCluster.userId;
 			case "userKey":
 				return oCluster.userKey;
 			case "saves":
@@ -2667,8 +2469,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSetClassCanonicalNames(siteRequest_, o);
 		case "sessionId":
 			return Cluster.staticSetSessionId(siteRequest_, o);
-		case "userId":
-			return Cluster.staticSetUserId(siteRequest_, o);
 		case "userKey":
 			return Cluster.staticSetUserKey(siteRequest_, o);
 		case "saves":
@@ -2729,8 +2529,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSolrClassCanonicalNames(siteRequest_, (String)o);
 		case "sessionId":
 			return Cluster.staticSolrSessionId(siteRequest_, (String)o);
-		case "userId":
-			return Cluster.staticSolrUserId(siteRequest_, (String)o);
 		case "userKey":
 			return Cluster.staticSolrUserKey(siteRequest_, (Long)o);
 		case "saves":
@@ -2791,8 +2589,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSolrStrClassCanonicalNames(siteRequest_, (String)o);
 		case "sessionId":
 			return Cluster.staticSolrStrSessionId(siteRequest_, (String)o);
-		case "userId":
-			return Cluster.staticSolrStrUserId(siteRequest_, (String)o);
 		case "userKey":
 			return Cluster.staticSolrStrUserKey(siteRequest_, (Long)o);
 		case "saves":
@@ -2853,8 +2649,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSolrFqClassCanonicalNames(siteRequest_, o);
 		case "sessionId":
 			return Cluster.staticSolrFqSessionId(siteRequest_, o);
-		case "userId":
-			return Cluster.staticSolrFqUserId(siteRequest_, o);
 		case "userKey":
 			return Cluster.staticSolrFqUserKey(siteRequest_, o);
 		case "saves":
@@ -2913,11 +2707,6 @@ public abstract class ClusterGen<DEV> extends Object {
 					setCreated(val);
 				saves.add("created");
 				return val;
-			case "modified":
-				if(val != null)
-					setModified(val);
-				saves.add("modified");
-				return val;
 			case "archived":
 				if(val != null)
 					setArchived(val);
@@ -2927,11 +2716,6 @@ public abstract class ClusterGen<DEV> extends Object {
 				if(val != null)
 					setDeleted(val);
 				saves.add("deleted");
-				return val;
-			case "userid":
-				if(val != null)
-					setUserId(val);
-				saves.add("userId");
 				return val;
 			case "userkey":
 				if(val != null)
@@ -2972,13 +2756,6 @@ public abstract class ClusterGen<DEV> extends Object {
 					setCreated(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
 				saves.add("created");
 				return val;
-			case "modified":
-				if(val instanceof ZonedDateTime)
-					setModified((ZonedDateTime)val);
-				else if(val instanceof OffsetDateTime)
-					setModified(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
-				saves.add("modified");
-				return val;
 			case "archived":
 				if(val instanceof Boolean)
 					setArchived((Boolean)val);
@@ -2988,11 +2765,6 @@ public abstract class ClusterGen<DEV> extends Object {
 				if(val instanceof Boolean)
 					setDeleted((Boolean)val);
 				saves.add("deleted");
-				return val;
-			case "userid":
-				if(val instanceof String)
-					setUserId((String)val);
-				saves.add("userId");
 				return val;
 			case "userkey":
 				if(val instanceof Long)
@@ -3015,119 +2787,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		Cluster oCluster = (Cluster)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
-
-			Long pk = (Long)solrDocument.get("pk_stored_long");
-			oCluster.setPk(pk);
-
-			if(saves.contains("inheritPk")) {
-				Long inheritPk = (Long)solrDocument.get("inheritPk_stored_long");
-				if(inheritPk != null)
-					oCluster.setInheritPk(inheritPk);
-			}
-
-			String id = (String)solrDocument.get("id");
-			oCluster.setId(id);
-
-			if(saves.contains("created")) {
-				Date created = (Date)solrDocument.get("created_stored_date");
-				if(created != null)
-					oCluster.setCreated(created);
-			}
-
-			if(saves.contains("modified")) {
-				Date modified = (Date)solrDocument.get("modified_stored_date");
-				if(modified != null)
-					oCluster.setModified(modified);
-			}
-
-			if(saves.contains("modifiedIsoOffsetDateTime")) {
-				String modifiedIsoOffsetDateTime = (String)solrDocument.get("modifiedIsoOffsetDateTime_stored_string");
-				if(modifiedIsoOffsetDateTime != null)
-					oCluster.setModifiedIsoOffsetDateTime(modifiedIsoOffsetDateTime);
-			}
-
-			if(saves.contains("archived")) {
-				Boolean archived = (Boolean)solrDocument.get("archived_stored_boolean");
-				if(archived != null)
-					oCluster.setArchived(archived);
-			}
-
-			if(saves.contains("deleted")) {
-				Boolean deleted = (Boolean)solrDocument.get("deleted_stored_boolean");
-				if(deleted != null)
-					oCluster.setDeleted(deleted);
-			}
-
-			if(saves.contains("classCanonicalName")) {
-				String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
-				if(classCanonicalName != null)
-					oCluster.setClassCanonicalName(classCanonicalName);
-			}
-
-			if(saves.contains("classSimpleName")) {
-				String classSimpleName = (String)solrDocument.get("classSimpleName_stored_string");
-				if(classSimpleName != null)
-					oCluster.setClassSimpleName(classSimpleName);
-			}
-
-			if(saves.contains("classCanonicalNames")) {
-				List<String> classCanonicalNames = (List<String>)solrDocument.get("classCanonicalNames_stored_strings");
-				if(classCanonicalNames != null)
-					oCluster.classCanonicalNames.addAll(classCanonicalNames);
-			}
-
-			if(saves.contains("sessionId")) {
-				String sessionId = (String)solrDocument.get("sessionId_stored_string");
-				if(sessionId != null)
-					oCluster.setSessionId(sessionId);
-			}
-
-			if(saves.contains("userId")) {
-				String userId = (String)solrDocument.get("userId_stored_string");
-				if(userId != null)
-					oCluster.setUserId(userId);
-			}
-
-			if(saves.contains("userKey")) {
-				Long userKey = (Long)solrDocument.get("userKey_stored_long");
-				if(userKey != null)
-					oCluster.setUserKey(userKey);
-			}
-
-			if(saves.contains("saves")) {
-				List<String> saves = (List<String>)solrDocument.get("saves_stored_strings");
-				if(saves != null)
-					oCluster.saves.addAll(saves);
-			}
-
-			if(saves.contains("objectTitle")) {
-				String objectTitle = (String)solrDocument.get("objectTitle_stored_string");
-				if(objectTitle != null)
-					oCluster.setObjectTitle(objectTitle);
-			}
-
-			if(saves.contains("objectId")) {
-				String objectId = (String)solrDocument.get("objectId_stored_string");
-				if(objectId != null)
-					oCluster.setObjectId(objectId);
-			}
-
-			if(saves.contains("objectSuggest")) {
-				String objectSuggest = (String)solrDocument.get("objectSuggest_suggested");
-				oCluster.setObjectSuggest(objectSuggest);
-			}
-
-			if(saves.contains("pageUrlId")) {
-				String pageUrlId = (String)solrDocument.get("pageUrlId_stored_string");
-				if(pageUrlId != null)
-					oCluster.setPageUrlId(pageUrlId);
-			}
-
-			if(saves.contains("pageUrlPk")) {
-				String pageUrlPk = (String)solrDocument.get("pageUrlPk_stored_string");
-				if(pageUrlPk != null)
-					oCluster.setPageUrlPk(pageUrlPk);
-			}
 		}
 	}
 
@@ -3244,10 +2903,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			document.addField("sessionId_indexed_string", sessionId);
 			document.addField("sessionId_stored_string", sessionId);
 		}
-		if(userId != null) {
-			document.addField("userId_indexed_string", userId);
-			document.addField("userId_stored_string", userId);
-		}
 		if(userKey != null) {
 			document.addField("userKey_indexed_long", userKey);
 			document.addField("userKey_stored_long", userKey);
@@ -3326,8 +2981,6 @@ public abstract class ClusterGen<DEV> extends Object {
 				return "classCanonicalNames_indexed_strings";
 			case "sessionId":
 				return "sessionId_indexed_string";
-			case "userId":
-				return "userId_indexed_string";
 			case "userKey":
 				return "userKey_indexed_long";
 			case "saves":
@@ -3426,10 +3079,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		if(sessionId != null)
 			oCluster.setSessionId(sessionId);
 
-		String userId = (String)solrDocument.get("userId_stored_string");
-		if(userId != null)
-			oCluster.setUserId(userId);
-
 		Long userKey = (Long)solrDocument.get("userKey_stored_long");
 		if(userKey != null)
 			oCluster.setUserKey(userKey);
@@ -3495,8 +3144,6 @@ public abstract class ClusterGen<DEV> extends Object {
 				apiRequest.addVars("classCanonicalNames");
 			if(!Objects.equals(sessionId, original.getSessionId()))
 				apiRequest.addVars("sessionId");
-			if(!Objects.equals(userId, original.getUserId()))
-				apiRequest.addVars("userId");
 			if(!Objects.equals(userKey, original.getUserKey()))
 				apiRequest.addVars("userKey");
 			if(!Objects.equals(saves, original.getSaves()))
@@ -3521,7 +3168,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(pk, inheritPk, id, created, modified, modifiedIsoOffsetDateTime, archived, deleted, classCanonicalName, classSimpleName, classCanonicalNames, sessionId, userId, userKey, saves, objectTitle, objectId, objectSuggest, objectText, pageUrlId, pageUrlPk);
+		return Objects.hash(pk, inheritPk, id, created, modified, modifiedIsoOffsetDateTime, archived, deleted, classCanonicalName, classSimpleName, classCanonicalNames, sessionId, userKey, saves, objectTitle, objectId, objectSuggest, objectText, pageUrlId, pageUrlPk);
 	}
 
 	////////////
@@ -3546,7 +3193,6 @@ public abstract class ClusterGen<DEV> extends Object {
 				&& Objects.equals( classSimpleName, that.classSimpleName )
 				&& Objects.equals( classCanonicalNames, that.classCanonicalNames )
 				&& Objects.equals( sessionId, that.sessionId )
-				&& Objects.equals( userId, that.userId )
 				&& Objects.equals( userKey, that.userKey )
 				&& Objects.equals( saves, that.saves )
 				&& Objects.equals( objectTitle, that.objectTitle )
@@ -3576,7 +3222,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		sb.append( ", classSimpleName: \"" ).append(classSimpleName).append( "\"" );
 		sb.append( ", classCanonicalNames: " ).append(classCanonicalNames);
 		sb.append( ", sessionId: \"" ).append(sessionId).append( "\"" );
-		sb.append( ", userId: \"" ).append(userId).append( "\"" );
 		sb.append( ", userKey: " ).append(userKey);
 		sb.append( ", saves: " ).append(saves);
 		sb.append( ", objectTitle: \"" ).append(objectTitle).append( "\"" );

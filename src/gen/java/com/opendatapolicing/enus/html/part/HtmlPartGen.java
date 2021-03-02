@@ -157,10 +157,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlPartKey == null ? "" : htmlPartKey.toString();
 	}
 
-	public String nomAffichageHtmlPartKey() {
-		return "key";
-	}
-
 	public String htmTooltipHtmlPartKey() {
 		return null;
 	}
@@ -272,10 +268,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonPageDesignKeys() {
 		return pageDesignKeys == null ? "" : pageDesignKeys.toString();
-	}
-
-	public String nomAffichagePageDesignKeys() {
-		return "page designs";
 	}
 
 	public String htmTooltipPageDesignKeys() {
@@ -438,10 +430,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlLink == null ? "" : htmlLink;
 	}
 
-	public String nomAffichageHtmlLink() {
-		return "link";
-	}
-
 	public String htmTooltipHtmlLink() {
 		return null;
 	}
@@ -587,10 +575,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonHtmlElement() {
 		return htmlElement == null ? "" : htmlElement;
-	}
-
-	public String nomAffichageHtmlElement() {
-		return "HTML element";
 	}
 
 	public String htmTooltipHtmlElement() {
@@ -740,10 +724,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlId == null ? "" : htmlId;
 	}
 
-	public String nomAffichageHtmlId() {
-		return "HTML ID";
-	}
-
 	public String htmTooltipHtmlId() {
 		return null;
 	}
@@ -889,10 +869,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonHtmlClasses() {
 		return htmlClasses == null ? "" : htmlClasses;
-	}
-
-	public String nomAffichageHtmlClasses() {
-		return "HTML classes";
 	}
 
 	public String htmTooltipHtmlClasses() {
@@ -1042,10 +1018,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlStyle == null ? "" : htmlStyle;
 	}
 
-	public String nomAffichageHtmlStyle() {
-		return "HTML style";
-	}
-
 	public String htmTooltipHtmlStyle() {
 		return null;
 	}
@@ -1193,10 +1165,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlBefore == null ? "" : htmlBefore;
 	}
 
-	public String nomAffichageHtmlBefore() {
-		return "HTML before";
-	}
-
 	public String htmTooltipHtmlBefore() {
 		return null;
 	}
@@ -1340,10 +1308,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonHtmlAfter() {
 		return htmlAfter == null ? "" : htmlAfter;
-	}
-
-	public String nomAffichageHtmlAfter() {
-		return "HTML after";
 	}
 
 	public String htmTooltipHtmlAfter() {
@@ -1491,10 +1455,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlText == null ? "" : htmlText;
 	}
 
-	public String nomAffichageHtmlText() {
-		return "text";
-	}
-
 	public String htmTooltipHtmlText() {
 		return null;
 	}
@@ -1638,10 +1598,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonHtmlVar() {
 		return htmlVar == null ? "" : htmlVar;
-	}
-
-	public String nomAffichageHtmlVar() {
-		return "var";
 	}
 
 	public String htmTooltipHtmlVar() {
@@ -1791,10 +1747,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlVarSpan == null ? "" : htmlVarSpan;
 	}
 
-	public String nomAffichageHtmlVarSpan() {
-		return "var span";
-	}
-
 	public String htmTooltipHtmlVarSpan() {
 		return null;
 	}
@@ -1940,10 +1892,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonHtmlVarForm() {
 		return htmlVarForm == null ? "" : htmlVarForm;
-	}
-
-	public String nomAffichageHtmlVarForm() {
-		return "var form";
 	}
 
 	public String htmTooltipHtmlVarForm() {
@@ -2093,10 +2041,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlVarInput == null ? "" : htmlVarInput;
 	}
 
-	public String nomAffichageHtmlVarInput() {
-		return "var input";
-	}
-
 	public String htmTooltipHtmlVarInput() {
 		return null;
 	}
@@ -2242,10 +2186,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonHtmlVarForEach() {
 		return htmlVarForEach == null ? "" : htmlVarForEach;
-	}
-
-	public String nomAffichageHtmlVarForEach() {
-		return "var for each";
 	}
 
 	public String htmTooltipHtmlVarForEach() {
@@ -2395,10 +2335,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlVarHtml == null ? "" : htmlVarHtml;
 	}
 
-	public String nomAffichageHtmlVarHtml() {
-		return "var html";
-	}
-
 	public String htmTooltipHtmlVarHtml() {
 		return null;
 	}
@@ -2544,10 +2480,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonHtmlVarBase64Decode() {
 		return htmlVarBase64Decode == null ? "" : htmlVarBase64Decode;
-	}
-
-	public String nomAffichageHtmlVarBase64Decode() {
-		return "var base64 decode";
 	}
 
 	public String htmTooltipHtmlVarBase64Decode() {
@@ -2702,10 +2634,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return htmlExclude == null ? "" : htmlExclude.toString();
 	}
 
-	public String nomAffichageHtmlExclude() {
-		return "HTML exclude";
-	}
-
 	public String htmTooltipHtmlExclude() {
 		return null;
 	}
@@ -2853,10 +2781,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonPdfExclude() {
 		return pdfExclude == null ? "" : pdfExclude.toString();
-	}
-
-	public String nomAffichagePdfExclude() {
-		return "PDF exclude";
 	}
 
 	public String htmTooltipPdfExclude() {
@@ -3008,10 +2932,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return loginLogout == null ? "" : loginLogout.toString();
 	}
 
-	public String nomAffichageLoginLogout() {
-		return "login/logout";
-	}
-
 	public String htmTooltipLoginLogout() {
 		return null;
 	}
@@ -3154,10 +3074,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonSearchUri() {
 		return searchUri == null ? "" : searchUri;
-	}
-
-	public String nomAffichageSearchUri() {
-		return "search uri";
 	}
 
 	public String htmTooltipSearchUri() {
@@ -3305,10 +3221,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonMapTo() {
 		return mapTo == null ? "" : mapTo;
-	}
-
-	public String nomAffichageMapTo() {
-		return "map to";
 	}
 
 	public String htmTooltipMapTo() {
@@ -3466,10 +3378,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort1 == null ? "" : sort1.toString();
 	}
 
-	public String nomAffichageSort1() {
-		return "sort1";
-	}
-
 	public String htmTooltipSort1() {
 		return null;
 	}
@@ -3623,10 +3531,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonSort2() {
 		return sort2 == null ? "" : sort2.toString();
-	}
-
-	public String nomAffichageSort2() {
-		return "sort2";
 	}
 
 	public String htmTooltipSort2() {
@@ -3784,10 +3688,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort3 == null ? "" : sort3.toString();
 	}
 
-	public String nomAffichageSort3() {
-		return "sort3";
-	}
-
 	public String htmTooltipSort3() {
 		return null;
 	}
@@ -3941,10 +3841,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonSort4() {
 		return sort4 == null ? "" : sort4.toString();
-	}
-
-	public String nomAffichageSort4() {
-		return "sort4";
 	}
 
 	public String htmTooltipSort4() {
@@ -4102,10 +3998,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort5 == null ? "" : sort5.toString();
 	}
 
-	public String nomAffichageSort5() {
-		return "sort5";
-	}
-
 	public String htmTooltipSort5() {
 		return null;
 	}
@@ -4259,10 +4151,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonSort6() {
 		return sort6 == null ? "" : sort6.toString();
-	}
-
-	public String nomAffichageSort6() {
-		return "sort6";
 	}
 
 	public String htmTooltipSort6() {
@@ -4420,10 +4308,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort7 == null ? "" : sort7.toString();
 	}
 
-	public String nomAffichageSort7() {
-		return "sort7";
-	}
-
 	public String htmTooltipSort7() {
 		return null;
 	}
@@ -4577,10 +4461,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonSort8() {
 		return sort8 == null ? "" : sort8.toString();
-	}
-
-	public String nomAffichageSort8() {
-		return "sort8";
 	}
 
 	public String htmTooltipSort8() {
@@ -4738,10 +4618,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		return sort9 == null ? "" : sort9.toString();
 	}
 
-	public String nomAffichageSort9() {
-		return "sort9";
-	}
-
 	public String htmTooltipSort9() {
 		return null;
 	}
@@ -4895,10 +4771,6 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 
 	public String jsonSort10() {
 		return sort10 == null ? "" : sort10.toString();
-	}
-
-	public String nomAffichageSort10() {
-		return "sort10";
 	}
 
 	public String htmTooltipSort10() {

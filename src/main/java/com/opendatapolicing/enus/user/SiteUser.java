@@ -12,6 +12,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Model: true
  * Api: true
  * Indexed: true
+ * Map.Integer.sqlSort: 3
  * 
  * ApiTag.frFR: Utilisateur
  * ApiUri.frFR: /api/utilisateur
@@ -65,16 +66,6 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	 * DisplayName: user ID
 	 */
 	protected void _userId(Wrap<String> c) {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * DisplayName: user key
-	 */
-	protected void _userKey(Wrap<Long> c) {
 	}
 
 	/**

@@ -182,10 +182,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userKeys == null ? "" : userKeys.toString();
 	}
 
-	public String nomAffichageUserKeys() {
-		return null;
-	}
-
 	public String htmTooltipUserKeys() {
 		return null;
 	}
@@ -262,10 +258,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userId == null ? "" : userId;
 	}
 
-	public String nomAffichageUserId() {
-		return "user ID";
-	}
-
 	public String htmTooltipUserId() {
 		return null;
 	}
@@ -327,160 +319,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 											.a("tabindex", "-1")
 											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
 										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userId')); $('#", classApiMethodMethod, "_userId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserId', null, function() { addGlow($('#", classApiMethodMethod, "_userId')); }, function() { addError($('#", classApiMethodMethod, "_userId')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
-	/////////////
-	// userKey //
-	/////////////
-
-	/**	 The entity userKey
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonSerialize(using = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected Long userKey;
-	@JsonIgnore
-	public Wrap<Long> userKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("userKey").o(userKey);
-
-	/**	<br/> The entity userKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKey">Find the entity userKey in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _userKey(Wrap<Long> c);
-
-	public Long getUserKey() {
-		return userKey;
-	}
-
-	public void setUserKey(Long userKey) {
-		this.userKey = userKey;
-		this.userKeyWrap.alreadyInitialized = true;
-	}
-	public void setUserKey(String o) {
-		this.userKey = SiteUser.staticSetUserKey(siteRequest_, o);
-		this.userKeyWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetUserKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected SiteUser userKeyInit() {
-		if(!userKeyWrap.alreadyInitialized) {
-			_userKey(userKeyWrap);
-			if(userKey == null)
-				setUserKey(userKeyWrap.o);
-		}
-		userKeyWrap.alreadyInitialized(true);
-		return (SiteUser)this;
-	}
-
-	public static Long staticSolrUserKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrUserKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqUserKey(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUser.staticSolrStrUserKey(siteRequest_, SiteUser.staticSolrUserKey(siteRequest_, SiteUser.staticSetUserKey(siteRequest_, o)));
-	}
-
-	public Long solrUserKey() {
-		return SiteUser.staticSolrUserKey(siteRequest_, userKey);
-	}
-
-	public String strUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
-	public Long sqlUserKey() {
-		return userKey;
-	}
-
-	public String jsonUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
-	public String nomAffichageUserKey() {
-		return "user key";
-	}
-
-	public String htmTooltipUserKey() {
-		return null;
-	}
-
-	public String htmUserKey() {
-		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
-	}
-
-	public void inputUserKey(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "user key")
-				.a("id", classApiMethodMethod, "_userKey");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setUserKey classSiteUser inputSiteUser", pk, "UserKey w3-input w3-border ");
-					a("name", "setUserKey");
-				} else {
-					a("class", "valueUserKey w3-input w3-border classSiteUser inputSiteUser", pk, "UserKey w3-input w3-border ");
-					a("name", "userKey");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserKey', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userKey')); }, function() { addError($('#", classApiMethodMethod, "_userKey')); }); ");
-				}
-				a("value", strUserKey())
-			.fg();
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserKey ").f().sx(htmUserKey()).g("span");
-		}
-	}
-
-	public void htmUserKey(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserKey").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
-							e("label").a("for", classApiMethodMethod, "_userKey").a("class", "").f().sx("user key").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserKey(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userKey')); $('#", classApiMethodMethod, "_userKey').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserKey', null, function() { addGlow($('#", classApiMethodMethod, "_userKey')); }, function() { addError($('#", classApiMethodMethod, "_userKey')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
 										} g("button");
@@ -560,10 +398,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String jsonUserName() {
 		return userName == null ? "" : userName;
-	}
-
-	public String nomAffichageUserName() {
-		return null;
 	}
 
 	public String htmTooltipUserName() {
@@ -704,10 +538,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userEmail == null ? "" : userEmail;
 	}
 
-	public String nomAffichageUserEmail() {
-		return null;
-	}
-
 	public String htmTooltipUserEmail() {
 		return null;
 	}
@@ -844,10 +674,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String jsonUserFirstName() {
 		return userFirstName == null ? "" : userFirstName;
-	}
-
-	public String nomAffichageUserFirstName() {
-		return null;
 	}
 
 	public String htmTooltipUserFirstName() {
@@ -988,10 +814,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userLastName == null ? "" : userLastName;
 	}
 
-	public String nomAffichageUserLastName() {
-		return null;
-	}
-
 	public String htmTooltipUserLastName() {
 		return null;
 	}
@@ -1128,10 +950,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String jsonUserFullName() {
 		return userFullName == null ? "" : userFullName;
-	}
-
-	public String nomAffichageUserFullName() {
-		return null;
 	}
 
 	public String htmTooltipUserFullName() {
@@ -1275,10 +1093,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 
 	public String jsonSeeArchived() {
 		return seeArchived == null ? "" : seeArchived.toString();
-	}
-
-	public String nomAffichageSeeArchived() {
-		return "see archived";
 	}
 
 	public String htmTooltipSeeArchived() {
@@ -1425,10 +1239,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return seeDeleted == null ? "" : seeDeleted.toString();
 	}
 
-	public String nomAffichageSeeDeleted() {
-		return "see deleted";
-	}
-
 	public String htmTooltipSeeDeleted() {
 		return null;
 	}
@@ -1523,7 +1333,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public void initSiteUser() {
 		userKeysInit();
 		userIdInit();
-		userKeyInit();
 		userNameInit();
 		userEmailInit();
 		userFirstNameInit();
@@ -1577,8 +1386,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				return oSiteUser.userKeys;
 			case "userId":
 				return oSiteUser.userId;
-			case "userKey":
-				return oSiteUser.userKey;
 			case "userName":
 				return oSiteUser.userName;
 			case "userEmail":
@@ -1636,8 +1443,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSetUserKeys(siteRequest_, o);
 		case "userId":
 			return SiteUser.staticSetUserId(siteRequest_, o);
-		case "userKey":
-			return SiteUser.staticSetUserKey(siteRequest_, o);
 		case "userName":
 			return SiteUser.staticSetUserName(siteRequest_, o);
 		case "userEmail":
@@ -1670,8 +1475,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrUserKeys(siteRequest_, (Long)o);
 		case "userId":
 			return SiteUser.staticSolrUserId(siteRequest_, (String)o);
-		case "userKey":
-			return SiteUser.staticSolrUserKey(siteRequest_, (Long)o);
 		case "userName":
 			return SiteUser.staticSolrUserName(siteRequest_, (String)o);
 		case "userEmail":
@@ -1704,8 +1507,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrStrUserKeys(siteRequest_, (Long)o);
 		case "userId":
 			return SiteUser.staticSolrStrUserId(siteRequest_, (String)o);
-		case "userKey":
-			return SiteUser.staticSolrStrUserKey(siteRequest_, (Long)o);
 		case "userName":
 			return SiteUser.staticSolrStrUserName(siteRequest_, (String)o);
 		case "userEmail":
@@ -1738,8 +1539,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrFqUserKeys(siteRequest_, o);
 		case "userId":
 			return SiteUser.staticSolrFqUserId(siteRequest_, o);
-		case "userKey":
-			return SiteUser.staticSolrFqUserKey(siteRequest_, o);
 		case "userName":
 			return SiteUser.staticSolrFqUserName(siteRequest_, o);
 		case "userEmail":
@@ -1784,11 +1583,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				if(val != null)
 					setUserId(val);
 				saves.add("userId");
-				return val;
-			case "userkey":
-				if(val != null)
-					setUserKey(val);
-				saves.add("userKey");
 				return val;
 			case "username":
 				if(val != null)
@@ -1852,11 +1646,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 					setUserId((String)val);
 				saves.add("userId");
 				return val;
-			case "userkey":
-				if(val instanceof Long)
-					setUserKey((Long)val);
-				saves.add("userKey");
-				return val;
 			case "username":
 				if(val instanceof String)
 					setUserName((String)val);
@@ -1919,12 +1708,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				String userId = (String)solrDocument.get("userId_stored_string");
 				if(userId != null)
 					oSiteUser.setUserId(userId);
-			}
-
-			if(saves.contains("userKey")) {
-				Long userKey = (Long)solrDocument.get("userKey_stored_long");
-				if(userKey != null)
-					oSiteUser.setUserKey(userKey);
 			}
 
 			if(saves.contains("userName")) {
@@ -2047,10 +1830,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			document.addField("userId_indexed_string", userId);
 			document.addField("userId_stored_string", userId);
 		}
-		if(userKey != null) {
-			document.addField("userKey_indexed_long", userKey);
-			document.addField("userKey_stored_long", userKey);
-		}
 		if(userName != null) {
 			document.addField("userName_indexed_string", userName);
 			document.addField("userName_stored_string", userName);
@@ -2106,8 +1885,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				return "userKeys_indexed_longs";
 			case "userId":
 				return "userId_indexed_string";
-			case "userKey":
-				return "userKey_indexed_long";
 			case "userName":
 				return "userName_indexed_string";
 			case "userEmail":
@@ -2159,10 +1936,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		if(userId != null)
 			oSiteUser.setUserId(userId);
 
-		Long userKey = (Long)solrDocument.get("userKey_stored_long");
-		if(userKey != null)
-			oSiteUser.setUserKey(userKey);
-
 		String userName = (String)solrDocument.get("userName_stored_string");
 		if(userName != null)
 			oSiteUser.setUserName(userName);
@@ -2207,8 +1980,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				apiRequest.addVars("userKeys");
 			if(!Objects.equals(userId, original.getUserId()))
 				apiRequest.addVars("userId");
-			if(!Objects.equals(userKey, original.getUserKey()))
-				apiRequest.addVars("userKey");
 			if(!Objects.equals(userName, original.getUserName()))
 				apiRequest.addVars("userName");
 			if(!Objects.equals(userEmail, original.getUserEmail()))
@@ -2232,7 +2003,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), userKeys, userId, userKey, userName, userEmail, userFirstName, userLastName, userFullName, seeArchived, seeDeleted);
+		return Objects.hash(super.hashCode(), userKeys, userId, userName, userEmail, userFirstName, userLastName, userFullName, seeArchived, seeDeleted);
 	}
 
 	////////////
@@ -2248,7 +2019,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return super.equals(o)
 				&& Objects.equals( userKeys, that.userKeys )
 				&& Objects.equals( userId, that.userId )
-				&& Objects.equals( userKey, that.userKey )
 				&& Objects.equals( userName, that.userName )
 				&& Objects.equals( userEmail, that.userEmail )
 				&& Objects.equals( userFirstName, that.userFirstName )
@@ -2268,7 +2038,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		sb.append("SiteUser { ");
 		sb.append( "userKeys: " ).append(userKeys);
 		sb.append( ", userId: \"" ).append(userId).append( "\"" );
-		sb.append( ", userKey: " ).append(userKey);
 		sb.append( ", userName: \"" ).append(userName).append( "\"" );
 		sb.append( ", userEmail: \"" ).append(userEmail).append( "\"" );
 		sb.append( ", userFirstName: \"" ).append(userFirstName).append( "\"" );

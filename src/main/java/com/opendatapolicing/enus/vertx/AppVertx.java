@@ -87,41 +87,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	public final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	/**
-	 * A SQL query for creating a database table "c" to store any type of object in the application. 
-	 **/
-	public static final String SQL_createTableC = "create table if not exists c(pk bigserial primary key, current boolean, canonical_name text, created timestamp with time zone, user_id text); ";
-
-	/**
-	 * A SQL query for creating a unique index on the "c" table based on the pk, canonical_name, and user_id fields for faster lookup. 
-	 **/
-	public static final String SQL_uniqueIndexC = "create unique index if not exists c_index_user on c(pk, canonical_name, user_id); ";
-
-	/**
-	 * A SQL query for creating a database table "a" to store relations (like entity relations) between one other record in the "c" table with another record in the "c" table. 
-	 **/
-	public static final String SQL_createTableA = "create table if not exists a(pk bigserial primary key, pk1 bigint, entity1 text, pk2 bigint, entity2 text, current boolean, created timestamp with time zone, constraint a_constraint unique (pk1, entity1, pk2, entity2)); ";
-
-	/**
-	 * A SQL query for creating an index on the "a" table based on fields for faster lookup. 
-	 **/
-	public static final String SQL_uniqueIndexA = "create index if not exists a_index on a(pk1, pk2, current); ";
-
-	/**
-	 * A SQL query for creating a database table "d" to store String values to define fields in an instance of a class based on a record in the "c" table. 
-	 **/
-	public static final String SQL_createTableD = "create table if not exists d(pk bigserial primary key, pk_c bigint, path text, value text, current boolean, created timestamp with time zone, constraint d_constraint unique (pk_c, path)); ";
-
-	/**
-	 * A SQL query for creating an index on the "d" table based on fields for faster lookup. 
-	 **/
-	public static final String SQL_uniqueIndexD = "create index if not exists d_index on d(pk_c, current); ";
-
-	/**
-	 * Concatenate all of the SQL together to execute when the server starts. 
-	 **/
-	public static final String SQL_initAll = SQL_createTableC + SQL_uniqueIndexC + SQL_createTableA + SQL_uniqueIndexA + SQL_createTableD + SQL_uniqueIndexD;
-
-	/**
 	 * A io.vertx.ext.jdbc.JDBCClient for connecting to the relational database PostgreSQL. 
 	 **/
 	private PgPool pgPool;
@@ -283,51 +248,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 		siteContextEnUS.setPgPool(pgPool);
 
-
-		pgPool.preparedQuery(SQL_createTableC).execute(a -> {
-			if (a.succeeded()) {
-				pgPool.preparedQuery(SQL_uniqueIndexC).execute(b -> {
-					if (b.succeeded()) {
-						pgPool.preparedQuery(SQL_createTableA).execute(c -> {
-							if (c.succeeded()) {
-								pgPool.preparedQuery(SQL_uniqueIndexA).execute(d -> {
-									if (d.succeeded()) {
-										pgPool.preparedQuery(SQL_createTableD).execute(e -> {
-											if (e.succeeded()) {
-												pgPool.preparedQuery(SQL_uniqueIndexD).execute(f -> {
-													if (f.succeeded()) {
-														LOGGER.info(configureDataInitSuccess);
-														promise.complete();
-													} else {
-														LOGGER.error(configureDataInitError, f.cause());
-														promise.fail(f.cause());
-													}
-												});
-											} else {
-												LOGGER.error(configureDataInitError, e.cause());
-												promise.fail(e.cause());
-											}
-										});
-									} else {
-										LOGGER.error(configureDataInitError, d.cause());
-										promise.fail(d.cause());
-									}
-								});
-							} else {
-								LOGGER.error(configureDataInitError, c.cause());
-								promise.fail(c.cause());
-							}
-						});
-					} else {
-						LOGGER.error(configureDataInitError, b.cause());
-						promise.fail(b.cause());
-					}
-				});
-			} else {
-				LOGGER.error(configureDataInitError, a.cause());
-				promise.fail(a.cause());
-			}
-		});
+		LOGGER.info(configureDataInitSuccess);
+		promise.complete();
 
 		return promise;
 	}

@@ -167,10 +167,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandKey == null ? "" : contrabandKey.toString();
 	}
 
-	public String nomAffichageContrabandKey() {
-		return null;
-	}
-
 	public String htmTooltipContrabandKey() {
 		return null;
 	}
@@ -253,10 +249,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonSearchKey() {
 		return searchKey == null ? "" : searchKey.toString();
-	}
-
-	public String nomAffichageSearchKey() {
-		return "search key";
 	}
 
 	public String htmTooltipSearchKey() {
@@ -501,10 +493,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopAgencyTitle == null ? "" : stopAgencyTitle;
 	}
 
-	public String nomAffichageStopAgencyTitle() {
-		return "agency title";
-	}
-
 	public String htmTooltipStopAgencyTitle() {
 		return null;
 	}
@@ -596,10 +584,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String nomAffichageStopDateTime() {
-		return "stop date/time";
-	}
-
 	public String htmTooltipStopDateTime() {
 		return null;
 	}
@@ -684,10 +668,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopPurposeNum == null ? "" : stopPurposeNum.toString();
 	}
 
-	public String nomAffichageStopPurposeNum() {
-		return "stop purpose number";
-	}
-
 	public String htmTooltipStopPurposeNum() {
 		return null;
 	}
@@ -762,10 +742,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonStopPurposeTitle() {
 		return stopPurposeTitle == null ? "" : stopPurposeTitle;
-	}
-
-	public String nomAffichageStopPurposeTitle() {
-		return "stop purpose title";
 	}
 
 	public String htmTooltipStopPurposeTitle() {
@@ -852,10 +828,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopActionNum == null ? "" : stopActionNum.toString();
 	}
 
-	public String nomAffichageStopActionNum() {
-		return "stop action number";
-	}
-
 	public String htmTooltipStopActionNum() {
 		return null;
 	}
@@ -930,10 +902,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonStopActionTitle() {
 		return stopActionTitle == null ? "" : stopActionTitle;
-	}
-
-	public String nomAffichageStopActionTitle() {
-		return "agency title";
 	}
 
 	public String htmTooltipStopActionTitle() {
@@ -1017,10 +985,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopDriverArrest == null ? "" : stopDriverArrest.toString();
 	}
 
-	public String nomAffichageStopDriverArrest() {
-		return "driver arrest";
-	}
-
 	public String htmTooltipStopDriverArrest() {
 		return null;
 	}
@@ -1100,10 +1064,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonStopPassengerArrest() {
 		return stopPassengerArrest == null ? "" : stopPassengerArrest.toString();
-	}
-
-	public String nomAffichageStopPassengerArrest() {
-		return "passenger arrest";
 	}
 
 	public String htmTooltipStopPassengerArrest() {
@@ -1187,10 +1147,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopEncounterForce == null ? "" : stopEncounterForce.toString();
 	}
 
-	public String nomAffichageStopEncounterForce() {
-		return "encounter force";
-	}
-
 	public String htmTooltipStopEncounterForce() {
 		return null;
 	}
@@ -1270,10 +1226,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonStopEngageForce() {
 		return stopEngageForce == null ? "" : stopEngageForce.toString();
-	}
-
-	public String nomAffichageStopEngageForce() {
-		return "engage force";
 	}
 
 	public String htmTooltipStopEngageForce() {
@@ -1357,10 +1309,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopOfficerInjury == null ? "" : stopOfficerInjury.toString();
 	}
 
-	public String nomAffichageStopOfficerInjury() {
-		return "officer injury";
-	}
-
 	public String htmTooltipStopOfficerInjury() {
 		return null;
 	}
@@ -1440,10 +1388,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonStopDriverInjury() {
 		return stopDriverInjury == null ? "" : stopDriverInjury.toString();
-	}
-
-	public String nomAffichageStopDriverInjury() {
-		return "driver injury";
 	}
 
 	public String htmTooltipStopDriverInjury() {
@@ -1527,10 +1471,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
 
-	public String nomAffichageStopPassengerInjury() {
-		return "passenger injury";
-	}
-
 	public String htmTooltipStopPassengerInjury() {
 		return null;
 	}
@@ -1605,10 +1545,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonStopOfficerId() {
 		return stopOfficerId == null ? "" : stopOfficerId;
-	}
-
-	public String nomAffichageStopOfficerId() {
-		return "officer ID";
 	}
 
 	public String htmTooltipStopOfficerId() {
@@ -1687,10 +1623,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
 
-	public String nomAffichageStopLocationId() {
-		return "location ID";
-	}
-
 	public String htmTooltipStopLocationId() {
 		return null;
 	}
@@ -1765,10 +1697,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonStopCityId() {
 		return stopCityId == null ? "" : stopCityId;
-	}
-
-	public String nomAffichageStopCityId() {
-		return "city ID";
 	}
 
 	public String htmTooltipStopCityId() {
@@ -1855,10 +1783,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personAge == null ? "" : personAge.toString();
 	}
 
-	public String nomAffichagePersonAge() {
-		return "person age";
-	}
-
 	public String htmTooltipPersonAge() {
 		return null;
 	}
@@ -1935,10 +1859,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personTypeId == null ? "" : personTypeId;
 	}
 
-	public String nomAffichagePersonTypeId() {
-		return "person type ID";
-	}
-
 	public String htmTooltipPersonTypeId() {
 		return null;
 	}
@@ -2013,10 +1933,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonPersonTypeTitle() {
 		return personTypeTitle == null ? "" : personTypeTitle;
-	}
-
-	public String nomAffichagePersonTypeTitle() {
-		return "person type title";
 	}
 
 	public String htmTooltipPersonTypeTitle() {
@@ -2100,10 +2016,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personTypeDriver == null ? "" : personTypeDriver.toString();
 	}
 
-	public String nomAffichagePersonTypeDriver() {
-		return "person was driver";
-	}
-
 	public String htmTooltipPersonTypeDriver() {
 		return null;
 	}
@@ -2185,10 +2097,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personTypePassenger == null ? "" : personTypePassenger.toString();
 	}
 
-	public String nomAffichagePersonTypePassenger() {
-		return "person was passenger";
-	}
-
 	public String htmTooltipPersonTypePassenger() {
 		return null;
 	}
@@ -2265,10 +2173,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personGenderId == null ? "" : personGenderId;
 	}
 
-	public String nomAffichagePersonGenderId() {
-		return "person gender ID";
-	}
-
 	public String htmTooltipPersonGenderId() {
 		return null;
 	}
@@ -2343,10 +2247,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonPersonGenderTitle() {
 		return personGenderTitle == null ? "" : personGenderTitle;
-	}
-
-	public String nomAffichagePersonGenderTitle() {
-		return "person gender title";
 	}
 
 	public String htmTooltipPersonGenderTitle() {
@@ -2430,10 +2330,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personGenderFemale == null ? "" : personGenderFemale.toString();
 	}
 
-	public String nomAffichagePersonGenderFemale() {
-		return "person was female";
-	}
-
 	public String htmTooltipPersonGenderFemale() {
 		return null;
 	}
@@ -2515,10 +2411,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personGenderMale == null ? "" : personGenderMale.toString();
 	}
 
-	public String nomAffichagePersonGenderMale() {
-		return "person was male";
-	}
-
 	public String htmTooltipPersonGenderMale() {
 		return null;
 	}
@@ -2593,10 +2485,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonPersonEthnicityId() {
 		return personEthnicityId == null ? "" : personEthnicityId;
-	}
-
-	public String nomAffichagePersonEthnicityId() {
-		return "person ethnicity ID";
 	}
 
 	public String htmTooltipPersonEthnicityId() {
@@ -2675,10 +2563,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personEthnicityTitle == null ? "" : personEthnicityTitle;
 	}
 
-	public String nomAffichagePersonEthnicityTitle() {
-		return "person ethnicity title";
-	}
-
 	public String htmTooltipPersonEthnicityTitle() {
 		return null;
 	}
@@ -2755,10 +2639,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personRaceId == null ? "" : personRaceId;
 	}
 
-	public String nomAffichagePersonRaceId() {
-		return "person race ID";
-	}
-
 	public String htmTooltipPersonRaceId() {
 		return null;
 	}
@@ -2833,10 +2713,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonPersonRaceTitle() {
 		return personRaceTitle == null ? "" : personRaceTitle;
-	}
-
-	public String nomAffichagePersonRaceTitle() {
-		return "person race title";
 	}
 
 	public String htmTooltipPersonRaceTitle() {
@@ -2923,10 +2799,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
 	}
 
-	public String nomAffichageTrafficStopKey() {
-		return "traffic stop key";
-	}
-
 	public String htmTooltipTrafficStopKey() {
 		return null;
 	}
@@ -3011,10 +2883,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchTypeNum == null ? "" : searchTypeNum.toString();
 	}
 
-	public String nomAffichageSearchTypeNum() {
-		return "search type number";
-	}
-
 	public String htmTooltipSearchTypeNum() {
 		return null;
 	}
@@ -3089,10 +2957,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonSearchTypeTitle() {
 		return searchTypeTitle == null ? "" : searchTypeTitle;
-	}
-
-	public String nomAffichageSearchTypeTitle() {
-		return "search type title";
 	}
 
 	public String htmTooltipSearchTypeTitle() {
@@ -3176,10 +3040,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchVehicle == null ? "" : searchVehicle.toString();
 	}
 
-	public String nomAffichageSearchVehicle() {
-		return "vehicle search";
-	}
-
 	public String htmTooltipSearchVehicle() {
 		return null;
 	}
@@ -3259,10 +3119,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonSearchDriver() {
 		return searchDriver == null ? "" : searchDriver.toString();
-	}
-
-	public String nomAffichageSearchDriver() {
-		return "driver search";
 	}
 
 	public String htmTooltipSearchDriver() {
@@ -3346,10 +3202,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchPassenger == null ? "" : searchPassenger.toString();
 	}
 
-	public String nomAffichageSearchPassenger() {
-		return "passenger search";
-	}
-
 	public String htmTooltipSearchPassenger() {
 		return null;
 	}
@@ -3429,10 +3281,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonSearchProperty() {
 		return searchProperty == null ? "" : searchProperty.toString();
-	}
-
-	public String nomAffichageSearchProperty() {
-		return "property search";
 	}
 
 	public String htmTooltipSearchProperty() {
@@ -3516,10 +3364,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchVehicleSiezed == null ? "" : searchVehicleSiezed.toString();
 	}
 
-	public String nomAffichageSearchVehicleSiezed() {
-		return "vehicle siezed";
-	}
-
 	public String htmTooltipSearchVehicleSiezed() {
 		return null;
 	}
@@ -3601,10 +3445,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchPersonalPropertySiezed == null ? "" : searchPersonalPropertySiezed.toString();
 	}
 
-	public String nomAffichageSearchPersonalPropertySiezed() {
-		return "personal property siezed";
-	}
-
 	public String htmTooltipSearchPersonalPropertySiezed() {
 		return null;
 	}
@@ -3684,10 +3524,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonSearchOtherPropertySiezed() {
 		return searchOtherPropertySiezed == null ? "" : searchOtherPropertySiezed.toString();
-	}
-
-	public String nomAffichageSearchOtherPropertySiezed() {
-		return "other property siezed";
 	}
 
 	public String htmTooltipSearchOtherPropertySiezed() {
@@ -3781,10 +3617,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonContrabandOunces() {
 		return contrabandOunces == null ? "" : contrabandOunces.toString();
-	}
-
-	public String nomAffichageContrabandOunces() {
-		return "ounces";
 	}
 
 	public String htmTooltipContrabandOunces() {
@@ -3946,10 +3778,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandPounds == null ? "" : contrabandPounds.toString();
 	}
 
-	public String nomAffichageContrabandPounds() {
-		return "pounds";
-	}
-
 	public String htmTooltipContrabandPounds() {
 		return null;
 	}
@@ -4107,10 +3935,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonContrabandPints() {
 		return contrabandPints == null ? "" : contrabandPints.toString();
-	}
-
-	public String nomAffichageContrabandPints() {
-		return "pints";
 	}
 
 	public String htmTooltipContrabandPints() {
@@ -4272,10 +4096,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandGallons == null ? "" : contrabandGallons.toString();
 	}
 
-	public String nomAffichageContrabandGallons() {
-		return "gallons";
-	}
-
 	public String htmTooltipContrabandGallons() {
 		return null;
 	}
@@ -4433,10 +4253,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonContrabandDosages() {
 		return contrabandDosages == null ? "" : contrabandDosages.toString();
-	}
-
-	public String nomAffichageContrabandDosages() {
-		return "dosages";
 	}
 
 	public String htmTooltipContrabandDosages() {
@@ -4598,10 +4414,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandGrams == null ? "" : contrabandGrams.toString();
 	}
 
-	public String nomAffichageContrabandGrams() {
-		return "grams";
-	}
-
 	public String htmTooltipContrabandGrams() {
 		return null;
 	}
@@ -4759,10 +4571,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonContrabandKilos() {
 		return contrabandKilos == null ? "" : contrabandKilos.toString();
-	}
-
-	public String nomAffichageContrabandKilos() {
-		return "kilos";
 	}
 
 	public String htmTooltipContrabandKilos() {
@@ -4924,10 +4732,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandMoney == null ? "" : contrabandMoney.toString();
 	}
 
-	public String nomAffichageContrabandMoney() {
-		return "money";
-	}
-
 	public String htmTooltipContrabandMoney() {
 		return null;
 	}
@@ -5085,10 +4889,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonContrabandWeapons() {
 		return contrabandWeapons == null ? "" : contrabandWeapons.toString();
-	}
-
-	public String nomAffichageContrabandWeapons() {
-		return "weapons";
 	}
 
 	public String htmTooltipContrabandWeapons() {
@@ -5250,10 +5050,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandDollarAmount == null ? "" : contrabandDollarAmount.toString();
 	}
 
-	public String nomAffichageContrabandDollarAmount() {
-		return "dollar amount";
-	}
-
 	public String htmTooltipContrabandDollarAmount() {
 		return null;
 	}
@@ -5396,10 +5192,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return trafficSearchShortName == null ? "" : trafficSearchShortName;
 	}
 
-	public String nomAffichageTrafficSearchShortName() {
-		return null;
-	}
-
 	public String htmTooltipTrafficSearchShortName() {
 		return null;
 	}
@@ -5474,10 +5266,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 
 	public String jsonTrafficSearchCompleteName() {
 		return trafficSearchCompleteName == null ? "" : trafficSearchCompleteName;
-	}
-
-	public String nomAffichageTrafficSearchCompleteName() {
-		return null;
 	}
 
 	public String htmTooltipTrafficSearchCompleteName() {

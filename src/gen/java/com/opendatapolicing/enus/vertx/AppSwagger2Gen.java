@@ -236,10 +236,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return appPath == null ? "" : appPath;
 	}
 
-	public String nomAffichageAppPath() {
-		return null;
-	}
-
 	public String htmTooltipAppPath() {
 		return null;
 	}
@@ -314,10 +310,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public String jsonAppName() {
 		return appName == null ? "" : appName;
-	}
-
-	public String nomAffichageAppName() {
-		return null;
 	}
 
 	public String htmTooltipAppName() {
@@ -396,10 +388,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return languageName == null ? "" : languageName;
 	}
 
-	public String nomAffichageLanguageName() {
-		return null;
-	}
-
 	public String htmTooltipLanguageName() {
 		return null;
 	}
@@ -474,10 +462,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public String jsonOpenApiVersion() {
 		return openApiVersion == null ? "" : openApiVersion;
-	}
-
-	public String nomAffichageOpenApiVersion() {
-		return null;
 	}
 
 	public String htmTooltipOpenApiVersion() {
@@ -564,10 +548,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
 	}
 
-	public String nomAffichageOpenApiVersionNumber() {
-		return null;
-	}
-
 	public String htmTooltipOpenApiVersionNumber() {
 		return null;
 	}
@@ -652,10 +632,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
 
-	public String nomAffichageTabsSchema() {
-		return null;
-	}
-
 	public String htmTooltipTabsSchema() {
 		return null;
 	}
@@ -732,10 +708,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return apiVersion == null ? "" : apiVersion;
 	}
 
-	public String nomAffichageApiVersion() {
-		return null;
-	}
-
 	public String htmTooltipApiVersion() {
 		return null;
 	}
@@ -810,10 +782,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public String jsonOpenApiYamlPath() {
 		return openApiYamlPath == null ? "" : openApiYamlPath;
-	}
-
-	public String nomAffichageOpenApiYamlPath() {
-		return null;
 	}
 
 	public String htmTooltipOpenApiYamlPath() {

@@ -157,10 +157,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return pageDesignKey == null ? "" : pageDesignKey.toString();
 	}
 
-	public String nomAffichagePageDesignKey() {
-		return "key";
-	}
-
 	public String htmTooltipPageDesignKey() {
 		return null;
 	}
@@ -274,10 +270,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return childDesignKeys == null ? "" : childDesignKeys.toString();
 	}
 
-	public String nomAffichageChildDesignKeys() {
-		return "child designs";
-	}
-
 	public String htmTooltipChildDesignKeys() {
 		return null;
 	}
@@ -389,10 +381,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 
 	public String jsonParentDesignKeys() {
 		return parentDesignKeys == null ? "" : parentDesignKeys.toString();
-	}
-
-	public String nomAffichageParentDesignKeys() {
-		return "parent designs";
 	}
 
 	public String htmTooltipParentDesignKeys() {
@@ -592,10 +580,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return htmlPartKeys == null ? "" : htmlPartKeys.toString();
 	}
 
-	public String nomAffichageHtmlPartKeys() {
-		return "parts";
-	}
-
 	public String htmTooltipHtmlPartKeys() {
 		return null;
 	}
@@ -756,10 +740,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return pageDesignCompleteName == null ? "" : pageDesignCompleteName;
 	}
 
-	public String nomAffichagePageDesignCompleteName() {
-		return "name";
-	}
-
 	public String htmTooltipPageDesignCompleteName() {
 		return null;
 	}
@@ -907,10 +887,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		return designHidden == null ? "" : designHidden.toString();
 	}
 
-	public String nomAffichageDesignHidden() {
-		return "hidden";
-	}
-
 	public String htmTooltipDesignHidden() {
 		return null;
 	}
@@ -1048,10 +1024,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 
 	public String jsonPageContentType() {
 		return pageContentType == null ? "" : pageContentType;
-	}
-
-	public String nomAffichagePageContentType() {
-		return "content type";
 	}
 
 	public String htmTooltipPageContentType() {

@@ -301,7 +301,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 	public void htmlFormPUTCopyHtmlPart(HtmlPart o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
-			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PUTCopy");
@@ -369,7 +368,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 	public void htmlFormPATCHHtmlPart(HtmlPart o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
@@ -494,7 +492,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 		} g("div");

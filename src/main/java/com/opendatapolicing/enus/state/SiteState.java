@@ -10,6 +10,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Api: true
  * Indexed: true
  * Saved: true
+ * Map.Integer.sqlSort: 5
  * 
  * ApiTag.enUS: State
  * ApiUri.enUS: /api/state

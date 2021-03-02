@@ -234,7 +234,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	public void htmlFormPUTCopyTrafficStop(TrafficStop o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
-			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PUTCopy");
@@ -266,7 +265,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	public void htmlFormPATCHTrafficStop(TrafficStop o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
@@ -330,7 +328,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 			o.htmStopYear("Search");

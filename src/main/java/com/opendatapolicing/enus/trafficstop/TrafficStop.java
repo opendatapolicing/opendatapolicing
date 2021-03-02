@@ -10,6 +10,7 @@ import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
+import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
 
 /**
@@ -17,6 +18,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Api: true
  * Indexed: true
  * Saved: true
+ * Map.Integer.sqlSort: 7
  * 
  * ApiTag.enUS: Traffic Stop
  * ApiUri.enUS: /api/traffic-stop
@@ -49,7 +51,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * PublicRead: true
  * 
  * Map.hackathonMission: to create a new Java class TrafficStop to define the TrafficStop Java class that collects stop, search, and use-of-force police data publicly available to ensure transparency
- **/     
+ **/      
 public class TrafficStop extends TrafficStopGen<Cluster> {
 
 	/**
@@ -67,7 +69,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Indexed: true
 	 * Stored: true
 	 * DisplayName.enUS: agency
-	 */           
+	 */       
 	protected void _agencyKey(Wrap<Long> c) {
 	}
 
@@ -354,6 +356,32 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 */
 	protected void _personRaceTitles(List<String> l) {
 		FacetField field = personSearch.getQueryResponse().getFacetField("personRaceTitle_indexed_string");
+		for(Count count : field.getValues()) {
+			if(count.getCount() > 0)
+				l.add(count.getName());
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */ 
+	protected void _trafficSearchSearch(SearchList<TrafficSearch> l) {
+		l.setQuery("*:*");
+		l.addFilterQuery("trafficStopKey_indexed_long:" + pk);
+		l.setC(TrafficSearch.class);
+		l.setRows(0);
+		l.addFacetField("personRaceTitle_indexed_string");
+		l.setStore(true);
+	}
+
+	/** 
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 */
+	protected void _trafficSearchRaceTitles(List<String> l) {
+		FacetField field = trafficSearchSearch.getQueryResponse().getFacetField("personRaceTitle_indexed_string");
 		for(Count count : field.getValues()) {
 			if(count.getCount() > 0)
 				l.add(count.getName());

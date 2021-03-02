@@ -186,7 +186,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 	public void htmlFormPUTCopySiteUser(SiteUser o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
-			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PUTCopy");
@@ -201,7 +200,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 	public void htmlFormPATCHSiteUser(SiteUser o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
@@ -229,11 +227,9 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 			o.htmUserId("Search");
-			o.htmUserKey("Search");
 			o.htmUserName("Search");
 			o.htmUserEmail("Search");
 			o.htmUserFirstName("Search");

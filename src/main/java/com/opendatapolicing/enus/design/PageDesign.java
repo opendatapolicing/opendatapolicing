@@ -10,6 +10,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Api: true
  * Indexed: true
  * Saved: true
+ * Map.Integer.sqlSort: 1
  * 
  * ApiTag.enUS: Page Design
  * ApiUri.enUS: /api/page-design

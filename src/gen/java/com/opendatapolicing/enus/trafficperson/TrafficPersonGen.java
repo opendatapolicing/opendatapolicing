@@ -167,10 +167,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personKey == null ? "" : personKey.toString();
 	}
 
-	public String nomAffichagePersonKey() {
-		return null;
-	}
-
 	public String htmTooltipPersonKey() {
 		return null;
 	}
@@ -253,10 +249,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public String jsonTrafficStopKey() {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
-	}
-
-	public String nomAffichageTrafficStopKey() {
-		return "traffic stop key";
 	}
 
 	public String htmTooltipTrafficStopKey() {
@@ -501,82 +493,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopAgencyTitle == null ? "" : stopAgencyTitle;
 	}
 
-	public String nomAffichageStopAgencyTitle() {
-		return "agency title";
-	}
-
 	public String htmTooltipStopAgencyTitle() {
 		return null;
 	}
 
 	public String htmStopAgencyTitle() {
 		return stopAgencyTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopAgencyTitle());
-	}
-
-	public void inputStopAgencyTitle(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "agency title")
-				.a("id", classApiMethodMethod, "_stopAgencyTitle");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopAgencyTitle classTrafficPerson inputTrafficPerson", pk, "StopAgencyTitle w3-input w3-border ");
-					a("name", "setStopAgencyTitle");
-				} else {
-					a("class", "valueStopAgencyTitle w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopAgencyTitle w3-input w3-border ");
-					a("name", "stopAgencyTitle");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopAgencyTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopAgencyTitle')); }); ");
-				}
-				a("value", strStopAgencyTitle())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopAgencyTitle ").f().sx(htmStopAgencyTitle()).g("span");
-		}
-	}
-
-	public void htmStopAgencyTitle(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopAgencyTitle").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopAgencyTitle").a("class", "").f().sx("agency title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopAgencyTitle(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); $('#", classApiMethodMethod, "_stopAgencyTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopAgencyTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopAgencyTitle')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	//////////////////
@@ -662,75 +584,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String nomAffichageStopDateTime() {
-		return "stop date/time";
-	}
-
 	public String htmTooltipStopDateTime() {
 		return null;
 	}
 
 	public String htmStopDateTime() {
 		return stopDateTime == null ? "" : StringEscapeUtils.escapeHtml4(strStopDateTime());
-	}
-
-	public void inputStopDateTime(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-					.a("type", "text")
-					.a("class", "w3-input w3-border datepicker setStopDateTime classTrafficPerson inputTrafficPerson", pk, "StopDateTime w3-input w3-border ")
-					.a("placeholder", "MM/DD/YYYY HH:MM AM")
-					.a("data-timeformat", "MM/dd/yyyy")
-					.a("id", classApiMethodMethod, "_stopDateTime")
-				.a("value", stopDateTime == null ? "" : DateTimeFormatter.ofPattern("EEE d MMM yyyy H:mm:ss a zz").format(stopDateTime));
-			if("Page".equals(classApiMethodMethod)) {
-				a("onclick", "removeGlow($(this)); ");
-				a("onchange", "var t = moment(this.value, 'MM/DD/YYYY'); if(t) { var s = t.format('YYYY-MM-DD'); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopDateTime', s, function() { addGlow($('#", classApiMethodMethod, "_stopDateTime')); }, function() { addError($('#", classApiMethodMethod, "_stopDateTime')); }); } ");
-			}
-			fg();
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopDateTime ").f().sx(htmStopDateTime()).g("span");
-		}
-	}
-
-	public void htmStopDateTime(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopDateTime").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopDateTime").a("class", "").f().sx("stop date/time").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								inputStopDateTime(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopDateTime')); $('#", classApiMethodMethod, "_stopDateTime').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopDateTime', null, function() { addGlow($('#", classApiMethodMethod, "_stopDateTime')); }, function() { addError($('#", classApiMethodMethod, "_stopDateTime')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	////////////////////
@@ -809,82 +668,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopPurposeNum == null ? "" : stopPurposeNum.toString();
 	}
 
-	public String nomAffichageStopPurposeNum() {
-		return "stop purpose number";
-	}
-
 	public String htmTooltipStopPurposeNum() {
 		return null;
 	}
 
 	public String htmStopPurposeNum() {
 		return stopPurposeNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeNum());
-	}
-
-	public void inputStopPurposeNum(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "stop purpose number")
-				.a("id", classApiMethodMethod, "_stopPurposeNum");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopPurposeNum classTrafficPerson inputTrafficPerson", pk, "StopPurposeNum w3-input w3-border ");
-					a("name", "setStopPurposeNum");
-				} else {
-					a("class", "valueStopPurposeNum w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopPurposeNum w3-input w3-border ");
-					a("name", "stopPurposeNum");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPurposeNum', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopPurposeNum')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeNum')); }); ");
-				}
-				a("value", strStopPurposeNum())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopPurposeNum ").f().sx(htmStopPurposeNum()).g("span");
-		}
-	}
-
-	public void htmStopPurposeNum(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopPurposeNum").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopPurposeNum").a("class", "").f().sx("stop purpose number").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopPurposeNum(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopPurposeNum')); $('#", classApiMethodMethod, "_stopPurposeNum').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopPurposeNum', null, function() { addGlow($('#", classApiMethodMethod, "_stopPurposeNum')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeNum')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	//////////////////////
@@ -955,82 +744,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopPurposeTitle == null ? "" : stopPurposeTitle;
 	}
 
-	public String nomAffichageStopPurposeTitle() {
-		return "stop purpose title";
-	}
-
 	public String htmTooltipStopPurposeTitle() {
 		return null;
 	}
 
 	public String htmStopPurposeTitle() {
 		return stopPurposeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeTitle());
-	}
-
-	public void inputStopPurposeTitle(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "stop purpose title")
-				.a("id", classApiMethodMethod, "_stopPurposeTitle");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopPurposeTitle classTrafficPerson inputTrafficPerson", pk, "StopPurposeTitle w3-input w3-border ");
-					a("name", "setStopPurposeTitle");
-				} else {
-					a("class", "valueStopPurposeTitle w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopPurposeTitle w3-input w3-border ");
-					a("name", "stopPurposeTitle");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPurposeTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeTitle')); }); ");
-				}
-				a("value", strStopPurposeTitle())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopPurposeTitle ").f().sx(htmStopPurposeTitle()).g("span");
-		}
-	}
-
-	public void htmStopPurposeTitle(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopPurposeTitle").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopPurposeTitle").a("class", "").f().sx("stop purpose title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopPurposeTitle(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); $('#", classApiMethodMethod, "_stopPurposeTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopPurposeTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopPurposeTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopPurposeTitle')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	///////////////////
@@ -1109,82 +828,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopActionNum == null ? "" : stopActionNum.toString();
 	}
 
-	public String nomAffichageStopActionNum() {
-		return "stop action number";
-	}
-
 	public String htmTooltipStopActionNum() {
 		return null;
 	}
 
 	public String htmStopActionNum() {
 		return stopActionNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionNum());
-	}
-
-	public void inputStopActionNum(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "stop action number")
-				.a("id", classApiMethodMethod, "_stopActionNum");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopActionNum classTrafficPerson inputTrafficPerson", pk, "StopActionNum w3-input w3-border ");
-					a("name", "setStopActionNum");
-				} else {
-					a("class", "valueStopActionNum w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopActionNum w3-input w3-border ");
-					a("name", "stopActionNum");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopActionNum', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopActionNum')); }, function() { addError($('#", classApiMethodMethod, "_stopActionNum')); }); ");
-				}
-				a("value", strStopActionNum())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopActionNum ").f().sx(htmStopActionNum()).g("span");
-		}
-	}
-
-	public void htmStopActionNum(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopActionNum").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopActionNum").a("class", "").f().sx("stop action number").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopActionNum(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopActionNum')); $('#", classApiMethodMethod, "_stopActionNum').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopActionNum', null, function() { addGlow($('#", classApiMethodMethod, "_stopActionNum')); }, function() { addError($('#", classApiMethodMethod, "_stopActionNum')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	/////////////////////
@@ -1255,82 +904,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopActionTitle == null ? "" : stopActionTitle;
 	}
 
-	public String nomAffichageStopActionTitle() {
-		return "agency title";
-	}
-
 	public String htmTooltipStopActionTitle() {
 		return null;
 	}
 
 	public String htmStopActionTitle() {
 		return stopActionTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionTitle());
-	}
-
-	public void inputStopActionTitle(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "agency title")
-				.a("id", classApiMethodMethod, "_stopActionTitle");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopActionTitle classTrafficPerson inputTrafficPerson", pk, "StopActionTitle w3-input w3-border ");
-					a("name", "setStopActionTitle");
-				} else {
-					a("class", "valueStopActionTitle w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopActionTitle w3-input w3-border ");
-					a("name", "stopActionTitle");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopActionTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopActionTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopActionTitle')); }); ");
-				}
-				a("value", strStopActionTitle())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopActionTitle ").f().sx(htmStopActionTitle()).g("span");
-		}
-	}
-
-	public void htmStopActionTitle(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopActionTitle").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopActionTitle").a("class", "").f().sx("agency title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopActionTitle(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopActionTitle')); $('#", classApiMethodMethod, "_stopActionTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopActionTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopActionTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopActionTitle')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	//////////////////////
@@ -1406,79 +985,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopDriverArrest == null ? "" : stopDriverArrest.toString();
 	}
 
-	public String nomAffichageStopDriverArrest() {
-		return "driver arrest";
-	}
-
 	public String htmTooltipStopDriverArrest() {
 		return null;
 	}
 
 	public String htmStopDriverArrest() {
 		return stopDriverArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverArrest());
-	}
-
-	public void inputStopDriverArrest(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_stopDriverArrest")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_stopDriverArrest");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setStopDriverArrest classTrafficPerson inputTrafficPerson", pk, "StopDriverArrest w3-input w3-border ");
-				a("name", "setStopDriverArrest");
-			} else {
-				a("class", "valueStopDriverArrest classTrafficPerson inputTrafficPerson", pk, "StopDriverArrest w3-input w3-border ");
-				a("name", "stopDriverArrest");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopDriverArrest', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopDriverArrest')); }, function() { addError($('#", classApiMethodMethod, "_stopDriverArrest')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getStopDriverArrest() != null && getStopDriverArrest())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopDriverArrest ").f().sx(htmStopDriverArrest()).g("span");
-		}
-	}
-
-	public void htmStopDriverArrest(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopDriverArrest").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopDriverArrest").a("class", "").f().sx("driver arrest").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopDriverArrest(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	/////////////////////////
@@ -1554,79 +1066,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopPassengerArrest == null ? "" : stopPassengerArrest.toString();
 	}
 
-	public String nomAffichageStopPassengerArrest() {
-		return "passenger arrest";
-	}
-
 	public String htmTooltipStopPassengerArrest() {
 		return null;
 	}
 
 	public String htmStopPassengerArrest() {
 		return stopPassengerArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerArrest());
-	}
-
-	public void inputStopPassengerArrest(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_stopPassengerArrest")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_stopPassengerArrest");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setStopPassengerArrest classTrafficPerson inputTrafficPerson", pk, "StopPassengerArrest w3-input w3-border ");
-				a("name", "setStopPassengerArrest");
-			} else {
-				a("class", "valueStopPassengerArrest classTrafficPerson inputTrafficPerson", pk, "StopPassengerArrest w3-input w3-border ");
-				a("name", "stopPassengerArrest");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPassengerArrest', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopPassengerArrest')); }, function() { addError($('#", classApiMethodMethod, "_stopPassengerArrest')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getStopPassengerArrest() != null && getStopPassengerArrest())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopPassengerArrest ").f().sx(htmStopPassengerArrest()).g("span");
-		}
-	}
-
-	public void htmStopPassengerArrest(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopPassengerArrest").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopPassengerArrest").a("class", "").f().sx("passenger arrest").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopPassengerArrest(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	////////////////////////
@@ -1702,79 +1147,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopEncounterForce == null ? "" : stopEncounterForce.toString();
 	}
 
-	public String nomAffichageStopEncounterForce() {
-		return "encounter force";
-	}
-
 	public String htmTooltipStopEncounterForce() {
 		return null;
 	}
 
 	public String htmStopEncounterForce() {
 		return stopEncounterForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEncounterForce());
-	}
-
-	public void inputStopEncounterForce(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_stopEncounterForce")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_stopEncounterForce");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setStopEncounterForce classTrafficPerson inputTrafficPerson", pk, "StopEncounterForce w3-input w3-border ");
-				a("name", "setStopEncounterForce");
-			} else {
-				a("class", "valueStopEncounterForce classTrafficPerson inputTrafficPerson", pk, "StopEncounterForce w3-input w3-border ");
-				a("name", "stopEncounterForce");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopEncounterForce', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopEncounterForce')); }, function() { addError($('#", classApiMethodMethod, "_stopEncounterForce')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getStopEncounterForce() != null && getStopEncounterForce())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopEncounterForce ").f().sx(htmStopEncounterForce()).g("span");
-		}
-	}
-
-	public void htmStopEncounterForce(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopEncounterForce").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopEncounterForce").a("class", "").f().sx("encounter force").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopEncounterForce(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	/////////////////////
@@ -1850,79 +1228,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopEngageForce == null ? "" : stopEngageForce.toString();
 	}
 
-	public String nomAffichageStopEngageForce() {
-		return "engage force";
-	}
-
 	public String htmTooltipStopEngageForce() {
 		return null;
 	}
 
 	public String htmStopEngageForce() {
 		return stopEngageForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEngageForce());
-	}
-
-	public void inputStopEngageForce(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_stopEngageForce")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_stopEngageForce");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setStopEngageForce classTrafficPerson inputTrafficPerson", pk, "StopEngageForce w3-input w3-border ");
-				a("name", "setStopEngageForce");
-			} else {
-				a("class", "valueStopEngageForce classTrafficPerson inputTrafficPerson", pk, "StopEngageForce w3-input w3-border ");
-				a("name", "stopEngageForce");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopEngageForce', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopEngageForce')); }, function() { addError($('#", classApiMethodMethod, "_stopEngageForce')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getStopEngageForce() != null && getStopEngageForce())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopEngageForce ").f().sx(htmStopEngageForce()).g("span");
-		}
-	}
-
-	public void htmStopEngageForce(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopEngageForce").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopEngageForce").a("class", "").f().sx("engage force").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopEngageForce(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	///////////////////////
@@ -1998,79 +1309,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopOfficerInjury == null ? "" : stopOfficerInjury.toString();
 	}
 
-	public String nomAffichageStopOfficerInjury() {
-		return "officer injury";
-	}
-
 	public String htmTooltipStopOfficerInjury() {
 		return null;
 	}
 
 	public String htmStopOfficerInjury() {
 		return stopOfficerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerInjury());
-	}
-
-	public void inputStopOfficerInjury(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_stopOfficerInjury")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_stopOfficerInjury");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setStopOfficerInjury classTrafficPerson inputTrafficPerson", pk, "StopOfficerInjury w3-input w3-border ");
-				a("name", "setStopOfficerInjury");
-			} else {
-				a("class", "valueStopOfficerInjury classTrafficPerson inputTrafficPerson", pk, "StopOfficerInjury w3-input w3-border ");
-				a("name", "stopOfficerInjury");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopOfficerInjury', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopOfficerInjury')); }, function() { addError($('#", classApiMethodMethod, "_stopOfficerInjury')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getStopOfficerInjury() != null && getStopOfficerInjury())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopOfficerInjury ").f().sx(htmStopOfficerInjury()).g("span");
-		}
-	}
-
-	public void htmStopOfficerInjury(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopOfficerInjury").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopOfficerInjury").a("class", "").f().sx("officer injury").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopOfficerInjury(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	//////////////////////
@@ -2146,79 +1390,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopDriverInjury == null ? "" : stopDriverInjury.toString();
 	}
 
-	public String nomAffichageStopDriverInjury() {
-		return "driver injury";
-	}
-
 	public String htmTooltipStopDriverInjury() {
 		return null;
 	}
 
 	public String htmStopDriverInjury() {
 		return stopDriverInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverInjury());
-	}
-
-	public void inputStopDriverInjury(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_stopDriverInjury")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_stopDriverInjury");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setStopDriverInjury classTrafficPerson inputTrafficPerson", pk, "StopDriverInjury w3-input w3-border ");
-				a("name", "setStopDriverInjury");
-			} else {
-				a("class", "valueStopDriverInjury classTrafficPerson inputTrafficPerson", pk, "StopDriverInjury w3-input w3-border ");
-				a("name", "stopDriverInjury");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopDriverInjury', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopDriverInjury')); }, function() { addError($('#", classApiMethodMethod, "_stopDriverInjury')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getStopDriverInjury() != null && getStopDriverInjury())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopDriverInjury ").f().sx(htmStopDriverInjury()).g("span");
-		}
-	}
-
-	public void htmStopDriverInjury(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopDriverInjury").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopDriverInjury").a("class", "").f().sx("driver injury").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopDriverInjury(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	/////////////////////////
@@ -2294,79 +1471,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
 
-	public String nomAffichageStopPassengerInjury() {
-		return "passenger injury";
-	}
-
 	public String htmTooltipStopPassengerInjury() {
 		return null;
 	}
 
 	public String htmStopPassengerInjury() {
 		return stopPassengerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerInjury());
-	}
-
-	public void inputStopPassengerInjury(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_stopPassengerInjury")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_stopPassengerInjury");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setStopPassengerInjury classTrafficPerson inputTrafficPerson", pk, "StopPassengerInjury w3-input w3-border ");
-				a("name", "setStopPassengerInjury");
-			} else {
-				a("class", "valueStopPassengerInjury classTrafficPerson inputTrafficPerson", pk, "StopPassengerInjury w3-input w3-border ");
-				a("name", "stopPassengerInjury");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopPassengerInjury', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_stopPassengerInjury')); }, function() { addError($('#", classApiMethodMethod, "_stopPassengerInjury')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getStopPassengerInjury() != null && getStopPassengerInjury())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopPassengerInjury ").f().sx(htmStopPassengerInjury()).g("span");
-		}
-	}
-
-	public void htmStopPassengerInjury(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopPassengerInjury").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopPassengerInjury").a("class", "").f().sx("passenger injury").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopPassengerInjury(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	///////////////////
@@ -2437,82 +1547,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopOfficerId == null ? "" : stopOfficerId;
 	}
 
-	public String nomAffichageStopOfficerId() {
-		return "officer ID";
-	}
-
 	public String htmTooltipStopOfficerId() {
 		return null;
 	}
 
 	public String htmStopOfficerId() {
 		return stopOfficerId == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerId());
-	}
-
-	public void inputStopOfficerId(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "officer ID")
-				.a("id", classApiMethodMethod, "_stopOfficerId");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopOfficerId classTrafficPerson inputTrafficPerson", pk, "StopOfficerId w3-input w3-border ");
-					a("name", "setStopOfficerId");
-				} else {
-					a("class", "valueStopOfficerId w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopOfficerId w3-input w3-border ");
-					a("name", "stopOfficerId");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopOfficerId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopOfficerId')); }, function() { addError($('#", classApiMethodMethod, "_stopOfficerId')); }); ");
-				}
-				a("value", strStopOfficerId())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopOfficerId ").f().sx(htmStopOfficerId()).g("span");
-		}
-	}
-
-	public void htmStopOfficerId(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopOfficerId").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopOfficerId").a("class", "").f().sx("officer ID").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopOfficerId(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopOfficerId')); $('#", classApiMethodMethod, "_stopOfficerId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopOfficerId', null, function() { addGlow($('#", classApiMethodMethod, "_stopOfficerId')); }, function() { addError($('#", classApiMethodMethod, "_stopOfficerId')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	////////////////////
@@ -2583,82 +1623,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
 
-	public String nomAffichageStopLocationId() {
-		return "location ID";
-	}
-
 	public String htmTooltipStopLocationId() {
 		return null;
 	}
 
 	public String htmStopLocationId() {
 		return stopLocationId == null ? "" : StringEscapeUtils.escapeHtml4(strStopLocationId());
-	}
-
-	public void inputStopLocationId(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "location ID")
-				.a("id", classApiMethodMethod, "_stopLocationId");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopLocationId classTrafficPerson inputTrafficPerson", pk, "StopLocationId w3-input w3-border ");
-					a("name", "setStopLocationId");
-				} else {
-					a("class", "valueStopLocationId w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopLocationId w3-input w3-border ");
-					a("name", "stopLocationId");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopLocationId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopLocationId')); }, function() { addError($('#", classApiMethodMethod, "_stopLocationId')); }); ");
-				}
-				a("value", strStopLocationId())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopLocationId ").f().sx(htmStopLocationId()).g("span");
-		}
-	}
-
-	public void htmStopLocationId(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopLocationId").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopLocationId").a("class", "").f().sx("location ID").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopLocationId(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopLocationId')); $('#", classApiMethodMethod, "_stopLocationId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopLocationId', null, function() { addGlow($('#", classApiMethodMethod, "_stopLocationId')); }, function() { addError($('#", classApiMethodMethod, "_stopLocationId')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	////////////////
@@ -2729,82 +1699,12 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopCityId == null ? "" : stopCityId;
 	}
 
-	public String nomAffichageStopCityId() {
-		return "city ID";
-	}
-
 	public String htmTooltipStopCityId() {
 		return null;
 	}
 
 	public String htmStopCityId() {
 		return stopCityId == null ? "" : StringEscapeUtils.escapeHtml4(strStopCityId());
-	}
-
-	public void inputStopCityId(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "city ID")
-				.a("id", classApiMethodMethod, "_stopCityId");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopCityId classTrafficPerson inputTrafficPerson", pk, "StopCityId w3-input w3-border ");
-					a("name", "setStopCityId");
-				} else {
-					a("class", "valueStopCityId w3-input w3-border classTrafficPerson inputTrafficPerson", pk, "StopCityId w3-input w3-border ");
-					a("name", "stopCityId");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopCityId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopCityId')); }, function() { addError($('#", classApiMethodMethod, "_stopCityId')); }); ");
-				}
-				a("value", strStopCityId())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficPerson", pk, "StopCityId ").f().sx(htmStopCityId()).g("span");
-		}
-	}
-
-	public void htmStopCityId(String classApiMethodMethod) {
-		TrafficPerson s = (TrafficPerson)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficPersonStopCityId").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopCityId").a("class", "").f().sx("city ID").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputStopCityId(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopCityId')); $('#", classApiMethodMethod, "_stopCityId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficPersonForm :input[name=pk]').val() }], 'setStopCityId', null, function() { addGlow($('#", classApiMethodMethod, "_stopCityId')); }, function() { addError($('#", classApiMethodMethod, "_stopCityId')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	///////////////////////
@@ -2910,10 +1810,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public String jsonTrafficSearchKeys() {
 		return trafficSearchKeys == null ? "" : trafficSearchKeys.toString();
-	}
-
-	public String nomAffichageTrafficSearchKeys() {
-		return "traffic search keys";
 	}
 
 	public String htmTooltipTrafficSearchKeys() {
@@ -3084,10 +1980,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personAge == null ? "" : personAge.toString();
 	}
 
-	public String nomAffichagePersonAge() {
-		return "person age";
-	}
-
 	public String htmTooltipPersonAge() {
 		return null;
 	}
@@ -3228,10 +2120,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public String jsonPersonTypeId() {
 		return personTypeId == null ? "" : personTypeId;
-	}
-
-	public String nomAffichagePersonTypeId() {
-		return "person type ID";
 	}
 
 	public String htmTooltipPersonTypeId() {
@@ -3376,10 +2264,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personTypeTitle == null ? "" : personTypeTitle;
 	}
 
-	public String nomAffichagePersonTypeTitle() {
-		return "person type title";
-	}
-
 	public String htmTooltipPersonTypeTitle() {
 		return null;
 	}
@@ -3487,10 +2371,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personTypeDriver == null ? "" : personTypeDriver.toString();
 	}
 
-	public String nomAffichagePersonTypeDriver() {
-		return "person was driver";
-	}
-
 	public String htmTooltipPersonTypeDriver() {
 		return null;
 	}
@@ -3572,10 +2452,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personTypePassenger == null ? "" : personTypePassenger.toString();
 	}
 
-	public String nomAffichagePersonTypePassenger() {
-		return "person was passenger";
-	}
-
 	public String htmTooltipPersonTypePassenger() {
 		return null;
 	}
@@ -3650,10 +2526,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public String jsonPersonGenderId() {
 		return personGenderId == null ? "" : personGenderId;
-	}
-
-	public String nomAffichagePersonGenderId() {
-		return "person gender ID";
 	}
 
 	public String htmTooltipPersonGenderId() {
@@ -3798,10 +2670,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personGenderTitle == null ? "" : personGenderTitle;
 	}
 
-	public String nomAffichagePersonGenderTitle() {
-		return "person gender title";
-	}
-
 	public String htmTooltipPersonGenderTitle() {
 		return null;
 	}
@@ -3909,10 +2777,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personGenderFemale == null ? "" : personGenderFemale.toString();
 	}
 
-	public String nomAffichagePersonGenderFemale() {
-		return "person was female";
-	}
-
 	public String htmTooltipPersonGenderFemale() {
 		return null;
 	}
@@ -3994,10 +2858,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personGenderMale == null ? "" : personGenderMale.toString();
 	}
 
-	public String nomAffichagePersonGenderMale() {
-		return "person was male";
-	}
-
 	public String htmTooltipPersonGenderMale() {
 		return null;
 	}
@@ -4072,10 +2932,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public String jsonPersonEthnicityId() {
 		return personEthnicityId == null ? "" : personEthnicityId;
-	}
-
-	public String nomAffichagePersonEthnicityId() {
-		return "person ethnicity ID";
 	}
 
 	public String htmTooltipPersonEthnicityId() {
@@ -4220,10 +3076,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personEthnicityTitle == null ? "" : personEthnicityTitle;
 	}
 
-	public String nomAffichagePersonEthnicityTitle() {
-		return "person ethnicity title";
-	}
-
 	public String htmTooltipPersonEthnicityTitle() {
 		return null;
 	}
@@ -4324,10 +3176,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public String jsonPersonRaceId() {
 		return personRaceId == null ? "" : personRaceId;
-	}
-
-	public String nomAffichagePersonRaceId() {
-		return "person race ID";
 	}
 
 	public String htmTooltipPersonRaceId() {
@@ -4472,10 +3320,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return personRaceTitle == null ? "" : personRaceTitle;
 	}
 
-	public String nomAffichagePersonRaceTitle() {
-		return "person race title";
-	}
-
 	public String htmTooltipPersonRaceTitle() {
 		return null;
 	}
@@ -4578,10 +3422,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return trafficPersonShortName == null ? "" : trafficPersonShortName;
 	}
 
-	public String nomAffichageTrafficPersonShortName() {
-		return null;
-	}
-
 	public String htmTooltipTrafficPersonShortName() {
 		return null;
 	}
@@ -4656,10 +3496,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	public String jsonTrafficPersonCompleteName() {
 		return trafficPersonCompleteName == null ? "" : trafficPersonCompleteName;
-	}
-
-	public String nomAffichageTrafficPersonCompleteName() {
-		return null;
 	}
 
 	public String htmTooltipTrafficPersonCompleteName() {
@@ -5238,86 +4074,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 					setTrafficStopKey(val);
 				saves.add("trafficStopKey");
 				return val;
-			case "stopagencytitle":
-				if(val != null)
-					setStopAgencyTitle(val);
-				saves.add("stopAgencyTitle");
-				return val;
-			case "stopdatetime":
-				if(val != null)
-					setStopDateTime(val);
-				saves.add("stopDateTime");
-				return val;
-			case "stoppurposenum":
-				if(val != null)
-					setStopPurposeNum(val);
-				saves.add("stopPurposeNum");
-				return val;
-			case "stoppurposetitle":
-				if(val != null)
-					setStopPurposeTitle(val);
-				saves.add("stopPurposeTitle");
-				return val;
-			case "stopactionnum":
-				if(val != null)
-					setStopActionNum(val);
-				saves.add("stopActionNum");
-				return val;
-			case "stopactiontitle":
-				if(val != null)
-					setStopActionTitle(val);
-				saves.add("stopActionTitle");
-				return val;
-			case "stopdriverarrest":
-				if(val != null)
-					setStopDriverArrest(val);
-				saves.add("stopDriverArrest");
-				return val;
-			case "stoppassengerarrest":
-				if(val != null)
-					setStopPassengerArrest(val);
-				saves.add("stopPassengerArrest");
-				return val;
-			case "stopencounterforce":
-				if(val != null)
-					setStopEncounterForce(val);
-				saves.add("stopEncounterForce");
-				return val;
-			case "stopengageforce":
-				if(val != null)
-					setStopEngageForce(val);
-				saves.add("stopEngageForce");
-				return val;
-			case "stopofficerinjury":
-				if(val != null)
-					setStopOfficerInjury(val);
-				saves.add("stopOfficerInjury");
-				return val;
-			case "stopdriverinjury":
-				if(val != null)
-					setStopDriverInjury(val);
-				saves.add("stopDriverInjury");
-				return val;
-			case "stoppassengerinjury":
-				if(val != null)
-					setStopPassengerInjury(val);
-				saves.add("stopPassengerInjury");
-				return val;
-			case "stopofficerid":
-				if(val != null)
-					setStopOfficerId(val);
-				saves.add("stopOfficerId");
-				return val;
-			case "stoplocationid":
-				if(val != null)
-					setStopLocationId(val);
-				saves.add("stopLocationId");
-				return val;
-			case "stopcityid":
-				if(val != null)
-					setStopCityId(val);
-				saves.add("stopCityId");
-				return val;
 			case "personage":
 				if(val != null)
 					setPersonAge(val);
@@ -5369,88 +4125,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				if(val instanceof Long)
 					setTrafficStopKey((Long)val);
 				saves.add("trafficStopKey");
-				return val;
-			case "stopagencytitle":
-				if(val instanceof String)
-					setStopAgencyTitle((String)val);
-				saves.add("stopAgencyTitle");
-				return val;
-			case "stopdatetime":
-				if(val instanceof ZonedDateTime)
-					setStopDateTime((ZonedDateTime)val);
-				else if(val instanceof OffsetDateTime)
-					setStopDateTime(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
-				saves.add("stopDateTime");
-				return val;
-			case "stoppurposenum":
-				if(val instanceof Integer)
-					setStopPurposeNum((Integer)val);
-				saves.add("stopPurposeNum");
-				return val;
-			case "stoppurposetitle":
-				if(val instanceof String)
-					setStopPurposeTitle((String)val);
-				saves.add("stopPurposeTitle");
-				return val;
-			case "stopactionnum":
-				if(val instanceof Integer)
-					setStopActionNum((Integer)val);
-				saves.add("stopActionNum");
-				return val;
-			case "stopactiontitle":
-				if(val instanceof String)
-					setStopActionTitle((String)val);
-				saves.add("stopActionTitle");
-				return val;
-			case "stopdriverarrest":
-				if(val instanceof Boolean)
-					setStopDriverArrest((Boolean)val);
-				saves.add("stopDriverArrest");
-				return val;
-			case "stoppassengerarrest":
-				if(val instanceof Boolean)
-					setStopPassengerArrest((Boolean)val);
-				saves.add("stopPassengerArrest");
-				return val;
-			case "stopencounterforce":
-				if(val instanceof Boolean)
-					setStopEncounterForce((Boolean)val);
-				saves.add("stopEncounterForce");
-				return val;
-			case "stopengageforce":
-				if(val instanceof Boolean)
-					setStopEngageForce((Boolean)val);
-				saves.add("stopEngageForce");
-				return val;
-			case "stopofficerinjury":
-				if(val instanceof Boolean)
-					setStopOfficerInjury((Boolean)val);
-				saves.add("stopOfficerInjury");
-				return val;
-			case "stopdriverinjury":
-				if(val instanceof Boolean)
-					setStopDriverInjury((Boolean)val);
-				saves.add("stopDriverInjury");
-				return val;
-			case "stoppassengerinjury":
-				if(val instanceof Boolean)
-					setStopPassengerInjury((Boolean)val);
-				saves.add("stopPassengerInjury");
-				return val;
-			case "stopofficerid":
-				if(val instanceof String)
-					setStopOfficerId((String)val);
-				saves.add("stopOfficerId");
-				return val;
-			case "stoplocationid":
-				if(val instanceof String)
-					setStopLocationId((String)val);
-				saves.add("stopLocationId");
-				return val;
-			case "stopcityid":
-				if(val instanceof String)
-					setStopCityId((String)val);
-				saves.add("stopCityId");
 				return val;
 			case "personage":
 				if(val instanceof Integer)

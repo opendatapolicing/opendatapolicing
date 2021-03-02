@@ -27,7 +27,7 @@
   include_role:
     name: project_login
   when: REQUEST_NUM.failed | default(false)
-- name: Call get_num tasks
+- name: Call get_num tasks again
   include_tasks: get_num.yml
   when: REQUEST_NUM.failed | default(false)
 - name: Call project_backup tasks

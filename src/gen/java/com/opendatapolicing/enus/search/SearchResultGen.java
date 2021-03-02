@@ -200,10 +200,6 @@ public abstract class SearchResultGen<DEV> extends Object {
 		return resultIndex == null ? "" : resultIndex.toString();
 	}
 
-	public String nomAffichageResultIndex() {
-		return null;
-	}
-
 	public String htmTooltipResultIndex() {
 		return null;
 	}

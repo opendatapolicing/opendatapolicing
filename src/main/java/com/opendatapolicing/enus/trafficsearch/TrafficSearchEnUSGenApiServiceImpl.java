@@ -87,6 +87,7 @@ import java.util.regex.Matcher;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
 import java.util.Map.Entry;
 import java.util.Iterator;
 import java.time.ZonedDateTime;
@@ -695,6 +696,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE TrafficSearch SET ");
+			List<Object> bParams = new ArrayList<Object>();
+			TrafficSearch o2 = new TrafficSearch();
+			o2.setSiteRequest_(siteRequest);
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -704,461 +709,158 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					String entityVar = entityVars.getString(i);
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "personKey":
-							{
-						Long l = Long.parseLong(jsonObject.getString(entityVar));
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_addA)
-									.execute(Tuple.of(pk, "personKey", l, "trafficSearchKeys")
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
-							});
-						}));
+						{
+							Long l = Long.parseLong(jsonObject.getString(entityVar));
+							if(l != null) {
+								if(bParams.size() > 0) {
+									bSql.append(", ");
+								}
+								bSql.append("personKey=$" + num);
+								num++;
+								bParams.add(l);
+							}
 						}
 						break;
 					case "contrabandKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_addA)
-										.execute(Tuple.of(pk, "contrabandKeys", l, "searchKey")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.contrabandKeys failed", b.cause())));
-								});
-							}));
-							if(!pks.contains(l)) {
-								pks.add(l);
-								classes.add("TrafficContraband");
+						{
+							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+								futures.add(Future.future(a -> {
+									tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+											.execute(Tuple.of(pk, l)
+											, b
+									-> {
+										if(b.succeeded())
+											a.handle(Future.succeededFuture());
+										else
+											a.handle(Future.failedFuture(new Exception("value TrafficSearch.contrabandKeys failed", b.cause())));
+									});
+								}));
+								if(!pks.contains(l)) {
+									pks.add(l);
+									classes.add("TrafficContraband");
+								}
 							}
 						}
 						break;
 					case "searchBasisKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_addA)
-										.execute(Tuple.of(pk, "searchBasisKeys", l, "searchKey")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
-								});
-							}));
-							if(!pks.contains(l)) {
-								pks.add(l);
-								classes.add("SearchBasis");
+						{
+							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+								futures.add(Future.future(a -> {
+									tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+											.execute(Tuple.of(pk, l)
+											, b
+									-> {
+										if(b.succeeded())
+											a.handle(Future.succeededFuture());
+										else
+											a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
+									});
+								}));
+								if(!pks.contains(l)) {
+									pks.add(l);
+									classes.add("SearchBasis");
+								}
 							}
 						}
 						break;
-					case "stopAgencyTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopDateTime":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPurposeNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPurposeTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopActionNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopActionTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopDriverArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPassengerArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopEncounterForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopEngageForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopOfficerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopDriverInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPassengerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopOfficerId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopLocationId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopCityId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personTypeId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personGenderId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personEthnicityId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personRaceId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
-							});
-						}));
-						break;
 					case "searchTypeNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
-							});
-						}));
+						o2.setSearchTypeNum(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchTypeNum=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchTypeNum());
 						break;
 					case "searchVehicle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchVehicle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
-							});
-						}));
+						o2.setSearchVehicle(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchVehicle=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchVehicle());
 						break;
 					case "searchDriver":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchDriver", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
-							});
-						}));
+						o2.setSearchDriver(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchDriver=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchDriver());
 						break;
 					case "searchPassenger":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchPassenger", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
-							});
-						}));
+						o2.setSearchPassenger(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchPassenger=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchPassenger());
 						break;
 					case "searchProperty":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchProperty", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
-							});
-						}));
+						o2.setSearchProperty(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchProperty=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchProperty());
 						break;
 					case "searchVehicleSiezed":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchVehicleSiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
-							});
-						}));
+						o2.setSearchVehicleSiezed(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchVehicleSiezed=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchVehicleSiezed());
 						break;
 					case "searchPersonalPropertySiezed":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchPersonalPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
-							});
-						}));
+						o2.setSearchPersonalPropertySiezed(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchPersonalPropertySiezed=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchPersonalPropertySiezed());
 						break;
 					case "searchOtherPropertySiezed":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchOtherPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
-							});
-						}));
+						o2.setSearchOtherPropertySiezed(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchOtherPropertySiezed=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchOtherPropertySiezed());
 						break;
 					}
 				}
@@ -1331,6 +1033,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE TrafficSearch SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			TrafficSearch o2 = new TrafficSearch();
@@ -1338,43 +1042,20 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("sessionId=$" + num);
+				num++;
+				bParams.add(siteRequest.getSessionId());
 			}
 			if(siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			if(jsonObject != null) {
@@ -1382,43 +1063,31 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "personKey":
 						{
@@ -1434,17 +1103,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "personKey", l2, "trafficSearchKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
-										});
-									}));
+									if(bParams.size() > 0) {
+										bSql.append(", ");
+									}
+									bSql.append("personKey=$" + num);
+									num++;
+									bParams.add(l2);
 									if(!pks.contains(l2)) {
 										pks.add(l2);
 										classes.add("TrafficPerson");
@@ -1467,8 +1131,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "contrabandKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -1499,8 +1163,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -1517,372 +1181,96 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							}
 						}
 						break;
-					case "stopAgencyTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopAgencyTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopDateTime":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDateTime", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPurposeNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPurposeTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPurposeTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopActionNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopActionTitle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopActionTitle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopDriverArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPassengerArrest":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerArrest", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopEncounterForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEncounterForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopEngageForce":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopEngageForce", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopOfficerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopDriverInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopDriverInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopPassengerInjury":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopPassengerInjury", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopOfficerId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopOfficerId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopLocationId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopLocationId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
-							});
-						}));
-						break;
-					case "stopCityId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "stopCityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personTypeId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personTypeId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personGenderId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personGenderId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personEthnicityId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personEthnicityId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
-							});
-						}));
-						break;
-					case "personRaceId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "personRaceId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
-							});
-						}));
-						break;
 					case "searchTypeNum":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchTypeNum", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
-							});
-						}));
+						o2.setSearchTypeNum(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchTypeNum=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchTypeNum());
 						break;
 					case "searchVehicle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchVehicle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
-							});
-						}));
+						o2.setSearchVehicle(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchVehicle=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchVehicle());
 						break;
 					case "searchDriver":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchDriver", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
-							});
-						}));
+						o2.setSearchDriver(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchDriver=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchDriver());
 						break;
 					case "searchPassenger":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchPassenger", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
-							});
-						}));
+						o2.setSearchPassenger(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchPassenger=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchPassenger());
 						break;
 					case "searchProperty":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchProperty", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
-							});
-						}));
+						o2.setSearchProperty(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchProperty=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchProperty());
 						break;
 					case "searchVehicleSiezed":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchVehicleSiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
-							});
-						}));
+						o2.setSearchVehicleSiezed(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchVehicleSiezed=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchVehicleSiezed());
 						break;
 					case "searchPersonalPropertySiezed":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchPersonalPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
-							});
-						}));
+						o2.setSearchPersonalPropertySiezed(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchPersonalPropertySiezed=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchPersonalPropertySiezed());
 						break;
 					case "searchOtherPropertySiezed":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchOtherPropertySiezed", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
-							});
-						}));
+						o2.setSearchOtherPropertySiezed(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchOtherPropertySiezed=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchOtherPropertySiezed());
 						break;
 					}
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -2137,6 +1525,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE TrafficSearch SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
@@ -2144,118 +1534,39 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
-			if(o.getUserId() == null && siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0)
+					bSql.append(", ");
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			for(String methodName : methodNames) {
 				switch(methodName) {
 					case "setInheritPk":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "inheritPk")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.inheritPk failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.inheritPk failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("inheritPk=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "archived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.archived failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.archived failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("archived=$" + num);
+							num++;
+							bParams.add(o2.sqlArchived());
 						break;
 					case "setDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "deleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.deleted failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.deleted failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("deleted=$" + num);
+							num++;
+							bParams.add(o2.sqlDeleted());
 						break;
 					case "setPersonKey":
 						{
@@ -2272,17 +1583,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !l2.equals(o.getPersonKey())) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "personKey", l2, "trafficSearchKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
-										});
-									}));
+									o2.setPersonKey(l2);
+									if(bParams.size() > 0)
+										bSql.append(", ");
+									bSql.append("personKey=$" + num);
+									num++;
+									bParams.add(l2);
 									if(!pks.contains(l2)) {
 										pks.add(l2);
 										classes.add("TrafficPerson");
@@ -2306,17 +1612,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "personKey", l2, "trafficSearchKeys")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value TrafficSearch.personKey failed", b.cause())));
-										});
-									}));
+									o2.setPersonKey((Long)null);
+									if(bParams.size() > 0)
+										bSql.append(", ");
+									bSql.append("personKey=null");
 									if(!pks.contains(l2)) {
 										pks.add(l2);
 										classes.add("TrafficPerson");
@@ -2340,8 +1639,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "contrabandKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2375,8 +1674,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null && !o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "contrabandKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2414,8 +1713,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 										setContrabandKeysValues2.add(l2);
 									if(l2 != null && !o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "contrabandKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2436,8 +1735,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Long l :  o.getContrabandKeys()) {
 								if(l != null && (setContrabandKeysValues2 == null || !setContrabandKeysValues2.contains(l))) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "contrabandKeys", l, "searchKey")
+										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=null WHERE pk=$1")
+												.execute(Tuple.of(l)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2465,8 +1764,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "contrabandKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=null WHERE pk=$1")
+												.execute(Tuple.of(l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2498,8 +1797,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2533,8 +1832,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2572,8 +1871,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 										setSearchBasisKeysValues2.add(l2);
 									if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2594,8 +1893,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Long l :  o.getSearchBasisKeys()) {
 								if(l != null && (setSearchBasisKeysValues2 == null || !setSearchBasisKeysValues2.contains(l))) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "searchBasisKeys", l, "searchKey")
+										tx.preparedQuery("UPDATE SearchBasis SET searchKey=null WHERE pk=$1")
+												.execute(Tuple.of(l)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2623,8 +1922,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(pk, "searchBasisKeys", l2, "searchKey")
+										tx.preparedQuery("UPDATE SearchBasis SET searchKey=null WHERE pk=$1")
+												.execute(Tuple.of(l2)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2641,791 +1940,87 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							}
 						}
 						break;
-					case "setStopAgencyTitle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopAgencyTitle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopAgencyTitle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopAgencyTitle", o2.jsonStopAgencyTitle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopAgencyTitle failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopDateTime":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopDateTime")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopDateTime(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopDateTime", o2.jsonStopDateTime())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDateTime failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopPurposeNum":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPurposeNum")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopPurposeNum(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPurposeNum", o2.jsonStopPurposeNum())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeNum failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopPurposeTitle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPurposeTitle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopPurposeTitle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPurposeTitle", o2.jsonStopPurposeTitle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPurposeTitle failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopActionNum":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopActionNum")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopActionNum(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopActionNum", o2.jsonStopActionNum())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionNum failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopActionTitle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopActionTitle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopActionTitle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopActionTitle", o2.jsonStopActionTitle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopActionTitle failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopDriverArrest":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopDriverArrest")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopDriverArrest(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopDriverArrest", o2.jsonStopDriverArrest())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverArrest failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopPassengerArrest":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPassengerArrest")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopPassengerArrest(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPassengerArrest", o2.jsonStopPassengerArrest())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerArrest failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopEncounterForce":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopEncounterForce")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopEncounterForce(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopEncounterForce", o2.jsonStopEncounterForce())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEncounterForce failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopEngageForce":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopEngageForce")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopEngageForce(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopEngageForce", o2.jsonStopEngageForce())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopEngageForce failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopOfficerInjury":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopOfficerInjury")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopOfficerInjury(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopOfficerInjury", o2.jsonStopOfficerInjury())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerInjury failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopDriverInjury":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopDriverInjury")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopDriverInjury(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopDriverInjury", o2.jsonStopDriverInjury())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopDriverInjury failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopPassengerInjury":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopPassengerInjury")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopPassengerInjury(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopPassengerInjury", o2.jsonStopPassengerInjury())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopPassengerInjury failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopOfficerId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopOfficerId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopOfficerId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopOfficerId", o2.jsonStopOfficerId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopOfficerId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopLocationId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopLocationId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopLocationId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopLocationId", o2.jsonStopLocationId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopLocationId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setStopCityId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "stopCityId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setStopCityId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "stopCityId", o2.jsonStopCityId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.stopCityId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setPersonTypeId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "personTypeId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setPersonTypeId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "personTypeId", o2.jsonPersonTypeId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personTypeId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setPersonGenderId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "personGenderId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setPersonGenderId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "personGenderId", o2.jsonPersonGenderId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personGenderId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setPersonEthnicityId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "personEthnicityId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setPersonEthnicityId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "personEthnicityId", o2.jsonPersonEthnicityId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personEthnicityId failed", b.cause())));
-								});
-							}));
-						}
-						break;
-					case "setPersonRaceId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "personRaceId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
-								});
-							}));
-						} else {
-							o2.setPersonRaceId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "personRaceId", o2.jsonPersonRaceId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.personRaceId failed", b.cause())));
-								});
-							}));
-						}
-						break;
 					case "setSearchTypeNum":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchTypeNum")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchTypeNum(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchTypeNum", o2.jsonSearchTypeNum())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchTypeNum failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchTypeNum=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchTypeNum());
 						break;
 					case "setSearchVehicle":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchVehicle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchVehicle(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchVehicle", o2.jsonSearchVehicle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicle failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchVehicle=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchVehicle());
 						break;
 					case "setSearchDriver":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchDriver")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchDriver(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchDriver", o2.jsonSearchDriver())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchDriver failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchDriver=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchDriver());
 						break;
 					case "setSearchPassenger":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchPassenger")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchPassenger(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchPassenger", o2.jsonSearchPassenger())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPassenger failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchPassenger=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchPassenger());
 						break;
 					case "setSearchProperty":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchProperty")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchProperty(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchProperty", o2.jsonSearchProperty())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchProperty failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchProperty=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchProperty());
 						break;
 					case "setSearchVehicleSiezed":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchVehicleSiezed")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchVehicleSiezed(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchVehicleSiezed", o2.jsonSearchVehicleSiezed())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchVehicleSiezed failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchVehicleSiezed=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchVehicleSiezed());
 						break;
 					case "setSearchPersonalPropertySiezed":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchPersonalPropertySiezed")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchPersonalPropertySiezed(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchPersonalPropertySiezed", o2.jsonSearchPersonalPropertySiezed())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchPersonalPropertySiezed failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchPersonalPropertySiezed=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchPersonalPropertySiezed());
 						break;
 					case "setSearchOtherPropertySiezed":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchOtherPropertySiezed")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchOtherPropertySiezed(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchOtherPropertySiezed", o2.jsonSearchOtherPropertySiezed())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchOtherPropertySiezed failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchOtherPropertySiezed=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchOtherPropertySiezed());
 						break;
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+				bParams.add(pk);
+				num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -3642,6 +2237,24 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			});
 			json.put("list", l);
 
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
+
 			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
 			if(facetRanges != null) {
 				JsonObject rangeJson = new JsonObject();
@@ -3831,6 +2444,24 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
 
 			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
 			if(facetRanges != null) {
@@ -4070,11 +2701,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		try {
 			Transaction tx = siteRequest.getTx();
 			String userId = siteRequest.getUserId();
+			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(SiteContextEnUS.SQL_create)
+			tx.preparedQuery("INSERT INTO TrafficSearch(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(TrafficSearch.class.getCanonicalName(), userId, created.toOffsetDateTime())
+					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -4282,8 +2914,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 
 	public void userTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
-			String userId = siteRequest.getUserId();
-			if(userId == null) {
+			Long userKey = siteRequest.getUserKey();
+			if(userKey == null) {
 				eventHandler.handle(Future.succeededFuture());
 			} else {
 				sqlConnectionTrafficSearch(siteRequest, a -> {
@@ -4291,9 +2923,9 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						sqlTransactionTrafficSearch(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
 										.collecting(Collectors.toList())
-										.execute(Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
+										.execute(Tuple.of(userKey)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -4364,7 +2996,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 												searchList.setQuery("*:*");
 												searchList.setStore(true);
 												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
 												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
 												searchList.initDeepSearchList(siteRequest);
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
@@ -4669,6 +3301,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
 								}
 								break;
+							case "facet.field":
+								entityVar = (String)paramObject;
+								varIndexed = TrafficSearch.varIndexedTrafficSearch(entityVar);
+								if(varIndexed != null)
+									searchList.addFacetField(varIndexed);
+								break;
 							case "var":
 								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
 								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
@@ -4697,7 +3335,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_define)
+			tx.preparedQuery("SELECT * FROM TrafficSearch WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -4705,11 +3343,17 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				if(defineAsync.succeeded()) {
 					try {
 						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineTrafficSearch failed. ", e));
-								LOGGER.error(e);
+							for(Integer i = 0; i < definition.size(); i++) {
+								String columnName = definition.getColumnName(i);
+								Object columnValue = definition.getValue(i);
+								if(!"pk".equals(columnName)) {
+									try {
+										o.defineForClass(columnName, columnValue);
+									} catch(Exception e) {
+										LOGGER.error(String.format("defineTrafficSearch failed. ", e));
+										LOGGER.error(e);
+									}
+								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
@@ -4733,19 +3377,16 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+			tx.preparedQuery("SELECT personKey as pk2, 'personKey' from TrafficSearch where pk=$1 UNION SELECT pk as pk2, 'contrabandKeys' from TrafficContraband where searchKey=$2 UNION SELECT pk as pk2, 'searchBasisKeys' from SearchBasis where searchKey=$3")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk, pk)
+					.execute(Tuple.of(pk, pk, pk)
 					, attributeAsync
 			-> {
 				try {
 					if(attributeAsync.succeeded()) {
 						if(attributeAsync.result() != null) {
 							for(Row definition : attributeAsync.result().value()) {
-								if(pk.equals(definition.getLong(0)))
-									o.attributeForClass(definition.getString(2), definition.getLong(1));
-								else
-									o.attributeForClass(definition.getString(3), definition.getLong(0));
+								o.attributeForClass(definition.getString(1), definition.getLong(0));
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());

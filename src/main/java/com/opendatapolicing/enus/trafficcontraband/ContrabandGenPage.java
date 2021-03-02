@@ -226,7 +226,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 	public void htmlFormPUTCopyTrafficContraband(TrafficContraband o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
-			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PUTCopy");
@@ -256,7 +255,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 	public void htmlFormPATCHTrafficContraband(TrafficContraband o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
@@ -314,7 +312,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 		} g("div");

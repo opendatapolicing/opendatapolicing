@@ -199,10 +199,6 @@ public abstract class SearchListGen<DEV> {
 		return store == null ? "" : store.toString();
 	}
 
-	public String nomAffichageStore() {
-		return null;
-	}
-
 	public String htmTooltipStore() {
 		return null;
 	}
@@ -282,10 +278,6 @@ public abstract class SearchListGen<DEV> {
 
 	public String jsonPopulate() {
 		return populate == null ? "" : populate.toString();
-	}
-
-	public String nomAffichagePopulate() {
-		return null;
 	}
 
 	public String htmTooltipPopulate() {
@@ -383,10 +375,6 @@ public abstract class SearchListGen<DEV> {
 
 	public String jsonFields() {
 		return fields == null ? "" : fields.toString();
-	}
-
-	public String nomAffichageFields() {
-		return null;
 	}
 
 	public String htmTooltipFields() {

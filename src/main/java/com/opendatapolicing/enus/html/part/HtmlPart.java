@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.html.part;    
+package com.opendatapolicing.enus.html.part;     
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Api: true
  * Indexed: true
  * Saved: true
+ * Map.Integer.sqlSort: 2
  * 
  * ApiTag.enUS: Html Part
  * ApiUri.enUS: /api/html-part

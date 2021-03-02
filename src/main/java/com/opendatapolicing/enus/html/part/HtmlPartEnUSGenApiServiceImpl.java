@@ -83,6 +83,7 @@ import java.util.regex.Matcher;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
 import java.util.Map.Entry;
 import java.util.Iterator;
 import java.time.ZonedDateTime;
@@ -238,6 +239,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE HtmlPart SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			HtmlPart o2 = new HtmlPart();
@@ -245,43 +248,20 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("sessionId=$" + num);
+				num++;
+				bParams.add(siteRequest.getSessionId());
 			}
 			if(siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			if(jsonObject != null) {
@@ -289,43 +269,31 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "pageDesignKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
@@ -341,8 +309,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "htmlPartKeys", pk, "pageDesignKeys")
+										tx.preparedQuery("INSERT INTO PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(pk1, pk2) values($1, $2)")
+												.execute(Tuple.of(l2, pk)
 												, b
 										-> {
 											if(b.succeeded())
@@ -360,397 +328,293 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 						}
 						break;
 					case "htmlLink":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlLink", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlLink failed", b.cause())));
-							});
-						}));
+						o2.setHtmlLink(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlLink=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlLink());
 						break;
 					case "htmlElement":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlElement", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlElement failed", b.cause())));
-							});
-						}));
+						o2.setHtmlElement(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlElement=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlElement());
 						break;
 					case "htmlId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlId failed", b.cause())));
-							});
-						}));
+						o2.setHtmlId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlId=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlId());
 						break;
 					case "htmlClasses":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlClasses", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlClasses failed", b.cause())));
-							});
-						}));
+						o2.setHtmlClasses(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlClasses=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlClasses());
 						break;
 					case "htmlStyle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlStyle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlStyle failed", b.cause())));
-							});
-						}));
+						o2.setHtmlStyle(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlStyle=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlStyle());
 						break;
 					case "htmlBefore":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlBefore", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlBefore failed", b.cause())));
-							});
-						}));
+						o2.setHtmlBefore(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlBefore=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlBefore());
 						break;
 					case "htmlAfter":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlAfter", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlAfter failed", b.cause())));
-							});
-						}));
+						o2.setHtmlAfter(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlAfter=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlAfter());
 						break;
 					case "htmlText":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlText", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlText failed", b.cause())));
-							});
-						}));
+						o2.setHtmlText(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlText=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlText());
 						break;
 					case "htmlVar":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVar", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVar failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVar(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVar=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVar());
 						break;
 					case "htmlVarSpan":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarSpan", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarSpan failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarSpan(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarSpan=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarSpan());
 						break;
 					case "htmlVarForm":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarForm", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForm failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarForm(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarForm=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarForm());
 						break;
 					case "htmlVarInput":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarInput", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarInput failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarInput(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarInput=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarInput());
 						break;
 					case "htmlVarForEach":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarForEach", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForEach failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarForEach(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarForEach=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarForEach());
 						break;
 					case "htmlVarHtml":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarHtml", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarHtml failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarHtml(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarHtml=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarHtml());
 						break;
 					case "htmlVarBase64Decode":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarBase64Decode", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarBase64Decode failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarBase64Decode(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarBase64Decode=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarBase64Decode());
 						break;
 					case "htmlExclude":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlExclude", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlExclude failed", b.cause())));
-							});
-						}));
+						o2.setHtmlExclude(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlExclude=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlExclude());
 						break;
 					case "pdfExclude":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "pdfExclude", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.pdfExclude failed", b.cause())));
-							});
-						}));
+						o2.setPdfExclude(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("pdfExclude=$" + num);
+						num++;
+						bParams.add(o2.sqlPdfExclude());
 						break;
 					case "loginLogout":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "loginLogout", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.loginLogout failed", b.cause())));
-							});
-						}));
+						o2.setLoginLogout(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("loginLogout=$" + num);
+						num++;
+						bParams.add(o2.sqlLoginLogout());
 						break;
 					case "searchUri":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchUri", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.searchUri failed", b.cause())));
-							});
-						}));
+						o2.setSearchUri(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchUri=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchUri());
 						break;
 					case "mapTo":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "mapTo", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.mapTo failed", b.cause())));
-							});
-						}));
+						o2.setMapTo(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("mapTo=$" + num);
+						num++;
+						bParams.add(o2.sqlMapTo());
 						break;
 					case "sort1":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort1", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort1 failed", b.cause())));
-							});
-						}));
+						o2.setSort1(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort1=$" + num);
+						num++;
+						bParams.add(o2.sqlSort1());
 						break;
 					case "sort2":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort2", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort2 failed", b.cause())));
-							});
-						}));
+						o2.setSort2(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort2=$" + num);
+						num++;
+						bParams.add(o2.sqlSort2());
 						break;
 					case "sort3":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort3", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort3 failed", b.cause())));
-							});
-						}));
+						o2.setSort3(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort3=$" + num);
+						num++;
+						bParams.add(o2.sqlSort3());
 						break;
 					case "sort4":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort4", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort4 failed", b.cause())));
-							});
-						}));
+						o2.setSort4(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort4=$" + num);
+						num++;
+						bParams.add(o2.sqlSort4());
 						break;
 					case "sort5":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort5", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort5 failed", b.cause())));
-							});
-						}));
+						o2.setSort5(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort5=$" + num);
+						num++;
+						bParams.add(o2.sqlSort5());
 						break;
 					case "sort6":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort6", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort6 failed", b.cause())));
-							});
-						}));
+						o2.setSort6(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort6=$" + num);
+						num++;
+						bParams.add(o2.sqlSort6());
 						break;
 					case "sort7":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort7", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort7 failed", b.cause())));
-							});
-						}));
+						o2.setSort7(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort7=$" + num);
+						num++;
+						bParams.add(o2.sqlSort7());
 						break;
 					case "sort8":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort8", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort8 failed", b.cause())));
-							});
-						}));
+						o2.setSort8(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort8=$" + num);
+						num++;
+						bParams.add(o2.sqlSort8());
 						break;
 					case "sort9":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort9", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort9 failed", b.cause())));
-							});
-						}));
+						o2.setSort9(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort9=$" + num);
+						num++;
+						bParams.add(o2.sqlSort9());
 						break;
 					case "sort10":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort10", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort10 failed", b.cause())));
-							});
-						}));
+						o2.setSort10(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort10=$" + num);
+						num++;
+						bParams.add(o2.sqlSort10());
 						break;
 					}
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -1375,6 +1239,10 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE HtmlPart SET ");
+			List<Object> bParams = new ArrayList<Object>();
+			HtmlPart o2 = new HtmlPart();
+			o2.setSiteRequest_(siteRequest);
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -1384,452 +1252,322 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 					String entityVar = entityVars.getString(i);
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "pageDesignKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_addA)
-										.execute(Tuple.of(l, "htmlPartKeys", pk, "pageDesignKeys")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.pageDesignKeys failed", b.cause())));
-								});
-							}));
-							if(!pks.contains(l)) {
-								pks.add(l);
-								classes.add("PageDesign");
+						{
+							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
+								futures.add(Future.future(a -> {
+									tx.preparedQuery("INSERT INTO PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(pk1, pk2) values($1, $2)")
+											.execute(Tuple.of(l, pk)
+											, b
+									-> {
+										if(b.succeeded())
+											a.handle(Future.succeededFuture());
+										else
+											a.handle(Future.failedFuture(new Exception("value HtmlPart.pageDesignKeys failed", b.cause())));
+									});
+								}));
+								if(!pks.contains(l)) {
+									pks.add(l);
+									classes.add("PageDesign");
+								}
 							}
 						}
 						break;
 					case "htmlLink":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlLink", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlLink failed", b.cause())));
-							});
-						}));
+						o2.setHtmlLink(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlLink=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlLink());
 						break;
 					case "htmlElement":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlElement", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlElement failed", b.cause())));
-							});
-						}));
+						o2.setHtmlElement(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlElement=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlElement());
 						break;
 					case "htmlId":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlId", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlId failed", b.cause())));
-							});
-						}));
+						o2.setHtmlId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlId=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlId());
 						break;
 					case "htmlClasses":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlClasses", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlClasses failed", b.cause())));
-							});
-						}));
+						o2.setHtmlClasses(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlClasses=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlClasses());
 						break;
 					case "htmlStyle":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlStyle", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlStyle failed", b.cause())));
-							});
-						}));
+						o2.setHtmlStyle(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlStyle=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlStyle());
 						break;
 					case "htmlBefore":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlBefore", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlBefore failed", b.cause())));
-							});
-						}));
+						o2.setHtmlBefore(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlBefore=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlBefore());
 						break;
 					case "htmlAfter":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlAfter", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlAfter failed", b.cause())));
-							});
-						}));
+						o2.setHtmlAfter(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlAfter=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlAfter());
 						break;
 					case "htmlText":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlText", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlText failed", b.cause())));
-							});
-						}));
+						o2.setHtmlText(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlText=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlText());
 						break;
 					case "htmlVar":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVar", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVar failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVar(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVar=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVar());
 						break;
 					case "htmlVarSpan":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarSpan", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarSpan failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarSpan(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarSpan=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarSpan());
 						break;
 					case "htmlVarForm":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarForm", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForm failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarForm(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarForm=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarForm());
 						break;
 					case "htmlVarInput":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarInput", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarInput failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarInput(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarInput=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarInput());
 						break;
 					case "htmlVarForEach":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarForEach", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForEach failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarForEach(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarForEach=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarForEach());
 						break;
 					case "htmlVarHtml":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarHtml", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarHtml failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarHtml(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarHtml=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarHtml());
 						break;
 					case "htmlVarBase64Decode":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlVarBase64Decode", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarBase64Decode failed", b.cause())));
-							});
-						}));
+						o2.setHtmlVarBase64Decode(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlVarBase64Decode=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlVarBase64Decode());
 						break;
 					case "htmlExclude":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "htmlExclude", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlExclude failed", b.cause())));
-							});
-						}));
+						o2.setHtmlExclude(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("htmlExclude=$" + num);
+						num++;
+						bParams.add(o2.sqlHtmlExclude());
 						break;
 					case "pdfExclude":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "pdfExclude", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.pdfExclude failed", b.cause())));
-							});
-						}));
+						o2.setPdfExclude(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("pdfExclude=$" + num);
+						num++;
+						bParams.add(o2.sqlPdfExclude());
 						break;
 					case "loginLogout":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "loginLogout", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.loginLogout failed", b.cause())));
-							});
-						}));
+						o2.setLoginLogout(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("loginLogout=$" + num);
+						num++;
+						bParams.add(o2.sqlLoginLogout());
 						break;
 					case "searchUri":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "searchUri", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.searchUri failed", b.cause())));
-							});
-						}));
+						o2.setSearchUri(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("searchUri=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchUri());
 						break;
 					case "mapTo":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "mapTo", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.mapTo failed", b.cause())));
-							});
-						}));
+						o2.setMapTo(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("mapTo=$" + num);
+						num++;
+						bParams.add(o2.sqlMapTo());
 						break;
 					case "sort1":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort1", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort1 failed", b.cause())));
-							});
-						}));
+						o2.setSort1(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort1=$" + num);
+						num++;
+						bParams.add(o2.sqlSort1());
 						break;
 					case "sort2":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort2", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort2 failed", b.cause())));
-							});
-						}));
+						o2.setSort2(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort2=$" + num);
+						num++;
+						bParams.add(o2.sqlSort2());
 						break;
 					case "sort3":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort3", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort3 failed", b.cause())));
-							});
-						}));
+						o2.setSort3(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort3=$" + num);
+						num++;
+						bParams.add(o2.sqlSort3());
 						break;
 					case "sort4":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort4", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort4 failed", b.cause())));
-							});
-						}));
+						o2.setSort4(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort4=$" + num);
+						num++;
+						bParams.add(o2.sqlSort4());
 						break;
 					case "sort5":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort5", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort5 failed", b.cause())));
-							});
-						}));
+						o2.setSort5(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort5=$" + num);
+						num++;
+						bParams.add(o2.sqlSort5());
 						break;
 					case "sort6":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort6", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort6 failed", b.cause())));
-							});
-						}));
+						o2.setSort6(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort6=$" + num);
+						num++;
+						bParams.add(o2.sqlSort6());
 						break;
 					case "sort7":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort7", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort7 failed", b.cause())));
-							});
-						}));
+						o2.setSort7(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort7=$" + num);
+						num++;
+						bParams.add(o2.sqlSort7());
 						break;
 					case "sort8":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort8", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort8 failed", b.cause())));
-							});
-						}));
+						o2.setSort8(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort8=$" + num);
+						num++;
+						bParams.add(o2.sqlSort8());
 						break;
 					case "sort9":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort9", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort9 failed", b.cause())));
-							});
-						}));
+						o2.setSort9(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort9=$" + num);
+						num++;
+						bParams.add(o2.sqlSort9());
 						break;
 					case "sort10":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "sort10", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value HtmlPart.sort10 failed", b.cause())));
-							});
-						}));
+						o2.setSort10(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("sort10=$" + num);
+						num++;
+						bParams.add(o2.sqlSort10());
 						break;
 					}
 				}
@@ -2085,6 +1823,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE HtmlPart SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
@@ -2092,118 +1832,39 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
-			if(o.getUserId() == null && siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0)
+					bSql.append(", ");
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			for(String methodName : methodNames) {
 				switch(methodName) {
 					case "setInheritPk":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "inheritPk")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.inheritPk failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.inheritPk failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("inheritPk=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "archived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.archived failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.archived failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("archived=$" + num);
+							num++;
+							bParams.add(o2.sqlArchived());
 						break;
 					case "setDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "deleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.deleted failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.deleted failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("deleted=$" + num);
+							num++;
+							bParams.add(o2.sqlDeleted());
 						break;
 					case "addPageDesignKeys":
 						{
@@ -2220,8 +1881,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !o.getPageDesignKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "htmlPartKeys", pk, "pageDesignKeys")
+										tx.preparedQuery("INSERT INTO PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(pk1, pk2) values($1, $2)")
+												.execute(Tuple.of(l2, pk)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2255,8 +1916,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null && !o.getPageDesignKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "htmlPartKeys", pk, "pageDesignKeys")
+										tx.preparedQuery("INSERT INTO PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(pk1, pk2) values($1, $2)")
+												.execute(Tuple.of(l2, pk)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2294,8 +1955,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 										setPageDesignKeysValues2.add(l2);
 									if(l2 != null && !o.getPageDesignKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "htmlPartKeys", pk, "pageDesignKeys")
+										tx.preparedQuery("INSERT INTO PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(pk1, pk2) values($1, $2)")
+												.execute(Tuple.of(l2, pk)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2316,8 +1977,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 							for(Long l :  o.getPageDesignKeys()) {
 								if(l != null && (setPageDesignKeysValues == null || !setPageDesignKeysValues2.contains(l))) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(l, "htmlPartKeys", pk, "pageDesignKeys")
+										tx.preparedQuery("DELETE FROM PageDesignHtmlPartKeys_HtmlPartPageDesignKeys WHERE pk1=$1 AND pk2=$2")
+												.execute(Tuple.of(l, pk)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2345,8 +2006,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && o.getPageDesignKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(l2, "htmlPartKeys", pk, "pageDesignKeys")
+										tx.preparedQuery("DELETE FROM PageDesignHtmlPartKeys_HtmlPartPageDesignKeys WHERE pk1=$1 AND pk2=$2")
+												.execute(Tuple.of(l2, pk)
 												, b
 										-> {
 											if(b.succeeded())
@@ -2364,846 +2025,262 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 						}
 						break;
 					case "setHtmlLink":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlLink")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlLink failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlLink(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlLink", o2.jsonHtmlLink())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlLink failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlLink=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlLink());
 						break;
 					case "setHtmlElement":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlElement")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlElement failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlElement(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlElement", o2.jsonHtmlElement())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlElement failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlElement=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlElement());
 						break;
 					case "setHtmlId":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlId")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlId failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlId(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlId", o2.jsonHtmlId())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlId failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlId=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlId());
 						break;
 					case "setHtmlClasses":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlClasses")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlClasses failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlClasses(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlClasses", o2.jsonHtmlClasses())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlClasses failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlClasses=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlClasses());
 						break;
 					case "setHtmlStyle":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlStyle")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlStyle failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlStyle(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlStyle", o2.jsonHtmlStyle())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlStyle failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlStyle=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlStyle());
 						break;
 					case "setHtmlBefore":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlBefore")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlBefore failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlBefore(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlBefore", o2.jsonHtmlBefore())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlBefore failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlBefore=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlBefore());
 						break;
 					case "setHtmlAfter":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlAfter")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlAfter failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlAfter(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlAfter", o2.jsonHtmlAfter())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlAfter failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlAfter=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlAfter());
 						break;
 					case "setHtmlText":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlText")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlText failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlText(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlText", o2.jsonHtmlText())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlText failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlText=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlText());
 						break;
 					case "setHtmlVar":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlVar")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVar failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlVar(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlVar", o2.jsonHtmlVar())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVar failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlVar=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlVar());
 						break;
 					case "setHtmlVarSpan":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlVarSpan")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarSpan failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlVarSpan(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlVarSpan", o2.jsonHtmlVarSpan())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarSpan failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlVarSpan=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlVarSpan());
 						break;
 					case "setHtmlVarForm":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlVarForm")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForm failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlVarForm(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlVarForm", o2.jsonHtmlVarForm())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForm failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlVarForm=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlVarForm());
 						break;
 					case "setHtmlVarInput":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlVarInput")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarInput failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlVarInput(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlVarInput", o2.jsonHtmlVarInput())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarInput failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlVarInput=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlVarInput());
 						break;
 					case "setHtmlVarForEach":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlVarForEach")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForEach failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlVarForEach(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlVarForEach", o2.jsonHtmlVarForEach())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarForEach failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlVarForEach=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlVarForEach());
 						break;
 					case "setHtmlVarHtml":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlVarHtml")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarHtml failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlVarHtml(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlVarHtml", o2.jsonHtmlVarHtml())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarHtml failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlVarHtml=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlVarHtml());
 						break;
 					case "setHtmlVarBase64Decode":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlVarBase64Decode")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarBase64Decode failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlVarBase64Decode(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlVarBase64Decode", o2.jsonHtmlVarBase64Decode())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlVarBase64Decode failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlVarBase64Decode=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlVarBase64Decode());
 						break;
 					case "setHtmlExclude":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "htmlExclude")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlExclude failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setHtmlExclude(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "htmlExclude", o2.jsonHtmlExclude())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.htmlExclude failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("htmlExclude=$" + num);
+							num++;
+							bParams.add(o2.sqlHtmlExclude());
 						break;
 					case "setPdfExclude":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "pdfExclude")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.pdfExclude failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setPdfExclude(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "pdfExclude", o2.jsonPdfExclude())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.pdfExclude failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("pdfExclude=$" + num);
+							num++;
+							bParams.add(o2.sqlPdfExclude());
 						break;
 					case "setLoginLogout":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "loginLogout")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.loginLogout failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setLoginLogout(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "loginLogout", o2.jsonLoginLogout())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.loginLogout failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("loginLogout=$" + num);
+							num++;
+							bParams.add(o2.sqlLoginLogout());
 						break;
 					case "setSearchUri":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "searchUri")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.searchUri failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSearchUri(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "searchUri", o2.jsonSearchUri())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.searchUri failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("searchUri=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchUri());
 						break;
 					case "setMapTo":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "mapTo")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.mapTo failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setMapTo(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "mapTo", o2.jsonMapTo())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.mapTo failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("mapTo=$" + num);
+							num++;
+							bParams.add(o2.sqlMapTo());
 						break;
 					case "setSort1":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort1")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort1 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort1(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort1", o2.jsonSort1())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort1 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort1=$" + num);
+							num++;
+							bParams.add(o2.sqlSort1());
 						break;
 					case "setSort2":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort2")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort2 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort2(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort2", o2.jsonSort2())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort2 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort2=$" + num);
+							num++;
+							bParams.add(o2.sqlSort2());
 						break;
 					case "setSort3":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort3")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort3 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort3(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort3", o2.jsonSort3())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort3 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort3=$" + num);
+							num++;
+							bParams.add(o2.sqlSort3());
 						break;
 					case "setSort4":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort4")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort4 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort4(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort4", o2.jsonSort4())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort4 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort4=$" + num);
+							num++;
+							bParams.add(o2.sqlSort4());
 						break;
 					case "setSort5":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort5")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort5 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort5(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort5", o2.jsonSort5())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort5 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort5=$" + num);
+							num++;
+							bParams.add(o2.sqlSort5());
 						break;
 					case "setSort6":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort6")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort6 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort6(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort6", o2.jsonSort6())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort6 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort6=$" + num);
+							num++;
+							bParams.add(o2.sqlSort6());
 						break;
 					case "setSort7":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort7")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort7 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort7(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort7", o2.jsonSort7())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort7 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort7=$" + num);
+							num++;
+							bParams.add(o2.sqlSort7());
 						break;
 					case "setSort8":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort8")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort8 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort8(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort8", o2.jsonSort8())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort8 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort8=$" + num);
+							num++;
+							bParams.add(o2.sqlSort8());
 						break;
 					case "setSort9":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort9")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort9 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort9(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort9", o2.jsonSort9())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort9 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort9=$" + num);
+							num++;
+							bParams.add(o2.sqlSort9());
 						break;
 					case "setSort10":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "sort10")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort10 failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setSort10(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "sort10", o2.jsonSort10())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value HtmlPart.sort10 failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("sort10=$" + num);
+							num++;
+							bParams.add(o2.sqlSort10());
 						break;
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+				bParams.add(pk);
+				num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -3459,6 +2536,24 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
 
 			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
 			if(facetRanges != null) {
@@ -3718,11 +2813,12 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 		try {
 			Transaction tx = siteRequest.getTx();
 			String userId = siteRequest.getUserId();
+			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(SiteContextEnUS.SQL_create)
+			tx.preparedQuery("INSERT INTO HtmlPart(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(HtmlPart.class.getCanonicalName(), userId, created.toOffsetDateTime())
+					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -3930,8 +3026,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 
 	public void userHtmlPart(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
-			String userId = siteRequest.getUserId();
-			if(userId == null) {
+			Long userKey = siteRequest.getUserKey();
+			if(userKey == null) {
 				eventHandler.handle(Future.succeededFuture());
 			} else {
 				sqlConnectionHtmlPart(siteRequest, a -> {
@@ -3939,9 +3035,9 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 						sqlTransactionHtmlPart(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
 										.collecting(Collectors.toList())
-										.execute(Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
+										.execute(Tuple.of(userKey)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -4012,7 +3108,7 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 												searchList.setQuery("*:*");
 												searchList.setStore(true);
 												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
 												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
 												searchList.initDeepSearchList(siteRequest);
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
@@ -4317,6 +3413,12 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 									searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
 								}
 								break;
+							case "facet.field":
+								entityVar = (String)paramObject;
+								varIndexed = HtmlPart.varIndexedHtmlPart(entityVar);
+								if(varIndexed != null)
+									searchList.addFacetField(varIndexed);
+								break;
 							case "var":
 								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
 								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
@@ -4354,7 +3456,7 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_define)
+			tx.preparedQuery("SELECT * FROM HtmlPart WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -4362,11 +3464,17 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 				if(defineAsync.succeeded()) {
 					try {
 						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineHtmlPart failed. ", e));
-								LOGGER.error(e);
+							for(Integer i = 0; i < definition.size(); i++) {
+								String columnName = definition.getColumnName(i);
+								Object columnValue = definition.getValue(i);
+								if(!"pk".equals(columnName)) {
+									try {
+										o.defineForClass(columnName, columnValue);
+									} catch(Exception e) {
+										LOGGER.error(String.format("defineHtmlPart failed. ", e));
+										LOGGER.error(e);
+									}
+								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
@@ -4390,19 +3498,16 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+			tx.preparedQuery("SELECT pk1, 'pageDesignKeys' from PageDesignhtmlPartKeys_HtmlPartpageDesignKeys where pk2=$1")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk, pk)
+					.execute(Tuple.of(pk)
 					, attributeAsync
 			-> {
 				try {
 					if(attributeAsync.succeeded()) {
 						if(attributeAsync.result() != null) {
 							for(Row definition : attributeAsync.result().value()) {
-								if(pk.equals(definition.getLong(0)))
-									o.attributeForClass(definition.getString(2), definition.getLong(1));
-								else
-									o.attributeForClass(definition.getString(3), definition.getLong(0));
+								o.attributeForClass(definition.getString(1), definition.getLong(0));
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());

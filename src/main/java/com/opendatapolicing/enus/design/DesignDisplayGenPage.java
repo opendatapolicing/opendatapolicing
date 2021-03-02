@@ -372,7 +372,6 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 	public void htmlFormPUTCopyPageDesign(PageDesign o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
-			o.htmModified("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PUTCopy");
@@ -396,7 +395,6 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 	public void htmlFormPATCHPageDesign(PageDesign o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-			o.htmModified("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmArchived("PATCH");
@@ -442,7 +440,6 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserId("Search");
 			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 		} g("div");

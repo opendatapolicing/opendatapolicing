@@ -13,6 +13,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Api: true
  * Indexed: true
  * Saved: true
+ * Map.Integer.sqlSort: 10
  * 
  * ApiTag.enUS: Contraband
  * ApiUri.enUS: /api/contraband

@@ -18,22 +18,7 @@ import com.opendatapolicing.enus.writer.AllWriter;
 import com.opendatapolicing.enus.xml.UtilXml;
 
 /**
- * Model: true
- * Api: true
  * Indexed: true
- * 
- * ApiTag.enUS: Cluster
- * ApiUri.enUS: /api/cluster
- * 
- * ApiMethod: POST
- * ApiMethod: PUT
- * ApiMethod: PATCH
- * ApiMethod: GET
- * ApiMethod.enUS: Search
- * 
- * ApiMethode.enUS: SearchPage
- * PageSearchPage.enUS: ClusterPage
- * ApiUriSearchPage.enUS: /cluster
  * 
  * AName.enUS: a cluster
  * Color: gray
@@ -102,7 +87,6 @@ public class Cluster extends ClusterGen<Object> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * Modify: false
 	 * VarModified: true
 	 * HtmlRow: 1
@@ -186,17 +170,6 @@ public class Cluster extends ClusterGen<Object> {
 	 * Stored: true
 	 */ 
 	protected void _sessionId(Wrap<String> c) {
-	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Var.enUS: userId
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * Modify: false
-	 */                 
-	protected void _userId(Wrap<String> c) {
 	}
 
 	/**   

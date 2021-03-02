@@ -83,6 +83,7 @@ import java.util.regex.Matcher;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.client.solrj.response.PivotField;
 import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
 import java.util.Map.Entry;
 import java.util.Iterator;
 import java.time.ZonedDateTime;
@@ -691,6 +692,10 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteAgency SET ");
+			List<Object> bParams = new ArrayList<Object>();
+			SiteAgency o2 = new SiteAgency();
+			o2.setSiteRequest_(siteRequest);
 			Long pk = o.getPk();
 			List<Future> futures = new ArrayList<>();
 
@@ -700,111 +705,80 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					String entityVar = entityVars.getString(i);
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "agencyName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "agencyName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
-							});
-						}));
+						o2.setAgencyName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("agencyName=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyName());
 						break;
 					case "stateKey":
-							{
-						Long l = Long.parseLong(jsonObject.getString(entityVar));
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_addA)
-									.execute(Tuple.of(l, "agencyKeys", pk, "stateKey")
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
-							});
-						}));
+						{
+							Long l = Long.parseLong(jsonObject.getString(entityVar));
+							if(l != null) {
+								if(bParams.size() > 0) {
+									bSql.append(", ");
+								}
+								bSql.append("stateKey=$" + num);
+								num++;
+								bParams.add(l);
+							}
 						}
 						break;
 					case "imageLeft":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "imageLeft", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
-							});
-						}));
+						o2.setImageLeft(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("imageLeft=$" + num);
+						num++;
+						bParams.add(o2.sqlImageLeft());
 						break;
 					case "imageTop":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "imageTop", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
-							});
-						}));
+						o2.setImageTop(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("imageTop=$" + num);
+						num++;
+						bParams.add(o2.sqlImageTop());
 						break;
 					case "imageCoords":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "imageCoords", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
-							});
-						}));
+						o2.setImageCoords(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("imageCoords=$" + num);
+						num++;
+						bParams.add(o2.sqlImageCoords());
 						break;
 					}
 				}
@@ -977,6 +951,8 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteAgency SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			SiteAgency o2 = new SiteAgency();
@@ -984,43 +960,20 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			List<Future> futures = new ArrayList<>();
 
 			if(siteRequest.getSessionId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "sessionId", siteRequest.getSessionId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			if(siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("sessionId=$" + num);
+				num++;
+				bParams.add(siteRequest.getSessionId());
 			}
 			if(siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0) {
+					bSql.append(", ");
+				}
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			if(jsonObject != null) {
@@ -1028,56 +981,40 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
 					case "inheritPk":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "inheritPk", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.inheritPk failed", b.cause())));
-							});
-						}));
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("inheritPk=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
 						break;
 					case "archived":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "archived", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.archived failed", b.cause())));
-							});
-						}));
+						o2.setArchived(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("archived=$" + num);
+						num++;
+						bParams.add(o2.sqlArchived());
 						break;
 					case "deleted":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "deleted", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.deleted failed", b.cause())));
-							});
-						}));
+						o2.setDeleted(jsonObject.getBoolean(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("deleted=$" + num);
+						num++;
+						bParams.add(o2.sqlDeleted());
 						break;
 					case "agencyName":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "agencyName", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
-							});
-						}));
+						o2.setAgencyName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("agencyName=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyName());
 						break;
 					case "stateKey":
 						{
@@ -1093,17 +1030,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "agencyKeys", pk, "stateKey")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
-										});
-									}));
+									if(bParams.size() > 0) {
+										bSql.append(", ");
+									}
+									bSql.append("stateKey=$" + num);
+									num++;
+									bParams.add(l2);
 									if(!pks.contains(l2)) {
 										pks.add(l2);
 										classes.add("SiteState");
@@ -1113,46 +1045,50 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						}
 						break;
 					case "imageLeft":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "imageLeft", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
-							});
-						}));
+						o2.setImageLeft(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("imageLeft=$" + num);
+						num++;
+						bParams.add(o2.sqlImageLeft());
 						break;
 					case "imageTop":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "imageTop", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
-							});
-						}));
+						o2.setImageTop(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("imageTop=$" + num);
+						num++;
+						bParams.add(o2.sqlImageTop());
 						break;
 					case "imageCoords":
-						futures.add(Future.future(a -> {
-							tx.preparedQuery(SiteContextEnUS.SQL_setD)
-									.execute(Tuple.of(pk, "imageCoords", Optional.ofNullable(jsonObject.getValue(entityVar)).map(s -> s.toString()).orElse(null))
-									, b
-							-> {
-								if(b.succeeded())
-									a.handle(Future.succeededFuture());
-								else
-									a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
-							});
-						}));
+						o2.setImageCoords(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append("imageCoords=$" + num);
+						num++;
+						bParams.add(o2.sqlImageCoords());
 						break;
 					}
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -1407,6 +1343,8 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Transaction tx = siteRequest.getTx();
 			Integer num = 1;
+			StringBuilder bSql = new StringBuilder("UPDATE SiteAgency SET ");
+			List<Object> bParams = new ArrayList<Object>();
 			Long pk = o.getPk();
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			Set<String> methodNames = jsonObject.fieldNames();
@@ -1414,146 +1352,47 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
-			if(o.getUserId() == null && siteRequest.getUserId() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-							.execute(Tuple.of(pk, "userId", siteRequest.getUserId())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
 			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				futures.add(Future.future(a -> {
-					tx.preparedQuery(SiteContextEnUS.SQL_setD)
-				.execute(Tuple.of(pk, "userKey", siteRequest.getUserKey().toString())
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
+				if(bParams.size() > 0)
+					bSql.append(", ");
+				bSql.append("userKey=$" + num);
+				num++;
+				bParams.add(siteRequest.getUserKey());
 			}
 
 			for(String methodName : methodNames) {
 				switch(methodName) {
 					case "setInheritPk":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "inheritPk")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.inheritPk failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setInheritPk(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "inheritPk", o2.jsonInheritPk())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.inheritPk failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("inheritPk=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setArchived":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "archived")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.archived failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setArchived(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "archived", o2.jsonArchived())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.archived failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("archived=$" + num);
+							num++;
+							bParams.add(o2.sqlArchived());
 						break;
 					case "setDeleted":
-						if(jsonObject.getBoolean(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "deleted")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.deleted failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setDeleted(jsonObject.getBoolean(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "deleted", o2.jsonDeleted())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.deleted failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("deleted=$" + num);
+							num++;
+							bParams.add(o2.sqlDeleted());
 						break;
 					case "setAgencyName":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "agencyName")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setAgencyName(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "agencyName", o2.jsonAgencyName())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.agencyName failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("agencyName=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyName());
 						break;
 					case "setStateKey":
 						{
@@ -1570,17 +1409,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_addA)
-												.execute(Tuple.of(l2, "agencyKeys", pk, "stateKey")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
-										});
-									}));
+									o2.setStateKey(l2);
+									if(bParams.size() > 0)
+										bSql.append(", ");
+									bSql.append("stateKey=$" + num);
+									num++;
+									bParams.add(l2);
 									if(!pks.contains(l2)) {
 										pks.add(l2);
 										classes.add("SiteState");
@@ -1604,17 +1438,10 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										tx.preparedQuery(SiteContextEnUS.SQL_removeA)
-												.execute(Tuple.of(l2, "agencyKeys", pk, "stateKey")
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteAgency.stateKey failed", b.cause())));
-										});
-									}));
+									o2.setStateKey((Long)null);
+									if(bParams.size() > 0)
+										bSql.append(", ");
+									bSql.append("stateKey=null");
 									if(!pks.contains(l2)) {
 										pks.add(l2);
 										classes.add("SiteState");
@@ -1624,90 +1451,46 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						}
 						break;
 					case "setImageLeft":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "imageLeft")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setImageLeft(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "imageLeft", o2.jsonImageLeft())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageLeft failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("imageLeft=$" + num);
+							num++;
+							bParams.add(o2.sqlImageLeft());
 						break;
 					case "setImageTop":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "imageTop")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setImageTop(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "imageTop", o2.jsonImageTop())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageTop failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("imageTop=$" + num);
+							num++;
+							bParams.add(o2.sqlImageTop());
 						break;
 					case "setImageCoords":
-						if(jsonObject.getString(methodName) == null) {
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_removeD)
-										.execute(Tuple.of(pk, "imageCoords")
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
-								});
-							}));
-						} else {
 							o2.setImageCoords(jsonObject.getString(methodName));
-							futures.add(Future.future(a -> {
-								tx.preparedQuery(SiteContextEnUS.SQL_setD)
-										.execute(Tuple.of(pk, "imageCoords", o2.jsonImageCoords())
-										, b
-								-> {
-									if(b.succeeded())
-										a.handle(Future.succeededFuture());
-									else
-										a.handle(Future.failedFuture(new Exception("value SiteAgency.imageCoords failed", b.cause())));
-								});
-							}));
-						}
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append("imageCoords=$" + num);
+							num++;
+							bParams.add(o2.sqlImageCoords());
 						break;
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+				bParams.add(pk);
+				num++;
+				futures.add(Future.future(a -> {
+					tx.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
@@ -1924,6 +1707,24 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			});
 			json.put("list", l);
 
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
+
 			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
 			if(facetRanges != null) {
 				JsonObject rangeJson = new JsonObject();
@@ -2113,6 +1914,24 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				l.add(json2);
 			});
 			json.put("list", l);
+
+			List<FacetField> facetFields = responseSearch.getFacetFields();
+			if(facetFields != null) {
+				JsonObject facetFieldsJson = new JsonObject();
+				json.put("facet_fields", facetFieldsJson);
+				for(FacetField facetField : facetFields) {
+					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
+					JsonArray facetFieldCountsArray = new JsonArray();
+					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					List<FacetField.Count> facetFieldValues = facetField.getValues();
+					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
+						JsonObject countJson = new JsonObject();
+						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
+						countJson.put(count.getName(), count.getCount());
+						facetFieldCountsArray.add(countJson);
+					}
+				}
+			}
 
 			List<RangeFacet> facetRanges = responseSearch.getFacetRanges();
 			if(facetRanges != null) {
@@ -2352,11 +2171,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 		try {
 			Transaction tx = siteRequest.getTx();
 			String userId = siteRequest.getUserId();
+			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery(SiteContextEnUS.SQL_create)
+			tx.preparedQuery("INSERT INTO SiteAgency(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(SiteAgency.class.getCanonicalName(), userId, created.toOffsetDateTime())
+					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -2564,8 +2384,8 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 
 	public void userSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
 		try {
-			String userId = siteRequest.getUserId();
-			if(userId == null) {
+			Long userKey = siteRequest.getUserKey();
+			if(userKey == null) {
 				eventHandler.handle(Future.succeededFuture());
 			} else {
 				sqlConnectionSiteAgency(siteRequest, a -> {
@@ -2573,9 +2393,9 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						sqlTransactionSiteAgency(siteRequest, b -> {
 							if(b.succeeded()) {
 								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery(SiteContextEnUS.SQL_selectC)
+								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
 										.collecting(Collectors.toList())
-										.execute(Tuple.of("com.opendatapolicing.enus.user.SiteUser", userId)
+										.execute(Tuple.of(userKey)
 										, selectCAsync
 								-> {
 									if(selectCAsync.succeeded()) {
@@ -2646,7 +2466,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 												searchList.setQuery("*:*");
 												searchList.setStore(true);
 												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
 												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
 												searchList.initDeepSearchList(siteRequest);
 												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
@@ -2951,6 +2771,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 									searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
 								}
 								break;
+							case "facet.field":
+								entityVar = (String)paramObject;
+								varIndexed = SiteAgency.varIndexedSiteAgency(entityVar);
+								if(varIndexed != null)
+									searchList.addFacetField(varIndexed);
+								break;
 							case "var":
 								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
 								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
@@ -2979,7 +2805,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_define)
+			tx.preparedQuery("SELECT * FROM SiteAgency WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -2987,11 +2813,17 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				if(defineAsync.succeeded()) {
 					try {
 						for(Row definition : defineAsync.result().value()) {
-							try {
-								o.defineForClass(definition.getString(0), definition.getString(1));
-							} catch(Exception e) {
-								LOGGER.error(String.format("defineSiteAgency failed. ", e));
-								LOGGER.error(e);
+							for(Integer i = 0; i < definition.size(); i++) {
+								String columnName = definition.getColumnName(i);
+								Object columnValue = definition.getValue(i);
+								if(!"pk".equals(columnName)) {
+									try {
+										o.defineForClass(columnName, columnValue);
+									} catch(Exception e) {
+										LOGGER.error(String.format("defineSiteAgency failed. ", e));
+										LOGGER.error(e);
+									}
+								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
@@ -3015,19 +2847,16 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			Transaction tx = siteRequest.getTx();
 			Long pk = o.getPk();
-			tx.preparedQuery(SiteContextEnUS.SQL_attribute)
+			tx.preparedQuery("SELECT stateKey as pk1, 'stateKey' from SiteAgency where pk=$1")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk, pk)
+					.execute(Tuple.of(pk)
 					, attributeAsync
 			-> {
 				try {
 					if(attributeAsync.succeeded()) {
 						if(attributeAsync.result() != null) {
 							for(Row definition : attributeAsync.result().value()) {
-								if(pk.equals(definition.getLong(0)))
-									o.attributeForClass(definition.getString(2), definition.getLong(1));
-								else
-									o.attributeForClass(definition.getString(3), definition.getLong(0));
+								o.attributeForClass(definition.getString(1), definition.getLong(0));
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
