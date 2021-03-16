@@ -2,10 +2,10 @@ package com.opendatapolicing.enus.trafficcontraband;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import com.opendatapolicing.enus.search.SearchList;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
@@ -13,9 +13,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
@@ -34,31 +34,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.ContrabandGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class ContrabandGenPageGen<DEV> extends PageLayout {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(ContrabandGenPage.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(ContrabandGenPage.class);
 
 	///////////////////////////
 	// listTrafficContraband //
 	///////////////////////////
 
-	/**	 The entity listTrafficContraband
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<TrafficContraband> listTrafficContraband;
 	@JsonIgnore
 	public Wrap<SearchList<TrafficContraband>> listTrafficContrabandWrap = new Wrap<SearchList<TrafficContraband>>().p(this).c(SearchList.class).var("listTrafficContraband").o(listTrafficContraband);
 
-	/**	<br/> The entity listTrafficContraband
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.ContrabandGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listTrafficContraband">Find the entity listTrafficContraband in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _listTrafficContraband(Wrap<SearchList<TrafficContraband>> c);
 
 	public SearchList<TrafficContraband> getListTrafficContraband() {
@@ -88,20 +75,11 @@ public abstract class ContrabandGenPageGen<DEV> extends PageLayout {
 	// trafficContraband_ //
 	////////////////////////
 
-	/**	 The entity trafficContraband_
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficContraband trafficContraband_;
 	@JsonIgnore
 	public Wrap<TrafficContraband> trafficContraband_Wrap = new Wrap<TrafficContraband>().p(this).c(TrafficContraband.class).var("trafficContraband_").o(trafficContraband_);
 
-	/**	<br/> The entity trafficContraband_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.ContrabandGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficContraband_">Find the entity trafficContraband_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _trafficContraband_(Wrap<TrafficContraband> c);
 
 	public TrafficContraband getTrafficContraband_() {

@@ -47,12 +47,8 @@ import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import io.vertx.core.MultiMap;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
-import io.vertx.ext.web.api.validation.ParameterTypeValidator;
-import io.vertx.ext.web.api.validation.ValidationException;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.SqlConnection;
@@ -67,13 +63,13 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.web.api.OperationResponse;
 import io.vertx.core.CompositeFuture;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.net.URLDecoder;
@@ -100,7 +96,7 @@ import com.opendatapolicing.enus.writer.AllWriter;
  **/
 public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiService {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SearchBasisEnUSGenApiServiceImpl.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SearchBasisEnUSGenApiServiceImpl.class);
 
 	protected static final String SERVICE_ADDRESS = "SearchBasisEnUSApiServiceImpl";
 
@@ -113,32 +109,32 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// PUTImport //
 
 	@Override
-	public void putimportSearchBasis(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/search-basis/import");
-		siteRequest.setRequestMethod("PUTImport");
-		try {
-			LOGGER.info(String.format("putimportSearchBasis started. "));
+	public void putimportSearchBasis(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putimportSearchBasis started. "));
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/search-basis/import");
+					siteRequest.setRequestMethod("PUTImport");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putimportSearchBasisResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -160,49 +156,49 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 														if(e.succeeded()) {
 															putimportSearchBasisResponse(siteRequest, f -> {
 																if(e.succeeded()) {
-																	LOGGER.info(String.format("putimportSearchBasis succeeded. "));
+																	LOG.info(String.format("putimportSearchBasis succeeded. "));
 																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
 																} else {
-																	LOGGER.error(String.format("putimportSearchBasis failed. ", f.cause()));
+																	LOG.error(String.format("putimportSearchBasis failed. ", f.cause()));
 																	errorSearchBasis(siteRequest, null, f);
 																}
 															});
 														} else {
-															LOGGER.error(String.format("putimportSearchBasis failed. ", e.cause()));
+															LOG.error(String.format("putimportSearchBasis failed. ", e.cause()));
 															errorSearchBasis(siteRequest, null, e);
 														}
 													});
 												} else {
-													LOGGER.error(String.format("putimportSearchBasis failed. ", d.cause()));
+													LOG.error(String.format("putimportSearchBasis failed. ", d.cause()));
 													errorSearchBasis(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putimportSearchBasis failed. ", ex));
+											LOG.error(String.format("putimportSearchBasis failed. ", ex));
 											errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putimportSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("putimportSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putimportSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putimportSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putimportSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTImportSearchBasis(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTImportSearchBasis(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
@@ -213,7 +209,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 
 				json.put("created", json.getValue("created"));
 
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteContext, siteRequest.getOperationRequest(), json);
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), json);
 				siteRequest2.setApiRequest_(apiRequest);
 				siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
@@ -242,7 +238,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 							patchSearchBasisFuture(o, true, a -> {
 								if(a.succeeded()) {
 								} else {
-									LOGGER.error(String.format("listPUTImportSearchBasis failed. ", a.cause()));
+									LOG.error(String.format("listPUTImportSearchBasis failed. ", a.cause()));
 									errorSearchBasis(siteRequest2, eventHandler, a);
 								}
 							})
@@ -253,7 +249,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						postSearchBasisFuture(siteRequest2, true, a -> {
 							if(a.succeeded()) {
 							} else {
-								LOGGER.error(String.format("listPUTImportSearchBasis failed. ", a.cause()));
+								LOG.error(String.format("listPUTImportSearchBasis failed. ", a.cause()));
 								errorSearchBasis(siteRequest2, eventHandler, a);
 							}
 						})
@@ -265,37 +261,37 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTImportSearchBasis(siteRequest, eventHandler);
 				} else {
-					LOGGER.error(String.format("listPUTImportSearchBasis failed. ", a.cause()));
+					LOG.error(String.format("listPUTImportSearchBasis failed. ", a.cause()));
 					errorSearchBasis(apiRequest.getSiteRequest_(), eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTImportSearchBasis failed. ", ex));
+			LOG.error(String.format("listPUTImportSearchBasis failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
 
-	public void putimportSearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putimportSearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTImportSearchBasis(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putimportSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("putimportSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("putimportSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTImportSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTImportSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTImportSearchBasis failed. ", e));
+			LOG.error(String.format("response200PUTImportSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -303,32 +299,32 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// PUTMerge //
 
 	@Override
-	public void putmergeSearchBasis(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/search-basis/merge");
-		siteRequest.setRequestMethod("PUTMerge");
-		try {
-			LOGGER.info(String.format("putmergeSearchBasis started. "));
+	public void putmergeSearchBasis(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putmergeSearchBasis started. "));
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/search-basis/merge");
+					siteRequest.setRequestMethod("PUTMerge");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putmergeSearchBasisResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -350,49 +346,49 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 														if(e.succeeded()) {
 															putmergeSearchBasisResponse(siteRequest, f -> {
 																if(e.succeeded()) {
-																	LOGGER.info(String.format("putmergeSearchBasis succeeded. "));
+																	LOG.info(String.format("putmergeSearchBasis succeeded. "));
 																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
 																} else {
-																	LOGGER.error(String.format("putmergeSearchBasis failed. ", f.cause()));
+																	LOG.error(String.format("putmergeSearchBasis failed. ", f.cause()));
 																	errorSearchBasis(siteRequest, null, f);
 																}
 															});
 														} else {
-															LOGGER.error(String.format("putmergeSearchBasis failed. ", e.cause()));
+															LOG.error(String.format("putmergeSearchBasis failed. ", e.cause()));
 															errorSearchBasis(siteRequest, null, e);
 														}
 													});
 												} else {
-													LOGGER.error(String.format("putmergeSearchBasis failed. ", d.cause()));
+													LOG.error(String.format("putmergeSearchBasis failed. ", d.cause()));
 													errorSearchBasis(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putmergeSearchBasis failed. ", ex));
+											LOG.error(String.format("putmergeSearchBasis failed. ", ex));
 											errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putmergeSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("putmergeSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putmergeSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putmergeSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putmergeSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTMergeSearchBasis(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTMergeSearchBasis(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
@@ -401,7 +397,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 
 				json.put("inheritPk", json.getValue("pk"));
 
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteContext, siteRequest.getOperationRequest(), json);
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), json);
 				siteRequest2.setApiRequest_(apiRequest);
 				siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
@@ -430,7 +426,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 							patchSearchBasisFuture(o, false, a -> {
 								if(a.succeeded()) {
 								} else {
-									LOGGER.error(String.format("listPUTMergeSearchBasis failed. ", a.cause()));
+									LOG.error(String.format("listPUTMergeSearchBasis failed. ", a.cause()));
 									errorSearchBasis(siteRequest2, eventHandler, a);
 								}
 							})
@@ -441,7 +437,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						postSearchBasisFuture(siteRequest2, false, a -> {
 							if(a.succeeded()) {
 							} else {
-								LOGGER.error(String.format("listPUTMergeSearchBasis failed. ", a.cause()));
+								LOG.error(String.format("listPUTMergeSearchBasis failed. ", a.cause()));
 								errorSearchBasis(siteRequest2, eventHandler, a);
 							}
 						})
@@ -453,37 +449,37 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTMergeSearchBasis(siteRequest, eventHandler);
 				} else {
-					LOGGER.error(String.format("listPUTMergeSearchBasis failed. ", a.cause()));
+					LOG.error(String.format("listPUTMergeSearchBasis failed. ", a.cause()));
 					errorSearchBasis(apiRequest.getSiteRequest_(), eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTMergeSearchBasis failed. ", ex));
+			LOG.error(String.format("listPUTMergeSearchBasis failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
 
-	public void putmergeSearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putmergeSearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTMergeSearchBasis(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putmergeSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("putmergeSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("putmergeSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTMergeSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTMergeSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTMergeSearchBasis failed. ", e));
+			LOG.error(String.format("response200PUTMergeSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -491,32 +487,32 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// PUTCopy //
 
 	@Override
-	public void putcopySearchBasis(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/search-basis/copy");
-		siteRequest.setRequestMethod("PUTCopy");
-		try {
-			LOGGER.info(String.format("putcopySearchBasis started. "));
+	public void putcopySearchBasis(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putcopySearchBasis started. "));
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/search-basis/copy");
+					siteRequest.setRequestMethod("PUTCopy");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putcopySearchBasisResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -539,64 +535,64 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 															if(e.succeeded()) {
 																putcopySearchBasisResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOGGER.info(String.format("putcopySearchBasis succeeded. "));
+																		LOG.info(String.format("putcopySearchBasis succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
-																		LOGGER.error(String.format("putcopySearchBasis failed. ", f.cause()));
+																		LOG.error(String.format("putcopySearchBasis failed. ", f.cause()));
 																		errorSearchBasis(siteRequest, null, f);
 																	}
 																});
 															} else {
-																LOGGER.error(String.format("putcopySearchBasis failed. ", e.cause()));
+																LOG.error(String.format("putcopySearchBasis failed. ", e.cause()));
 																errorSearchBasis(siteRequest, null, e);
 															}
 														});
 													} catch(Exception ex) {
-														LOGGER.error(String.format("putcopySearchBasis failed. ", ex));
+														LOG.error(String.format("putcopySearchBasis failed. ", ex));
 														errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 													}
 												} else {
-													LOGGER.error(String.format("putcopySearchBasis failed. ", d.cause()));
+													LOG.error(String.format("putcopySearchBasis failed. ", d.cause()));
 													errorSearchBasis(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putcopySearchBasis failed. ", ex));
+											LOG.error(String.format("putcopySearchBasis failed. ", ex));
 											errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putcopySearchBasis failed. ", c.cause()));
+								LOG.error(String.format("putcopySearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putcopySearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putcopySearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putcopySearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopySearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTCopySearchBasis(ApiRequest apiRequest, SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTCopySearchBasis(ApiRequest apiRequest, SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 		listSearchBasis.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
 				putcopySearchBasisFuture(siteRequest2, JsonObject.mapFrom(o), a -> {
 					if(a.succeeded()) {
 					} else {
-						LOGGER.error(String.format("listPUTCopySearchBasis failed. ", a.cause()));
+						LOG.error(String.format("listPUTCopySearchBasis failed. ", a.cause()));
 						errorSearchBasis(siteRequest, eventHandler, a);
 					}
 				})
@@ -611,7 +607,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					response200PUTCopySearchBasis(siteRequest, eventHandler);
 				}
 			} else {
-				LOGGER.error(String.format("listPUTCopySearchBasis failed. ", a.cause()));
+				LOG.error(String.format("listPUTCopySearchBasis failed. ", a.cause()));
 				errorSearchBasis(listSearchBasis.getSiteRequest_(), eventHandler, a);
 			}
 		});
@@ -653,44 +649,44 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 													eventHandler.handle(Future.succeededFuture(searchBasis));
 													promise.complete(searchBasis);
 												} else {
-													LOGGER.error(String.format("putcopySearchBasisFuture failed. ", e.cause()));
+													LOG.error(String.format("putcopySearchBasisFuture failed. ", e.cause()));
 													eventHandler.handle(Future.failedFuture(e.cause()));
 												}
 											});
 										} else {
-											LOGGER.error(String.format("putcopySearchBasisFuture failed. ", d.cause()));
+											LOG.error(String.format("putcopySearchBasisFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("putcopySearchBasisFuture failed. ", c.cause()));
+									LOG.error(String.format("putcopySearchBasisFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("putcopySearchBasisFuture failed. ", b.cause()));
+							LOG.error(String.format("putcopySearchBasisFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("putcopySearchBasisFuture failed. ", a.cause()));
+					LOG.error(String.format("putcopySearchBasisFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("putcopySearchBasisFuture failed. ", e));
+			LOG.error(String.format("putcopySearchBasisFuture failed. "), e);
 			errorSearchBasis(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
 	}
 
-	public void sqlPUTCopySearchBasis(SearchBasis o, JsonObject jsonObject, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPUTCopySearchBasis(SearchBasis o, JsonObject jsonObject, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE SearchBasis SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -769,37 +765,37 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
-					LOGGER.error(String.format("sqlPUTCopySearchBasis failed. ", a.cause()));
+					LOG.error(String.format("sqlPUTCopySearchBasis failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPUTCopySearchBasis failed. ", e));
+			LOG.error(String.format("sqlPUTCopySearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void putcopySearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putcopySearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTCopySearchBasis(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putcopySearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("putcopySearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopySearchBasisResponse failed. ", ex));
+			LOG.error(String.format("putcopySearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTCopySearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTCopySearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTCopySearchBasis failed. ", e));
+			LOG.error(String.format("response200PUTCopySearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -807,32 +803,32 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// POST //
 
 	@Override
-	public void postSearchBasis(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/search-basis");
-		siteRequest.setRequestMethod("POST");
-		try {
-			LOGGER.info(String.format("postSearchBasis started. "));
+	public void postSearchBasis(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("postSearchBasis started. "));
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/search-basis");
+					siteRequest.setRequestMethod("POST");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						ApiRequest apiRequest = new ApiRequest();
 						apiRequest.setRows(1);
 						apiRequest.setNumFound(1L);
@@ -847,27 +843,27 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 								postSearchBasisResponse(searchBasis, d -> {
 										if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("postSearchBasis succeeded. "));
+										LOG.info(String.format("postSearchBasis succeeded. "));
 									} else {
-										LOGGER.error(String.format("postSearchBasis failed. ", d.cause()));
+										LOG.error(String.format("postSearchBasis failed. ", d.cause()));
 										errorSearchBasis(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("postSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("postSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("postSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("postSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("postSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("postSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
@@ -894,44 +890,44 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 													eventHandler.handle(Future.succeededFuture(searchBasis));
 													promise.complete(searchBasis);
 												} else {
-													LOGGER.error(String.format("postSearchBasisFuture failed. ", e.cause()));
+													LOG.error(String.format("postSearchBasisFuture failed. ", e.cause()));
 													eventHandler.handle(Future.failedFuture(e.cause()));
 												}
 											});
 										} else {
-											LOGGER.error(String.format("postSearchBasisFuture failed. ", d.cause()));
+											LOG.error(String.format("postSearchBasisFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("postSearchBasisFuture failed. ", c.cause()));
+									LOG.error(String.format("postSearchBasisFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("postSearchBasisFuture failed. ", b.cause()));
+							LOG.error(String.format("postSearchBasisFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("postSearchBasisFuture failed. ", a.cause()));
+					LOG.error(String.format("postSearchBasisFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("postSearchBasisFuture failed. ", e));
+			LOG.error(String.format("postSearchBasisFuture failed. "), e);
 			errorSearchBasis(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
 	}
 
-	public void sqlPOSTSearchBasis(SearchBasis o, Boolean inheritPk, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPOSTSearchBasis(SearchBasis o, Boolean inheritPk, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE SearchBasis SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -1043,7 +1039,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			bParams.add(pk);
 			num++;
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(bSql.toString())
+					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
 					-> {
@@ -1058,39 +1054,39 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
-					LOGGER.error(String.format("sqlPOSTSearchBasis failed. ", a.cause()));
+					LOG.error(String.format("sqlPOSTSearchBasis failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPOSTSearchBasis failed. ", e));
+			LOG.error(String.format("sqlPOSTSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void postSearchBasisResponse(SearchBasis searchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void postSearchBasisResponse(SearchBasis searchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = searchBasis.getSiteRequest_();
 		try {
 			response200POSTSearchBasis(searchBasis, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("postSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("postSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("postSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("postSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200POSTSearchBasis(SearchBasis o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200POSTSearchBasis(SearchBasis o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			JsonObject json = JsonObject.mapFrom(o);
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200POSTSearchBasis failed. ", e));
+			LOG.error(String.format("response200POSTSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1098,32 +1094,32 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// PATCH //
 
 	@Override
-	public void patchSearchBasis(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/search-basis");
-		siteRequest.setRequestMethod("PATCH");
-		try {
-			LOGGER.info(String.format("patchSearchBasis started. "));
+	public void patchSearchBasis(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("patchSearchBasis started. "));
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/search-basis");
+					siteRequest.setRequestMethod("PATCH");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						patchSearchBasisResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -1141,7 +1137,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
 															) {
 														String message = String.format("roles required: " + String.join(", ", roles2));
-														LOGGER.error(message);
+														LOG.error(message);
 														errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(message));
 													} else {
 
@@ -1168,58 +1164,58 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 																if(e.succeeded()) {
 																	patchSearchBasisResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOGGER.info(String.format("patchSearchBasis succeeded. "));
+																			LOG.info(String.format("patchSearchBasis succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
-																			LOGGER.error(String.format("patchSearchBasis failed. ", f.cause()));
+																			LOG.error(String.format("patchSearchBasis failed. ", f.cause()));
 																			errorSearchBasis(siteRequest, null, f);
 																		}
 																	});
 																} else {
-																	LOGGER.error(String.format("patchSearchBasis failed. ", e.cause()));
+																	LOG.error(String.format("patchSearchBasis failed. ", e.cause()));
 																	errorSearchBasis(siteRequest, null, e);
 																}
 															});
 														} catch(Exception ex) {
-															LOGGER.error(String.format("patchSearchBasis failed. ", ex));
+															LOG.error(String.format("patchSearchBasis failed. ", ex));
 															errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
 										} else {
-													LOGGER.error(String.format("patchSearchBasis failed. ", d.cause()));
+													LOG.error(String.format("patchSearchBasis failed. ", d.cause()));
 													errorSearchBasis(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("patchSearchBasis failed. ", ex));
+											LOG.error(String.format("patchSearchBasis failed. ", ex));
 											errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("patchSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("patchSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("patchSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("patchSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("patchSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPATCHSearchBasis(ApiRequest apiRequest, SearchList<SearchBasis> listSearchBasis, String dt, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPATCHSearchBasis(ApiRequest apiRequest, SearchList<SearchBasis> listSearchBasis, String dt, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 		listSearchBasis.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
@@ -1239,7 +1235,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					response200PATCHSearchBasis(siteRequest, eventHandler);
 				}
 			} else {
-				LOGGER.error(String.format("listPATCHSearchBasis failed. ", a.cause()));
+				LOG.error(String.format("listPATCHSearchBasis failed. ", a.cause()));
 				errorSearchBasis(listSearchBasis.getSiteRequest_(), eventHandler, a);
 			}
 		});
@@ -1273,27 +1269,27 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 											eventHandler.handle(Future.succeededFuture(searchBasis));
 											promise.complete(searchBasis);
 										} else {
-											LOGGER.error(String.format("patchSearchBasisFuture failed. ", d.cause()));
+											LOG.error(String.format("patchSearchBasisFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("patchSearchBasisFuture failed. ", c.cause()));
+									LOG.error(String.format("patchSearchBasisFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("patchSearchBasisFuture failed. ", b.cause()));
+							LOG.error(String.format("patchSearchBasisFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("patchSearchBasisFuture failed. ", a.cause()));
+					LOG.error(String.format("patchSearchBasisFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("patchSearchBasisFuture failed. ", e));
+			LOG.error(String.format("patchSearchBasisFuture failed. "), e);
 			errorSearchBasis(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
@@ -1305,7 +1301,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE SearchBasis SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -1429,7 +1425,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 				bParams.add(pk);
 				num++;
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(bSql.toString())
+					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
 					-> {
@@ -1447,37 +1443,37 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					o3.setPk(pk);
 					eventHandler.handle(Future.succeededFuture(o3));
 				} else {
-					LOGGER.error(String.format("sqlPATCHSearchBasis failed. ", a.cause()));
+					LOG.error(String.format("sqlPATCHSearchBasis failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPATCHSearchBasis failed. ", e));
+			LOG.error(String.format("sqlPATCHSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void patchSearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void patchSearchBasisResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PATCHSearchBasis(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("patchSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("patchSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("patchSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PATCHSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PATCHSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PATCHSearchBasis failed. ", e));
+			LOG.error(String.format("response200PATCHSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1485,69 +1481,69 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// GET //
 
 	@Override
-	public void getSearchBasis(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/search-basis/{id}");
-		siteRequest.setRequestMethod("GET");
-		try {
-			{
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void getSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/search-basis/{id}");
+					siteRequest.setRequestMethod("GET");
+					{
 						aSearchSearchBasis(siteRequest, false, true, false, "/api/search-basis/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<SearchBasis> listSearchBasis = c.result();
 								getSearchBasisResponse(listSearchBasis, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("getSearchBasis succeeded. "));
+										LOG.info(String.format("getSearchBasis succeeded. "));
 									} else {
-										LOGGER.error(String.format("getSearchBasis failed. ", d.cause()));
+										LOG.error(String.format("getSearchBasis failed. ", d.cause()));
 										errorSearchBasis(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("getSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("getSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("getSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("getSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("getSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("getSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void getSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void getSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 		try {
 			response200GETSearchBasis(listSearchBasis, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("getSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("getSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("getSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("getSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200GETSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200GETSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 			SolrDocumentList solrDocuments = listSearchBasis.getSolrDocumentList();
 
 			JsonObject json = JsonObject.mapFrom(listSearchBasis.getList().stream().findFirst().orElse(null));
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200GETSearchBasis failed. ", e));
+			LOG.error(String.format("response200GETSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1555,61 +1551,61 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// Search //
 
 	@Override
-	public void searchSearchBasis(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/search-basis");
-		siteRequest.setRequestMethod("Search");
-		try {
-			{
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void searchSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/search-basis");
+					siteRequest.setRequestMethod("Search");
+					{
 						aSearchSearchBasis(siteRequest, false, true, false, "/api/search-basis", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<SearchBasis> listSearchBasis = c.result();
 								searchSearchBasisResponse(listSearchBasis, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchSearchBasis succeeded. "));
+										LOG.info(String.format("searchSearchBasis succeeded. "));
 									} else {
-										LOGGER.error(String.format("searchSearchBasis failed. ", d.cause()));
+										LOG.error(String.format("searchSearchBasis failed. ", d.cause()));
 										errorSearchBasis(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("searchSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("searchSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("searchSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("searchSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("searchSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void searchSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 		try {
 			response200SearchSearchBasis(listSearchBasis, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("searchSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("searchSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("searchSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200SearchSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200SearchSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 			QueryResponse responseSearch = listSearchBasis.getQueryResponse();
@@ -1716,9 +1712,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchSearchBasis failed. ", e));
+			LOG.error(String.format("response200SearchSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1763,61 +1759,61 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// AdminSearch //
 
 	@Override
-	public void adminsearchSearchBasis(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/admin/search-basis");
-		siteRequest.setRequestMethod("AdminSearch");
-		try {
-			{
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void adminsearchSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/admin/search-basis");
+					siteRequest.setRequestMethod("AdminSearch");
+					{
 						aSearchSearchBasis(siteRequest, false, true, false, "/api/admin/search-basis", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<SearchBasis> listSearchBasis = c.result();
 								adminsearchSearchBasisResponse(listSearchBasis, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("adminsearchSearchBasis succeeded. "));
+										LOG.info(String.format("adminsearchSearchBasis succeeded. "));
 									} else {
-										LOGGER.error(String.format("adminsearchSearchBasis failed. ", d.cause()));
+										LOG.error(String.format("adminsearchSearchBasis failed. ", d.cause()));
 										errorSearchBasis(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("adminsearchSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("adminsearchSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("adminsearchSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("adminsearchSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("adminsearchSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void adminsearchSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void adminsearchSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 		try {
 			response200AdminSearchSearchBasis(listSearchBasis, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("adminsearchSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("adminsearchSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("adminsearchSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200AdminSearchSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200AdminSearchSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 			QueryResponse responseSearch = listSearchBasis.getQueryResponse();
@@ -1924,9 +1920,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200AdminSearchSearchBasis failed. ", e));
+			LOG.error(String.format("response200AdminSearchSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1971,52 +1967,52 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	// SearchPage //
 
 	@Override
-	public void searchpageSearchBasisId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		searchpageSearchBasis(operationRequest, eventHandler);
+	public void searchpageSearchBasisId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		searchpageSearchBasis(serviceRequest, eventHandler);
 	}
 
 	@Override
-	public void searchpageSearchBasis(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest);
-		siteRequest.setRequestUri("/search-basis");
-		siteRequest.setRequestMethod("SearchPage");
-		try {
-			{
-				userSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void searchpageSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSearchBasis(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/search-basis");
+					siteRequest.setRequestMethod("SearchPage");
+					{
 						aSearchSearchBasis(siteRequest, false, true, false, "/search-basis", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<SearchBasis> listSearchBasis = c.result();
 								searchpageSearchBasisResponse(listSearchBasis, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchpageSearchBasis succeeded. "));
+										LOG.info(String.format("searchpageSearchBasis succeeded. "));
 									} else {
-										LOGGER.error(String.format("searchpageSearchBasis failed. ", d.cause()));
+										LOG.error(String.format("searchpageSearchBasis failed. ", d.cause()));
 										errorSearchBasis(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("searchpageSearchBasis failed. ", c.cause()));
+								LOG.error(String.format("searchpageSearchBasis failed. ", c.cause()));
 								errorSearchBasis(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("searchpageSearchBasis failed. ", b.cause()));
-						errorSearchBasis(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("searchpageSearchBasis failed. ", ex));
+					errorSearchBasis(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("searchpageSearchBasis failed. ", b.cause()));
+				errorSearchBasis(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSearchBasis failed. ", ex));
-			errorSearchBasis(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
 	public void searchpageSearchBasisPageInit(SearchBasisPage page, SearchList<SearchBasis> listSearchBasis) {
 	}
-	public void searchpageSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchpageSearchBasisResponse(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 		try {
 			Buffer buffer = Buffer.buffer();
@@ -2026,16 +2022,16 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("searchpageSearchBasisResponse failed. ", a.cause()));
+					LOG.error(String.format("searchpageSearchBasisResponse failed. ", a.cause()));
 					errorSearchBasis(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSearchBasisResponse failed. ", ex));
+			LOG.error(String.format("searchpageSearchBasisResponse failed. ", ex));
 			errorSearchBasis(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200SearchPageSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200SearchPageSearchBasis(SearchList<SearchBasis> listSearchBasis, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
 			Buffer buffer = Buffer.buffer();
@@ -2056,9 +2052,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			searchpageSearchBasisPageInit(page, listSearchBasis);
 			page.initDeepSearchBasisPage(siteRequest);
 			page.html();
-			eventHandler.handle(Future.succeededFuture(new OperationResponse(200, "OK", buffer, requestHeaders)));
+			eventHandler.handle(Future.succeededFuture(new ServiceResponse(200, "OK", buffer, requestHeaders)));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchPageSearchBasis failed. ", e));
+			LOG.error(String.format("response200SearchPageSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2083,32 +2079,32 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 														eventHandler.handle(Future.succeededFuture(searchBasis));
 														promise.complete(searchBasis);
 													} else {
-														LOGGER.error(String.format("refreshSearchBasis failed. ", h.cause()));
+														LOG.error(String.format("refreshSearchBasis failed. ", h.cause()));
 														errorSearchBasis(siteRequest, null, h);
 													}
 												});
 											} else {
-												LOGGER.error(String.format("defineIndexSearchBasis failed. ", g.cause()));
+												LOG.error(String.format("defineIndexSearchBasis failed. ", g.cause()));
 												errorSearchBasis(siteRequest, null, g);
 											}
 										});
 									} else {
-										LOGGER.error(String.format("defineIndexSearchBasis failed. ", f.cause()));
+										LOG.error(String.format("defineIndexSearchBasis failed. ", f.cause()));
 										errorSearchBasis(siteRequest, null, f);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("defineIndexSearchBasis failed. ", e.cause()));
+								LOG.error(String.format("defineIndexSearchBasis failed. ", e.cause()));
 								errorSearchBasis(siteRequest, null, e);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("defineIndexSearchBasis failed. ", d.cause()));
+						LOG.error(String.format("defineIndexSearchBasis failed. ", d.cause()));
 						errorSearchBasis(siteRequest, null, d);
 					}
 				});
 			} else {
-				LOGGER.error(String.format("defineIndexSearchBasis failed. ", c.cause()));
+				LOG.error(String.format("defineIndexSearchBasis failed. ", c.cause()));
 				errorSearchBasis(siteRequest, null, c);
 			}
 		});
@@ -2117,12 +2113,12 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 
 	public void createSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchBasis>> eventHandler) {
 		try {
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery("INSERT INTO SearchBasis(created, userKey) VALUES($1, $2) RETURNING pk")
+			sqlConnection.preparedQuery("INSERT INTO SearchBasis(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
@@ -2135,75 +2131,81 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 					o.setSiteRequest_(siteRequest);
 					eventHandler.handle(Future.succeededFuture(o));
 				} else {
-					LOGGER.error(String.format("createSearchBasis failed. ", createAsync.cause()));
+					LOG.error(String.format("createSearchBasis failed. ", createAsync.cause()));
 					eventHandler.handle(Future.failedFuture(createAsync.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("createSearchBasis failed. ", e));
+			LOG.error(String.format("createSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void errorSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler, AsyncResult<?> resultAsync) {
+	public void errorSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler, AsyncResult<?> resultAsync) {
 		Throwable e = resultAsync.cause();
-		JsonObject json = new JsonObject()
-				.put("error", new JsonObject()
-				.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null))
-				.put("userName", siteRequest.getUserName())
-				.put("userFullName", siteRequest.getUserFullName())
-				.put("requestUri", siteRequest.getRequestUri())
-				.put("requestMethod", siteRequest.getRequestMethod())
-				.put("params", Optional.ofNullable(siteRequest.getOperationRequest()).map(o -> o.getParams()).orElse(null))
-				);
-		ExceptionUtils.printRootCauseStackTrace(e);
-		OperationResponse responseOperation = new OperationResponse(400, "BAD REQUEST", 
+		JsonObject json = new JsonObject();
+		JsonObject jsonError = new JsonObject();
+		json.put("error", jsonError);
+		jsonError.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null));
+		if(siteRequest != null) {
+			jsonError.put("userName", siteRequest.getUserName());
+			jsonError.put("userFullName", siteRequest.getUserFullName());
+			jsonError.put("requestUri", siteRequest.getRequestUri());
+			jsonError.put("requestMethod", siteRequest.getRequestMethod());
+			jsonError.put("params", Optional.ofNullable(siteRequest.getServiceRequest()).map(o -> o.getParams()).orElse(null));
+		}
+		LOG.error("error: ", e);
+		ServiceResponse responseOperation = new ServiceResponse(400, "BAD REQUEST", 
 				Buffer.buffer().appendString(json.encodePrettily())
 				, MultiMap.caseInsensitiveMultiMap().add("Content-Type", "application/json")
 		);
-		SiteConfig siteConfig = siteRequest.getSiteConfig_();
-		SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-		MailClient mailClient = siteContext.getMailClient();
-		MailMessage message = new MailMessage();
-		message.setFrom(siteConfig.getEmailFrom());
-		message.setTo(siteConfig.getEmailAdmin());
-		if(e != null)
-			message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-		message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-		WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-		workerExecutor.executeBlocking(
-			blockingCodeHandler -> {
-				mailClient.sendMail(message, result -> {
-					if (result.succeeded()) {
-						LOGGER.info(result.result());
-					} else {
-						LOGGER.error(result.cause());
-					}
-				});
-			}, resultHandler -> {
-			}
-		);
-		sqlRollbackSearchBasis(siteRequest, a -> {
-			if(a.succeeded()) {
-				LOGGER.info(String.format("sql rollback. "));
-				sqlCloseSearchBasis(siteRequest, b -> {
-					if(b.succeeded()) {
-						LOGGER.info(String.format("sql close. "));
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					} else {
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					}
-				});
-			} else {
-				if(eventHandler != null)
-					eventHandler.handle(Future.succeededFuture(responseOperation));
-			}
-		});
+		if(siteRequest != null) {
+			SiteConfig siteConfig = siteRequest.getSiteConfig_();
+			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
+			MailClient mailClient = siteContext.getMailClient();
+			MailMessage message = new MailMessage();
+			message.setFrom(siteConfig.getEmailFrom());
+			message.setTo(siteConfig.getEmailAdmin());
+			if(e != null && siteConfig.getEmailFrom() != null)
+				message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+			workerExecutor.executeBlocking(
+				blockingCodeHandler -> {
+					mailClient.sendMail(message, result -> {
+						if (result.succeeded()) {
+							LOG.info(result.result().toString());
+						} else {
+							LOG.error("sendMail failed. ", result.cause());
+						}
+					});
+				}, resultHandler -> {
+				}
+			);
+			sqlRollbackSearchBasis(siteRequest, a -> {
+				if(a.succeeded()) {
+					LOG.info(String.format("sql rollback. "));
+					sqlCloseSearchBasis(siteRequest, b -> {
+						if(b.succeeded()) {
+							LOG.info(String.format("sql close. "));
+							if(eventHandler != null)
+								eventHandler.handle(Future.succeededFuture(responseOperation));
+						} else {
+							if(eventHandler != null)
+								eventHandler.handle(Future.succeededFuture(responseOperation));
+						}
+					});
+				} else {
+					if(eventHandler != null)
+						eventHandler.handle(Future.succeededFuture(responseOperation));
+				}
+			});
+		} else {
+			eventHandler.handle(Future.succeededFuture(responseOperation));
+		}
 	}
 
-	public void sqlConnectionSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlConnectionSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
 
@@ -2216,40 +2218,42 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						siteRequest.setSqlConnection(sqlConnection);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlConnectionSearchBasis failed. ", a.cause()));
+						LOG.error(String.format("sqlConnectionSearchBasis failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSearchBasis failed. ", e));
+			LOG.error(String.format("sqlSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlTransactionSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlTransactionSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 
 			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlTransactionCloseSearchBasis failed, connection should not be null. "));
 			} else {
-				Transaction tx = sqlConnection.begin();
-				siteRequest.setTx(tx);
-				eventHandler.handle(Future.succeededFuture());
+				sqlConnection.begin(a -> {
+					Transaction tx = a.result();
+					siteRequest.setTx(tx);
+					eventHandler.handle(Future.succeededFuture());
+				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTransactionSearchBasis failed. ", e));
+			LOG.error(String.format("sqlTransactionSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlCommitSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlCommitSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			Transaction tx = siteRequest.getTx();
 
 			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlCommitCloseSearchBasis failed, tx should not be null. "));
 			} else {
 				tx.commit(a -> {
 					if(a.succeeded()) {
@@ -2259,23 +2263,23 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						siteRequest.setTx(null);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlCommitSearchBasis failed. ", a.cause()));
+						LOG.error(String.format("sqlCommitSearchBasis failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSearchBasis failed. ", e));
+			LOG.error(String.format("sqlSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlRollbackSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlRollbackSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			Transaction tx = siteRequest.getTx();
 
 			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlRollbackCloseSearchBasis failed, tx should not be null. "));
 			} else {
 				tx.rollback(a -> {
 					if(a.succeeded()) {
@@ -2285,241 +2289,279 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						siteRequest.setTx(null);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlRollbackSearchBasis failed. ", a.cause()));
+						LOG.error(String.format("sqlRollbackSearchBasis failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSearchBasis failed. ", e));
+			LOG.error(String.format("sqlSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlCloseSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlCloseSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 
 			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlCloseSearchBasis failed, connection should not be null. "));
 			} else {
-				sqlConnection.close();
-				siteRequest.setSqlConnection(null);
-				eventHandler.handle(Future.succeededFuture());
+				sqlConnection.close(a -> {
+					if(a.succeeded()) {
+						siteRequest.setSqlConnection(null);
+						eventHandler.handle(Future.succeededFuture());
+					} else {
+						LOG.error(String.format("sqlCloseSearchBasis failed. ", a.cause()));
+						eventHandler.handle(Future.failedFuture(a.cause()));
+					}
+				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlCloseSearchBasis failed. ", e));
+			LOG.error(String.format("sqlCloseSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public SiteRequestEnUS generateSiteRequestEnUSForSearchBasis(SiteContextEnUS siteContext, OperationRequest operationRequest) {
-		return generateSiteRequestEnUSForSearchBasis(siteContext, operationRequest, null);
+	public SiteRequestEnUS generateSiteRequestEnUSForSearchBasis(User user, SiteContextEnUS siteContext, ServiceRequest serviceRequest) {
+		return generateSiteRequestEnUSForSearchBasis(user, siteContext, serviceRequest, null);
 	}
 
-	public SiteRequestEnUS generateSiteRequestEnUSForSearchBasis(SiteContextEnUS siteContext, OperationRequest operationRequest, JsonObject body) {
+	public SiteRequestEnUS generateSiteRequestEnUSForSearchBasis(User user, SiteContextEnUS siteContext, ServiceRequest serviceRequest, JsonObject body) {
 		Vertx vertx = siteContext.getVertx();
 		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 		siteRequest.setJsonObject(body);
 		siteRequest.setVertx(vertx);
+		siteRequest.setUser(user);
 		siteRequest.setSiteContext_(siteContext);
 		siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-		siteRequest.setOperationRequest(operationRequest);
+		siteRequest.setServiceRequest(serviceRequest);
 		siteRequest.initDeepSiteRequestEnUS(siteRequest);
 
 		return siteRequest;
 	}
 
-	public void userSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void userSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<SiteRequestEnUS>> eventHandler) {
 		try {
-			Long userKey = siteRequest.getUserKey();
-			if(userKey == null) {
-				eventHandler.handle(Future.succeededFuture());
+			JsonObject userJson = serviceRequest.getUser();
+			if(userJson == null) {
+				SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(null, siteContext, serviceRequest);
+				eventHandler.handle(Future.succeededFuture(siteRequest));
 			} else {
-				sqlConnectionSearchBasis(siteRequest, a -> {
+				User token = User.create(userJson);
+				siteContext.getOauth2AuthenticationProvider().authenticate(token.principal(), a -> {
 					if(a.succeeded()) {
-						sqlTransactionSearchBasis(siteRequest, b -> {
+						User user = a.result();
+						siteContext.getAuthorizationProvider().getAuthorizations(user, b -> {
 							if(b.succeeded()) {
-								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
-										.collecting(Collectors.toList())
-										.execute(Tuple.of(userKey)
-										, selectCAsync
-								-> {
-									if(selectCAsync.succeeded()) {
-										try {
-											Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-											SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-											if(userValues == null) {
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
+								JsonObject userAttributes = user.attributes();
+								JsonObject accessToken = userAttributes.getJsonObject("accessToken");
+								String userId = userAttributes.getString("sub");
+								SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSearchBasis(user, siteContext, serviceRequest);
+								sqlConnectionSearchBasis(siteRequest, c -> {
+									if(c.succeeded()) {
+										sqlTransactionSearchBasis(siteRequest, d -> {
+											if(d.succeeded()) {
+												SqlConnection sqlConnection = siteRequest.getSqlConnection();
+												sqlConnection.preparedQuery("SELECT pk FROM SiteUser WHERE userId=$1")
+														.collecting(Collectors.toList())
+														.execute(Tuple.of(userId)
+														, selectCAsync
+												-> {
+													if(selectCAsync.succeeded()) {
+														try {
+															Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
+															SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
+															if(userValues == null) {
+																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
 
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("userName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("userFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("userLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("userCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("userId", jsonPrincipal.getString("sub"));
-												jsonObject.put("userEmail", jsonPrincipal.getString("email"));
-												userSearchBasisDefine(siteRequest, jsonObject, false);
+																JsonObject jsonObject = new JsonObject();
+																jsonObject.put("userName", accessToken.getString("preferred_username"));
+																jsonObject.put("userFirstName", accessToken.getString("given_name"));
+																jsonObject.put("userLastName", accessToken.getString("family_name"));
+																jsonObject.put("userCompleteName", accessToken.getString("name"));
+																jsonObject.put("userId", accessToken.getString("sub"));
+																jsonObject.put("userEmail", accessToken.getString("email"));
+																userSearchBasisDefine(siteRequest, jsonObject, false);
 
-												SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-												siteRequest2.setTx(siteRequest.getTx());
-												siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-												siteRequest2.setJsonObject(jsonObject);
-												siteRequest2.setVertx(siteRequest.getVertx());
-												siteRequest2.setSiteContext_(siteContext);
-												siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-												siteRequest2.setUserId(siteRequest.getUserId());
-												siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+																SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+																siteRequest2.setTx(siteRequest.getTx());
+																siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+																siteRequest2.setJsonObject(jsonObject);
+																siteRequest2.setVertx(siteRequest.getVertx());
+																siteRequest2.setSiteContext_(siteContext);
+																siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+																siteRequest2.setUserId(siteRequest.getUserId());
+																siteRequest2.initDeepSiteRequestEnUS(siteRequest);
 
-												ApiRequest apiRequest = new ApiRequest();
-												apiRequest.setRows(1);
-												apiRequest.setNumFound(1L);
-												apiRequest.setNumPATCH(0L);
-												apiRequest.initDeepApiRequest(siteRequest2);
-												siteRequest2.setApiRequest_(apiRequest);
+																ApiRequest apiRequest = new ApiRequest();
+																apiRequest.setRows(1);
+																apiRequest.setNumFound(1L);
+																apiRequest.setNumPATCH(0L);
+																apiRequest.initDeepApiRequest(siteRequest2);
+																siteRequest2.setApiRequest_(apiRequest);
 
-												userService.createSiteUser(siteRequest2, c -> {
-													if(c.succeeded()) {
-														SiteUser siteUser = c.result();
-														userService.sqlPOSTSiteUser(siteUser, false, d -> {
-															if(d.succeeded()) {
-																userService.defineIndexSiteUser(siteUser, e -> {
+																userService.createSiteUser(siteRequest2, e -> {
 																	if(e.succeeded()) {
-																		siteRequest.setSiteUser(siteUser);
-																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
-																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
-																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
-																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
-																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
-																		siteRequest.setUserKey(siteUser.getPk());
-																		eventHandler.handle(Future.succeededFuture());
+																		SiteUser siteUser = e.result();
+																		userService.sqlPOSTSiteUser(siteUser, false, f -> {
+																			if(f.succeeded()) {
+																				userService.defineIndexSiteUser(siteUser, g -> {
+																					if(g.succeeded()) {
+																						siteRequest.setSiteUser(siteUser);
+																						siteRequest.setUserName(accessToken.getString("preferred_username"));
+																						siteRequest.setUserFirstName(accessToken.getString("given_name"));
+																						siteRequest.setUserLastName(accessToken.getString("family_name"));
+																						siteRequest.setUserEmail(accessToken.getString("email"));
+																						siteRequest.setUserId(accessToken.getString("sub"));
+																						siteRequest.setUserKey(siteUser.getPk());
+																						eventHandler.handle(Future.succeededFuture(siteRequest));
+																					} else {
+																						errorSearchBasis(siteRequest, null, g);
+																					}
+																				});
+																			} else {
+																				errorSearchBasis(siteRequest, null, f);
+																			}
+																		});
 																	} else {
-																		errorSearchBasis(siteRequest, eventHandler, e);
+																		errorSearchBasis(siteRequest, null, e);
 																	}
 																});
 															} else {
-																errorSearchBasis(siteRequest, eventHandler, d);
+																Long pkUser = userValues.getLong(0);
+																SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+																searchList.setQuery("*:*");
+																searchList.setStore(true);
+																searchList.setC(SiteUser.class);
+																searchList.addFilterQuery("pk_indexed_long:" + pkUser);
+																searchList.initDeepSearchList(siteRequest);
+																SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+
+																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+
+																JsonObject jsonObject = new JsonObject();
+																jsonObject.put("setUserName", accessToken.getString("preferred_username"));
+																jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
+																jsonObject.put("setUserLastName", accessToken.getString("family_name"));
+																jsonObject.put("setUserCompleteName", accessToken.getString("name"));
+																jsonObject.put("setUserId", accessToken.getString("sub"));
+																jsonObject.put("setUserEmail", accessToken.getString("email"));
+																Boolean define = userSearchBasisDefine(siteRequest, jsonObject, true);
+																if(define) {
+																	SiteUser siteUser;
+																	if(siteUser1 == null) {
+																		siteUser = new SiteUser();
+																		siteUser.setPk(pkUser);
+																		siteUser.setSiteRequest_(siteRequest);
+																	} else {
+																		siteUser = siteUser1;
+																	}
+
+																	SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+																	siteRequest2.setTx(siteRequest.getTx());
+																	siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+																	siteRequest2.setJsonObject(jsonObject);
+																	siteRequest2.setVertx(siteRequest.getVertx());
+																	siteRequest2.setSiteContext_(siteContext);
+																	siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+																	siteRequest2.setUserId(siteRequest.getUserId());
+																	siteRequest2.setUserKey(pkUser);
+																	siteRequest.setUserKey(pkUser);
+																	siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+																	siteUser.setSiteRequest_(siteRequest2);
+
+																	ApiRequest apiRequest = new ApiRequest();
+																	apiRequest.setRows(1);
+																	apiRequest.setNumFound(1L);
+																	apiRequest.setNumPATCH(0L);
+																	apiRequest.initDeepApiRequest(siteRequest2);
+																	siteRequest2.setApiRequest_(apiRequest);
+
+																	userService.sqlPATCHSiteUser(siteUser, false, e -> {
+																		if(e.succeeded()) {
+																			SiteUser siteUser2 = e.result();
+																			userService.defineIndexSiteUser(siteUser2, f -> {
+																				if(f.succeeded()) {
+																					siteRequest.setSiteUser(siteUser2);
+																					siteRequest.setUserName(siteUser2.getUserName());
+																					siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+																					siteRequest.setUserLastName(siteUser2.getUserLastName());
+																					siteRequest.setUserKey(siteUser2.getPk());
+																					eventHandler.handle(Future.succeededFuture(siteRequest));
+																				} else {
+																					errorSearchBasis(siteRequest, null, f);
+																				}
+																			});
+																		} else {
+																			errorSearchBasis(siteRequest, null, e);
+																		}
+																	});
+																} else {
+																	siteRequest.setSiteUser(siteUser1);
+																	siteRequest.setUserName(siteUser1.getUserName());
+																	siteRequest.setUserFirstName(siteUser1.getUserFirstName());
+																	siteRequest.setUserLastName(siteUser1.getUserLastName());
+																	siteRequest.setUserKey(siteUser1.getPk());
+																	sqlRollbackSearchBasis(siteRequest, e -> {
+																		if(e.succeeded()) {
+																			eventHandler.handle(Future.succeededFuture(siteRequest));
+																		} else {
+																			eventHandler.handle(Future.failedFuture(e.cause()));
+																			errorSearchBasis(siteRequest, null, e);
+																		}
+																	});
+																}
 															}
-														});
+														} catch(Exception ex) {
+															LOG.error(String.format("userSearchBasis failed. "), ex);
+															eventHandler.handle(Future.failedFuture(ex));
+														}
 													} else {
-														errorSearchBasis(siteRequest, eventHandler, c);
+														LOG.error(String.format("userSearchBasis failed. ", selectCAsync.cause()));
+														eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
 													}
 												});
 											} else {
-												Long pkUser = userValues.getLong(0);
-												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-												searchList.setQuery("*:*");
-												searchList.setStore(true);
-												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
-												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-												searchList.initDeepSearchList(siteRequest);
-												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
-
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("setUserName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("setUserFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("setUserLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("setUserCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("setUserId", jsonPrincipal.getString("sub"));
-												jsonObject.put("setUserEmail", jsonPrincipal.getString("email"));
-												Boolean define = userSearchBasisDefine(siteRequest, jsonObject, true);
-												if(define) {
-													SiteUser siteUser;
-													if(siteUser1 == null) {
-														siteUser = new SiteUser();
-														siteUser.setPk(pkUser);
-														siteUser.setSiteRequest_(siteRequest);
-													} else {
-														siteUser = siteUser1;
-													}
-
-													SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-													siteRequest2.setTx(siteRequest.getTx());
-													siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-													siteRequest2.setJsonObject(jsonObject);
-													siteRequest2.setVertx(siteRequest.getVertx());
-													siteRequest2.setSiteContext_(siteContext);
-													siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-													siteRequest2.setUserId(siteRequest.getUserId());
-													siteRequest2.setUserKey(siteRequest.getUserKey());
-													siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-													siteUser.setSiteRequest_(siteRequest2);
-
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(1);
-													apiRequest.setNumFound(1L);
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest2);
-													siteRequest2.setApiRequest_(apiRequest);
-
-													userService.sqlPATCHSiteUser(siteUser, false, d -> {
-														if(d.succeeded()) {
-															SiteUser siteUser2 = d.result();
-															userService.defineIndexSiteUser(siteUser2, e -> {
-																if(e.succeeded()) {
-																	siteRequest.setSiteUser(siteUser2);
-																	siteRequest.setUserName(siteUser2.getUserName());
-																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser2.getUserLastName());
-																	siteRequest.setUserId(siteUser2.getUserId());
-																	siteRequest.setUserKey(siteUser2.getPk());
-																	eventHandler.handle(Future.succeededFuture());
-																} else {
-																	errorSearchBasis(siteRequest, eventHandler, e);
-																}
-															});
-														} else {
-															errorSearchBasis(siteRequest, eventHandler, d);
-														}
-													});
-												} else {
-													siteRequest.setSiteUser(siteUser1);
-													siteRequest.setUserName(siteUser1.getUserName());
-													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-													siteRequest.setUserLastName(siteUser1.getUserLastName());
-													siteRequest.setUserId(siteUser1.getUserId());
-													siteRequest.setUserKey(siteUser1.getPk());
-													sqlRollbackSearchBasis(siteRequest, c -> {
-														if(c.succeeded()) {
-															eventHandler.handle(Future.succeededFuture());
-														} else {
-															eventHandler.handle(Future.failedFuture(c.cause()));
-															errorSearchBasis(siteRequest, eventHandler, c);
-														}
-													});
-												}
+												LOG.error(String.format("userSearchBasis failed. ", d.cause()));
+												eventHandler.handle(Future.failedFuture(d.cause()));
 											}
-										} catch(Exception e) {
-											LOGGER.error(String.format("userSearchBasis failed. ", e));
-											eventHandler.handle(Future.failedFuture(e));
-										}
+										});
 									} else {
-										LOGGER.error(String.format("userSearchBasis failed. ", selectCAsync.cause()));
-										eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
+										LOG.error(String.format("userSearchBasis failed. ", c.cause()));
+										eventHandler.handle(Future.failedFuture(c.cause()));
 									}
 								});
 							} else {
-								LOGGER.error(String.format("userSearchBasis failed. ", b.cause()));
+								LOG.error(String.format("userSearchBasis failed. ", b.cause()));
 								eventHandler.handle(Future.failedFuture(b.cause()));
 							}
 						});
 					} else {
-						LOGGER.error(String.format("userSearchBasis failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
+						siteContext.getOauth2AuthenticationProvider().refresh(token, b -> {
+							if(b.succeeded()) {
+								User user = b.result();
+								serviceRequest.setUser(user.principal());
+								userSearchBasis(serviceRequest, c -> {
+									if(c.succeeded()) {
+										SiteRequestEnUS siteRequest = c.result();
+										eventHandler.handle(Future.succeededFuture(siteRequest));
+									} else {
+										LOG.error(String.format("userSearchBasis failed. ", c.cause()));
+										eventHandler.handle(Future.failedFuture(c.cause()));
+									}
+								});
+							} else {
+								LOG.error(String.format("userSearchBasis failed. ", a.cause()));
+								eventHandler.handle(Future.failedFuture(a.cause()));
+							}
+						});
 					}
 				});
 			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("userSearchBasis failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("userSearchBasis failed. "), ex);
+			eventHandler.handle(Future.failedFuture(ex));
 		}
 	}
 
@@ -2537,7 +2579,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 		}
 	}
 
-	public void aSearchSearchBasisFq(String uri, String apiMethod, SearchList<SearchBasis> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String aSearchSearchBasisFq(String uri, String apiMethod, SearchList<SearchBasis> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -2546,9 +2588,9 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 				throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
 			String fq1 = fqs[0].equals("*") ? fqs[0] : SearchBasis.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[0]);
 			String fq2 = fqs[1].equals("*") ? fqs[1] : SearchBasis.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
-			searchList.addFilterQuery(varIndexed + ":[" + fq1 + " TO " + fq2 + "]");
+			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			searchList.addFilterQuery(varIndexed + ":" + SearchBasis.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed));
+			return varIndexed + ":" + SearchBasis.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed);
 		}
 	}
 
@@ -2573,11 +2615,11 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	public void aSearchSearchBasisUri(String uri, String apiMethod, SearchList<SearchBasis> searchList) {
 	}
 
-	public void varsSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<OperationResponse>>> eventHandler) {
+	public void varsSearchBasis(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<ServiceResponse>>> eventHandler) {
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
 				String paramName = paramRequest.getKey();
@@ -2595,13 +2637,13 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						}
 					}
 				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchSearchBasis failed. ", e));
+					LOG.error(String.format("aSearchSearchBasis failed. "), e);
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
 			eventHandler.handle(Future.succeededFuture());
 		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSearchBasis failed. ", e));
+			LOG.error(String.format("aSearchSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2611,14 +2653,14 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			SearchList<SearchBasis> searchList = aSearchSearchBasisList(siteRequest, populate, store, modify, uri, apiMethod);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSearchBasis failed. ", e));
+			LOG.error(String.format("aSearchSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
 	public SearchList<SearchBasis> aSearchSearchBasisList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
-		OperationRequest operationRequest = siteRequest.getOperationRequest();
-		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
+		ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+		String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
 		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
 		SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
 		searchList.setPopulate(populate);
@@ -2630,14 +2672,14 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			searchList.addFields(entityList);
 		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
-		String id = operationRequest.getParams().getJsonObject("path").getString("id");
+		String id = serviceRequest.getParams().getJsonObject("path").getString("id");
 		if(id != null && NumberUtils.isCreatable(id)) {
 			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
 		} else if(id != null) {
 			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
 		}
 
-		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+		serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 			String entityVar = null;
 			String valueIndexed = null;
 			String varIndexed = null;
@@ -2649,7 +2691,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
 
 			try {
-				if("facet.pivot".equals(paramName)) {
+				if(paramValuesObject != null && "facet.pivot".equals(paramName)) {
 					Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
 					boolean foundFacetPivot = mFacetPivot.find();
 					if(foundFacetPivot) {
@@ -2662,7 +2704,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						}
 						searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
 					}
-				} else {
+				} else if(paramValuesObject != null) {
 					for(Object paramObject : paramObjects) {
 						switch(paramName) {
 							case "q":
@@ -2673,10 +2715,21 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 								aSearchSearchBasisQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
 								break;
 							case "fq":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								varIndexed = SearchBasis.varIndexedSearchBasis(entityVar);
-								aSearchSearchBasisFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);
+								boolean foundFq = mFq.find();
+								if(foundFq) {
+									StringBuffer sb = new StringBuffer();
+									while(foundFq) {
+										entityVar = mFq.group(1).trim();
+										valueIndexed = mFq.group(2).trim();
+										varIndexed = SearchBasis.varIndexedSearchBasis(entityVar);
+										String entityFq = aSearchSearchBasisFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+										mFq.appendReplacement(sb, entityFq);
+										foundFq = mFq.find();
+									}
+									mFq.appendTail(sb);
+									searchList.addFilterQuery(sb.toString());
+								}
 								break;
 							case "sort":
 								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
@@ -2748,12 +2801,12 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 	public void aSearchSearchBasis2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SearchBasis> searchList) {
 	}
 
-	public void defineSearchBasis(SearchBasis o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void defineSearchBasis(SearchBasis o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery("SELECT * FROM SearchBasis WHERE pk=$1")
+			sqlConnection.preparedQuery("SELECT * FROM SearchBasis WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -2768,34 +2821,33 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 									try {
 										o.defineForClass(columnName, columnValue);
 									} catch(Exception e) {
-										LOGGER.error(String.format("defineSearchBasis failed. ", e));
-										LOGGER.error(e);
+										LOG.error(String.format("defineSearchBasis failed. "), e);
 									}
 								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
 					} catch(Exception e) {
-						LOGGER.error(String.format("defineSearchBasis failed. ", e));
+						LOG.error(String.format("defineSearchBasis failed. "), e);
 						eventHandler.handle(Future.failedFuture(e));
 					}
 				} else {
-					LOGGER.error(String.format("defineSearchBasis failed. ", defineAsync.cause()));
+					LOG.error(String.format("defineSearchBasis failed. ", defineAsync.cause()));
 					eventHandler.handle(Future.failedFuture(defineAsync.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("defineSearchBasis failed. ", e));
+			LOG.error(String.format("defineSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void attributeSearchBasis(SearchBasis o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void attributeSearchBasis(SearchBasis o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery("SELECT searchKey as pk1, 'searchKey' from SearchBasis where pk=$1")
+			sqlConnection.preparedQuery("SELECT searchKey as pk1, 'searchKey' from SearchBasis where pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, attributeAsync
@@ -2809,21 +2861,21 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						}
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("attributeSearchBasis failed. ", attributeAsync.cause()));
+						LOG.error(String.format("attributeSearchBasis failed. ", attributeAsync.cause()));
 						eventHandler.handle(Future.failedFuture(attributeAsync.cause()));
 					}
 				} catch(Exception e) {
-					LOGGER.error(String.format("attributeSearchBasis failed. ", e));
+					LOG.error(String.format("attributeSearchBasis failed. "), e);
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("attributeSearchBasis failed. ", e));
+			LOG.error(String.format("attributeSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void indexSearchBasis(SearchBasis o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void indexSearchBasis(SearchBasis o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -2833,12 +2885,12 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 			o.indexForClass();
 			eventHandler.handle(Future.succeededFuture());
 		} catch(Exception e) {
-			LOGGER.error(String.format("indexSearchBasis failed. ", e));
+			LOG.error(String.format("indexSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void refreshSearchBasis(SearchBasis o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void refreshSearchBasis(SearchBasis o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -2872,7 +2924,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 
 						if(o2 != null) {
 							TrafficSearchEnUSGenApiServiceImpl service = new TrafficSearchEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
 							apiRequest2.setNumFound(1l);
@@ -2887,7 +2939,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 								service.patchTrafficSearchFuture(o2, false, a -> {
 									if(a.succeeded()) {
 									} else {
-										LOGGER.info(String.format("TrafficSearch %s failed. ", pk2));
+										LOG.info(String.format("TrafficSearch %s failed. ", pk2));
 										eventHandler.handle(Future.failedFuture(a.cause()));
 									}
 								})
@@ -2901,13 +2953,13 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 						SearchBasisEnUSApiServiceImpl service = new SearchBasisEnUSApiServiceImpl(siteRequest.getSiteContext_());
 						List<Future> futures2 = new ArrayList<>();
 						for(SearchBasis o2 : searchList.getList()) {
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSearchBasis(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							o2.setSiteRequest_(siteRequest2);
 							futures2.add(
 								service.patchSearchBasisFuture(o2, false, b -> {
 									if(b.succeeded()) {
 									} else {
-										LOGGER.info(String.format("SearchBasis %s failed. ", o2.getPk()));
+										LOG.info(String.format("SearchBasis %s failed. ", o2.getPk()));
 										eventHandler.handle(Future.failedFuture(b.cause()));
 									}
 								})
@@ -2918,12 +2970,12 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 							if(b.succeeded()) {
 								eventHandler.handle(Future.succeededFuture());
 							} else {
-								LOGGER.error("Refresh relations failed. ", b.cause());
+								LOG.error("Refresh relations failed. ", b.cause());
 								errorSearchBasis(siteRequest, eventHandler, b);
 							}
 						});
 					} else {
-						LOGGER.error("Refresh relations failed. ", a.cause());
+						LOG.error("Refresh relations failed. ", a.cause());
 						errorSearchBasis(siteRequest, eventHandler, a);
 					}
 				});
@@ -2931,7 +2983,7 @@ public class SearchBasisEnUSGenApiServiceImpl implements SearchBasisEnUSGenApiSe
 				eventHandler.handle(Future.succeededFuture());
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("refreshSearchBasis failed. ", e));
+			LOG.error(String.format("refreshSearchBasis failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}

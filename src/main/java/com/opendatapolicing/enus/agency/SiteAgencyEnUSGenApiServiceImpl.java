@@ -47,12 +47,8 @@ import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import io.vertx.core.MultiMap;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
-import io.vertx.ext.web.api.validation.ParameterTypeValidator;
-import io.vertx.ext.web.api.validation.ValidationException;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.SqlConnection;
@@ -67,13 +63,13 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.web.api.OperationResponse;
 import io.vertx.core.CompositeFuture;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.net.URLDecoder;
@@ -100,7 +96,7 @@ import com.opendatapolicing.enus.writer.AllWriter;
  **/
 public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiService {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteAgencyEnUSGenApiServiceImpl.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SiteAgencyEnUSGenApiServiceImpl.class);
 
 	protected static final String SERVICE_ADDRESS = "SiteAgencyEnUSApiServiceImpl";
 
@@ -113,32 +109,32 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// PUTImport //
 
 	@Override
-	public void putimportSiteAgency(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/agency/import");
-		siteRequest.setRequestMethod("PUTImport");
-		try {
-			LOGGER.info(String.format("putimportSiteAgency started. "));
+	public void putimportSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putimportSiteAgency started. "));
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/agency/import");
+					siteRequest.setRequestMethod("PUTImport");
 
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteAdmin");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putimportSiteAgencyResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -160,49 +156,49 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 														if(e.succeeded()) {
 															putimportSiteAgencyResponse(siteRequest, f -> {
 																if(e.succeeded()) {
-																	LOGGER.info(String.format("putimportSiteAgency succeeded. "));
+																	LOG.info(String.format("putimportSiteAgency succeeded. "));
 																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
 																} else {
-																	LOGGER.error(String.format("putimportSiteAgency failed. ", f.cause()));
+																	LOG.error(String.format("putimportSiteAgency failed. ", f.cause()));
 																	errorSiteAgency(siteRequest, null, f);
 																}
 															});
 														} else {
-															LOGGER.error(String.format("putimportSiteAgency failed. ", e.cause()));
+															LOG.error(String.format("putimportSiteAgency failed. ", e.cause()));
 															errorSiteAgency(siteRequest, null, e);
 														}
 													});
 												} else {
-													LOGGER.error(String.format("putimportSiteAgency failed. ", d.cause()));
+													LOG.error(String.format("putimportSiteAgency failed. ", d.cause()));
 													errorSiteAgency(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putimportSiteAgency failed. ", ex));
+											LOG.error(String.format("putimportSiteAgency failed. ", ex));
 											errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putimportSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("putimportSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putimportSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putimportSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putimportSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTImportSiteAgency(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTImportSiteAgency(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
@@ -213,7 +209,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 
 				json.put("created", json.getValue("created"));
 
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteContext, siteRequest.getOperationRequest(), json);
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), json);
 				siteRequest2.setApiRequest_(apiRequest);
 				siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
@@ -242,7 +238,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 							patchSiteAgencyFuture(o, true, a -> {
 								if(a.succeeded()) {
 								} else {
-									LOGGER.error(String.format("listPUTImportSiteAgency failed. ", a.cause()));
+									LOG.error(String.format("listPUTImportSiteAgency failed. ", a.cause()));
 									errorSiteAgency(siteRequest2, eventHandler, a);
 								}
 							})
@@ -253,7 +249,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						postSiteAgencyFuture(siteRequest2, true, a -> {
 							if(a.succeeded()) {
 							} else {
-								LOGGER.error(String.format("listPUTImportSiteAgency failed. ", a.cause()));
+								LOG.error(String.format("listPUTImportSiteAgency failed. ", a.cause()));
 								errorSiteAgency(siteRequest2, eventHandler, a);
 							}
 						})
@@ -265,37 +261,37 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTImportSiteAgency(siteRequest, eventHandler);
 				} else {
-					LOGGER.error(String.format("listPUTImportSiteAgency failed. ", a.cause()));
+					LOG.error(String.format("listPUTImportSiteAgency failed. ", a.cause()));
 					errorSiteAgency(apiRequest.getSiteRequest_(), eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTImportSiteAgency failed. ", ex));
+			LOG.error(String.format("listPUTImportSiteAgency failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
 
-	public void putimportSiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putimportSiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTImportSiteAgency(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putimportSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("putimportSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("putimportSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTImportSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTImportSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTImportSiteAgency failed. ", e));
+			LOG.error(String.format("response200PUTImportSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -303,32 +299,32 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// PUTMerge //
 
 	@Override
-	public void putmergeSiteAgency(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/agency/merge");
-		siteRequest.setRequestMethod("PUTMerge");
-		try {
-			LOGGER.info(String.format("putmergeSiteAgency started. "));
+	public void putmergeSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putmergeSiteAgency started. "));
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/agency/merge");
+					siteRequest.setRequestMethod("PUTMerge");
 
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteAdmin");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putmergeSiteAgencyResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -350,49 +346,49 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 														if(e.succeeded()) {
 															putmergeSiteAgencyResponse(siteRequest, f -> {
 																if(e.succeeded()) {
-																	LOGGER.info(String.format("putmergeSiteAgency succeeded. "));
+																	LOG.info(String.format("putmergeSiteAgency succeeded. "));
 																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
 																} else {
-																	LOGGER.error(String.format("putmergeSiteAgency failed. ", f.cause()));
+																	LOG.error(String.format("putmergeSiteAgency failed. ", f.cause()));
 																	errorSiteAgency(siteRequest, null, f);
 																}
 															});
 														} else {
-															LOGGER.error(String.format("putmergeSiteAgency failed. ", e.cause()));
+															LOG.error(String.format("putmergeSiteAgency failed. ", e.cause()));
 															errorSiteAgency(siteRequest, null, e);
 														}
 													});
 												} else {
-													LOGGER.error(String.format("putmergeSiteAgency failed. ", d.cause()));
+													LOG.error(String.format("putmergeSiteAgency failed. ", d.cause()));
 													errorSiteAgency(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putmergeSiteAgency failed. ", ex));
+											LOG.error(String.format("putmergeSiteAgency failed. ", ex));
 											errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putmergeSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("putmergeSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putmergeSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putmergeSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putmergeSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTMergeSiteAgency(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTMergeSiteAgency(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
@@ -401,7 +397,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 
 				json.put("inheritPk", json.getValue("pk"));
 
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteContext, siteRequest.getOperationRequest(), json);
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), json);
 				siteRequest2.setApiRequest_(apiRequest);
 				siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
@@ -430,7 +426,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 							patchSiteAgencyFuture(o, false, a -> {
 								if(a.succeeded()) {
 								} else {
-									LOGGER.error(String.format("listPUTMergeSiteAgency failed. ", a.cause()));
+									LOG.error(String.format("listPUTMergeSiteAgency failed. ", a.cause()));
 									errorSiteAgency(siteRequest2, eventHandler, a);
 								}
 							})
@@ -441,7 +437,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						postSiteAgencyFuture(siteRequest2, false, a -> {
 							if(a.succeeded()) {
 							} else {
-								LOGGER.error(String.format("listPUTMergeSiteAgency failed. ", a.cause()));
+								LOG.error(String.format("listPUTMergeSiteAgency failed. ", a.cause()));
 								errorSiteAgency(siteRequest2, eventHandler, a);
 							}
 						})
@@ -453,37 +449,37 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTMergeSiteAgency(siteRequest, eventHandler);
 				} else {
-					LOGGER.error(String.format("listPUTMergeSiteAgency failed. ", a.cause()));
+					LOG.error(String.format("listPUTMergeSiteAgency failed. ", a.cause()));
 					errorSiteAgency(apiRequest.getSiteRequest_(), eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTMergeSiteAgency failed. ", ex));
+			LOG.error(String.format("listPUTMergeSiteAgency failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
 
-	public void putmergeSiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putmergeSiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTMergeSiteAgency(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putmergeSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("putmergeSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("putmergeSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTMergeSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTMergeSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTMergeSiteAgency failed. ", e));
+			LOG.error(String.format("response200PUTMergeSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -491,32 +487,32 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// PUTCopy //
 
 	@Override
-	public void putcopySiteAgency(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/agency/copy");
-		siteRequest.setRequestMethod("PUTCopy");
-		try {
-			LOGGER.info(String.format("putcopySiteAgency started. "));
+	public void putcopySiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putcopySiteAgency started. "));
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/agency/copy");
+					siteRequest.setRequestMethod("PUTCopy");
 
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteAdmin");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putcopySiteAgencyResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -539,64 +535,64 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 															if(e.succeeded()) {
 																putcopySiteAgencyResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOGGER.info(String.format("putcopySiteAgency succeeded. "));
+																		LOG.info(String.format("putcopySiteAgency succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
-																		LOGGER.error(String.format("putcopySiteAgency failed. ", f.cause()));
+																		LOG.error(String.format("putcopySiteAgency failed. ", f.cause()));
 																		errorSiteAgency(siteRequest, null, f);
 																	}
 																});
 															} else {
-																LOGGER.error(String.format("putcopySiteAgency failed. ", e.cause()));
+																LOG.error(String.format("putcopySiteAgency failed. ", e.cause()));
 																errorSiteAgency(siteRequest, null, e);
 															}
 														});
 													} catch(Exception ex) {
-														LOGGER.error(String.format("putcopySiteAgency failed. ", ex));
+														LOG.error(String.format("putcopySiteAgency failed. ", ex));
 														errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 													}
 												} else {
-													LOGGER.error(String.format("putcopySiteAgency failed. ", d.cause()));
+													LOG.error(String.format("putcopySiteAgency failed. ", d.cause()));
 													errorSiteAgency(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putcopySiteAgency failed. ", ex));
+											LOG.error(String.format("putcopySiteAgency failed. ", ex));
 											errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putcopySiteAgency failed. ", c.cause()));
+								LOG.error(String.format("putcopySiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putcopySiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putcopySiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putcopySiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopySiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTCopySiteAgency(ApiRequest apiRequest, SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTCopySiteAgency(ApiRequest apiRequest, SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 		listSiteAgency.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
 				putcopySiteAgencyFuture(siteRequest2, JsonObject.mapFrom(o), a -> {
 					if(a.succeeded()) {
 					} else {
-						LOGGER.error(String.format("listPUTCopySiteAgency failed. ", a.cause()));
+						LOG.error(String.format("listPUTCopySiteAgency failed. ", a.cause()));
 						errorSiteAgency(siteRequest, eventHandler, a);
 					}
 				})
@@ -611,7 +607,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					response200PUTCopySiteAgency(siteRequest, eventHandler);
 				}
 			} else {
-				LOGGER.error(String.format("listPUTCopySiteAgency failed. ", a.cause()));
+				LOG.error(String.format("listPUTCopySiteAgency failed. ", a.cause()));
 				errorSiteAgency(listSiteAgency.getSiteRequest_(), eventHandler, a);
 			}
 		});
@@ -653,44 +649,44 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 													eventHandler.handle(Future.succeededFuture(siteAgency));
 													promise.complete(siteAgency);
 												} else {
-													LOGGER.error(String.format("putcopySiteAgencyFuture failed. ", e.cause()));
+													LOG.error(String.format("putcopySiteAgencyFuture failed. ", e.cause()));
 													eventHandler.handle(Future.failedFuture(e.cause()));
 												}
 											});
 										} else {
-											LOGGER.error(String.format("putcopySiteAgencyFuture failed. ", d.cause()));
+											LOG.error(String.format("putcopySiteAgencyFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("putcopySiteAgencyFuture failed. ", c.cause()));
+									LOG.error(String.format("putcopySiteAgencyFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("putcopySiteAgencyFuture failed. ", b.cause()));
+							LOG.error(String.format("putcopySiteAgencyFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("putcopySiteAgencyFuture failed. ", a.cause()));
+					LOG.error(String.format("putcopySiteAgencyFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("putcopySiteAgencyFuture failed. ", e));
+			LOG.error(String.format("putcopySiteAgencyFuture failed. "), e);
 			errorSiteAgency(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
 	}
 
-	public void sqlPUTCopySiteAgency(SiteAgency o, JsonObject jsonObject, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPUTCopySiteAgency(SiteAgency o, JsonObject jsonObject, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE SiteAgency SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -787,37 +783,37 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
-					LOGGER.error(String.format("sqlPUTCopySiteAgency failed. ", a.cause()));
+					LOG.error(String.format("sqlPUTCopySiteAgency failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPUTCopySiteAgency failed. ", e));
+			LOG.error(String.format("sqlPUTCopySiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void putcopySiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putcopySiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTCopySiteAgency(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putcopySiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("putcopySiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopySiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("putcopySiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTCopySiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTCopySiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTCopySiteAgency failed. ", e));
+			LOG.error(String.format("response200PUTCopySiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -825,32 +821,32 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// POST //
 
 	@Override
-	public void postSiteAgency(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/agency");
-		siteRequest.setRequestMethod("POST");
-		try {
-			LOGGER.info(String.format("postSiteAgency started. "));
+	public void postSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("postSiteAgency started. "));
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/agency");
+					siteRequest.setRequestMethod("POST");
 
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteAdmin");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						ApiRequest apiRequest = new ApiRequest();
 						apiRequest.setRows(1);
 						apiRequest.setNumFound(1L);
@@ -865,27 +861,27 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								postSiteAgencyResponse(siteAgency, d -> {
 										if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("postSiteAgency succeeded. "));
+										LOG.info(String.format("postSiteAgency succeeded. "));
 									} else {
-										LOGGER.error(String.format("postSiteAgency failed. ", d.cause()));
+										LOG.error(String.format("postSiteAgency failed. ", d.cause()));
 										errorSiteAgency(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("postSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("postSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("postSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("postSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("postSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("postSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
@@ -912,44 +908,44 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 													eventHandler.handle(Future.succeededFuture(siteAgency));
 													promise.complete(siteAgency);
 												} else {
-													LOGGER.error(String.format("postSiteAgencyFuture failed. ", e.cause()));
+													LOG.error(String.format("postSiteAgencyFuture failed. ", e.cause()));
 													eventHandler.handle(Future.failedFuture(e.cause()));
 												}
 											});
 										} else {
-											LOGGER.error(String.format("postSiteAgencyFuture failed. ", d.cause()));
+											LOG.error(String.format("postSiteAgencyFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("postSiteAgencyFuture failed. ", c.cause()));
+									LOG.error(String.format("postSiteAgencyFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("postSiteAgencyFuture failed. ", b.cause()));
+							LOG.error(String.format("postSiteAgencyFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("postSiteAgencyFuture failed. ", a.cause()));
+					LOG.error(String.format("postSiteAgencyFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("postSiteAgencyFuture failed. ", e));
+			LOG.error(String.format("postSiteAgencyFuture failed. "), e);
 			errorSiteAgency(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
 	}
 
-	public void sqlPOSTSiteAgency(SiteAgency o, Boolean inheritPk, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPOSTSiteAgency(SiteAgency o, Boolean inheritPk, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE SiteAgency SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -1079,7 +1075,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			bParams.add(pk);
 			num++;
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(bSql.toString())
+					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
 					-> {
@@ -1094,39 +1090,39 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
-					LOGGER.error(String.format("sqlPOSTSiteAgency failed. ", a.cause()));
+					LOG.error(String.format("sqlPOSTSiteAgency failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPOSTSiteAgency failed. ", e));
+			LOG.error(String.format("sqlPOSTSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void postSiteAgencyResponse(SiteAgency siteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void postSiteAgencyResponse(SiteAgency siteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = siteAgency.getSiteRequest_();
 		try {
 			response200POSTSiteAgency(siteAgency, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("postSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("postSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("postSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("postSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200POSTSiteAgency(SiteAgency o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200POSTSiteAgency(SiteAgency o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			JsonObject json = JsonObject.mapFrom(o);
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200POSTSiteAgency failed. ", e));
+			LOG.error(String.format("response200POSTSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1134,32 +1130,32 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// PATCH //
 
 	@Override
-	public void patchSiteAgency(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/agency");
-		siteRequest.setRequestMethod("PATCH");
-		try {
-			LOGGER.info(String.format("patchSiteAgency started. "));
+	public void patchSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("patchSiteAgency started. "));
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/agency");
+					siteRequest.setRequestMethod("PATCH");
 
-			List<String> roles = Arrays.asList("SiteAdmin");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteAdmin");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						patchSiteAgencyResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -1177,7 +1173,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
 															) {
 														String message = String.format("roles required: " + String.join(", ", roles2));
-														LOGGER.error(message);
+														LOG.error(message);
 														errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(message));
 													} else {
 
@@ -1204,58 +1200,58 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 																if(e.succeeded()) {
 																	patchSiteAgencyResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOGGER.info(String.format("patchSiteAgency succeeded. "));
+																			LOG.info(String.format("patchSiteAgency succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
-																			LOGGER.error(String.format("patchSiteAgency failed. ", f.cause()));
+																			LOG.error(String.format("patchSiteAgency failed. ", f.cause()));
 																			errorSiteAgency(siteRequest, null, f);
 																		}
 																	});
 																} else {
-																	LOGGER.error(String.format("patchSiteAgency failed. ", e.cause()));
+																	LOG.error(String.format("patchSiteAgency failed. ", e.cause()));
 																	errorSiteAgency(siteRequest, null, e);
 																}
 															});
 														} catch(Exception ex) {
-															LOGGER.error(String.format("patchSiteAgency failed. ", ex));
+															LOG.error(String.format("patchSiteAgency failed. ", ex));
 															errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
 										} else {
-													LOGGER.error(String.format("patchSiteAgency failed. ", d.cause()));
+													LOG.error(String.format("patchSiteAgency failed. ", d.cause()));
 													errorSiteAgency(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("patchSiteAgency failed. ", ex));
+											LOG.error(String.format("patchSiteAgency failed. ", ex));
 											errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("patchSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("patchSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("patchSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("patchSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("patchSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPATCHSiteAgency(ApiRequest apiRequest, SearchList<SiteAgency> listSiteAgency, String dt, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPATCHSiteAgency(ApiRequest apiRequest, SearchList<SiteAgency> listSiteAgency, String dt, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 		listSiteAgency.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
@@ -1275,7 +1271,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					response200PATCHSiteAgency(siteRequest, eventHandler);
 				}
 			} else {
-				LOGGER.error(String.format("listPATCHSiteAgency failed. ", a.cause()));
+				LOG.error(String.format("listPATCHSiteAgency failed. ", a.cause()));
 				errorSiteAgency(listSiteAgency.getSiteRequest_(), eventHandler, a);
 			}
 		});
@@ -1309,27 +1305,27 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 											eventHandler.handle(Future.succeededFuture(siteAgency));
 											promise.complete(siteAgency);
 										} else {
-											LOGGER.error(String.format("patchSiteAgencyFuture failed. ", d.cause()));
+											LOG.error(String.format("patchSiteAgencyFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("patchSiteAgencyFuture failed. ", c.cause()));
+									LOG.error(String.format("patchSiteAgencyFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("patchSiteAgencyFuture failed. ", b.cause()));
+							LOG.error(String.format("patchSiteAgencyFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("patchSiteAgencyFuture failed. ", a.cause()));
+					LOG.error(String.format("patchSiteAgencyFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("patchSiteAgencyFuture failed. ", e));
+			LOG.error(String.format("patchSiteAgencyFuture failed. "), e);
 			errorSiteAgency(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
@@ -1341,7 +1337,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE SiteAgency SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -1481,7 +1477,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				bParams.add(pk);
 				num++;
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(bSql.toString())
+					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
 					-> {
@@ -1499,37 +1495,37 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					o3.setPk(pk);
 					eventHandler.handle(Future.succeededFuture(o3));
 				} else {
-					LOGGER.error(String.format("sqlPATCHSiteAgency failed. ", a.cause()));
+					LOG.error(String.format("sqlPATCHSiteAgency failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPATCHSiteAgency failed. ", e));
+			LOG.error(String.format("sqlPATCHSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void patchSiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void patchSiteAgencyResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PATCHSiteAgency(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("patchSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("patchSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("patchSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("patchSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PATCHSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PATCHSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PATCHSiteAgency failed. ", e));
+			LOG.error(String.format("response200PATCHSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1537,69 +1533,69 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// GET //
 
 	@Override
-	public void getSiteAgency(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/agency/{id}");
-		siteRequest.setRequestMethod("GET");
-		try {
-			{
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void getSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/agency/{id}");
+					siteRequest.setRequestMethod("GET");
+					{
 						aSearchSiteAgency(siteRequest, false, true, false, "/api/agency/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								getSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("getSiteAgency succeeded. "));
+										LOG.info(String.format("getSiteAgency succeeded. "));
 									} else {
-										LOGGER.error(String.format("getSiteAgency failed. ", d.cause()));
+										LOG.error(String.format("getSiteAgency failed. ", d.cause()));
 										errorSiteAgency(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("getSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("getSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("getSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("getSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("getSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("getSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void getSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void getSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 		try {
 			response200GETSiteAgency(listSiteAgency, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("getSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("getSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("getSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("getSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200GETSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200GETSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 			SolrDocumentList solrDocuments = listSiteAgency.getSolrDocumentList();
 
 			JsonObject json = JsonObject.mapFrom(listSiteAgency.getList().stream().findFirst().orElse(null));
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200GETSiteAgency failed. ", e));
+			LOG.error(String.format("response200GETSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1607,61 +1603,61 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// Search //
 
 	@Override
-	public void searchSiteAgency(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/agency");
-		siteRequest.setRequestMethod("Search");
-		try {
-			{
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void searchSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/agency");
+					siteRequest.setRequestMethod("Search");
+					{
 						aSearchSiteAgency(siteRequest, false, true, false, "/api/agency", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								searchSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchSiteAgency succeeded. "));
+										LOG.info(String.format("searchSiteAgency succeeded. "));
 									} else {
-										LOGGER.error(String.format("searchSiteAgency failed. ", d.cause()));
+										LOG.error(String.format("searchSiteAgency failed. ", d.cause()));
 										errorSiteAgency(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("searchSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("searchSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("searchSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("searchSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("searchSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void searchSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 		try {
 			response200SearchSiteAgency(listSiteAgency, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("searchSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("searchSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("searchSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200SearchSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200SearchSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 			QueryResponse responseSearch = listSiteAgency.getQueryResponse();
@@ -1768,9 +1764,9 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchSiteAgency failed. ", e));
+			LOG.error(String.format("response200SearchSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1815,61 +1811,61 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// AdminSearch //
 
 	@Override
-	public void adminsearchSiteAgency(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/admin/agency");
-		siteRequest.setRequestMethod("AdminSearch");
-		try {
-			{
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void adminsearchSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/admin/agency");
+					siteRequest.setRequestMethod("AdminSearch");
+					{
 						aSearchSiteAgency(siteRequest, false, true, false, "/api/admin/agency", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								adminsearchSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("adminsearchSiteAgency succeeded. "));
+										LOG.info(String.format("adminsearchSiteAgency succeeded. "));
 									} else {
-										LOGGER.error(String.format("adminsearchSiteAgency failed. ", d.cause()));
+										LOG.error(String.format("adminsearchSiteAgency failed. ", d.cause()));
 										errorSiteAgency(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("adminsearchSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("adminsearchSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("adminsearchSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("adminsearchSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("adminsearchSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void adminsearchSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void adminsearchSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 		try {
 			response200AdminSearchSiteAgency(listSiteAgency, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("adminsearchSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("adminsearchSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("adminsearchSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200AdminSearchSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200AdminSearchSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 			QueryResponse responseSearch = listSiteAgency.getQueryResponse();
@@ -1976,9 +1972,9 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200AdminSearchSiteAgency failed. ", e));
+			LOG.error(String.format("response200AdminSearchSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2023,52 +2019,52 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	// SearchPage //
 
 	@Override
-	public void searchpageSiteAgencyId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		searchpageSiteAgency(operationRequest, eventHandler);
+	public void searchpageSiteAgencyId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		searchpageSiteAgency(serviceRequest, eventHandler);
 	}
 
 	@Override
-	public void searchpageSiteAgency(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest);
-		siteRequest.setRequestUri("/agency");
-		siteRequest.setRequestMethod("SearchPage");
-		try {
-			{
-				userSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void searchpageSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userSiteAgency(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/agency");
+					siteRequest.setRequestMethod("SearchPage");
+					{
 						aSearchSiteAgency(siteRequest, false, true, false, "/agency", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<SiteAgency> listSiteAgency = c.result();
 								searchpageSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchpageSiteAgency succeeded. "));
+										LOG.info(String.format("searchpageSiteAgency succeeded. "));
 									} else {
-										LOGGER.error(String.format("searchpageSiteAgency failed. ", d.cause()));
+										LOG.error(String.format("searchpageSiteAgency failed. ", d.cause()));
 										errorSiteAgency(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("searchpageSiteAgency failed. ", c.cause()));
+								LOG.error(String.format("searchpageSiteAgency failed. ", c.cause()));
 								errorSiteAgency(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("searchpageSiteAgency failed. ", b.cause()));
-						errorSiteAgency(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("searchpageSiteAgency failed. ", ex));
+					errorSiteAgency(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("searchpageSiteAgency failed. ", b.cause()));
+				errorSiteAgency(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSiteAgency failed. ", ex));
-			errorSiteAgency(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
 	public void searchpageSiteAgencyPageInit(SiteAgencyPage page, SearchList<SiteAgency> listSiteAgency) {
 	}
-	public void searchpageSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchpageSiteAgencyResponse(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 		try {
 			Buffer buffer = Buffer.buffer();
@@ -2078,16 +2074,16 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("searchpageSiteAgencyResponse failed. ", a.cause()));
+					LOG.error(String.format("searchpageSiteAgencyResponse failed. ", a.cause()));
 					errorSiteAgency(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageSiteAgencyResponse failed. ", ex));
+			LOG.error(String.format("searchpageSiteAgencyResponse failed. ", ex));
 			errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200SearchPageSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200SearchPageSiteAgency(SearchList<SiteAgency> listSiteAgency, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 			Buffer buffer = Buffer.buffer();
@@ -2108,9 +2104,9 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			searchpageSiteAgencyPageInit(page, listSiteAgency);
 			page.initDeepSiteAgencyPage(siteRequest);
 			page.html();
-			eventHandler.handle(Future.succeededFuture(new OperationResponse(200, "OK", buffer, requestHeaders)));
+			eventHandler.handle(Future.succeededFuture(new ServiceResponse(200, "OK", buffer, requestHeaders)));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchPageSiteAgency failed. ", e));
+			LOG.error(String.format("response200SearchPageSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2135,32 +2131,32 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 														eventHandler.handle(Future.succeededFuture(siteAgency));
 														promise.complete(siteAgency);
 													} else {
-														LOGGER.error(String.format("refreshSiteAgency failed. ", h.cause()));
+														LOG.error(String.format("refreshSiteAgency failed. ", h.cause()));
 														errorSiteAgency(siteRequest, null, h);
 													}
 												});
 											} else {
-												LOGGER.error(String.format("defineIndexSiteAgency failed. ", g.cause()));
+												LOG.error(String.format("defineIndexSiteAgency failed. ", g.cause()));
 												errorSiteAgency(siteRequest, null, g);
 											}
 										});
 									} else {
-										LOGGER.error(String.format("defineIndexSiteAgency failed. ", f.cause()));
+										LOG.error(String.format("defineIndexSiteAgency failed. ", f.cause()));
 										errorSiteAgency(siteRequest, null, f);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("defineIndexSiteAgency failed. ", e.cause()));
+								LOG.error(String.format("defineIndexSiteAgency failed. ", e.cause()));
 								errorSiteAgency(siteRequest, null, e);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("defineIndexSiteAgency failed. ", d.cause()));
+						LOG.error(String.format("defineIndexSiteAgency failed. ", d.cause()));
 						errorSiteAgency(siteRequest, null, d);
 					}
 				});
 			} else {
-				LOGGER.error(String.format("defineIndexSiteAgency failed. ", c.cause()));
+				LOG.error(String.format("defineIndexSiteAgency failed. ", c.cause()));
 				errorSiteAgency(siteRequest, null, c);
 			}
 		});
@@ -2169,12 +2165,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 
 	public void createSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<SiteAgency>> eventHandler) {
 		try {
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery("INSERT INTO SiteAgency(created, userKey) VALUES($1, $2) RETURNING pk")
+			sqlConnection.preparedQuery("INSERT INTO SiteAgency(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
@@ -2187,75 +2183,81 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					o.setSiteRequest_(siteRequest);
 					eventHandler.handle(Future.succeededFuture(o));
 				} else {
-					LOGGER.error(String.format("createSiteAgency failed. ", createAsync.cause()));
+					LOG.error(String.format("createSiteAgency failed. ", createAsync.cause()));
 					eventHandler.handle(Future.failedFuture(createAsync.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("createSiteAgency failed. ", e));
+			LOG.error(String.format("createSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void errorSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler, AsyncResult<?> resultAsync) {
+	public void errorSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler, AsyncResult<?> resultAsync) {
 		Throwable e = resultAsync.cause();
-		JsonObject json = new JsonObject()
-				.put("error", new JsonObject()
-				.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null))
-				.put("userName", siteRequest.getUserName())
-				.put("userFullName", siteRequest.getUserFullName())
-				.put("requestUri", siteRequest.getRequestUri())
-				.put("requestMethod", siteRequest.getRequestMethod())
-				.put("params", Optional.ofNullable(siteRequest.getOperationRequest()).map(o -> o.getParams()).orElse(null))
-				);
-		ExceptionUtils.printRootCauseStackTrace(e);
-		OperationResponse responseOperation = new OperationResponse(400, "BAD REQUEST", 
+		JsonObject json = new JsonObject();
+		JsonObject jsonError = new JsonObject();
+		json.put("error", jsonError);
+		jsonError.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null));
+		if(siteRequest != null) {
+			jsonError.put("userName", siteRequest.getUserName());
+			jsonError.put("userFullName", siteRequest.getUserFullName());
+			jsonError.put("requestUri", siteRequest.getRequestUri());
+			jsonError.put("requestMethod", siteRequest.getRequestMethod());
+			jsonError.put("params", Optional.ofNullable(siteRequest.getServiceRequest()).map(o -> o.getParams()).orElse(null));
+		}
+		LOG.error("error: ", e);
+		ServiceResponse responseOperation = new ServiceResponse(400, "BAD REQUEST", 
 				Buffer.buffer().appendString(json.encodePrettily())
 				, MultiMap.caseInsensitiveMultiMap().add("Content-Type", "application/json")
 		);
-		SiteConfig siteConfig = siteRequest.getSiteConfig_();
-		SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-		MailClient mailClient = siteContext.getMailClient();
-		MailMessage message = new MailMessage();
-		message.setFrom(siteConfig.getEmailFrom());
-		message.setTo(siteConfig.getEmailAdmin());
-		if(e != null)
-			message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-		message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-		WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-		workerExecutor.executeBlocking(
-			blockingCodeHandler -> {
-				mailClient.sendMail(message, result -> {
-					if (result.succeeded()) {
-						LOGGER.info(result.result());
-					} else {
-						LOGGER.error(result.cause());
-					}
-				});
-			}, resultHandler -> {
-			}
-		);
-		sqlRollbackSiteAgency(siteRequest, a -> {
-			if(a.succeeded()) {
-				LOGGER.info(String.format("sql rollback. "));
-				sqlCloseSiteAgency(siteRequest, b -> {
-					if(b.succeeded()) {
-						LOGGER.info(String.format("sql close. "));
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					} else {
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					}
-				});
-			} else {
-				if(eventHandler != null)
-					eventHandler.handle(Future.succeededFuture(responseOperation));
-			}
-		});
+		if(siteRequest != null) {
+			SiteConfig siteConfig = siteRequest.getSiteConfig_();
+			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
+			MailClient mailClient = siteContext.getMailClient();
+			MailMessage message = new MailMessage();
+			message.setFrom(siteConfig.getEmailFrom());
+			message.setTo(siteConfig.getEmailAdmin());
+			if(e != null && siteConfig.getEmailFrom() != null)
+				message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+			workerExecutor.executeBlocking(
+				blockingCodeHandler -> {
+					mailClient.sendMail(message, result -> {
+						if (result.succeeded()) {
+							LOG.info(result.result().toString());
+						} else {
+							LOG.error("sendMail failed. ", result.cause());
+						}
+					});
+				}, resultHandler -> {
+				}
+			);
+			sqlRollbackSiteAgency(siteRequest, a -> {
+				if(a.succeeded()) {
+					LOG.info(String.format("sql rollback. "));
+					sqlCloseSiteAgency(siteRequest, b -> {
+						if(b.succeeded()) {
+							LOG.info(String.format("sql close. "));
+							if(eventHandler != null)
+								eventHandler.handle(Future.succeededFuture(responseOperation));
+						} else {
+							if(eventHandler != null)
+								eventHandler.handle(Future.succeededFuture(responseOperation));
+						}
+					});
+				} else {
+					if(eventHandler != null)
+						eventHandler.handle(Future.succeededFuture(responseOperation));
+				}
+			});
+		} else {
+			eventHandler.handle(Future.succeededFuture(responseOperation));
+		}
 	}
 
-	public void sqlConnectionSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlConnectionSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
 
@@ -2268,40 +2270,42 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						siteRequest.setSqlConnection(sqlConnection);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlConnectionSiteAgency failed. ", a.cause()));
+						LOG.error(String.format("sqlConnectionSiteAgency failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteAgency failed. ", e));
+			LOG.error(String.format("sqlSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlTransactionSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlTransactionSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 
 			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlTransactionCloseSiteAgency failed, connection should not be null. "));
 			} else {
-				Transaction tx = sqlConnection.begin();
-				siteRequest.setTx(tx);
-				eventHandler.handle(Future.succeededFuture());
+				sqlConnection.begin(a -> {
+					Transaction tx = a.result();
+					siteRequest.setTx(tx);
+					eventHandler.handle(Future.succeededFuture());
+				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTransactionSiteAgency failed. ", e));
+			LOG.error(String.format("sqlTransactionSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlCommitSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlCommitSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			Transaction tx = siteRequest.getTx();
 
 			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlCommitCloseSiteAgency failed, tx should not be null. "));
 			} else {
 				tx.commit(a -> {
 					if(a.succeeded()) {
@@ -2311,23 +2315,23 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						siteRequest.setTx(null);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlCommitSiteAgency failed. ", a.cause()));
+						LOG.error(String.format("sqlCommitSiteAgency failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteAgency failed. ", e));
+			LOG.error(String.format("sqlSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlRollbackSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlRollbackSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			Transaction tx = siteRequest.getTx();
 
 			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlRollbackCloseSiteAgency failed, tx should not be null. "));
 			} else {
 				tx.rollback(a -> {
 					if(a.succeeded()) {
@@ -2337,241 +2341,279 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						siteRequest.setTx(null);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlRollbackSiteAgency failed. ", a.cause()));
+						LOG.error(String.format("sqlRollbackSiteAgency failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlSiteAgency failed. ", e));
+			LOG.error(String.format("sqlSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlCloseSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlCloseSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 
 			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlCloseSiteAgency failed, connection should not be null. "));
 			} else {
-				sqlConnection.close();
-				siteRequest.setSqlConnection(null);
-				eventHandler.handle(Future.succeededFuture());
+				sqlConnection.close(a -> {
+					if(a.succeeded()) {
+						siteRequest.setSqlConnection(null);
+						eventHandler.handle(Future.succeededFuture());
+					} else {
+						LOG.error(String.format("sqlCloseSiteAgency failed. ", a.cause()));
+						eventHandler.handle(Future.failedFuture(a.cause()));
+					}
+				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlCloseSiteAgency failed. ", e));
+			LOG.error(String.format("sqlCloseSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public SiteRequestEnUS generateSiteRequestEnUSForSiteAgency(SiteContextEnUS siteContext, OperationRequest operationRequest) {
-		return generateSiteRequestEnUSForSiteAgency(siteContext, operationRequest, null);
+	public SiteRequestEnUS generateSiteRequestEnUSForSiteAgency(User user, SiteContextEnUS siteContext, ServiceRequest serviceRequest) {
+		return generateSiteRequestEnUSForSiteAgency(user, siteContext, serviceRequest, null);
 	}
 
-	public SiteRequestEnUS generateSiteRequestEnUSForSiteAgency(SiteContextEnUS siteContext, OperationRequest operationRequest, JsonObject body) {
+	public SiteRequestEnUS generateSiteRequestEnUSForSiteAgency(User user, SiteContextEnUS siteContext, ServiceRequest serviceRequest, JsonObject body) {
 		Vertx vertx = siteContext.getVertx();
 		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 		siteRequest.setJsonObject(body);
 		siteRequest.setVertx(vertx);
+		siteRequest.setUser(user);
 		siteRequest.setSiteContext_(siteContext);
 		siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-		siteRequest.setOperationRequest(operationRequest);
+		siteRequest.setServiceRequest(serviceRequest);
 		siteRequest.initDeepSiteRequestEnUS(siteRequest);
 
 		return siteRequest;
 	}
 
-	public void userSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void userSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<SiteRequestEnUS>> eventHandler) {
 		try {
-			Long userKey = siteRequest.getUserKey();
-			if(userKey == null) {
-				eventHandler.handle(Future.succeededFuture());
+			JsonObject userJson = serviceRequest.getUser();
+			if(userJson == null) {
+				SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(null, siteContext, serviceRequest);
+				eventHandler.handle(Future.succeededFuture(siteRequest));
 			} else {
-				sqlConnectionSiteAgency(siteRequest, a -> {
+				User token = User.create(userJson);
+				siteContext.getOauth2AuthenticationProvider().authenticate(token.principal(), a -> {
 					if(a.succeeded()) {
-						sqlTransactionSiteAgency(siteRequest, b -> {
+						User user = a.result();
+						siteContext.getAuthorizationProvider().getAuthorizations(user, b -> {
 							if(b.succeeded()) {
-								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
-										.collecting(Collectors.toList())
-										.execute(Tuple.of(userKey)
-										, selectCAsync
-								-> {
-									if(selectCAsync.succeeded()) {
-										try {
-											Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-											SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-											if(userValues == null) {
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
+								JsonObject userAttributes = user.attributes();
+								JsonObject accessToken = userAttributes.getJsonObject("accessToken");
+								String userId = userAttributes.getString("sub");
+								SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteAgency(user, siteContext, serviceRequest);
+								sqlConnectionSiteAgency(siteRequest, c -> {
+									if(c.succeeded()) {
+										sqlTransactionSiteAgency(siteRequest, d -> {
+											if(d.succeeded()) {
+												SqlConnection sqlConnection = siteRequest.getSqlConnection();
+												sqlConnection.preparedQuery("SELECT pk FROM SiteUser WHERE userId=$1")
+														.collecting(Collectors.toList())
+														.execute(Tuple.of(userId)
+														, selectCAsync
+												-> {
+													if(selectCAsync.succeeded()) {
+														try {
+															Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
+															SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
+															if(userValues == null) {
+																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
 
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("userName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("userFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("userLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("userCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("userId", jsonPrincipal.getString("sub"));
-												jsonObject.put("userEmail", jsonPrincipal.getString("email"));
-												userSiteAgencyDefine(siteRequest, jsonObject, false);
+																JsonObject jsonObject = new JsonObject();
+																jsonObject.put("userName", accessToken.getString("preferred_username"));
+																jsonObject.put("userFirstName", accessToken.getString("given_name"));
+																jsonObject.put("userLastName", accessToken.getString("family_name"));
+																jsonObject.put("userCompleteName", accessToken.getString("name"));
+																jsonObject.put("userId", accessToken.getString("sub"));
+																jsonObject.put("userEmail", accessToken.getString("email"));
+																userSiteAgencyDefine(siteRequest, jsonObject, false);
 
-												SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-												siteRequest2.setTx(siteRequest.getTx());
-												siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-												siteRequest2.setJsonObject(jsonObject);
-												siteRequest2.setVertx(siteRequest.getVertx());
-												siteRequest2.setSiteContext_(siteContext);
-												siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-												siteRequest2.setUserId(siteRequest.getUserId());
-												siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+																SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+																siteRequest2.setTx(siteRequest.getTx());
+																siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+																siteRequest2.setJsonObject(jsonObject);
+																siteRequest2.setVertx(siteRequest.getVertx());
+																siteRequest2.setSiteContext_(siteContext);
+																siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+																siteRequest2.setUserId(siteRequest.getUserId());
+																siteRequest2.initDeepSiteRequestEnUS(siteRequest);
 
-												ApiRequest apiRequest = new ApiRequest();
-												apiRequest.setRows(1);
-												apiRequest.setNumFound(1L);
-												apiRequest.setNumPATCH(0L);
-												apiRequest.initDeepApiRequest(siteRequest2);
-												siteRequest2.setApiRequest_(apiRequest);
+																ApiRequest apiRequest = new ApiRequest();
+																apiRequest.setRows(1);
+																apiRequest.setNumFound(1L);
+																apiRequest.setNumPATCH(0L);
+																apiRequest.initDeepApiRequest(siteRequest2);
+																siteRequest2.setApiRequest_(apiRequest);
 
-												userService.createSiteUser(siteRequest2, c -> {
-													if(c.succeeded()) {
-														SiteUser siteUser = c.result();
-														userService.sqlPOSTSiteUser(siteUser, false, d -> {
-															if(d.succeeded()) {
-																userService.defineIndexSiteUser(siteUser, e -> {
+																userService.createSiteUser(siteRequest2, e -> {
 																	if(e.succeeded()) {
-																		siteRequest.setSiteUser(siteUser);
-																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
-																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
-																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
-																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
-																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
-																		siteRequest.setUserKey(siteUser.getPk());
-																		eventHandler.handle(Future.succeededFuture());
+																		SiteUser siteUser = e.result();
+																		userService.sqlPOSTSiteUser(siteUser, false, f -> {
+																			if(f.succeeded()) {
+																				userService.defineIndexSiteUser(siteUser, g -> {
+																					if(g.succeeded()) {
+																						siteRequest.setSiteUser(siteUser);
+																						siteRequest.setUserName(accessToken.getString("preferred_username"));
+																						siteRequest.setUserFirstName(accessToken.getString("given_name"));
+																						siteRequest.setUserLastName(accessToken.getString("family_name"));
+																						siteRequest.setUserEmail(accessToken.getString("email"));
+																						siteRequest.setUserId(accessToken.getString("sub"));
+																						siteRequest.setUserKey(siteUser.getPk());
+																						eventHandler.handle(Future.succeededFuture(siteRequest));
+																					} else {
+																						errorSiteAgency(siteRequest, null, g);
+																					}
+																				});
+																			} else {
+																				errorSiteAgency(siteRequest, null, f);
+																			}
+																		});
 																	} else {
-																		errorSiteAgency(siteRequest, eventHandler, e);
+																		errorSiteAgency(siteRequest, null, e);
 																	}
 																});
 															} else {
-																errorSiteAgency(siteRequest, eventHandler, d);
+																Long pkUser = userValues.getLong(0);
+																SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+																searchList.setQuery("*:*");
+																searchList.setStore(true);
+																searchList.setC(SiteUser.class);
+																searchList.addFilterQuery("pk_indexed_long:" + pkUser);
+																searchList.initDeepSearchList(siteRequest);
+																SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+
+																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+
+																JsonObject jsonObject = new JsonObject();
+																jsonObject.put("setUserName", accessToken.getString("preferred_username"));
+																jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
+																jsonObject.put("setUserLastName", accessToken.getString("family_name"));
+																jsonObject.put("setUserCompleteName", accessToken.getString("name"));
+																jsonObject.put("setUserId", accessToken.getString("sub"));
+																jsonObject.put("setUserEmail", accessToken.getString("email"));
+																Boolean define = userSiteAgencyDefine(siteRequest, jsonObject, true);
+																if(define) {
+																	SiteUser siteUser;
+																	if(siteUser1 == null) {
+																		siteUser = new SiteUser();
+																		siteUser.setPk(pkUser);
+																		siteUser.setSiteRequest_(siteRequest);
+																	} else {
+																		siteUser = siteUser1;
+																	}
+
+																	SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+																	siteRequest2.setTx(siteRequest.getTx());
+																	siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+																	siteRequest2.setJsonObject(jsonObject);
+																	siteRequest2.setVertx(siteRequest.getVertx());
+																	siteRequest2.setSiteContext_(siteContext);
+																	siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+																	siteRequest2.setUserId(siteRequest.getUserId());
+																	siteRequest2.setUserKey(pkUser);
+																	siteRequest.setUserKey(pkUser);
+																	siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+																	siteUser.setSiteRequest_(siteRequest2);
+
+																	ApiRequest apiRequest = new ApiRequest();
+																	apiRequest.setRows(1);
+																	apiRequest.setNumFound(1L);
+																	apiRequest.setNumPATCH(0L);
+																	apiRequest.initDeepApiRequest(siteRequest2);
+																	siteRequest2.setApiRequest_(apiRequest);
+
+																	userService.sqlPATCHSiteUser(siteUser, false, e -> {
+																		if(e.succeeded()) {
+																			SiteUser siteUser2 = e.result();
+																			userService.defineIndexSiteUser(siteUser2, f -> {
+																				if(f.succeeded()) {
+																					siteRequest.setSiteUser(siteUser2);
+																					siteRequest.setUserName(siteUser2.getUserName());
+																					siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+																					siteRequest.setUserLastName(siteUser2.getUserLastName());
+																					siteRequest.setUserKey(siteUser2.getPk());
+																					eventHandler.handle(Future.succeededFuture(siteRequest));
+																				} else {
+																					errorSiteAgency(siteRequest, null, f);
+																				}
+																			});
+																		} else {
+																			errorSiteAgency(siteRequest, null, e);
+																		}
+																	});
+																} else {
+																	siteRequest.setSiteUser(siteUser1);
+																	siteRequest.setUserName(siteUser1.getUserName());
+																	siteRequest.setUserFirstName(siteUser1.getUserFirstName());
+																	siteRequest.setUserLastName(siteUser1.getUserLastName());
+																	siteRequest.setUserKey(siteUser1.getPk());
+																	sqlRollbackSiteAgency(siteRequest, e -> {
+																		if(e.succeeded()) {
+																			eventHandler.handle(Future.succeededFuture(siteRequest));
+																		} else {
+																			eventHandler.handle(Future.failedFuture(e.cause()));
+																			errorSiteAgency(siteRequest, null, e);
+																		}
+																	});
+																}
 															}
-														});
+														} catch(Exception ex) {
+															LOG.error(String.format("userSiteAgency failed. "), ex);
+															eventHandler.handle(Future.failedFuture(ex));
+														}
 													} else {
-														errorSiteAgency(siteRequest, eventHandler, c);
+														LOG.error(String.format("userSiteAgency failed. ", selectCAsync.cause()));
+														eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
 													}
 												});
 											} else {
-												Long pkUser = userValues.getLong(0);
-												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-												searchList.setQuery("*:*");
-												searchList.setStore(true);
-												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
-												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-												searchList.initDeepSearchList(siteRequest);
-												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
-
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("setUserName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("setUserFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("setUserLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("setUserCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("setUserId", jsonPrincipal.getString("sub"));
-												jsonObject.put("setUserEmail", jsonPrincipal.getString("email"));
-												Boolean define = userSiteAgencyDefine(siteRequest, jsonObject, true);
-												if(define) {
-													SiteUser siteUser;
-													if(siteUser1 == null) {
-														siteUser = new SiteUser();
-														siteUser.setPk(pkUser);
-														siteUser.setSiteRequest_(siteRequest);
-													} else {
-														siteUser = siteUser1;
-													}
-
-													SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-													siteRequest2.setTx(siteRequest.getTx());
-													siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-													siteRequest2.setJsonObject(jsonObject);
-													siteRequest2.setVertx(siteRequest.getVertx());
-													siteRequest2.setSiteContext_(siteContext);
-													siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-													siteRequest2.setUserId(siteRequest.getUserId());
-													siteRequest2.setUserKey(siteRequest.getUserKey());
-													siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-													siteUser.setSiteRequest_(siteRequest2);
-
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(1);
-													apiRequest.setNumFound(1L);
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest2);
-													siteRequest2.setApiRequest_(apiRequest);
-
-													userService.sqlPATCHSiteUser(siteUser, false, d -> {
-														if(d.succeeded()) {
-															SiteUser siteUser2 = d.result();
-															userService.defineIndexSiteUser(siteUser2, e -> {
-																if(e.succeeded()) {
-																	siteRequest.setSiteUser(siteUser2);
-																	siteRequest.setUserName(siteUser2.getUserName());
-																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser2.getUserLastName());
-																	siteRequest.setUserId(siteUser2.getUserId());
-																	siteRequest.setUserKey(siteUser2.getPk());
-																	eventHandler.handle(Future.succeededFuture());
-																} else {
-																	errorSiteAgency(siteRequest, eventHandler, e);
-																}
-															});
-														} else {
-															errorSiteAgency(siteRequest, eventHandler, d);
-														}
-													});
-												} else {
-													siteRequest.setSiteUser(siteUser1);
-													siteRequest.setUserName(siteUser1.getUserName());
-													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-													siteRequest.setUserLastName(siteUser1.getUserLastName());
-													siteRequest.setUserId(siteUser1.getUserId());
-													siteRequest.setUserKey(siteUser1.getPk());
-													sqlRollbackSiteAgency(siteRequest, c -> {
-														if(c.succeeded()) {
-															eventHandler.handle(Future.succeededFuture());
-														} else {
-															eventHandler.handle(Future.failedFuture(c.cause()));
-															errorSiteAgency(siteRequest, eventHandler, c);
-														}
-													});
-												}
+												LOG.error(String.format("userSiteAgency failed. ", d.cause()));
+												eventHandler.handle(Future.failedFuture(d.cause()));
 											}
-										} catch(Exception e) {
-											LOGGER.error(String.format("userSiteAgency failed. ", e));
-											eventHandler.handle(Future.failedFuture(e));
-										}
+										});
 									} else {
-										LOGGER.error(String.format("userSiteAgency failed. ", selectCAsync.cause()));
-										eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
+										LOG.error(String.format("userSiteAgency failed. ", c.cause()));
+										eventHandler.handle(Future.failedFuture(c.cause()));
 									}
 								});
 							} else {
-								LOGGER.error(String.format("userSiteAgency failed. ", b.cause()));
+								LOG.error(String.format("userSiteAgency failed. ", b.cause()));
 								eventHandler.handle(Future.failedFuture(b.cause()));
 							}
 						});
 					} else {
-						LOGGER.error(String.format("userSiteAgency failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
+						siteContext.getOauth2AuthenticationProvider().refresh(token, b -> {
+							if(b.succeeded()) {
+								User user = b.result();
+								serviceRequest.setUser(user.principal());
+								userSiteAgency(serviceRequest, c -> {
+									if(c.succeeded()) {
+										SiteRequestEnUS siteRequest = c.result();
+										eventHandler.handle(Future.succeededFuture(siteRequest));
+									} else {
+										LOG.error(String.format("userSiteAgency failed. ", c.cause()));
+										eventHandler.handle(Future.failedFuture(c.cause()));
+									}
+								});
+							} else {
+								LOG.error(String.format("userSiteAgency failed. ", a.cause()));
+								eventHandler.handle(Future.failedFuture(a.cause()));
+							}
+						});
 					}
 				});
 			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("userSiteAgency failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("userSiteAgency failed. "), ex);
+			eventHandler.handle(Future.failedFuture(ex));
 		}
 	}
 
@@ -2589,7 +2631,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 		}
 	}
 
-	public void aSearchSiteAgencyFq(String uri, String apiMethod, SearchList<SiteAgency> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String aSearchSiteAgencyFq(String uri, String apiMethod, SearchList<SiteAgency> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -2598,9 +2640,9 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
 			String fq1 = fqs[0].equals("*") ? fqs[0] : SiteAgency.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[0]);
 			String fq2 = fqs[1].equals("*") ? fqs[1] : SiteAgency.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
-			searchList.addFilterQuery(varIndexed + ":[" + fq1 + " TO " + fq2 + "]");
+			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			searchList.addFilterQuery(varIndexed + ":" + SiteAgency.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed));
+			return varIndexed + ":" + SiteAgency.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed);
 		}
 	}
 
@@ -2625,11 +2667,11 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	public void aSearchSiteAgencyUri(String uri, String apiMethod, SearchList<SiteAgency> searchList) {
 	}
 
-	public void varsSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<OperationResponse>>> eventHandler) {
+	public void varsSiteAgency(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<ServiceResponse>>> eventHandler) {
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
 				String paramName = paramRequest.getKey();
@@ -2647,13 +2689,13 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						}
 					}
 				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchSiteAgency failed. ", e));
+					LOG.error(String.format("aSearchSiteAgency failed. "), e);
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
 			eventHandler.handle(Future.succeededFuture());
 		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSiteAgency failed. ", e));
+			LOG.error(String.format("aSearchSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2663,14 +2705,14 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			SearchList<SiteAgency> searchList = aSearchSiteAgencyList(siteRequest, populate, store, modify, uri, apiMethod);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchSiteAgency failed. ", e));
+			LOG.error(String.format("aSearchSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
 	public SearchList<SiteAgency> aSearchSiteAgencyList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
-		OperationRequest operationRequest = siteRequest.getOperationRequest();
-		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
+		ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+		String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
 		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
 		SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
 		searchList.setPopulate(populate);
@@ -2682,14 +2724,14 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			searchList.addFields(entityList);
 		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
-		String id = operationRequest.getParams().getJsonObject("path").getString("id");
+		String id = serviceRequest.getParams().getJsonObject("path").getString("id");
 		if(id != null && NumberUtils.isCreatable(id)) {
 			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
 		} else if(id != null) {
 			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
 		}
 
-		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+		serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 			String entityVar = null;
 			String valueIndexed = null;
 			String varIndexed = null;
@@ -2701,7 +2743,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
 
 			try {
-				if("facet.pivot".equals(paramName)) {
+				if(paramValuesObject != null && "facet.pivot".equals(paramName)) {
 					Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
 					boolean foundFacetPivot = mFacetPivot.find();
 					if(foundFacetPivot) {
@@ -2714,7 +2756,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						}
 						searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
 					}
-				} else {
+				} else if(paramValuesObject != null) {
 					for(Object paramObject : paramObjects) {
 						switch(paramName) {
 							case "q":
@@ -2725,10 +2767,21 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								aSearchSiteAgencyQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
 								break;
 							case "fq":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								varIndexed = SiteAgency.varIndexedSiteAgency(entityVar);
-								aSearchSiteAgencyFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);
+								boolean foundFq = mFq.find();
+								if(foundFq) {
+									StringBuffer sb = new StringBuffer();
+									while(foundFq) {
+										entityVar = mFq.group(1).trim();
+										valueIndexed = mFq.group(2).trim();
+										varIndexed = SiteAgency.varIndexedSiteAgency(entityVar);
+										String entityFq = aSearchSiteAgencyFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+										mFq.appendReplacement(sb, entityFq);
+										foundFq = mFq.find();
+									}
+									mFq.appendTail(sb);
+									searchList.addFilterQuery(sb.toString());
+								}
 								break;
 							case "sort":
 								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
@@ -2800,12 +2853,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 	public void aSearchSiteAgency2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteAgency> searchList) {
 	}
 
-	public void defineSiteAgency(SiteAgency o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void defineSiteAgency(SiteAgency o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery("SELECT * FROM SiteAgency WHERE pk=$1")
+			sqlConnection.preparedQuery("SELECT * FROM SiteAgency WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -2820,34 +2873,33 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 									try {
 										o.defineForClass(columnName, columnValue);
 									} catch(Exception e) {
-										LOGGER.error(String.format("defineSiteAgency failed. ", e));
-										LOGGER.error(e);
+										LOG.error(String.format("defineSiteAgency failed. "), e);
 									}
 								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
 					} catch(Exception e) {
-						LOGGER.error(String.format("defineSiteAgency failed. ", e));
+						LOG.error(String.format("defineSiteAgency failed. "), e);
 						eventHandler.handle(Future.failedFuture(e));
 					}
 				} else {
-					LOGGER.error(String.format("defineSiteAgency failed. ", defineAsync.cause()));
+					LOG.error(String.format("defineSiteAgency failed. ", defineAsync.cause()));
 					eventHandler.handle(Future.failedFuture(defineAsync.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("defineSiteAgency failed. ", e));
+			LOG.error(String.format("defineSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void attributeSiteAgency(SiteAgency o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void attributeSiteAgency(SiteAgency o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery("SELECT stateKey as pk1, 'stateKey' from SiteAgency where pk=$1")
+			sqlConnection.preparedQuery("SELECT stateKey as pk1, 'stateKey' from SiteAgency where pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, attributeAsync
@@ -2861,21 +2913,21 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						}
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("attributeSiteAgency failed. ", attributeAsync.cause()));
+						LOG.error(String.format("attributeSiteAgency failed. ", attributeAsync.cause()));
 						eventHandler.handle(Future.failedFuture(attributeAsync.cause()));
 					}
 				} catch(Exception e) {
-					LOGGER.error(String.format("attributeSiteAgency failed. ", e));
+					LOG.error(String.format("attributeSiteAgency failed. "), e);
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("attributeSiteAgency failed. ", e));
+			LOG.error(String.format("attributeSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void indexSiteAgency(SiteAgency o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void indexSiteAgency(SiteAgency o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -2885,12 +2937,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			o.indexForClass();
 			eventHandler.handle(Future.succeededFuture());
 		} catch(Exception e) {
-			LOGGER.error(String.format("indexSiteAgency failed. ", e));
+			LOG.error(String.format("indexSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void refreshSiteAgency(SiteAgency o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void refreshSiteAgency(SiteAgency o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -2924,7 +2976,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 
 						if(o2 != null) {
 							SiteStateEnUSGenApiServiceImpl service = new SiteStateEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
 							apiRequest2.setNumFound(1l);
@@ -2939,7 +2991,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 								service.patchSiteStateFuture(o2, false, a -> {
 									if(a.succeeded()) {
 									} else {
-										LOGGER.info(String.format("SiteState %s failed. ", pk2));
+										LOG.info(String.format("SiteState %s failed. ", pk2));
 										eventHandler.handle(Future.failedFuture(a.cause()));
 									}
 								})
@@ -2953,13 +3005,13 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						SiteAgencyEnUSApiServiceImpl service = new SiteAgencyEnUSApiServiceImpl(siteRequest.getSiteContext_());
 						List<Future> futures2 = new ArrayList<>();
 						for(SiteAgency o2 : searchList.getList()) {
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteAgency(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							o2.setSiteRequest_(siteRequest2);
 							futures2.add(
 								service.patchSiteAgencyFuture(o2, false, b -> {
 									if(b.succeeded()) {
 									} else {
-										LOGGER.info(String.format("SiteAgency %s failed. ", o2.getPk()));
+										LOG.info(String.format("SiteAgency %s failed. ", o2.getPk()));
 										eventHandler.handle(Future.failedFuture(b.cause()));
 									}
 								})
@@ -2970,12 +3022,12 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 							if(b.succeeded()) {
 								eventHandler.handle(Future.succeededFuture());
 							} else {
-								LOGGER.error("Refresh relations failed. ", b.cause());
+								LOG.error("Refresh relations failed. ", b.cause());
 								errorSiteAgency(siteRequest, eventHandler, b);
 							}
 						});
 					} else {
-						LOGGER.error("Refresh relations failed. ", a.cause());
+						LOG.error("Refresh relations failed. ", a.cause());
 						errorSiteAgency(siteRequest, eventHandler, a);
 					}
 				});
@@ -2983,7 +3035,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				eventHandler.handle(Future.succeededFuture());
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("refreshSiteAgency failed. ", e));
+			LOG.error(String.format("refreshSiteAgency failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}

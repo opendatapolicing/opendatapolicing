@@ -2,19 +2,19 @@ package com.opendatapolicing.enus.vertx;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
@@ -32,12 +32,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppVertx&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class AppVertxGen<DEV> extends AbstractVerticle {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(AppVertx.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
 	public static final String configureDataConnectionError1 = "Could not open the database client connection. ";
 	public static final String configureDataConnectionError = configureDataConnectionError1;
 	public static final String configureDataConnectionSuccess1 = "The database client connection was successful. ";
@@ -57,6 +53,11 @@ public abstract class AppVertxGen<DEV> extends AbstractVerticle {
 	public static final String configureOpenApiSuccess1 = "The auth server and API was configured successfully. ";
 	public static final String configureOpenApiSuccess = configureOpenApiSuccess1;
 
+	public static final String configureSharedWorkerExecutorError1 = "Could not configure the shared worker executor. ";
+	public static final String configureSharedWorkerExecutorError = configureSharedWorkerExecutorError1;
+	public static final String configureSharedWorkerExecutorSuccess1 = "The shared worker executor was configured successfully. ";
+	public static final String configureSharedWorkerExecutorSuccess = configureSharedWorkerExecutorSuccess1;
+
 	public static final String configureHealthChecksErrorDatabase1 = "The database is not configured properly. ";
 	public static final String configureHealthChecksErrorDatabase = configureHealthChecksErrorDatabase1;
 	public static final String configureHealthChecksEmptySolr1 = "The Solr search engine is empty. ";
@@ -65,6 +66,16 @@ public abstract class AppVertxGen<DEV> extends AbstractVerticle {
 	public static final String configureHealthChecksErrorSolr = configureHealthChecksErrorSolr1;
 	public static final String configureHealthChecksErrorVertx1 = "The Vert.x application is not configured properly. ";
 	public static final String configureHealthChecksErrorVertx = configureHealthChecksErrorVertx1;
+
+	public static final String configureWebsocketsError1 = "Could not configure websockets. ";
+	public static final String configureWebsocketsError = configureWebsocketsError1;
+	public static final String configureWebsocketsSuccess1 = "The websockets configured successfully. ";
+	public static final String configureWebsocketsSuccess = configureWebsocketsSuccess1;
+
+	public static final String configureEmailError1 = "Could not configure the email. ";
+	public static final String configureEmailError = configureEmailError1;
+	public static final String configureEmailSuccess1 = "The email was configured successfully. ";
+	public static final String configureEmailSuccess = configureEmailSuccess1;
 
 	public static final String startServerErrorServer1 = "The server is not configured properly. ";
 	public static final String startServerErrorServer = startServerErrorServer1;
@@ -296,5 +307,5 @@ public abstract class AppVertxGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
+	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsError1, configureWebsocketsSuccess1, configureEmailError1, configureEmailSuccess1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
 }

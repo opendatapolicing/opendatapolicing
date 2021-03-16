@@ -245,11 +245,6 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 						wRequestBodies.tl(3, "openIdConnectUrl: ", siteConfig.getAuthUrl(), "/realms/", siteConfig.getAuthRealm(), "/.well-known/openid-configuration");
 				}
 				wRequestBodies.tl(1, "requestBodies:");
-				wRequestBodies.tl(2, "ErrorResponse:");
-				wRequestBodies.tl(3, "content:");
-				wRequestBodies.tl(4, "application/json:");
-				wRequestBodies.tl(5, "schema:");
-				wRequestBodies.tl(6, "$ref: '#/components/schemas/ErrorResponse'");
 
 				wSchemas.tl(1, "schemas:");
 			}
@@ -341,31 +336,6 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 				searchClassesResultats = searchClassesResponse.getResults();
 				searchClassesLines = searchClasses.getRows();
 			}
-			wSchemas.tl(tabsSchema, "ErrorResponse:");
-			wSchemas.tl(tabsSchema + 1, "required:");
-			wSchemas.tl(tabsSchema + 2, "- type");
-			wSchemas.tl(tabsSchema + 2, "- code");
-			wSchemas.tl(tabsSchema + 1, "properties:");
-			wSchemas.tl(tabsSchema + 2, "type:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "enum:");
-			wSchemas.tl(tabsSchema + 4, "- ERROR");
-			wSchemas.tl(tabsSchema + 4, "- WARN");
-			wSchemas.tl(tabsSchema + 4, "- INVALID");
-			wSchemas.tl(tabsSchema + 4, "- FATAL");
-			wSchemas.t(tabsSchema + 3, "description: ").yamlStr(tabsSchema + 4, "<br>invalid - Request did not confirm to the specification and was unprocessed & rejected. Please fix the value and try again</br>                         <br>warn - Request was partially processed.  E.g. some of the fields are missing in response to the system issues,  request was accepted successfully but will be processed asynchronously</br>                                                          <br>error - The request was accepted but could not be processed successfully</br>            <br>fatal - There was an internal system error while processing the request. These are technical errors and will be resolved by Citi, and the consumer should retry after some time. Business errors will not be categorized as fatal </br>");
-			wSchemas.tl(tabsSchema + 2, "code:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: Error code which qualifies the error. ");
-			wSchemas.tl(tabsSchema + 2, "details:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: Human readable explanation specific to the occurrence of the problem. ");
-			wSchemas.tl(tabsSchema + 2, "location:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: The name of the field that resulted in the error. ");
-			wSchemas.tl(tabsSchema + 2, "moreInfo:");
-			wSchemas.tl(tabsSchema + 3, "type: string");
-			wSchemas.tl(tabsSchema + 3, "description: URI to human readable documentation of the error. ");
 		} catch (Exception e) {
 			ExceptionUtils.rethrow(e);
 		}

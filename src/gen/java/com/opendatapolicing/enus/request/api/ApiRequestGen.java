@@ -4,12 +4,12 @@ import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
 import java.time.ZonedDateTime;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
@@ -21,9 +21,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.time.ZoneOffset;
 import java.lang.String;
-import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
@@ -47,32 +47,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class ApiRequestGen<DEV> extends Object {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(ApiRequest.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(ApiRequest.class);
 
 	//////////////////
 	// siteRequest_ //
 	//////////////////
 
-	/**	 The entity siteRequest_
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
 	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
 
-	/**	<br/> The entity siteRequest_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> c);
 
 	public SiteRequestEnUS getSiteRequest_() {
@@ -100,21 +87,12 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	// created //
 	/////////////
 
-	/**	 The entity created
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
 	@JsonIgnore
 	public Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().p(this).c(ZonedDateTime.class).var("created").o(created);
 
-	/**	<br/> The entity created
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:created">Find the entity created in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _created(Wrap<ZonedDateTime> c);
 
 	public ZonedDateTime getCreated() {
@@ -129,7 +107,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.created = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.createdWrap.alreadyInitialized = true;
 	}
-	/** Example: 2011-12-03T10:15:30+01:00 **/
 	public void setCreated(String o) {
 		this.created = ApiRequest.staticSetCreated(siteRequest_, o);
 		this.createdWrap.alreadyInitialized = true;
@@ -179,33 +156,16 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String htmTooltipCreated() {
-		return null;
-	}
-
-	public String htmCreated() {
-		return created == null ? "" : StringEscapeUtils.escapeHtml4(strCreated());
-	}
-
 	//////////
 	// rows //
 	//////////
 
-	/**	 The entity rows
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer rows;
 	@JsonIgnore
 	public Wrap<Integer> rowsWrap = new Wrap<Integer>().p(this).c(Integer.class).var("rows").o(rows);
 
-	/**	<br/> The entity rows
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:rows">Find the entity rows in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _rows(Wrap<Integer> c);
 
 	public Integer getRows() {
@@ -263,33 +223,16 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return rows == null ? "" : rows.toString();
 	}
 
-	public String htmTooltipRows() {
-		return null;
-	}
-
-	public String htmRows() {
-		return rows == null ? "" : StringEscapeUtils.escapeHtml4(strRows());
-	}
-
 	//////////////
 	// numFound //
 	//////////////
 
-	/**	 The entity numFound
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long numFound;
 	@JsonIgnore
 	public Wrap<Long> numFoundWrap = new Wrap<Long>().p(this).c(Long.class).var("numFound").o(numFound);
 
-	/**	<br/> The entity numFound
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:numFound">Find the entity numFound in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _numFound(Wrap<Long> c);
 
 	public Long getNumFound() {
@@ -347,33 +290,16 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return numFound == null ? "" : numFound.toString();
 	}
 
-	public String htmTooltipNumFound() {
-		return null;
-	}
-
-	public String htmNumFound() {
-		return numFound == null ? "" : StringEscapeUtils.escapeHtml4(strNumFound());
-	}
-
 	//////////////
 	// numPATCH //
 	//////////////
 
-	/**	 The entity numPATCH
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long numPATCH;
 	@JsonIgnore
 	public Wrap<Long> numPATCHWrap = new Wrap<Long>().p(this).c(Long.class).var("numPATCH").o(numPATCH);
 
-	/**	<br/> The entity numPATCH
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:numPATCH">Find the entity numPATCH in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _numPATCH(Wrap<Long> c);
 
 	public Long getNumPATCH() {
@@ -431,32 +357,15 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return numPATCH == null ? "" : numPATCH.toString();
 	}
 
-	public String htmTooltipNumPATCH() {
-		return null;
-	}
-
-	public String htmNumPATCH() {
-		return numPATCH == null ? "" : StringEscapeUtils.escapeHtml4(strNumPATCH());
-	}
-
 	//////////
 	// uuid //
 	//////////
 
-	/**	 The entity uuid
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String uuid;
 	@JsonIgnore
 	public Wrap<String> uuidWrap = new Wrap<String>().p(this).c(String.class).var("uuid").o(uuid);
 
-	/**	<br/> The entity uuid
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:uuid">Find the entity uuid in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _uuid(Wrap<String> c);
 
 	public String getUuid() {
@@ -507,32 +416,15 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return uuid == null ? "" : uuid;
 	}
 
-	public String htmTooltipUuid() {
-		return null;
-	}
-
-	public String htmUuid() {
-		return uuid == null ? "" : StringEscapeUtils.escapeHtml4(strUuid());
-	}
-
 	////////
 	// id //
 	////////
 
-	/**	 The entity id
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String id;
 	@JsonIgnore
 	public Wrap<String> idWrap = new Wrap<String>().p(this).c(String.class).var("id").o(id);
 
-	/**	<br/> The entity id
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:id">Find the entity id in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _id(Wrap<String> c);
 
 	public String getId() {
@@ -583,32 +475,15 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return id == null ? "" : id;
 	}
 
-	public String htmTooltipId() {
-		return null;
-	}
-
-	public String htmId() {
-		return id == null ? "" : StringEscapeUtils.escapeHtml4(strId());
-	}
-
 	///////////
 	// empty //
 	///////////
 
-	/**	 The entity empty
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean empty;
 	@JsonIgnore
 	public Wrap<Boolean> emptyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("empty").o(empty);
 
-	/**	<br/> The entity empty
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:empty">Find the entity empty in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _empty(Wrap<Boolean> c);
 
 	public Boolean getEmpty() {
@@ -664,33 +539,16 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return empty == null ? "" : empty.toString();
 	}
 
-	public String htmTooltipEmpty() {
-		return null;
-	}
-
-	public String htmEmpty() {
-		return empty == null ? "" : StringEscapeUtils.escapeHtml4(strEmpty());
-	}
-
 	////////
 	// pk //
 	////////
 
-	/**	 The entity pk
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long pk;
 	@JsonIgnore
 	public Wrap<Long> pkWrap = new Wrap<Long>().p(this).c(Long.class).var("pk").o(pk);
 
-	/**	<br/> The entity pk
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _pk(Wrap<Long> c);
 
 	public Long getPk() {
@@ -748,32 +606,15 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return pk == null ? "" : pk.toString();
 	}
 
-	public String htmTooltipPk() {
-		return null;
-	}
-
-	public String htmPk() {
-		return pk == null ? "" : StringEscapeUtils.escapeHtml4(strPk());
-	}
-
 	//////////////
 	// original //
 	//////////////
 
-	/**	 The entity original
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Object original;
 	@JsonIgnore
 	public Wrap<Object> originalWrap = new Wrap<Object>().p(this).c(Object.class).var("original").o(original);
 
-	/**	<br/> The entity original
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:original">Find the entity original in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _original(Wrap<Object> c);
 
 	public Object getOriginal() {
@@ -801,21 +642,12 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	// pks //
 	/////////
 
-	/**	 The entity pks
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
-	 */
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> pks = new ArrayList<Long>();
 	@JsonIgnore
 	public Wrap<List<Long>> pksWrap = new Wrap<List<Long>>().p(this).c(List.class).var("pks").o(pks);
 
-	/**	<br/> The entity pks
-	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pks">Find the entity pks in Solr</a>
-	 * <br/>
-	 * @param pks is the entity already constructed. 
-	 **/
 	protected abstract void _pks(List<Long> c);
 
 	public List<Long> getPks() {
@@ -902,32 +734,15 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return pks == null ? "" : pks.toString();
 	}
 
-	public String htmTooltipPks() {
-		return null;
-	}
-
-	public String htmPks() {
-		return pks == null ? "" : StringEscapeUtils.escapeHtml4(strPks());
-	}
-
 	/////////////
 	// classes //
 	/////////////
 
-	/**	 The entity classes
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classes = new ArrayList<String>();
 	@JsonIgnore
 	public Wrap<List<String>> classesWrap = new Wrap<List<String>>().p(this).c(List.class).var("classes").o(classes);
 
-	/**	<br/> The entity classes
-	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classes">Find the entity classes in Solr</a>
-	 * <br/>
-	 * @param classes is the entity already constructed. 
-	 **/
 	protected abstract void _classes(List<String> c);
 
 	public List<String> getClasses() {
@@ -999,32 +814,15 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return classes == null ? "" : classes.toString();
 	}
 
-	public String htmTooltipClasses() {
-		return null;
-	}
-
-	public String htmClasses() {
-		return classes == null ? "" : StringEscapeUtils.escapeHtml4(strClasses());
-	}
-
 	//////////
 	// vars //
 	//////////
 
-	/**	 The entity vars
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> vars = new ArrayList<String>();
 	@JsonIgnore
 	public Wrap<List<String>> varsWrap = new Wrap<List<String>>().p(this).c(List.class).var("vars").o(vars);
 
-	/**	<br/> The entity vars
-	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:vars">Find the entity vars in Solr</a>
-	 * <br/>
-	 * @param vars is the entity already constructed. 
-	 **/
 	protected abstract void _vars(List<String> c);
 
 	public List<String> getVars() {
@@ -1094,14 +892,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 
 	public String jsonVars() {
 		return vars == null ? "" : vars.toString();
-	}
-
-	public String htmTooltipVars() {
-		return null;
-	}
-
-	public String htmVars() {
-		return vars == null ? "" : StringEscapeUtils.escapeHtml4(strVars());
 	}
 
 	//////////////

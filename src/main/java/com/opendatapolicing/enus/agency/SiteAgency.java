@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.agency;  
+package com.opendatapolicing.enus.agency;   
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,6 +11,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
 /**
  * Model: true
  * Api: true
+ * Page: true
  * Indexed: true
  * Saved: true
  * Map.Integer.sqlSort: 6

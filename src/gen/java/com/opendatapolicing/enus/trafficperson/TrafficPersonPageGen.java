@@ -2,19 +2,19 @@ package com.opendatapolicing.enus.trafficperson;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import com.opendatapolicing.enus.trafficperson.TrafficPersonGenPage;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -32,12 +32,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficperson.TrafficPersonPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class TrafficPersonPageGen<DEV> extends TrafficPersonGenPage {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(TrafficPersonPage.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(TrafficPersonPage.class);
 
 	//////////////
 	// initDeep //

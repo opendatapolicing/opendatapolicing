@@ -51,12 +51,8 @@ import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import io.vertx.core.MultiMap;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
-import io.vertx.ext.web.api.validation.ParameterTypeValidator;
-import io.vertx.ext.web.api.validation.ValidationException;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.SqlConnection;
@@ -71,13 +67,13 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.web.api.OperationResponse;
 import io.vertx.core.CompositeFuture;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.net.URLDecoder;
@@ -104,7 +100,7 @@ import com.opendatapolicing.enus.writer.AllWriter;
  **/
 public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenApiService {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(TrafficSearchEnUSGenApiServiceImpl.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(TrafficSearchEnUSGenApiServiceImpl.class);
 
 	protected static final String SERVICE_ADDRESS = "TrafficSearchEnUSApiServiceImpl";
 
@@ -117,32 +113,32 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// PUTImport //
 
 	@Override
-	public void putimportTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search/import");
-		siteRequest.setRequestMethod("PUTImport");
-		try {
-			LOGGER.info(String.format("putimportTrafficSearch started. "));
+	public void putimportTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putimportTrafficSearch started. "));
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/traffic-search/import");
+					siteRequest.setRequestMethod("PUTImport");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putimportTrafficSearchResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -164,49 +160,49 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 														if(e.succeeded()) {
 															putimportTrafficSearchResponse(siteRequest, f -> {
 																if(e.succeeded()) {
-																	LOGGER.info(String.format("putimportTrafficSearch succeeded. "));
+																	LOG.info(String.format("putimportTrafficSearch succeeded. "));
 																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
 																} else {
-																	LOGGER.error(String.format("putimportTrafficSearch failed. ", f.cause()));
+																	LOG.error(String.format("putimportTrafficSearch failed. ", f.cause()));
 																	errorTrafficSearch(siteRequest, null, f);
 																}
 															});
 														} else {
-															LOGGER.error(String.format("putimportTrafficSearch failed. ", e.cause()));
+															LOG.error(String.format("putimportTrafficSearch failed. ", e.cause()));
 															errorTrafficSearch(siteRequest, null, e);
 														}
 													});
 												} else {
-													LOGGER.error(String.format("putimportTrafficSearch failed. ", d.cause()));
+													LOG.error(String.format("putimportTrafficSearch failed. ", d.cause()));
 													errorTrafficSearch(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putimportTrafficSearch failed. ", ex));
+											LOG.error(String.format("putimportTrafficSearch failed. ", ex));
 											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putimportTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("putimportTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putimportTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putimportTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putimportTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTImportTrafficSearch(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTImportTrafficSearch(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
@@ -217,7 +213,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 
 				json.put("created", json.getValue("created"));
 
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), json);
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), json);
 				siteRequest2.setApiRequest_(apiRequest);
 				siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
@@ -246,7 +242,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							patchTrafficSearchFuture(o, true, a -> {
 								if(a.succeeded()) {
 								} else {
-									LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
+									LOG.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
 									errorTrafficSearch(siteRequest2, eventHandler, a);
 								}
 							})
@@ -257,7 +253,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						postTrafficSearchFuture(siteRequest2, true, a -> {
 							if(a.succeeded()) {
 							} else {
-								LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
+								LOG.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
 								errorTrafficSearch(siteRequest2, eventHandler, a);
 							}
 						})
@@ -269,37 +265,37 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTImportTrafficSearch(siteRequest, eventHandler);
 				} else {
-					LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
+					LOG.error(String.format("listPUTImportTrafficSearch failed. ", a.cause()));
 					errorTrafficSearch(apiRequest.getSiteRequest_(), eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTImportTrafficSearch failed. ", ex));
+			LOG.error(String.format("listPUTImportTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
 
-	public void putimportTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putimportTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTImportTrafficSearch(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putimportTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("putimportTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putimportTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("putimportTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTImportTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTImportTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTImportTrafficSearch failed. ", e));
+			LOG.error(String.format("response200PUTImportTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -307,32 +303,32 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// PUTMerge //
 
 	@Override
-	public void putmergeTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search/merge");
-		siteRequest.setRequestMethod("PUTMerge");
-		try {
-			LOGGER.info(String.format("putmergeTrafficSearch started. "));
+	public void putmergeTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putmergeTrafficSearch started. "));
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/traffic-search/merge");
+					siteRequest.setRequestMethod("PUTMerge");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putmergeTrafficSearchResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -354,49 +350,49 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 														if(e.succeeded()) {
 															putmergeTrafficSearchResponse(siteRequest, f -> {
 																if(e.succeeded()) {
-																	LOGGER.info(String.format("putmergeTrafficSearch succeeded. "));
+																	LOG.info(String.format("putmergeTrafficSearch succeeded. "));
 																	blockingCodeHandler.handle(Future.succeededFuture(e.result()));
 																} else {
-																	LOGGER.error(String.format("putmergeTrafficSearch failed. ", f.cause()));
+																	LOG.error(String.format("putmergeTrafficSearch failed. ", f.cause()));
 																	errorTrafficSearch(siteRequest, null, f);
 																}
 															});
 														} else {
-															LOGGER.error(String.format("putmergeTrafficSearch failed. ", e.cause()));
+															LOG.error(String.format("putmergeTrafficSearch failed. ", e.cause()));
 															errorTrafficSearch(siteRequest, null, e);
 														}
 													});
 												} else {
-													LOGGER.error(String.format("putmergeTrafficSearch failed. ", d.cause()));
+													LOG.error(String.format("putmergeTrafficSearch failed. ", d.cause()));
 													errorTrafficSearch(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putmergeTrafficSearch failed. ", ex));
+											LOG.error(String.format("putmergeTrafficSearch failed. ", ex));
 											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putmergeTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("putmergeTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putmergeTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putmergeTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putmergeTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTMergeTrafficSearch(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTMergeTrafficSearch(ApiRequest apiRequest, SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 		try {
@@ -405,7 +401,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 
 				json.put("inheritPk", json.getValue("pk"));
 
-				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), json);
+				SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), json);
 				siteRequest2.setApiRequest_(apiRequest);
 				siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
@@ -434,7 +430,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							patchTrafficSearchFuture(o, false, a -> {
 								if(a.succeeded()) {
 								} else {
-									LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
+									LOG.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
 									errorTrafficSearch(siteRequest2, eventHandler, a);
 								}
 							})
@@ -445,7 +441,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						postTrafficSearchFuture(siteRequest2, false, a -> {
 							if(a.succeeded()) {
 							} else {
-								LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
+								LOG.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
 								errorTrafficSearch(siteRequest2, eventHandler, a);
 							}
 						})
@@ -457,37 +453,37 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
 					response200PUTMergeTrafficSearch(siteRequest, eventHandler);
 				} else {
-					LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
+					LOG.error(String.format("listPUTMergeTrafficSearch failed. ", a.cause()));
 					errorTrafficSearch(apiRequest.getSiteRequest_(), eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("listPUTMergeTrafficSearch failed. ", ex));
+			LOG.error(String.format("listPUTMergeTrafficSearch failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
 
-	public void putmergeTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putmergeTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTMergeTrafficSearch(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putmergeTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("putmergeTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putmergeTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("putmergeTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTMergeTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTMergeTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTMergeTrafficSearch failed. ", e));
+			LOG.error(String.format("response200PUTMergeTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -495,32 +491,32 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// PUTCopy //
 
 	@Override
-	public void putcopyTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search/copy");
-		siteRequest.setRequestMethod("PUTCopy");
-		try {
-			LOGGER.info(String.format("putcopyTrafficSearch started. "));
+	public void putcopyTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("putcopyTrafficSearch started. "));
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/traffic-search/copy");
+					siteRequest.setRequestMethod("PUTCopy");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						putcopyTrafficSearchResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -543,64 +539,64 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 															if(e.succeeded()) {
 																putcopyTrafficSearchResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOGGER.info(String.format("putcopyTrafficSearch succeeded. "));
+																		LOG.info(String.format("putcopyTrafficSearch succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
-																		LOGGER.error(String.format("putcopyTrafficSearch failed. ", f.cause()));
+																		LOG.error(String.format("putcopyTrafficSearch failed. ", f.cause()));
 																		errorTrafficSearch(siteRequest, null, f);
 																	}
 																});
 															} else {
-																LOGGER.error(String.format("putcopyTrafficSearch failed. ", e.cause()));
+																LOG.error(String.format("putcopyTrafficSearch failed. ", e.cause()));
 																errorTrafficSearch(siteRequest, null, e);
 															}
 														});
 													} catch(Exception ex) {
-														LOGGER.error(String.format("putcopyTrafficSearch failed. ", ex));
+														LOG.error(String.format("putcopyTrafficSearch failed. ", ex));
 														errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 													}
 												} else {
-													LOGGER.error(String.format("putcopyTrafficSearch failed. ", d.cause()));
+													LOG.error(String.format("putcopyTrafficSearch failed. ", d.cause()));
 													errorTrafficSearch(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("putcopyTrafficSearch failed. ", ex));
+											LOG.error(String.format("putcopyTrafficSearch failed. ", ex));
 											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("putcopyTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("putcopyTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("putcopyTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("putcopyTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("putcopyTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopyTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPUTCopyTrafficSearch(ApiRequest apiRequest, SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPUTCopyTrafficSearch(ApiRequest apiRequest, SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		listTrafficSearch.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
 				putcopyTrafficSearchFuture(siteRequest2, JsonObject.mapFrom(o), a -> {
 					if(a.succeeded()) {
 					} else {
-						LOGGER.error(String.format("listPUTCopyTrafficSearch failed. ", a.cause()));
+						LOG.error(String.format("listPUTCopyTrafficSearch failed. ", a.cause()));
 						errorTrafficSearch(siteRequest, eventHandler, a);
 					}
 				})
@@ -615,7 +611,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					response200PUTCopyTrafficSearch(siteRequest, eventHandler);
 				}
 			} else {
-				LOGGER.error(String.format("listPUTCopyTrafficSearch failed. ", a.cause()));
+				LOG.error(String.format("listPUTCopyTrafficSearch failed. ", a.cause()));
 				errorTrafficSearch(listTrafficSearch.getSiteRequest_(), eventHandler, a);
 			}
 		});
@@ -657,44 +653,44 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 													eventHandler.handle(Future.succeededFuture(trafficSearch));
 													promise.complete(trafficSearch);
 												} else {
-													LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", e.cause()));
+													LOG.error(String.format("putcopyTrafficSearchFuture failed. ", e.cause()));
 													eventHandler.handle(Future.failedFuture(e.cause()));
 												}
 											});
 										} else {
-											LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", d.cause()));
+											LOG.error(String.format("putcopyTrafficSearchFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", c.cause()));
+									LOG.error(String.format("putcopyTrafficSearchFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", b.cause()));
+							LOG.error(String.format("putcopyTrafficSearchFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", a.cause()));
+					LOG.error(String.format("putcopyTrafficSearchFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("putcopyTrafficSearchFuture failed. ", e));
+			LOG.error(String.format("putcopyTrafficSearchFuture failed. "), e);
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
 	}
 
-	public void sqlPUTCopyTrafficSearch(TrafficSearch o, JsonObject jsonObject, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPUTCopyTrafficSearch(TrafficSearch o, JsonObject jsonObject, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE TrafficSearch SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -752,7 +748,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						{
 							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 								futures.add(Future.future(a -> {
-									tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+									sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
 											.execute(Tuple.of(pk, l)
 											, b
 									-> {
@@ -773,7 +769,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						{
 							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 								futures.add(Future.future(a -> {
-									tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+									sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
 											.execute(Tuple.of(pk, l)
 											, b
 									-> {
@@ -869,37 +865,37 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
-					LOGGER.error(String.format("sqlPUTCopyTrafficSearch failed. ", a.cause()));
+					LOG.error(String.format("sqlPUTCopyTrafficSearch failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPUTCopyTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlPUTCopyTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void putcopyTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void putcopyTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PUTCopyTrafficSearch(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("putcopyTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("putcopyTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("putcopyTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("putcopyTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PUTCopyTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PUTCopyTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PUTCopyTrafficSearch failed. ", e));
+			LOG.error(String.format("response200PUTCopyTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -907,32 +903,32 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// POST //
 
 	@Override
-	public void postTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("POST");
-		try {
-			LOGGER.info(String.format("postTrafficSearch started. "));
+	public void postTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("postTrafficSearch started. "));
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/traffic-search");
+					siteRequest.setRequestMethod("POST");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						ApiRequest apiRequest = new ApiRequest();
 						apiRequest.setRows(1);
 						apiRequest.setNumFound(1L);
@@ -947,27 +943,27 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								postTrafficSearchResponse(trafficSearch, d -> {
 										if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("postTrafficSearch succeeded. "));
+										LOG.info(String.format("postTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("postTrafficSearch failed. ", d.cause()));
+										LOG.error(String.format("postTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("postTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("postTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("postTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("postTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("postTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("postTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
@@ -994,44 +990,44 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 													eventHandler.handle(Future.succeededFuture(trafficSearch));
 													promise.complete(trafficSearch);
 												} else {
-													LOGGER.error(String.format("postTrafficSearchFuture failed. ", e.cause()));
+													LOG.error(String.format("postTrafficSearchFuture failed. ", e.cause()));
 													eventHandler.handle(Future.failedFuture(e.cause()));
 												}
 											});
 										} else {
-											LOGGER.error(String.format("postTrafficSearchFuture failed. ", d.cause()));
+											LOG.error(String.format("postTrafficSearchFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("postTrafficSearchFuture failed. ", c.cause()));
+									LOG.error(String.format("postTrafficSearchFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("postTrafficSearchFuture failed. ", b.cause()));
+							LOG.error(String.format("postTrafficSearchFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("postTrafficSearchFuture failed. ", a.cause()));
+					LOG.error(String.format("postTrafficSearchFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("postTrafficSearchFuture failed. ", e));
+			LOG.error(String.format("postTrafficSearchFuture failed. "), e);
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
 	}
 
-	public void sqlPOSTTrafficSearch(TrafficSearch o, Boolean inheritPk, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPOSTTrafficSearch(TrafficSearch o, Boolean inheritPk, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE TrafficSearch SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -1131,7 +1127,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1163,7 +1159,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1261,7 +1257,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			bParams.add(pk);
 			num++;
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(bSql.toString())
+					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
 					-> {
@@ -1276,39 +1272,39 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
 				} else {
-					LOGGER.error(String.format("sqlPOSTTrafficSearch failed. ", a.cause()));
+					LOG.error(String.format("sqlPOSTTrafficSearch failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPOSTTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlPOSTTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void postTrafficSearchResponse(TrafficSearch trafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void postTrafficSearchResponse(TrafficSearch trafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = trafficSearch.getSiteRequest_();
 		try {
 			response200POSTTrafficSearch(trafficSearch, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("postTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("postTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("postTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("postTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200POSTTrafficSearch(TrafficSearch o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200POSTTrafficSearch(TrafficSearch o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			JsonObject json = JsonObject.mapFrom(o);
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200POSTTrafficSearch failed. ", e));
+			LOG.error(String.format("response200POSTTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -1316,32 +1312,32 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// PATCH //
 
 	@Override
-	public void patchTrafficSearch(JsonObject body, OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, body);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("PATCH");
-		try {
-			LOGGER.info(String.format("patchTrafficSearch started. "));
+	public void patchTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		LOG.info(String.format("patchTrafficSearch started. "));
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setJsonObject(body);
+					siteRequest.setRequestUri("/api/traffic-search");
+					siteRequest.setRequestMethod("PATCH");
 
-			List<String> roles = Arrays.asList("SiteService");
-			if(
-					!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-					&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-					) {
-				eventHandler.handle(Future.succeededFuture(
-					new OperationResponse(401, "UNAUTHORIZED", 
-						Buffer.buffer().appendString(
-							new JsonObject()
-								.put("errorCode", "401")
-								.put("errorMessage", "roles required: " + String.join(", ", roles))
-								.encodePrettily()
-							), MultiMap.caseInsensitiveMultiMap()
-					)
-				));
-			} else {
-
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+					List<String> roles = Arrays.asList("SiteService");
+					if(
+							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+							) {
+						eventHandler.handle(Future.succeededFuture(
+							new ServiceResponse(401, "UNAUTHORIZED", 
+								Buffer.buffer().appendString(
+									new JsonObject()
+										.put("errorCode", "401")
+										.put("errorMessage", "roles required: " + String.join(", ", roles))
+										.encodePrettily()
+									), MultiMap.caseInsensitiveMultiMap()
+							)
+						));
+					} else {
 						patchTrafficSearchResponse(siteRequest, c -> {
 							if(c.succeeded()) {
 								eventHandler.handle(Future.succeededFuture(c.result()));
@@ -1359,7 +1355,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
 															) {
 														String message = String.format("roles required: " + String.join(", ", roles2));
-														LOGGER.error(message);
+														LOG.error(message);
 														errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(message));
 													} else {
 
@@ -1386,58 +1382,58 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 																if(e.succeeded()) {
 																	patchTrafficSearchResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOGGER.info(String.format("patchTrafficSearch succeeded. "));
+																			LOG.info(String.format("patchTrafficSearch succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
-																			LOGGER.error(String.format("patchTrafficSearch failed. ", f.cause()));
+																			LOG.error(String.format("patchTrafficSearch failed. ", f.cause()));
 																			errorTrafficSearch(siteRequest, null, f);
 																		}
 																	});
 																} else {
-																	LOGGER.error(String.format("patchTrafficSearch failed. ", e.cause()));
+																	LOG.error(String.format("patchTrafficSearch failed. ", e.cause()));
 																	errorTrafficSearch(siteRequest, null, e);
 																}
 															});
 														} catch(Exception ex) {
-															LOGGER.error(String.format("patchTrafficSearch failed. ", ex));
+															LOG.error(String.format("patchTrafficSearch failed. ", ex));
 															errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
 										} else {
-													LOGGER.error(String.format("patchTrafficSearch failed. ", d.cause()));
+													LOG.error(String.format("patchTrafficSearch failed. ", d.cause()));
 													errorTrafficSearch(siteRequest, null, d);
 												}
 											});
 										} catch(Exception ex) {
-											LOGGER.error(String.format("patchTrafficSearch failed. ", ex));
+											LOG.error(String.format("patchTrafficSearch failed. ", ex));
 											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 										}
 									}, resultHandler -> {
 									}
 								);
 							} else {
-								LOGGER.error(String.format("patchTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("patchTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("patchTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("patchTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("patchTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("patchTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void listPATCHTrafficSearch(ApiRequest apiRequest, SearchList<TrafficSearch> listTrafficSearch, String dt, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void listPATCHTrafficSearch(ApiRequest apiRequest, SearchList<TrafficSearch> listTrafficSearch, String dt, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		listTrafficSearch.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), siteRequest.getJsonObject());
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), siteRequest.getJsonObject());
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
@@ -1457,7 +1453,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					response200PATCHTrafficSearch(siteRequest, eventHandler);
 				}
 			} else {
-				LOGGER.error(String.format("listPATCHTrafficSearch failed. ", a.cause()));
+				LOG.error(String.format("listPATCHTrafficSearch failed. ", a.cause()));
 				errorTrafficSearch(listTrafficSearch.getSiteRequest_(), eventHandler, a);
 			}
 		});
@@ -1491,27 +1487,27 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 											eventHandler.handle(Future.succeededFuture(trafficSearch));
 											promise.complete(trafficSearch);
 										} else {
-											LOGGER.error(String.format("patchTrafficSearchFuture failed. ", d.cause()));
+											LOG.error(String.format("patchTrafficSearchFuture failed. ", d.cause()));
 											eventHandler.handle(Future.failedFuture(d.cause()));
 										}
 									});
 								} else {
-									LOGGER.error(String.format("patchTrafficSearchFuture failed. ", c.cause()));
+									LOG.error(String.format("patchTrafficSearchFuture failed. ", c.cause()));
 									eventHandler.handle(Future.failedFuture(c.cause()));
 								}
 							});
 						} else {
-							LOGGER.error(String.format("patchTrafficSearchFuture failed. ", b.cause()));
+							LOG.error(String.format("patchTrafficSearchFuture failed. ", b.cause()));
 							eventHandler.handle(Future.failedFuture(b.cause()));
 						}
 					});
 				} else {
-					LOGGER.error(String.format("patchTrafficSearchFuture failed. ", a.cause()));
+					LOG.error(String.format("patchTrafficSearchFuture failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("patchTrafficSearchFuture failed. ", e));
+			LOG.error(String.format("patchTrafficSearchFuture failed. "), e);
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(e));
 		}
 		return promise.future();
@@ -1523,7 +1519,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Integer num = 1;
 			StringBuilder bSql = new StringBuilder("UPDATE TrafficSearch SET ");
 			List<Object> bParams = new ArrayList<Object>();
@@ -1639,7 +1635,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1674,7 +1670,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null && !o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1713,7 +1709,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 										setContrabandKeysValues2.add(l2);
 									if(l2 != null && !o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1735,7 +1731,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Long l :  o.getContrabandKeys()) {
 								if(l != null && (setContrabandKeysValues2 == null || !setContrabandKeysValues2.contains(l))) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=null WHERE pk=$1")
+										sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=null WHERE pk=$1")
 												.execute(Tuple.of(l)
 												, b
 										-> {
@@ -1764,7 +1760,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && o.getContrabandKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE TrafficContraband SET searchKey=null WHERE pk=$1")
+										sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=null WHERE pk=$1")
 												.execute(Tuple.of(l2)
 												, b
 										-> {
@@ -1797,7 +1793,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1832,7 +1828,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1871,7 +1867,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 										setSearchBasisKeysValues2.add(l2);
 									if(l2 != null && !o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
+										sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
 												.execute(Tuple.of(pk, l2)
 												, b
 										-> {
@@ -1893,7 +1889,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Long l :  o.getSearchBasisKeys()) {
 								if(l != null && (setSearchBasisKeysValues2 == null || !setSearchBasisKeysValues2.contains(l))) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE SearchBasis SET searchKey=null WHERE pk=$1")
+										sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=null WHERE pk=$1")
 												.execute(Tuple.of(l)
 												, b
 										-> {
@@ -1922,7 +1918,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && o.getSearchBasisKeys().contains(l2)) {
 									futures.add(Future.future(a -> {
-										tx.preparedQuery("UPDATE SearchBasis SET searchKey=null WHERE pk=$1")
+										sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=null WHERE pk=$1")
 												.execute(Tuple.of(l2)
 												, b
 										-> {
@@ -2011,7 +2007,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				bParams.add(pk);
 				num++;
 				futures.add(Future.future(a -> {
-					tx.preparedQuery(bSql.toString())
+					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
 					-> {
@@ -2029,37 +2025,37 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					o3.setPk(pk);
 					eventHandler.handle(Future.succeededFuture(o3));
 				} else {
-					LOGGER.error(String.format("sqlPATCHTrafficSearch failed. ", a.cause()));
+					LOG.error(String.format("sqlPATCHTrafficSearch failed. ", a.cause()));
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlPATCHTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlPATCHTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void patchTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void patchTrafficSearchResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			response200PATCHTrafficSearch(siteRequest, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("patchTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("patchTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("patchTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("patchTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200PATCHTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200PATCHTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200PATCHTrafficSearch failed. ", e));
+			LOG.error(String.format("response200PATCHTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2067,69 +2063,69 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// GET //
 
 	@Override
-	public void getTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/traffic-search/{id}");
-		siteRequest.setRequestMethod("GET");
-		try {
-			{
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void getTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/traffic-search/{id}");
+					siteRequest.setRequestMethod("GET");
+					{
 						aSearchTrafficSearch(siteRequest, false, true, false, "/api/traffic-search/{id}", "GET", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
 								getTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("getTrafficSearch succeeded. "));
+										LOG.info(String.format("getTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("getTrafficSearch failed. ", d.cause()));
+										LOG.error(String.format("getTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("getTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("getTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("getTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("getTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("getTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("getTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void getTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void getTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		try {
 			response200GETTrafficSearch(listTrafficSearch, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("getTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("getTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("getTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("getTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200GETTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200GETTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 			SolrDocumentList solrDocuments = listTrafficSearch.getSolrDocumentList();
 
 			JsonObject json = JsonObject.mapFrom(listTrafficSearch.getList().stream().findFirst().orElse(null));
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200GETTrafficSearch failed. ", e));
+			LOG.error(String.format("response200GETTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2137,61 +2133,61 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// Search //
 
 	@Override
-	public void searchTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/traffic-search");
-		siteRequest.setRequestMethod("Search");
-		try {
-			{
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void searchTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/traffic-search");
+					siteRequest.setRequestMethod("Search");
+					{
 						aSearchTrafficSearch(siteRequest, false, true, false, "/api/traffic-search", "Search", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
 								searchTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchTrafficSearch succeeded. "));
+										LOG.info(String.format("searchTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("searchTrafficSearch failed. ", d.cause()));
+										LOG.error(String.format("searchTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("searchTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("searchTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("searchTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("searchTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("searchTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void searchTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		try {
 			response200SearchTrafficSearch(listTrafficSearch, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("searchTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("searchTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("searchTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200SearchTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200SearchTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 			QueryResponse responseSearch = listTrafficSearch.getQueryResponse();
@@ -2298,9 +2294,9 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchTrafficSearch failed. ", e));
+			LOG.error(String.format("response200SearchTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2345,61 +2341,61 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// AdminSearch //
 
 	@Override
-	public void adminsearchTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest);
-		siteRequest.setRequestUri("/api/admin/traffic-search");
-		siteRequest.setRequestMethod("AdminSearch");
-		try {
-			{
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void adminsearchTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/api/admin/traffic-search");
+					siteRequest.setRequestMethod("AdminSearch");
+					{
 						aSearchTrafficSearch(siteRequest, false, true, false, "/api/admin/traffic-search", "AdminSearch", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
 								adminsearchTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("adminsearchTrafficSearch succeeded. "));
+										LOG.info(String.format("adminsearchTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("adminsearchTrafficSearch failed. ", d.cause()));
+										LOG.error(String.format("adminsearchTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("adminsearchTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("adminsearchTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("adminsearchTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("adminsearchTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("adminsearchTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
-	public void adminsearchTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void adminsearchTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		try {
 			response200AdminSearchTrafficSearch(listTrafficSearch, a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("adminsearchTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("adminsearchTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("adminsearchTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("adminsearchTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200AdminSearchTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200AdminSearchTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 			QueryResponse responseSearch = listTrafficSearch.getQueryResponse();
@@ -2506,9 +2502,9 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(OperationResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200AdminSearchTrafficSearch failed. ", e));
+			LOG.error(String.format("response200AdminSearchTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2553,52 +2549,52 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	// SearchPage //
 
 	@Override
-	public void searchpageTrafficSearchId(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		searchpageTrafficSearch(operationRequest, eventHandler);
+	public void searchpageTrafficSearchId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		searchpageTrafficSearch(serviceRequest, eventHandler);
 	}
 
 	@Override
-	public void searchpageTrafficSearch(OperationRequest operationRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest);
-		siteRequest.setRequestUri("/traffic-search");
-		siteRequest.setRequestMethod("SearchPage");
-		try {
-			{
-				userTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
+	public void searchpageTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		userTrafficSearch(serviceRequest, b -> {
+			if(b.succeeded()) {
+				try {
+					SiteRequestEnUS siteRequest = b.result();
+					siteRequest.setRequestUri("/traffic-search");
+					siteRequest.setRequestMethod("SearchPage");
+					{
 						aSearchTrafficSearch(siteRequest, false, true, false, "/traffic-search", "SearchPage", c -> {
 							if(c.succeeded()) {
 								SearchList<TrafficSearch> listTrafficSearch = c.result();
 								searchpageTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOGGER.info(String.format("searchpageTrafficSearch succeeded. "));
+										LOG.info(String.format("searchpageTrafficSearch succeeded. "));
 									} else {
-										LOGGER.error(String.format("searchpageTrafficSearch failed. ", d.cause()));
+										LOG.error(String.format("searchpageTrafficSearch failed. ", d.cause()));
 										errorTrafficSearch(siteRequest, eventHandler, d);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("searchpageTrafficSearch failed. ", c.cause()));
+								LOG.error(String.format("searchpageTrafficSearch failed. ", c.cause()));
 								errorTrafficSearch(siteRequest, eventHandler, c);
 							}
 						});
-					} else {
-						LOGGER.error(String.format("searchpageTrafficSearch failed. ", b.cause()));
-						errorTrafficSearch(siteRequest, eventHandler, b);
 					}
-				});
+				} catch(Exception ex) {
+					LOG.error(String.format("searchpageTrafficSearch failed. ", ex));
+					errorTrafficSearch(null, eventHandler, Future.failedFuture(ex));
+				}
+			} else {
+				LOG.error(String.format("searchpageTrafficSearch failed. ", b.cause()));
+				errorTrafficSearch(null, eventHandler, b);
 			}
-		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageTrafficSearch failed. ", ex));
-			errorTrafficSearch(siteRequest, eventHandler, Future.failedFuture(ex));
-		}
+		});
 	}
 
 
 	public void searchpageTrafficSearchPageInit(TrafficSearchPage page, SearchList<TrafficSearch> listTrafficSearch) {
 	}
-	public void searchpageTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void searchpageTrafficSearchResponse(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		try {
 			Buffer buffer = Buffer.buffer();
@@ -2608,16 +2604,16 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture(a.result()));
 				} else {
-					LOGGER.error(String.format("searchpageTrafficSearchResponse failed. ", a.cause()));
+					LOG.error(String.format("searchpageTrafficSearchResponse failed. ", a.cause()));
 					errorTrafficSearch(siteRequest, eventHandler, a);
 				}
 			});
 		} catch(Exception ex) {
-			LOGGER.error(String.format("searchpageTrafficSearchResponse failed. ", ex));
+			LOG.error(String.format("searchpageTrafficSearchResponse failed. ", ex));
 			errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 		}
 	}
-	public void response200SearchPageTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void response200SearchPageTrafficSearch(SearchList<TrafficSearch> listTrafficSearch, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 			Buffer buffer = Buffer.buffer();
@@ -2638,9 +2634,9 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			searchpageTrafficSearchPageInit(page, listTrafficSearch);
 			page.initDeepTrafficSearchPage(siteRequest);
 			page.html();
-			eventHandler.handle(Future.succeededFuture(new OperationResponse(200, "OK", buffer, requestHeaders)));
+			eventHandler.handle(Future.succeededFuture(new ServiceResponse(200, "OK", buffer, requestHeaders)));
 		} catch(Exception e) {
-			LOGGER.error(String.format("response200SearchPageTrafficSearch failed. ", e));
+			LOG.error(String.format("response200SearchPageTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -2665,32 +2661,32 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 														eventHandler.handle(Future.succeededFuture(trafficSearch));
 														promise.complete(trafficSearch);
 													} else {
-														LOGGER.error(String.format("refreshTrafficSearch failed. ", h.cause()));
+														LOG.error(String.format("refreshTrafficSearch failed. ", h.cause()));
 														errorTrafficSearch(siteRequest, null, h);
 													}
 												});
 											} else {
-												LOGGER.error(String.format("defineIndexTrafficSearch failed. ", g.cause()));
+												LOG.error(String.format("defineIndexTrafficSearch failed. ", g.cause()));
 												errorTrafficSearch(siteRequest, null, g);
 											}
 										});
 									} else {
-										LOGGER.error(String.format("defineIndexTrafficSearch failed. ", f.cause()));
+										LOG.error(String.format("defineIndexTrafficSearch failed. ", f.cause()));
 										errorTrafficSearch(siteRequest, null, f);
 									}
 								});
 							} else {
-								LOGGER.error(String.format("defineIndexTrafficSearch failed. ", e.cause()));
+								LOG.error(String.format("defineIndexTrafficSearch failed. ", e.cause()));
 								errorTrafficSearch(siteRequest, null, e);
 							}
 						});
 					} else {
-						LOGGER.error(String.format("defineIndexTrafficSearch failed. ", d.cause()));
+						LOG.error(String.format("defineIndexTrafficSearch failed. ", d.cause()));
 						errorTrafficSearch(siteRequest, null, d);
 					}
 				});
 			} else {
-				LOGGER.error(String.format("defineIndexTrafficSearch failed. ", c.cause()));
+				LOG.error(String.format("defineIndexTrafficSearch failed. ", c.cause()));
 				errorTrafficSearch(siteRequest, null, c);
 			}
 		});
@@ -2699,12 +2695,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 
 	public void createTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<TrafficSearch>> eventHandler) {
 		try {
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			tx.preparedQuery("INSERT INTO TrafficSearch(created, userKey) VALUES($1, $2) RETURNING pk")
+			sqlConnection.preparedQuery("INSERT INTO TrafficSearch(created, userKey) VALUES($1, $2) RETURNING pk")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
 					, createAsync
@@ -2717,75 +2713,81 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					o.setSiteRequest_(siteRequest);
 					eventHandler.handle(Future.succeededFuture(o));
 				} else {
-					LOGGER.error(String.format("createTrafficSearch failed. ", createAsync.cause()));
+					LOG.error(String.format("createTrafficSearch failed. ", createAsync.cause()));
 					eventHandler.handle(Future.failedFuture(createAsync.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("createTrafficSearch failed. ", e));
+			LOG.error(String.format("createTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void errorTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler, AsyncResult<?> resultAsync) {
+	public void errorTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler, AsyncResult<?> resultAsync) {
 		Throwable e = resultAsync.cause();
-		JsonObject json = new JsonObject()
-				.put("error", new JsonObject()
-				.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null))
-				.put("userName", siteRequest.getUserName())
-				.put("userFullName", siteRequest.getUserFullName())
-				.put("requestUri", siteRequest.getRequestUri())
-				.put("requestMethod", siteRequest.getRequestMethod())
-				.put("params", Optional.ofNullable(siteRequest.getOperationRequest()).map(o -> o.getParams()).orElse(null))
-				);
-		ExceptionUtils.printRootCauseStackTrace(e);
-		OperationResponse responseOperation = new OperationResponse(400, "BAD REQUEST", 
+		JsonObject json = new JsonObject();
+		JsonObject jsonError = new JsonObject();
+		json.put("error", jsonError);
+		jsonError.put("message", Optional.ofNullable(e).map(Throwable::getMessage).orElse(null));
+		if(siteRequest != null) {
+			jsonError.put("userName", siteRequest.getUserName());
+			jsonError.put("userFullName", siteRequest.getUserFullName());
+			jsonError.put("requestUri", siteRequest.getRequestUri());
+			jsonError.put("requestMethod", siteRequest.getRequestMethod());
+			jsonError.put("params", Optional.ofNullable(siteRequest.getServiceRequest()).map(o -> o.getParams()).orElse(null));
+		}
+		LOG.error("error: ", e);
+		ServiceResponse responseOperation = new ServiceResponse(400, "BAD REQUEST", 
 				Buffer.buffer().appendString(json.encodePrettily())
 				, MultiMap.caseInsensitiveMultiMap().add("Content-Type", "application/json")
 		);
-		SiteConfig siteConfig = siteRequest.getSiteConfig_();
-		SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-		MailClient mailClient = siteContext.getMailClient();
-		MailMessage message = new MailMessage();
-		message.setFrom(siteConfig.getEmailFrom());
-		message.setTo(siteConfig.getEmailAdmin());
-		if(e != null)
-			message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-		message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-		WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-		workerExecutor.executeBlocking(
-			blockingCodeHandler -> {
-				mailClient.sendMail(message, result -> {
-					if (result.succeeded()) {
-						LOGGER.info(result.result());
-					} else {
-						LOGGER.error(result.cause());
-					}
-				});
-			}, resultHandler -> {
-			}
-		);
-		sqlRollbackTrafficSearch(siteRequest, a -> {
-			if(a.succeeded()) {
-				LOGGER.info(String.format("sql rollback. "));
-				sqlCloseTrafficSearch(siteRequest, b -> {
-					if(b.succeeded()) {
-						LOGGER.info(String.format("sql close. "));
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					} else {
-						if(eventHandler != null)
-							eventHandler.handle(Future.succeededFuture(responseOperation));
-					}
-				});
-			} else {
-				if(eventHandler != null)
-					eventHandler.handle(Future.succeededFuture(responseOperation));
-			}
-		});
+		if(siteRequest != null) {
+			SiteConfig siteConfig = siteRequest.getSiteConfig_();
+			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
+			MailClient mailClient = siteContext.getMailClient();
+			MailMessage message = new MailMessage();
+			message.setFrom(siteConfig.getEmailFrom());
+			message.setTo(siteConfig.getEmailAdmin());
+			if(e != null && siteConfig.getEmailFrom() != null)
+				message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+			workerExecutor.executeBlocking(
+				blockingCodeHandler -> {
+					mailClient.sendMail(message, result -> {
+						if (result.succeeded()) {
+							LOG.info(result.result().toString());
+						} else {
+							LOG.error("sendMail failed. ", result.cause());
+						}
+					});
+				}, resultHandler -> {
+				}
+			);
+			sqlRollbackTrafficSearch(siteRequest, a -> {
+				if(a.succeeded()) {
+					LOG.info(String.format("sql rollback. "));
+					sqlCloseTrafficSearch(siteRequest, b -> {
+						if(b.succeeded()) {
+							LOG.info(String.format("sql close. "));
+							if(eventHandler != null)
+								eventHandler.handle(Future.succeededFuture(responseOperation));
+						} else {
+							if(eventHandler != null)
+								eventHandler.handle(Future.succeededFuture(responseOperation));
+						}
+					});
+				} else {
+					if(eventHandler != null)
+						eventHandler.handle(Future.succeededFuture(responseOperation));
+				}
+			});
+		} else {
+			eventHandler.handle(Future.succeededFuture(responseOperation));
+		}
 	}
 
-	public void sqlConnectionTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlConnectionTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
 
@@ -2798,40 +2800,42 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						siteRequest.setSqlConnection(sqlConnection);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlConnectionTrafficSearch failed. ", a.cause()));
+						LOG.error(String.format("sqlConnectionTrafficSearch failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlTransactionTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlTransactionTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 
 			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlTransactionCloseTrafficSearch failed, connection should not be null. "));
 			} else {
-				Transaction tx = sqlConnection.begin();
-				siteRequest.setTx(tx);
-				eventHandler.handle(Future.succeededFuture());
+				sqlConnection.begin(a -> {
+					Transaction tx = a.result();
+					siteRequest.setTx(tx);
+					eventHandler.handle(Future.succeededFuture());
+				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTransactionTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlTransactionTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlCommitTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlCommitTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			Transaction tx = siteRequest.getTx();
 
 			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlCommitCloseTrafficSearch failed, tx should not be null. "));
 			} else {
 				tx.commit(a -> {
 					if(a.succeeded()) {
@@ -2841,23 +2845,23 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						siteRequest.setTx(null);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlCommitTrafficSearch failed. ", a.cause()));
+						LOG.error(String.format("sqlCommitTrafficSearch failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlRollbackTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlRollbackTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			Transaction tx = siteRequest.getTx();
 
 			if(tx == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlRollbackCloseTrafficSearch failed, tx should not be null. "));
 			} else {
 				tx.rollback(a -> {
 					if(a.succeeded()) {
@@ -2867,241 +2871,279 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						siteRequest.setTx(null);
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("sqlRollbackTrafficSearch failed. ", a.cause()));
+						LOG.error(String.format("sqlRollbackTrafficSearch failed. ", a.cause()));
 						eventHandler.handle(Future.failedFuture(a.cause()));
 					}
 				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void sqlCloseTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlCloseTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 
 			if(sqlConnection == null) {
-				eventHandler.handle(Future.succeededFuture());
+				eventHandler.handle(Future.failedFuture("sqlCloseTrafficSearch failed, connection should not be null. "));
 			} else {
-				sqlConnection.close();
-				siteRequest.setSqlConnection(null);
-				eventHandler.handle(Future.succeededFuture());
+				sqlConnection.close(a -> {
+					if(a.succeeded()) {
+						siteRequest.setSqlConnection(null);
+						eventHandler.handle(Future.succeededFuture());
+					} else {
+						LOG.error(String.format("sqlCloseTrafficSearch failed. ", a.cause()));
+						eventHandler.handle(Future.failedFuture(a.cause()));
+					}
+				});
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("sqlCloseTrafficSearch failed. ", e));
+			LOG.error(String.format("sqlCloseTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public SiteRequestEnUS generateSiteRequestEnUSForTrafficSearch(SiteContextEnUS siteContext, OperationRequest operationRequest) {
-		return generateSiteRequestEnUSForTrafficSearch(siteContext, operationRequest, null);
+	public SiteRequestEnUS generateSiteRequestEnUSForTrafficSearch(User user, SiteContextEnUS siteContext, ServiceRequest serviceRequest) {
+		return generateSiteRequestEnUSForTrafficSearch(user, siteContext, serviceRequest, null);
 	}
 
-	public SiteRequestEnUS generateSiteRequestEnUSForTrafficSearch(SiteContextEnUS siteContext, OperationRequest operationRequest, JsonObject body) {
+	public SiteRequestEnUS generateSiteRequestEnUSForTrafficSearch(User user, SiteContextEnUS siteContext, ServiceRequest serviceRequest, JsonObject body) {
 		Vertx vertx = siteContext.getVertx();
 		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 		siteRequest.setJsonObject(body);
 		siteRequest.setVertx(vertx);
+		siteRequest.setUser(user);
 		siteRequest.setSiteContext_(siteContext);
 		siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-		siteRequest.setOperationRequest(operationRequest);
+		siteRequest.setServiceRequest(serviceRequest);
 		siteRequest.initDeepSiteRequestEnUS(siteRequest);
 
 		return siteRequest;
 	}
 
-	public void userTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void userTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<SiteRequestEnUS>> eventHandler) {
 		try {
-			Long userKey = siteRequest.getUserKey();
-			if(userKey == null) {
-				eventHandler.handle(Future.succeededFuture());
+			JsonObject userJson = serviceRequest.getUser();
+			if(userJson == null) {
+				SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(null, siteContext, serviceRequest);
+				eventHandler.handle(Future.succeededFuture(siteRequest));
 			} else {
-				sqlConnectionTrafficSearch(siteRequest, a -> {
+				User token = User.create(userJson);
+				siteContext.getOauth2AuthenticationProvider().authenticate(token.principal(), a -> {
 					if(a.succeeded()) {
-						sqlTransactionTrafficSearch(siteRequest, b -> {
+						User user = a.result();
+						siteContext.getAuthorizationProvider().getAuthorizations(user, b -> {
 							if(b.succeeded()) {
-								Transaction tx = siteRequest.getTx();
-								tx.preparedQuery("SELECT pk FROM SiteUser WHERE userKey=$1")
-										.collecting(Collectors.toList())
-										.execute(Tuple.of(userKey)
-										, selectCAsync
-								-> {
-									if(selectCAsync.succeeded()) {
-										try {
-											Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-											SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-											if(userValues == null) {
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
+								JsonObject userAttributes = user.attributes();
+								JsonObject accessToken = userAttributes.getJsonObject("accessToken");
+								String userId = userAttributes.getString("sub");
+								SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficSearch(user, siteContext, serviceRequest);
+								sqlConnectionTrafficSearch(siteRequest, c -> {
+									if(c.succeeded()) {
+										sqlTransactionTrafficSearch(siteRequest, d -> {
+											if(d.succeeded()) {
+												SqlConnection sqlConnection = siteRequest.getSqlConnection();
+												sqlConnection.preparedQuery("SELECT pk FROM SiteUser WHERE userId=$1")
+														.collecting(Collectors.toList())
+														.execute(Tuple.of(userId)
+														, selectCAsync
+												-> {
+													if(selectCAsync.succeeded()) {
+														try {
+															Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
+															SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
+															if(userValues == null) {
+																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
 
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("userName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("userFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("userLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("userCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("userId", jsonPrincipal.getString("sub"));
-												jsonObject.put("userEmail", jsonPrincipal.getString("email"));
-												userTrafficSearchDefine(siteRequest, jsonObject, false);
+																JsonObject jsonObject = new JsonObject();
+																jsonObject.put("userName", accessToken.getString("preferred_username"));
+																jsonObject.put("userFirstName", accessToken.getString("given_name"));
+																jsonObject.put("userLastName", accessToken.getString("family_name"));
+																jsonObject.put("userCompleteName", accessToken.getString("name"));
+																jsonObject.put("userId", accessToken.getString("sub"));
+																jsonObject.put("userEmail", accessToken.getString("email"));
+																userTrafficSearchDefine(siteRequest, jsonObject, false);
 
-												SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-												siteRequest2.setTx(siteRequest.getTx());
-												siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-												siteRequest2.setJsonObject(jsonObject);
-												siteRequest2.setVertx(siteRequest.getVertx());
-												siteRequest2.setSiteContext_(siteContext);
-												siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-												siteRequest2.setUserId(siteRequest.getUserId());
-												siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+																SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+																siteRequest2.setTx(siteRequest.getTx());
+																siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+																siteRequest2.setJsonObject(jsonObject);
+																siteRequest2.setVertx(siteRequest.getVertx());
+																siteRequest2.setSiteContext_(siteContext);
+																siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+																siteRequest2.setUserId(siteRequest.getUserId());
+																siteRequest2.initDeepSiteRequestEnUS(siteRequest);
 
-												ApiRequest apiRequest = new ApiRequest();
-												apiRequest.setRows(1);
-												apiRequest.setNumFound(1L);
-												apiRequest.setNumPATCH(0L);
-												apiRequest.initDeepApiRequest(siteRequest2);
-												siteRequest2.setApiRequest_(apiRequest);
+																ApiRequest apiRequest = new ApiRequest();
+																apiRequest.setRows(1);
+																apiRequest.setNumFound(1L);
+																apiRequest.setNumPATCH(0L);
+																apiRequest.initDeepApiRequest(siteRequest2);
+																siteRequest2.setApiRequest_(apiRequest);
 
-												userService.createSiteUser(siteRequest2, c -> {
-													if(c.succeeded()) {
-														SiteUser siteUser = c.result();
-														userService.sqlPOSTSiteUser(siteUser, false, d -> {
-															if(d.succeeded()) {
-																userService.defineIndexSiteUser(siteUser, e -> {
+																userService.createSiteUser(siteRequest2, e -> {
 																	if(e.succeeded()) {
-																		siteRequest.setSiteUser(siteUser);
-																		siteRequest.setUserName(jsonPrincipal.getString("preferred_username"));
-																		siteRequest.setUserFirstName(jsonPrincipal.getString("given_name"));
-																		siteRequest.setUserLastName(jsonPrincipal.getString("family_name"));
-																		siteRequest.setUserEmail(jsonPrincipal.getString("email"));
-																		siteRequest.setUserId(jsonPrincipal.getString("sub"));
-																		siteRequest.setUserKey(siteUser.getPk());
-																		eventHandler.handle(Future.succeededFuture());
+																		SiteUser siteUser = e.result();
+																		userService.sqlPOSTSiteUser(siteUser, false, f -> {
+																			if(f.succeeded()) {
+																				userService.defineIndexSiteUser(siteUser, g -> {
+																					if(g.succeeded()) {
+																						siteRequest.setSiteUser(siteUser);
+																						siteRequest.setUserName(accessToken.getString("preferred_username"));
+																						siteRequest.setUserFirstName(accessToken.getString("given_name"));
+																						siteRequest.setUserLastName(accessToken.getString("family_name"));
+																						siteRequest.setUserEmail(accessToken.getString("email"));
+																						siteRequest.setUserId(accessToken.getString("sub"));
+																						siteRequest.setUserKey(siteUser.getPk());
+																						eventHandler.handle(Future.succeededFuture(siteRequest));
+																					} else {
+																						errorTrafficSearch(siteRequest, null, g);
+																					}
+																				});
+																			} else {
+																				errorTrafficSearch(siteRequest, null, f);
+																			}
+																		});
 																	} else {
-																		errorTrafficSearch(siteRequest, eventHandler, e);
+																		errorTrafficSearch(siteRequest, null, e);
 																	}
 																});
 															} else {
-																errorTrafficSearch(siteRequest, eventHandler, d);
+																Long pkUser = userValues.getLong(0);
+																SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+																searchList.setQuery("*:*");
+																searchList.setStore(true);
+																searchList.setC(SiteUser.class);
+																searchList.addFilterQuery("pk_indexed_long:" + pkUser);
+																searchList.initDeepSearchList(siteRequest);
+																SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+
+																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+
+																JsonObject jsonObject = new JsonObject();
+																jsonObject.put("setUserName", accessToken.getString("preferred_username"));
+																jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
+																jsonObject.put("setUserLastName", accessToken.getString("family_name"));
+																jsonObject.put("setUserCompleteName", accessToken.getString("name"));
+																jsonObject.put("setUserId", accessToken.getString("sub"));
+																jsonObject.put("setUserEmail", accessToken.getString("email"));
+																Boolean define = userTrafficSearchDefine(siteRequest, jsonObject, true);
+																if(define) {
+																	SiteUser siteUser;
+																	if(siteUser1 == null) {
+																		siteUser = new SiteUser();
+																		siteUser.setPk(pkUser);
+																		siteUser.setSiteRequest_(siteRequest);
+																	} else {
+																		siteUser = siteUser1;
+																	}
+
+																	SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+																	siteRequest2.setTx(siteRequest.getTx());
+																	siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+																	siteRequest2.setJsonObject(jsonObject);
+																	siteRequest2.setVertx(siteRequest.getVertx());
+																	siteRequest2.setSiteContext_(siteContext);
+																	siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+																	siteRequest2.setUserId(siteRequest.getUserId());
+																	siteRequest2.setUserKey(pkUser);
+																	siteRequest.setUserKey(pkUser);
+																	siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+																	siteUser.setSiteRequest_(siteRequest2);
+
+																	ApiRequest apiRequest = new ApiRequest();
+																	apiRequest.setRows(1);
+																	apiRequest.setNumFound(1L);
+																	apiRequest.setNumPATCH(0L);
+																	apiRequest.initDeepApiRequest(siteRequest2);
+																	siteRequest2.setApiRequest_(apiRequest);
+
+																	userService.sqlPATCHSiteUser(siteUser, false, e -> {
+																		if(e.succeeded()) {
+																			SiteUser siteUser2 = e.result();
+																			userService.defineIndexSiteUser(siteUser2, f -> {
+																				if(f.succeeded()) {
+																					siteRequest.setSiteUser(siteUser2);
+																					siteRequest.setUserName(siteUser2.getUserName());
+																					siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+																					siteRequest.setUserLastName(siteUser2.getUserLastName());
+																					siteRequest.setUserKey(siteUser2.getPk());
+																					eventHandler.handle(Future.succeededFuture(siteRequest));
+																				} else {
+																					errorTrafficSearch(siteRequest, null, f);
+																				}
+																			});
+																		} else {
+																			errorTrafficSearch(siteRequest, null, e);
+																		}
+																	});
+																} else {
+																	siteRequest.setSiteUser(siteUser1);
+																	siteRequest.setUserName(siteUser1.getUserName());
+																	siteRequest.setUserFirstName(siteUser1.getUserFirstName());
+																	siteRequest.setUserLastName(siteUser1.getUserLastName());
+																	siteRequest.setUserKey(siteUser1.getPk());
+																	sqlRollbackTrafficSearch(siteRequest, e -> {
+																		if(e.succeeded()) {
+																			eventHandler.handle(Future.succeededFuture(siteRequest));
+																		} else {
+																			eventHandler.handle(Future.failedFuture(e.cause()));
+																			errorTrafficSearch(siteRequest, null, e);
+																		}
+																	});
+																}
 															}
-														});
+														} catch(Exception ex) {
+															LOG.error(String.format("userTrafficSearch failed. "), ex);
+															eventHandler.handle(Future.failedFuture(ex));
+														}
 													} else {
-														errorTrafficSearch(siteRequest, eventHandler, c);
+														LOG.error(String.format("userTrafficSearch failed. ", selectCAsync.cause()));
+														eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
 													}
 												});
 											} else {
-												Long pkUser = userValues.getLong(0);
-												SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-												searchList.setQuery("*:*");
-												searchList.setStore(true);
-												searchList.setC(SiteUser.class);
-												searchList.addFilterQuery("userKey_indexed_string:" + userKey);
-												searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-												searchList.initDeepSearchList(siteRequest);
-												SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-
-												JsonObject userVertx = siteRequest.getOperationRequest().getUser();
-												OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext.getAuthProvider(), userVertx);
-												JsonObject jsonPrincipal = token.accessToken();
-
-												JsonObject jsonObject = new JsonObject();
-												jsonObject.put("setUserName", jsonPrincipal.getString("preferred_username"));
-												jsonObject.put("setUserFirstName", jsonPrincipal.getString("given_name"));
-												jsonObject.put("setUserLastName", jsonPrincipal.getString("family_name"));
-												jsonObject.put("setUserCompleteName", jsonPrincipal.getString("name"));
-												jsonObject.put("setUserId", jsonPrincipal.getString("sub"));
-												jsonObject.put("setUserEmail", jsonPrincipal.getString("email"));
-												Boolean define = userTrafficSearchDefine(siteRequest, jsonObject, true);
-												if(define) {
-													SiteUser siteUser;
-													if(siteUser1 == null) {
-														siteUser = new SiteUser();
-														siteUser.setPk(pkUser);
-														siteUser.setSiteRequest_(siteRequest);
-													} else {
-														siteUser = siteUser1;
-													}
-
-													SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-													siteRequest2.setTx(siteRequest.getTx());
-													siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-													siteRequest2.setJsonObject(jsonObject);
-													siteRequest2.setVertx(siteRequest.getVertx());
-													siteRequest2.setSiteContext_(siteContext);
-													siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-													siteRequest2.setUserId(siteRequest.getUserId());
-													siteRequest2.setUserKey(siteRequest.getUserKey());
-													siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-													siteUser.setSiteRequest_(siteRequest2);
-
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(1);
-													apiRequest.setNumFound(1L);
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest2);
-													siteRequest2.setApiRequest_(apiRequest);
-
-													userService.sqlPATCHSiteUser(siteUser, false, d -> {
-														if(d.succeeded()) {
-															SiteUser siteUser2 = d.result();
-															userService.defineIndexSiteUser(siteUser2, e -> {
-																if(e.succeeded()) {
-																	siteRequest.setSiteUser(siteUser2);
-																	siteRequest.setUserName(siteUser2.getUserName());
-																	siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser2.getUserLastName());
-																	siteRequest.setUserId(siteUser2.getUserId());
-																	siteRequest.setUserKey(siteUser2.getPk());
-																	eventHandler.handle(Future.succeededFuture());
-																} else {
-																	errorTrafficSearch(siteRequest, eventHandler, e);
-																}
-															});
-														} else {
-															errorTrafficSearch(siteRequest, eventHandler, d);
-														}
-													});
-												} else {
-													siteRequest.setSiteUser(siteUser1);
-													siteRequest.setUserName(siteUser1.getUserName());
-													siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-													siteRequest.setUserLastName(siteUser1.getUserLastName());
-													siteRequest.setUserId(siteUser1.getUserId());
-													siteRequest.setUserKey(siteUser1.getPk());
-													sqlRollbackTrafficSearch(siteRequest, c -> {
-														if(c.succeeded()) {
-															eventHandler.handle(Future.succeededFuture());
-														} else {
-															eventHandler.handle(Future.failedFuture(c.cause()));
-															errorTrafficSearch(siteRequest, eventHandler, c);
-														}
-													});
-												}
+												LOG.error(String.format("userTrafficSearch failed. ", d.cause()));
+												eventHandler.handle(Future.failedFuture(d.cause()));
 											}
-										} catch(Exception e) {
-											LOGGER.error(String.format("userTrafficSearch failed. ", e));
-											eventHandler.handle(Future.failedFuture(e));
-										}
+										});
 									} else {
-										LOGGER.error(String.format("userTrafficSearch failed. ", selectCAsync.cause()));
-										eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
+										LOG.error(String.format("userTrafficSearch failed. ", c.cause()));
+										eventHandler.handle(Future.failedFuture(c.cause()));
 									}
 								});
 							} else {
-								LOGGER.error(String.format("userTrafficSearch failed. ", b.cause()));
+								LOG.error(String.format("userTrafficSearch failed. ", b.cause()));
 								eventHandler.handle(Future.failedFuture(b.cause()));
 							}
 						});
 					} else {
-						LOGGER.error(String.format("userTrafficSearch failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
+						siteContext.getOauth2AuthenticationProvider().refresh(token, b -> {
+							if(b.succeeded()) {
+								User user = b.result();
+								serviceRequest.setUser(user.principal());
+								userTrafficSearch(serviceRequest, c -> {
+									if(c.succeeded()) {
+										SiteRequestEnUS siteRequest = c.result();
+										eventHandler.handle(Future.succeededFuture(siteRequest));
+									} else {
+										LOG.error(String.format("userTrafficSearch failed. ", c.cause()));
+										eventHandler.handle(Future.failedFuture(c.cause()));
+									}
+								});
+							} else {
+								LOG.error(String.format("userTrafficSearch failed. ", a.cause()));
+								eventHandler.handle(Future.failedFuture(a.cause()));
+							}
+						});
 					}
 				});
 			}
-		} catch(Exception e) {
-			LOGGER.error(String.format("userTrafficSearch failed. ", e));
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("userTrafficSearch failed. "), ex);
+			eventHandler.handle(Future.failedFuture(ex));
 		}
 	}
 
@@ -3119,7 +3161,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		}
 	}
 
-	public void aSearchTrafficSearchFq(String uri, String apiMethod, SearchList<TrafficSearch> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String aSearchTrafficSearchFq(String uri, String apiMethod, SearchList<TrafficSearch> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -3128,9 +3170,9 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
 			String fq1 = fqs[0].equals("*") ? fqs[0] : TrafficSearch.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[0]);
 			String fq2 = fqs[1].equals("*") ? fqs[1] : TrafficSearch.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
-			searchList.addFilterQuery(varIndexed + ":[" + fq1 + " TO " + fq2 + "]");
+			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			searchList.addFilterQuery(varIndexed + ":" + TrafficSearch.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed));
+			return varIndexed + ":" + TrafficSearch.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed);
 		}
 	}
 
@@ -3155,11 +3197,11 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	public void aSearchTrafficSearchUri(String uri, String apiMethod, SearchList<TrafficSearch> searchList) {
 	}
 
-	public void varsTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<OperationResponse>>> eventHandler) {
+	public void varsTrafficSearch(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<ServiceResponse>>> eventHandler) {
 		try {
-			OperationRequest operationRequest = siteRequest.getOperationRequest();
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
 				String paramName = paramRequest.getKey();
@@ -3177,13 +3219,13 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						}
 					}
 				} catch(Exception e) {
-					LOGGER.error(String.format("aSearchTrafficSearch failed. ", e));
+					LOG.error(String.format("aSearchTrafficSearch failed. "), e);
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
 			eventHandler.handle(Future.succeededFuture());
 		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchTrafficSearch failed. ", e));
+			LOG.error(String.format("aSearchTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
@@ -3193,14 +3235,14 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			SearchList<TrafficSearch> searchList = aSearchTrafficSearchList(siteRequest, populate, store, modify, uri, apiMethod);
 			eventHandler.handle(Future.succeededFuture(searchList));
 		} catch(Exception e) {
-			LOGGER.error(String.format("aSearchTrafficSearch failed. ", e));
+			LOG.error(String.format("aSearchTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
 	public SearchList<TrafficSearch> aSearchTrafficSearchList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
-		OperationRequest operationRequest = siteRequest.getOperationRequest();
-		String entityListStr = siteRequest.getOperationRequest().getParams().getJsonObject("query").getString("fl");
+		ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+		String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
 		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
 		SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
 		searchList.setPopulate(populate);
@@ -3212,14 +3254,14 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			searchList.addFields(entityList);
 		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
-		String id = operationRequest.getParams().getJsonObject("path").getString("id");
+		String id = serviceRequest.getParams().getJsonObject("path").getString("id");
 		if(id != null && NumberUtils.isCreatable(id)) {
 			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
 		} else if(id != null) {
 			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
 		}
 
-		operationRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+		serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
 			String entityVar = null;
 			String valueIndexed = null;
 			String varIndexed = null;
@@ -3231,7 +3273,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
 
 			try {
-				if("facet.pivot".equals(paramName)) {
+				if(paramValuesObject != null && "facet.pivot".equals(paramName)) {
 					Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
 					boolean foundFacetPivot = mFacetPivot.find();
 					if(foundFacetPivot) {
@@ -3244,7 +3286,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						}
 						searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
 					}
-				} else {
+				} else if(paramValuesObject != null) {
 					for(Object paramObject : paramObjects) {
 						switch(paramName) {
 							case "q":
@@ -3255,10 +3297,21 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								aSearchTrafficSearchQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
 								break;
 							case "fq":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								varIndexed = TrafficSearch.varIndexedTrafficSearch(entityVar);
-								aSearchTrafficSearchFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+								Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);
+								boolean foundFq = mFq.find();
+								if(foundFq) {
+									StringBuffer sb = new StringBuffer();
+									while(foundFq) {
+										entityVar = mFq.group(1).trim();
+										valueIndexed = mFq.group(2).trim();
+										varIndexed = TrafficSearch.varIndexedTrafficSearch(entityVar);
+										String entityFq = aSearchTrafficSearchFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+										mFq.appendReplacement(sb, entityFq);
+										foundFq = mFq.find();
+									}
+									mFq.appendTail(sb);
+									searchList.addFilterQuery(sb.toString());
+								}
 								break;
 							case "sort":
 								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
@@ -3330,12 +3383,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 	public void aSearchTrafficSearch2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<TrafficSearch> searchList) {
 	}
 
-	public void defineTrafficSearch(TrafficSearch o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void defineTrafficSearch(TrafficSearch o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery("SELECT * FROM TrafficSearch WHERE pk=$1")
+			sqlConnection.preparedQuery("SELECT * FROM TrafficSearch WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
 					, defineAsync
@@ -3350,34 +3403,33 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									try {
 										o.defineForClass(columnName, columnValue);
 									} catch(Exception e) {
-										LOGGER.error(String.format("defineTrafficSearch failed. ", e));
-										LOGGER.error(e);
+										LOG.error(String.format("defineTrafficSearch failed. "), e);
 									}
 								}
 							}
 						}
 						eventHandler.handle(Future.succeededFuture());
 					} catch(Exception e) {
-						LOGGER.error(String.format("defineTrafficSearch failed. ", e));
+						LOG.error(String.format("defineTrafficSearch failed. "), e);
 						eventHandler.handle(Future.failedFuture(e));
 					}
 				} else {
-					LOGGER.error(String.format("defineTrafficSearch failed. ", defineAsync.cause()));
+					LOG.error(String.format("defineTrafficSearch failed. ", defineAsync.cause()));
 					eventHandler.handle(Future.failedFuture(defineAsync.cause()));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("defineTrafficSearch failed. ", e));
+			LOG.error(String.format("defineTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void attributeTrafficSearch(TrafficSearch o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void attributeTrafficSearch(TrafficSearch o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			Transaction tx = siteRequest.getTx();
+			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			Long pk = o.getPk();
-			tx.preparedQuery("SELECT personKey as pk2, 'personKey' from TrafficSearch where pk=$1 UNION SELECT pk as pk2, 'contrabandKeys' from TrafficContraband where searchKey=$2 UNION SELECT pk as pk2, 'searchBasisKeys' from SearchBasis where searchKey=$3")
+			sqlConnection.preparedQuery("SELECT personKey as pk2, 'personKey' from TrafficSearch where pk=$1 UNION SELECT pk as pk2, 'contrabandKeys' from TrafficContraband where searchKey=$2 UNION SELECT pk as pk2, 'searchBasisKeys' from SearchBasis where searchKey=$3")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk, pk, pk)
 					, attributeAsync
@@ -3391,21 +3443,21 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						}
 						eventHandler.handle(Future.succeededFuture());
 					} else {
-						LOGGER.error(String.format("attributeTrafficSearch failed. ", attributeAsync.cause()));
+						LOG.error(String.format("attributeTrafficSearch failed. ", attributeAsync.cause()));
 						eventHandler.handle(Future.failedFuture(attributeAsync.cause()));
 					}
 				} catch(Exception e) {
-					LOGGER.error(String.format("attributeTrafficSearch failed. ", e));
+					LOG.error(String.format("attributeTrafficSearch failed. "), e);
 					eventHandler.handle(Future.failedFuture(e));
 				}
 			});
 		} catch(Exception e) {
-			LOGGER.error(String.format("attributeTrafficSearch failed. ", e));
+			LOG.error(String.format("attributeTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void indexTrafficSearch(TrafficSearch o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void indexTrafficSearch(TrafficSearch o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -3415,12 +3467,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			o.indexForClass();
 			eventHandler.handle(Future.succeededFuture());
 		} catch(Exception e) {
-			LOGGER.error(String.format("indexTrafficSearch failed. ", e));
+			LOG.error(String.format("indexTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
-	public void refreshTrafficSearch(TrafficSearch o, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void refreshTrafficSearch(TrafficSearch o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -3456,7 +3508,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 
 						if(o2 != null) {
 							TrafficPersonEnUSGenApiServiceImpl service = new TrafficPersonEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
 							apiRequest2.setNumFound(1l);
@@ -3471,7 +3523,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								service.patchTrafficPersonFuture(o2, false, a -> {
 									if(a.succeeded()) {
 									} else {
-										LOGGER.info(String.format("TrafficPerson %s failed. ", pk2));
+										LOG.info(String.format("TrafficPerson %s failed. ", pk2));
 										eventHandler.handle(Future.failedFuture(a.cause()));
 									}
 								})
@@ -3491,7 +3543,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 
 						if(o2 != null) {
 							TrafficContrabandEnUSGenApiServiceImpl service = new TrafficContrabandEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
 							apiRequest2.setNumFound(1l);
@@ -3506,7 +3558,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								service.patchTrafficContrabandFuture(o2, false, a -> {
 									if(a.succeeded()) {
 									} else {
-										LOGGER.info(String.format("TrafficContraband %s failed. ", pk2));
+										LOG.info(String.format("TrafficContraband %s failed. ", pk2));
 										eventHandler.handle(Future.failedFuture(a.cause()));
 									}
 								})
@@ -3526,7 +3578,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 
 						if(o2 != null) {
 							SearchBasisEnUSGenApiServiceImpl service = new SearchBasisEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
 							apiRequest2.setNumFound(1l);
@@ -3541,7 +3593,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 								service.patchSearchBasisFuture(o2, false, a -> {
 									if(a.succeeded()) {
 									} else {
-										LOGGER.info(String.format("SearchBasis %s failed. ", pk2));
+										LOG.info(String.format("SearchBasis %s failed. ", pk2));
 										eventHandler.handle(Future.failedFuture(a.cause()));
 									}
 								})
@@ -3555,13 +3607,13 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(siteRequest.getSiteContext_());
 						List<Future> futures2 = new ArrayList<>();
 						for(TrafficSearch o2 : searchList.getList()) {
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteContext, siteRequest.getOperationRequest(), new JsonObject());
+							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficSearch(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							o2.setSiteRequest_(siteRequest2);
 							futures2.add(
 								service.patchTrafficSearchFuture(o2, false, b -> {
 									if(b.succeeded()) {
 									} else {
-										LOGGER.info(String.format("TrafficSearch %s failed. ", o2.getPk()));
+										LOG.info(String.format("TrafficSearch %s failed. ", o2.getPk()));
 										eventHandler.handle(Future.failedFuture(b.cause()));
 									}
 								})
@@ -3572,12 +3624,12 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							if(b.succeeded()) {
 								eventHandler.handle(Future.succeededFuture());
 							} else {
-								LOGGER.error("Refresh relations failed. ", b.cause());
+								LOG.error("Refresh relations failed. ", b.cause());
 								errorTrafficSearch(siteRequest, eventHandler, b);
 							}
 						});
 					} else {
-						LOGGER.error("Refresh relations failed. ", a.cause());
+						LOG.error("Refresh relations failed. ", a.cause());
 						errorTrafficSearch(siteRequest, eventHandler, a);
 					}
 				});
@@ -3585,7 +3637,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				eventHandler.handle(Future.succeededFuture());
 			}
 		} catch(Exception e) {
-			LOGGER.error(String.format("refreshTrafficSearch failed. ", e));
+			LOG.error(String.format("refreshTrafficSearch failed. "), e);
 			eventHandler.handle(Future.failedFuture(e));
 		}
 	}

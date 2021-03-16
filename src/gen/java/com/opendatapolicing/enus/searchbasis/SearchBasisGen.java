@@ -3,6 +3,7 @@ package com.opendatapolicing.enus.searchbasis;
 import java.util.Arrays;
 import java.util.Date;
 import java.time.ZonedDateTime;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.lang.Long;
@@ -11,7 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import java.time.ZoneOffset;
-import io.vertx.core.logging.Logger;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import com.opendatapolicing.enus.search.SearchList;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
@@ -45,6 +44,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import java.lang.String;
+import org.slf4j.Logger;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -58,12 +58,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class SearchBasisGen<DEV> extends Cluster {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SearchBasis.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SearchBasis.class);
 
 	public static final List<String> ROLES = Arrays.asList("SiteService");
 	public static final List<String> ROLE_READS = Arrays.asList("");
@@ -94,21 +90,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchBasisKey //
 	////////////////////
 
-	/**	 The entity searchBasisKey
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long searchBasisKey;
 	@JsonIgnore
 	public Wrap<Long> searchBasisKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("searchBasisKey").o(searchBasisKey);
 
-	/**	<br/> The entity searchBasisKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisKey">Find the entity searchBasisKey in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchBasisKey(Wrap<Long> c);
 
 	public Long getSearchBasisKey() {
@@ -178,21 +165,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchKey //
 	///////////////
 
-	/**	 The entity searchKey
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long searchKey;
 	@JsonIgnore
 	public Wrap<Long> searchKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("searchKey").o(searchKey);
 
-	/**	<br/> The entity searchKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchKey">Find the entity searchKey in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchKey(Wrap<Long> w);
 
 	public Long getSearchKey() {
@@ -346,21 +324,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// trafficSearchSearch //
 	/////////////////////////
 
-	/**	 The entity trafficSearchSearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<TrafficSearch>(). 
-	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<TrafficSearch> trafficSearchSearch = new SearchList<TrafficSearch>();
 	@JsonIgnore
 	public Wrap<SearchList<TrafficSearch>> trafficSearchSearchWrap = new Wrap<SearchList<TrafficSearch>>().p(this).c(SearchList.class).var("trafficSearchSearch").o(trafficSearchSearch);
 
-	/**	<br/> The entity trafficSearchSearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<TrafficSearch>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchSearch">Find the entity trafficSearchSearch in Solr</a>
-	 * <br/>
-	 * @param trafficSearchSearch is the entity already constructed. 
-	 **/
 	protected abstract void _trafficSearchSearch(SearchList<TrafficSearch> l);
 
 	public SearchList<TrafficSearch> getTrafficSearchSearch() {
@@ -387,20 +356,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// trafficSearch_ //
 	////////////////////
 
-	/**	 The entity trafficSearch_
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficSearch trafficSearch_;
 	@JsonIgnore
 	public Wrap<TrafficSearch> trafficSearch_Wrap = new Wrap<TrafficSearch>().p(this).c(TrafficSearch.class).var("trafficSearch_").o(trafficSearch_);
 
-	/**	<br/> The entity trafficSearch_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearch_">Find the entity trafficSearch_ in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _trafficSearch_(Wrap<TrafficSearch> w);
 
 	public TrafficSearch getTrafficSearch_() {
@@ -428,20 +388,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopAgencyTitle //
 	/////////////////////
 
-	/**	 The entity stopAgencyTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stopAgencyTitle;
 	@JsonIgnore
 	public Wrap<String> stopAgencyTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopAgencyTitle").o(stopAgencyTitle);
 
-	/**	<br/> The entity stopAgencyTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopAgencyTitle">Find the entity stopAgencyTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopAgencyTitle(Wrap<String> w);
 
 	public String getStopAgencyTitle() {
@@ -504,21 +455,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopDateTime //
 	//////////////////
 
-	/**	 The entity stopDateTime
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
 	@JsonIgnore
 	public Wrap<ZonedDateTime> stopDateTimeWrap = new Wrap<ZonedDateTime>().p(this).c(ZonedDateTime.class).var("stopDateTime").o(stopDateTime);
 
-	/**	<br/> The entity stopDateTime
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopDateTime">Find the entity stopDateTime in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopDateTime(Wrap<ZonedDateTime> w);
 
 	public ZonedDateTime getStopDateTime() {
@@ -533,7 +475,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopDateTime = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
-	/** Example: 2011-12-03T10:15:30+01:00 **/
 	public void setStopDateTime(String o) {
 		this.stopDateTime = SearchBasis.staticSetStopDateTime(siteRequest_, o);
 		this.stopDateTimeWrap.alreadyInitialized = true;
@@ -595,21 +536,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopPurposeNum //
 	////////////////////
 
-	/**	 The entity stopPurposeNum
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopPurposeNum;
 	@JsonIgnore
 	public Wrap<Integer> stopPurposeNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("stopPurposeNum").o(stopPurposeNum);
 
-	/**	<br/> The entity stopPurposeNum
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopPurposeNum">Find the entity stopPurposeNum in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopPurposeNum(Wrap<Integer> w);
 
 	public Integer getStopPurposeNum() {
@@ -679,20 +611,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopPurposeTitle //
 	//////////////////////
 
-	/**	 The entity stopPurposeTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stopPurposeTitle;
 	@JsonIgnore
 	public Wrap<String> stopPurposeTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopPurposeTitle").o(stopPurposeTitle);
 
-	/**	<br/> The entity stopPurposeTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopPurposeTitle">Find the entity stopPurposeTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopPurposeTitle(Wrap<String> w);
 
 	public String getStopPurposeTitle() {
@@ -755,21 +678,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopActionNum //
 	///////////////////
 
-	/**	 The entity stopActionNum
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopActionNum;
 	@JsonIgnore
 	public Wrap<Integer> stopActionNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("stopActionNum").o(stopActionNum);
 
-	/**	<br/> The entity stopActionNum
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopActionNum">Find the entity stopActionNum in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopActionNum(Wrap<Integer> w);
 
 	public Integer getStopActionNum() {
@@ -839,20 +753,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopActionTitle //
 	/////////////////////
 
-	/**	 The entity stopActionTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stopActionTitle;
 	@JsonIgnore
 	public Wrap<String> stopActionTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopActionTitle").o(stopActionTitle);
 
-	/**	<br/> The entity stopActionTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopActionTitle">Find the entity stopActionTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopActionTitle(Wrap<String> w);
 
 	public String getStopActionTitle() {
@@ -915,20 +820,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopDriverArrest //
 	//////////////////////
 
-	/**	 The entity stopDriverArrest
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverArrest;
 	@JsonIgnore
 	public Wrap<Boolean> stopDriverArrestWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopDriverArrest").o(stopDriverArrest);
 
-	/**	<br/> The entity stopDriverArrest
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopDriverArrest">Find the entity stopDriverArrest in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopDriverArrest(Wrap<Boolean> w);
 
 	public Boolean getStopDriverArrest() {
@@ -996,20 +892,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopPassengerArrest //
 	/////////////////////////
 
-	/**	 The entity stopPassengerArrest
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerArrest;
 	@JsonIgnore
 	public Wrap<Boolean> stopPassengerArrestWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopPassengerArrest").o(stopPassengerArrest);
 
-	/**	<br/> The entity stopPassengerArrest
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopPassengerArrest">Find the entity stopPassengerArrest in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopPassengerArrest(Wrap<Boolean> w);
 
 	public Boolean getStopPassengerArrest() {
@@ -1077,20 +964,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopEncounterForce //
 	////////////////////////
 
-	/**	 The entity stopEncounterForce
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEncounterForce;
 	@JsonIgnore
 	public Wrap<Boolean> stopEncounterForceWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopEncounterForce").o(stopEncounterForce);
 
-	/**	<br/> The entity stopEncounterForce
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopEncounterForce">Find the entity stopEncounterForce in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopEncounterForce(Wrap<Boolean> w);
 
 	public Boolean getStopEncounterForce() {
@@ -1158,20 +1036,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopEngageForce //
 	/////////////////////
 
-	/**	 The entity stopEngageForce
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEngageForce;
 	@JsonIgnore
 	public Wrap<Boolean> stopEngageForceWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopEngageForce").o(stopEngageForce);
 
-	/**	<br/> The entity stopEngageForce
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopEngageForce">Find the entity stopEngageForce in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopEngageForce(Wrap<Boolean> w);
 
 	public Boolean getStopEngageForce() {
@@ -1239,20 +1108,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopOfficerInjury //
 	///////////////////////
 
-	/**	 The entity stopOfficerInjury
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopOfficerInjury;
 	@JsonIgnore
 	public Wrap<Boolean> stopOfficerInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopOfficerInjury").o(stopOfficerInjury);
 
-	/**	<br/> The entity stopOfficerInjury
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopOfficerInjury">Find the entity stopOfficerInjury in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopOfficerInjury(Wrap<Boolean> w);
 
 	public Boolean getStopOfficerInjury() {
@@ -1320,20 +1180,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopDriverInjury //
 	//////////////////////
 
-	/**	 The entity stopDriverInjury
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverInjury;
 	@JsonIgnore
 	public Wrap<Boolean> stopDriverInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopDriverInjury").o(stopDriverInjury);
 
-	/**	<br/> The entity stopDriverInjury
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopDriverInjury">Find the entity stopDriverInjury in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopDriverInjury(Wrap<Boolean> w);
 
 	public Boolean getStopDriverInjury() {
@@ -1401,20 +1252,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopPassengerInjury //
 	/////////////////////////
 
-	/**	 The entity stopPassengerInjury
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerInjury;
 	@JsonIgnore
 	public Wrap<Boolean> stopPassengerInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopPassengerInjury").o(stopPassengerInjury);
 
-	/**	<br/> The entity stopPassengerInjury
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopPassengerInjury">Find the entity stopPassengerInjury in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopPassengerInjury(Wrap<Boolean> w);
 
 	public Boolean getStopPassengerInjury() {
@@ -1482,20 +1324,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopOfficerId //
 	///////////////////
 
-	/**	 The entity stopOfficerId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stopOfficerId;
 	@JsonIgnore
 	public Wrap<String> stopOfficerIdWrap = new Wrap<String>().p(this).c(String.class).var("stopOfficerId").o(stopOfficerId);
 
-	/**	<br/> The entity stopOfficerId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopOfficerId">Find the entity stopOfficerId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopOfficerId(Wrap<String> w);
 
 	public String getStopOfficerId() {
@@ -1558,20 +1391,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopLocationId //
 	////////////////////
 
-	/**	 The entity stopLocationId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stopLocationId;
 	@JsonIgnore
 	public Wrap<String> stopLocationIdWrap = new Wrap<String>().p(this).c(String.class).var("stopLocationId").o(stopLocationId);
 
-	/**	<br/> The entity stopLocationId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopLocationId">Find the entity stopLocationId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopLocationId(Wrap<String> w);
 
 	public String getStopLocationId() {
@@ -1634,20 +1458,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// stopCityId //
 	////////////////
 
-	/**	 The entity stopCityId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stopCityId;
 	@JsonIgnore
 	public Wrap<String> stopCityIdWrap = new Wrap<String>().p(this).c(String.class).var("stopCityId").o(stopCityId);
 
-	/**	<br/> The entity stopCityId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopCityId">Find the entity stopCityId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _stopCityId(Wrap<String> w);
 
 	public String getStopCityId() {
@@ -1710,21 +1525,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personAge //
 	///////////////
 
-	/**	 The entity personAge
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer personAge;
 	@JsonIgnore
 	public Wrap<Integer> personAgeWrap = new Wrap<Integer>().p(this).c(Integer.class).var("personAge").o(personAge);
 
-	/**	<br/> The entity personAge
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personAge">Find the entity personAge in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personAge(Wrap<Integer> w);
 
 	public Integer getPersonAge() {
@@ -1794,20 +1600,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personTypeId //
 	//////////////////
 
-	/**	 The entity personTypeId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeId;
 	@JsonIgnore
 	public Wrap<String> personTypeIdWrap = new Wrap<String>().p(this).c(String.class).var("personTypeId").o(personTypeId);
 
-	/**	<br/> The entity personTypeId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personTypeId">Find the entity personTypeId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personTypeId(Wrap<String> w);
 
 	public String getPersonTypeId() {
@@ -1870,20 +1667,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personTypeTitle //
 	/////////////////////
 
-	/**	 The entity personTypeTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeTitle;
 	@JsonIgnore
 	public Wrap<String> personTypeTitleWrap = new Wrap<String>().p(this).c(String.class).var("personTypeTitle").o(personTypeTitle);
 
-	/**	<br/> The entity personTypeTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personTypeTitle">Find the entity personTypeTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personTypeTitle(Wrap<String> w);
 
 	public String getPersonTypeTitle() {
@@ -1946,20 +1734,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personTypeDriver //
 	//////////////////////
 
-	/**	 The entity personTypeDriver
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypeDriver;
 	@JsonIgnore
 	public Wrap<Boolean> personTypeDriverWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personTypeDriver").o(personTypeDriver);
 
-	/**	<br/> The entity personTypeDriver
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personTypeDriver">Find the entity personTypeDriver in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personTypeDriver(Wrap<Boolean> w);
 
 	public Boolean getPersonTypeDriver() {
@@ -2027,20 +1806,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personTypePassenger //
 	/////////////////////////
 
-	/**	 The entity personTypePassenger
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypePassenger;
 	@JsonIgnore
 	public Wrap<Boolean> personTypePassengerWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personTypePassenger").o(personTypePassenger);
 
-	/**	<br/> The entity personTypePassenger
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personTypePassenger">Find the entity personTypePassenger in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personTypePassenger(Wrap<Boolean> w);
 
 	public Boolean getPersonTypePassenger() {
@@ -2108,20 +1878,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personGenderId //
 	////////////////////
 
-	/**	 The entity personGenderId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderId;
 	@JsonIgnore
 	public Wrap<String> personGenderIdWrap = new Wrap<String>().p(this).c(String.class).var("personGenderId").o(personGenderId);
 
-	/**	<br/> The entity personGenderId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personGenderId">Find the entity personGenderId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personGenderId(Wrap<String> w);
 
 	public String getPersonGenderId() {
@@ -2184,20 +1945,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personGenderTitle //
 	///////////////////////
 
-	/**	 The entity personGenderTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderTitle;
 	@JsonIgnore
 	public Wrap<String> personGenderTitleWrap = new Wrap<String>().p(this).c(String.class).var("personGenderTitle").o(personGenderTitle);
 
-	/**	<br/> The entity personGenderTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personGenderTitle">Find the entity personGenderTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personGenderTitle(Wrap<String> w);
 
 	public String getPersonGenderTitle() {
@@ -2260,20 +2012,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personGenderFemale //
 	////////////////////////
 
-	/**	 The entity personGenderFemale
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderFemale;
 	@JsonIgnore
 	public Wrap<Boolean> personGenderFemaleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personGenderFemale").o(personGenderFemale);
 
-	/**	<br/> The entity personGenderFemale
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personGenderFemale">Find the entity personGenderFemale in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personGenderFemale(Wrap<Boolean> w);
 
 	public Boolean getPersonGenderFemale() {
@@ -2341,20 +2084,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personGenderMale //
 	//////////////////////
 
-	/**	 The entity personGenderMale
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderMale;
 	@JsonIgnore
 	public Wrap<Boolean> personGenderMaleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personGenderMale").o(personGenderMale);
 
-	/**	<br/> The entity personGenderMale
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personGenderMale">Find the entity personGenderMale in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personGenderMale(Wrap<Boolean> w);
 
 	public Boolean getPersonGenderMale() {
@@ -2422,20 +2156,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personEthnicityId //
 	///////////////////////
 
-	/**	 The entity personEthnicityId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityId;
 	@JsonIgnore
 	public Wrap<String> personEthnicityIdWrap = new Wrap<String>().p(this).c(String.class).var("personEthnicityId").o(personEthnicityId);
 
-	/**	<br/> The entity personEthnicityId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personEthnicityId">Find the entity personEthnicityId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personEthnicityId(Wrap<String> w);
 
 	public String getPersonEthnicityId() {
@@ -2498,20 +2223,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personEthnicityTitle //
 	//////////////////////////
 
-	/**	 The entity personEthnicityTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityTitle;
 	@JsonIgnore
 	public Wrap<String> personEthnicityTitleWrap = new Wrap<String>().p(this).c(String.class).var("personEthnicityTitle").o(personEthnicityTitle);
 
-	/**	<br/> The entity personEthnicityTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personEthnicityTitle">Find the entity personEthnicityTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personEthnicityTitle(Wrap<String> w);
 
 	public String getPersonEthnicityTitle() {
@@ -2574,20 +2290,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personRaceId //
 	//////////////////
 
-	/**	 The entity personRaceId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceId;
 	@JsonIgnore
 	public Wrap<String> personRaceIdWrap = new Wrap<String>().p(this).c(String.class).var("personRaceId").o(personRaceId);
 
-	/**	<br/> The entity personRaceId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personRaceId">Find the entity personRaceId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personRaceId(Wrap<String> w);
 
 	public String getPersonRaceId() {
@@ -2650,20 +2357,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// personRaceTitle //
 	/////////////////////
 
-	/**	 The entity personRaceTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceTitle;
 	@JsonIgnore
 	public Wrap<String> personRaceTitleWrap = new Wrap<String>().p(this).c(String.class).var("personRaceTitle").o(personRaceTitle);
 
-	/**	<br/> The entity personRaceTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personRaceTitle">Find the entity personRaceTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _personRaceTitle(Wrap<String> w);
 
 	public String getPersonRaceTitle() {
@@ -2726,21 +2424,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// trafficStopKey //
 	////////////////////
 
-	/**	 The entity trafficStopKey
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long trafficStopKey;
 	@JsonIgnore
 	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("trafficStopKey").o(trafficStopKey);
 
-	/**	<br/> The entity trafficStopKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficStopKey">Find the entity trafficStopKey in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _trafficStopKey(Wrap<Long> w);
 
 	public Long getTrafficStopKey() {
@@ -2810,21 +2499,12 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchTypeNum //
 	///////////////////
 
-	/**	 The entity searchTypeNum
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer searchTypeNum;
 	@JsonIgnore
 	public Wrap<Integer> searchTypeNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("searchTypeNum").o(searchTypeNum);
 
-	/**	<br/> The entity searchTypeNum
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchTypeNum">Find the entity searchTypeNum in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchTypeNum(Wrap<Integer> w);
 
 	public Integer getSearchTypeNum() {
@@ -2894,20 +2574,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchTypeTitle //
 	/////////////////////
 
-	/**	 The entity searchTypeTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String searchTypeTitle;
 	@JsonIgnore
 	public Wrap<String> searchTypeTitleWrap = new Wrap<String>().p(this).c(String.class).var("searchTypeTitle").o(searchTypeTitle);
 
-	/**	<br/> The entity searchTypeTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchTypeTitle">Find the entity searchTypeTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchTypeTitle(Wrap<String> w);
 
 	public String getSearchTypeTitle() {
@@ -2970,20 +2641,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchVehicle //
 	///////////////////
 
-	/**	 The entity searchVehicle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicle;
 	@JsonIgnore
 	public Wrap<Boolean> searchVehicleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchVehicle").o(searchVehicle);
 
-	/**	<br/> The entity searchVehicle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchVehicle">Find the entity searchVehicle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchVehicle(Wrap<Boolean> w);
 
 	public Boolean getSearchVehicle() {
@@ -3051,20 +2713,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchDriver //
 	//////////////////
 
-	/**	 The entity searchDriver
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchDriver;
 	@JsonIgnore
 	public Wrap<Boolean> searchDriverWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchDriver").o(searchDriver);
 
-	/**	<br/> The entity searchDriver
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchDriver">Find the entity searchDriver in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchDriver(Wrap<Boolean> w);
 
 	public Boolean getSearchDriver() {
@@ -3132,20 +2785,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchPassenger //
 	/////////////////////
 
-	/**	 The entity searchPassenger
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPassenger;
 	@JsonIgnore
 	public Wrap<Boolean> searchPassengerWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchPassenger").o(searchPassenger);
 
-	/**	<br/> The entity searchPassenger
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchPassenger">Find the entity searchPassenger in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchPassenger(Wrap<Boolean> w);
 
 	public Boolean getSearchPassenger() {
@@ -3213,20 +2857,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchProperty //
 	////////////////////
 
-	/**	 The entity searchProperty
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchProperty;
 	@JsonIgnore
 	public Wrap<Boolean> searchPropertyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchProperty").o(searchProperty);
 
-	/**	<br/> The entity searchProperty
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchProperty">Find the entity searchProperty in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchProperty(Wrap<Boolean> w);
 
 	public Boolean getSearchProperty() {
@@ -3294,20 +2929,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchVehicleSiezed //
 	/////////////////////////
 
-	/**	 The entity searchVehicleSiezed
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicleSiezed;
 	@JsonIgnore
 	public Wrap<Boolean> searchVehicleSiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchVehicleSiezed").o(searchVehicleSiezed);
 
-	/**	<br/> The entity searchVehicleSiezed
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchVehicleSiezed">Find the entity searchVehicleSiezed in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchVehicleSiezed(Wrap<Boolean> w);
 
 	public Boolean getSearchVehicleSiezed() {
@@ -3375,20 +3001,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchPersonalPropertySiezed //
 	//////////////////////////////////
 
-	/**	 The entity searchPersonalPropertySiezed
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPersonalPropertySiezed;
 	@JsonIgnore
 	public Wrap<Boolean> searchPersonalPropertySiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchPersonalPropertySiezed").o(searchPersonalPropertySiezed);
 
-	/**	<br/> The entity searchPersonalPropertySiezed
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchPersonalPropertySiezed">Find the entity searchPersonalPropertySiezed in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchPersonalPropertySiezed(Wrap<Boolean> w);
 
 	public Boolean getSearchPersonalPropertySiezed() {
@@ -3456,20 +3073,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchOtherPropertySiezed //
 	///////////////////////////////
 
-	/**	 The entity searchOtherPropertySiezed
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchOtherPropertySiezed;
 	@JsonIgnore
 	public Wrap<Boolean> searchOtherPropertySiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchOtherPropertySiezed").o(searchOtherPropertySiezed);
 
-	/**	<br/> The entity searchOtherPropertySiezed
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchOtherPropertySiezed">Find the entity searchOtherPropertySiezed in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchOtherPropertySiezed(Wrap<Boolean> w);
 
 	public Boolean getSearchOtherPropertySiezed() {
@@ -3537,20 +3145,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchBasisId //
 	///////////////////
 
-	/**	 The entity searchBasisId
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String searchBasisId;
 	@JsonIgnore
 	public Wrap<String> searchBasisIdWrap = new Wrap<String>().p(this).c(String.class).var("searchBasisId").o(searchBasisId);
 
-	/**	<br/> The entity searchBasisId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisId">Find the entity searchBasisId in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchBasisId(Wrap<String> w);
 
 	public String getSearchBasisId() {
@@ -3679,20 +3278,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchBasisTitle //
 	//////////////////////
 
-	/**	 The entity searchBasisTitle
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String searchBasisTitle;
 	@JsonIgnore
 	public Wrap<String> searchBasisTitleWrap = new Wrap<String>().p(this).c(String.class).var("searchBasisTitle").o(searchBasisTitle);
 
-	/**	<br/> The entity searchBasisTitle
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisTitle">Find the entity searchBasisTitle in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchBasisTitle(Wrap<String> w);
 
 	public String getSearchBasisTitle() {
@@ -3821,20 +3411,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchBasisShortName //
 	//////////////////////////
 
-	/**	 The entity searchBasisShortName
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String searchBasisShortName;
 	@JsonIgnore
 	public Wrap<String> searchBasisShortNameWrap = new Wrap<String>().p(this).c(String.class).var("searchBasisShortName").o(searchBasisShortName);
 
-	/**	<br/> The entity searchBasisShortName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisShortName">Find the entity searchBasisShortName in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchBasisShortName(Wrap<String> w);
 
 	public String getSearchBasisShortName() {
@@ -3897,20 +3478,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	// searchBasisCompleteName //
 	/////////////////////////////
 
-	/**	 The entity searchBasisCompleteName
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String searchBasisCompleteName;
 	@JsonIgnore
 	public Wrap<String> searchBasisCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("searchBasisCompleteName").o(searchBasisCompleteName);
 
-	/**	<br/> The entity searchBasisCompleteName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisCompleteName">Find the entity searchBasisCompleteName in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _searchBasisCompleteName(Wrap<String> c);
 
 	public String getSearchBasisCompleteName() {
@@ -4989,35 +4561,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		super.populateCluster(solrDocument);
 	}
 
-	/////////////
-	// index //
-	/////////////
-
-	public static void index() {
-		try {
-			SiteRequestEnUS siteRequest = new SiteRequestEnUS();
-			siteRequest.initDeepSiteRequestEnUS();
-			SiteContextEnUS siteContext = new SiteContextEnUS();
-			siteContext.getSiteConfig().setConfigPath("/usr/local/src/opendatapolicing/config/opendatapolicing.config");
-			siteContext.initDeepSiteContextEnUS();
-			siteRequest.setSiteContext_(siteContext);
-			siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-			SolrQuery solrQuery = new SolrQuery();
-			solrQuery.setQuery("*:*");
-			solrQuery.setRows(1);
-			solrQuery.addFilterQuery("id:" + ClientUtils.escapeQueryChars("com.opendatapolicing.enus.searchbasis.SearchBasis"));
-			QueryResponse queryResponse = siteRequest.getSiteContext_().getSolrClient().query(solrQuery);
-			if(queryResponse.getResults().size() > 0)
-				siteRequest.setSolrDocument(queryResponse.getResults().get(0));
-			SearchBasis o = new SearchBasis();
-			o.siteRequestSearchBasis(siteRequest);
-			o.initDeepSearchBasis(siteRequest);
-			o.indexSearchBasis();
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
 
 	@Override public void indexForClass() {
 		indexSearchBasis();
@@ -5233,23 +4776,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		}
 		super.indexCluster(document);
 
-	}
-
-	public void unindexSearchBasis() {
-		try {
-		SiteRequestEnUS siteRequest = new SiteRequestEnUS();
-			siteRequest.initDeepSiteRequestEnUS();
-			SiteContextEnUS siteContext = new SiteContextEnUS();
-			siteContext.initDeepSiteContextEnUS();
-			siteRequest.setSiteContext_(siteContext);
-			siteRequest.setSiteConfig_(siteContext.getSiteConfig());
-			initDeepSearchBasis(siteRequest);
-			SolrClient solrClient = siteContext.getSolrClient();
-			solrClient.deleteById(id.toString());
-			solrClient.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
 	}
 
 	public static String varIndexedSearchBasis(String entityVar) {

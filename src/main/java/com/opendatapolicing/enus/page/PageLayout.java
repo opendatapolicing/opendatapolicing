@@ -50,7 +50,7 @@ import com.opendatapolicing.enus.xml.UtilXml;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.service.ServiceRequest;
 
 
 /**
@@ -1112,10 +1112,10 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 						if(searchUri.startsWith("/api/traffic-stop?")) {
 							TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(siteRequest_.getSiteContext_());
-							OperationRequest operationRequest = new OperationRequest();
-							siteRequest2.setOperationRequest(operationRequest);
+							ServiceRequest serviceRequest = new ServiceRequest();
+							siteRequest2.setServiceRequest(serviceRequest);
 							JsonObject params = new JsonObject();
-							operationRequest.setParams(params);
+							serviceRequest.setParams(params);
 							JsonObject query = new JsonObject();
 							params.put("path", new JsonObject());
 							Map<String, List<String>> decodedParams = new QueryStringDecoder(searchUri).parameters();

@@ -2,10 +2,10 @@ package com.opendatapolicing.enus.trafficsearch;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import com.opendatapolicing.enus.search.SearchList;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
@@ -13,10 +13,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.logging.Logger;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
@@ -34,31 +34,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearchGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class TrafficSearchGenPageGen<DEV> extends PageLayout {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(TrafficSearchGenPage.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(TrafficSearchGenPage.class);
 
 	///////////////////////
 	// listTrafficSearch //
 	///////////////////////
 
-	/**	 The entity listTrafficSearch
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<TrafficSearch> listTrafficSearch;
 	@JsonIgnore
 	public Wrap<SearchList<TrafficSearch>> listTrafficSearchWrap = new Wrap<SearchList<TrafficSearch>>().p(this).c(SearchList.class).var("listTrafficSearch").o(listTrafficSearch);
 
-	/**	<br/> The entity listTrafficSearch
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearchGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listTrafficSearch">Find the entity listTrafficSearch in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _listTrafficSearch(Wrap<SearchList<TrafficSearch>> c);
 
 	public SearchList<TrafficSearch> getListTrafficSearch() {
@@ -88,20 +75,11 @@ public abstract class TrafficSearchGenPageGen<DEV> extends PageLayout {
 	// trafficSearch_ //
 	////////////////////
 
-	/**	 The entity trafficSearch_
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficSearch trafficSearch_;
 	@JsonIgnore
 	public Wrap<TrafficSearch> trafficSearch_Wrap = new Wrap<TrafficSearch>().p(this).c(TrafficSearch.class).var("trafficSearch_").o(trafficSearch_);
 
-	/**	<br/> The entity trafficSearch_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearchGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearch_">Find the entity trafficSearch_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _trafficSearch_(Wrap<TrafficSearch> c);
 
 	public TrafficSearch getTrafficSearch_() {

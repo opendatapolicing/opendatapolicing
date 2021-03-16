@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.cluster; 
+package com.opendatapolicing.enus.cluster;  
 
 import java.text.Normalizer;
 import java.time.ZoneId;
@@ -19,6 +19,7 @@ import com.opendatapolicing.enus.xml.UtilXml;
 
 /**
  * Indexed: true
+ * Page: true
  * 
  * AName.enUS: a cluster
  * Color: gray
@@ -29,7 +30,7 @@ import com.opendatapolicing.enus.xml.UtilXml;
  * RoleUser: true
  * Role.enUS: SiteService
  * RoleRead.enUS: User
- **/  
+ **/ 
 
 public class Cluster extends ClusterGen<Object> {
 
@@ -66,7 +67,7 @@ public class Cluster extends ClusterGen<Object> {
 	 */
 	protected void _id(Wrap<String> c) {
 		if(pk != null)
-			c.o(pk.toString());
+			c.o(getClass().getSimpleName() + "_" + pk.toString());
 	}
 
 	/**

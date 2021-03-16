@@ -24,16 +24,12 @@ import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.writer.AllWriter;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.oauth2.KeycloakHelper;
-import io.vertx.ext.auth.oauth2.impl.OAuth2TokenImpl;
-import io.vertx.ext.web.api.OperationRequest;
-import io.vertx.ext.web.api.OperationResponse;
+import io.vertx.ext.auth.User;
+import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Transaction;
 
@@ -76,7 +72,7 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	protected void _solrQuery(Wrap<SolrQuery> c) {
 	}
 
-	protected void _operationRequest(Wrap<OperationRequest> c) {
+	protected void _serviceRequest(Wrap<ServiceRequest> c) {
 	}
 
 	protected void _queryResponse(Wrap<QueryResponse> c) {
@@ -100,18 +96,13 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	protected void _w(Wrap<AllWriter> c) {
 	}
 
-	protected void _userVertx(Wrap<JsonObject> c) {
-		if(operationRequest != null) {
-			JsonObject o = operationRequest.getUser();
-			c.o(o);
-		}
-
+	protected void _user(Wrap<User> c) {
 	}
 
 	protected void _jsonPrincipal(Wrap<JsonObject> c) {
-		if(userVertx != null) {
-			OAuth2TokenImpl token = new OAuth2TokenImpl(siteContext_.getAuthProvider(), userVertx);
-			c.o(token.accessToken());
+		if(user != null) {
+			c.o(user.attributes().getJsonObject("accessToken"));
+			c.toString();
 		}
 	}
 
@@ -126,8 +117,8 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	}
 
 	protected void _sessionId(Wrap<String> c) {
-		if(operationRequest != null) {
-			String cookie = operationRequest.getHeaders().get("Cookie");
+		if(serviceRequest != null) {
+			String cookie = serviceRequest.getHeaders().get("Cookie");
 			if(StringUtils.isNotBlank(cookie)) {
 				Matcher m = PATTERN_SESSION.matcher(cookie);
 				if(m.matches()) {
@@ -138,8 +129,8 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	}
 
 	protected void _sessionIdBefore(Wrap<String> c) {
-		if(operationRequest != null) {
-			c.o(operationRequest.getParams().getJsonObject("cookie").getString("sessionIdBefore"));
+		if(serviceRequest != null) {
+			c.o(serviceRequest.getParams().getJsonObject("cookie").getString("sessionIdBefore"));
 		}
 	}
 
@@ -220,8 +211,8 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	}
 
 	protected void _requestPk(Wrap<Long> c) {
-		if(operationRequest != null)
-			c.o(operationRequest.getParams().getLong("pk"));
+		if(serviceRequest != null)
+			c.o(serviceRequest.getParams().getLong("pk"));
 	}
 
 	protected void _requestUri(Wrap<String> c) {
@@ -247,7 +238,7 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 		o.setSiteContext_(siteContext_);
 		o.setJsonObject(jsonObject);
 		o.setSolrQuery(solrQuery);
-		o.setOperationRequest(operationRequest);
+		o.setServiceRequest(serviceRequest);
 		o.setUserKey(userKey);
 		o.setSolrDocument(solrDocument);
 		o.setPageAdmin(pageAdmin);

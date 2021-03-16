@@ -2,11 +2,11 @@ package com.opendatapolicing.enus.vertx;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -14,9 +14,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.String;
-import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
@@ -37,31 +37,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class AppSwagger2Gen<DEV> extends Object {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(AppSwagger2.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AppSwagger2.class);
 
 	//////////////////
 	// siteRequest_ //
 	//////////////////
 
-	/**	 The entity siteRequest_
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
 	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
 
-	/**	<br/> The entity siteRequest_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> c);
 
 	public SiteRequestEnUS getSiteRequest_() {
@@ -89,20 +76,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// siteContext //
 	/////////////////
 
-	/**	 The entity siteContext
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SiteContextEnUS(). 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteContextEnUS siteContext = new SiteContextEnUS();
 	@JsonIgnore
 	public Wrap<SiteContextEnUS> siteContextWrap = new Wrap<SiteContextEnUS>().p(this).c(SiteContextEnUS.class).var("siteContext").o(siteContext);
 
-	/**	<br/> The entity siteContext
-	 *  It is constructed before being initialized with the constructor by default SiteContextEnUS(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteContext">Find the entity siteContext in Solr</a>
-	 * <br/>
-	 * @param siteContext is the entity already constructed. 
-	 **/
 	protected abstract void _siteContext(SiteContextEnUS o);
 
 	public SiteContextEnUS getSiteContext() {
@@ -129,20 +107,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// siteConfig //
 	////////////////
 
-	/**	 The entity siteConfig
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteConfig siteConfig;
 	@JsonIgnore
 	public Wrap<SiteConfig> siteConfigWrap = new Wrap<SiteConfig>().p(this).c(SiteConfig.class).var("siteConfig").o(siteConfig);
 
-	/**	<br/> The entity siteConfig
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteConfig">Find the entity siteConfig in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _siteConfig(Wrap<SiteConfig> c);
 
 	public SiteConfig getSiteConfig() {
@@ -172,20 +141,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// appPath //
 	/////////////
 
-	/**	 The entity appPath
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String appPath;
 	@JsonIgnore
 	public Wrap<String> appPathWrap = new Wrap<String>().p(this).c(String.class).var("appPath").o(appPath);
 
-	/**	<br/> The entity appPath
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appPath">Find the entity appPath in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _appPath(Wrap<String> c);
 
 	public String getAppPath() {
@@ -236,32 +196,15 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return appPath == null ? "" : appPath;
 	}
 
-	public String htmTooltipAppPath() {
-		return null;
-	}
-
-	public String htmAppPath() {
-		return appPath == null ? "" : StringEscapeUtils.escapeHtml4(strAppPath());
-	}
-
 	/////////////
 	// appName //
 	/////////////
 
-	/**	 The entity appName
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String appName;
 	@JsonIgnore
 	public Wrap<String> appNameWrap = new Wrap<String>().p(this).c(String.class).var("appName").o(appName);
 
-	/**	<br/> The entity appName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appName">Find the entity appName in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _appName(Wrap<String> c);
 
 	public String getAppName() {
@@ -312,32 +255,15 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return appName == null ? "" : appName;
 	}
 
-	public String htmTooltipAppName() {
-		return null;
-	}
-
-	public String htmAppName() {
-		return appName == null ? "" : StringEscapeUtils.escapeHtml4(strAppName());
-	}
-
 	//////////////////
 	// languageName //
 	//////////////////
 
-	/**	 The entity languageName
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String languageName;
 	@JsonIgnore
 	public Wrap<String> languageNameWrap = new Wrap<String>().p(this).c(String.class).var("languageName").o(languageName);
 
-	/**	<br/> The entity languageName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:languageName">Find the entity languageName in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _languageName(Wrap<String> c);
 
 	public String getLanguageName() {
@@ -388,32 +314,15 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return languageName == null ? "" : languageName;
 	}
 
-	public String htmTooltipLanguageName() {
-		return null;
-	}
-
-	public String htmLanguageName() {
-		return languageName == null ? "" : StringEscapeUtils.escapeHtml4(strLanguageName());
-	}
-
 	////////////////////
 	// openApiVersion //
 	////////////////////
 
-	/**	 The entity openApiVersion
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String openApiVersion;
 	@JsonIgnore
 	public Wrap<String> openApiVersionWrap = new Wrap<String>().p(this).c(String.class).var("openApiVersion").o(openApiVersion);
 
-	/**	<br/> The entity openApiVersion
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiVersion">Find the entity openApiVersion in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _openApiVersion(Wrap<String> c);
 
 	public String getOpenApiVersion() {
@@ -464,33 +373,16 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return openApiVersion == null ? "" : openApiVersion;
 	}
 
-	public String htmTooltipOpenApiVersion() {
-		return null;
-	}
-
-	public String htmOpenApiVersion() {
-		return openApiVersion == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiVersion());
-	}
-
 	//////////////////////////
 	// openApiVersionNumber //
 	//////////////////////////
 
-	/**	 The entity openApiVersionNumber
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer openApiVersionNumber;
 	@JsonIgnore
 	public Wrap<Integer> openApiVersionNumberWrap = new Wrap<Integer>().p(this).c(Integer.class).var("openApiVersionNumber").o(openApiVersionNumber);
 
-	/**	<br/> The entity openApiVersionNumber
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiVersionNumber">Find the entity openApiVersionNumber in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _openApiVersionNumber(Wrap<Integer> c);
 
 	public Integer getOpenApiVersionNumber() {
@@ -548,33 +440,16 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return openApiVersionNumber == null ? "" : openApiVersionNumber.toString();
 	}
 
-	public String htmTooltipOpenApiVersionNumber() {
-		return null;
-	}
-
-	public String htmOpenApiVersionNumber() {
-		return openApiVersionNumber == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiVersionNumber());
-	}
-
 	////////////////
 	// tabsSchema //
 	////////////////
 
-	/**	 The entity tabsSchema
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsSchema;
 	@JsonIgnore
 	public Wrap<Integer> tabsSchemaWrap = new Wrap<Integer>().p(this).c(Integer.class).var("tabsSchema").o(tabsSchema);
 
-	/**	<br/> The entity tabsSchema
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabsSchema">Find the entity tabsSchema in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _tabsSchema(Wrap<Integer> c);
 
 	public Integer getTabsSchema() {
@@ -632,32 +507,15 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return tabsSchema == null ? "" : tabsSchema.toString();
 	}
 
-	public String htmTooltipTabsSchema() {
-		return null;
-	}
-
-	public String htmTabsSchema() {
-		return tabsSchema == null ? "" : StringEscapeUtils.escapeHtml4(strTabsSchema());
-	}
-
 	////////////////
 	// apiVersion //
 	////////////////
 
-	/**	 The entity apiVersion
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String apiVersion;
 	@JsonIgnore
 	public Wrap<String> apiVersionWrap = new Wrap<String>().p(this).c(String.class).var("apiVersion").o(apiVersion);
 
-	/**	<br/> The entity apiVersion
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:apiVersion">Find the entity apiVersion in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _apiVersion(Wrap<String> c);
 
 	public String getApiVersion() {
@@ -708,32 +566,15 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return apiVersion == null ? "" : apiVersion;
 	}
 
-	public String htmTooltipApiVersion() {
-		return null;
-	}
-
-	public String htmApiVersion() {
-		return apiVersion == null ? "" : StringEscapeUtils.escapeHtml4(strApiVersion());
-	}
-
 	/////////////////////
 	// openApiYamlPath //
 	/////////////////////
 
-	/**	 The entity openApiYamlPath
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String openApiYamlPath;
 	@JsonIgnore
 	public Wrap<String> openApiYamlPathWrap = new Wrap<String>().p(this).c(String.class).var("openApiYamlPath").o(openApiYamlPath);
 
-	/**	<br/> The entity openApiYamlPath
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiYamlPath">Find the entity openApiYamlPath in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _openApiYamlPath(Wrap<String> c);
 
 	public String getOpenApiYamlPath() {
@@ -784,32 +625,15 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return openApiYamlPath == null ? "" : openApiYamlPath;
 	}
 
-	public String htmTooltipOpenApiYamlPath() {
-		return null;
-	}
-
-	public String htmOpenApiYamlPath() {
-		return openApiYamlPath == null ? "" : StringEscapeUtils.escapeHtml4(strOpenApiYamlPath());
-	}
-
 	/////////////////////
 	// openApiYamlFile //
 	/////////////////////
 
-	/**	 The entity openApiYamlFile
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected File openApiYamlFile;
 	@JsonIgnore
 	public Wrap<File> openApiYamlFileWrap = new Wrap<File>().p(this).c(File.class).var("openApiYamlFile").o(openApiYamlFile);
 
-	/**	<br/> The entity openApiYamlFile
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:openApiYamlFile">Find the entity openApiYamlFile in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _openApiYamlFile(Wrap<File> c);
 
 	public File getOpenApiYamlFile() {
@@ -837,20 +661,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// w //
 	///////
 
-	/**	 The entity w
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter w;
 	@JsonIgnore
 	public Wrap<AllWriter> wWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("w").o(w);
 
-	/**	<br/> The entity w
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:w">Find the entity w in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _w(Wrap<AllWriter> c);
 
 	public AllWriter getW() {
@@ -880,20 +695,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// wPaths //
 	////////////
 
-	/**	 The entity wPaths
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wPaths;
 	@JsonIgnore
 	public Wrap<AllWriter> wPathsWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wPaths").o(wPaths);
 
-	/**	<br/> The entity wPaths
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wPaths">Find the entity wPaths in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _wPaths(Wrap<AllWriter> c);
 
 	public AllWriter getWPaths() {
@@ -923,20 +729,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// wRequestBodies //
 	////////////////////
 
-	/**	 The entity wRequestBodies
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBodies;
 	@JsonIgnore
 	public Wrap<AllWriter> wRequestBodiesWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wRequestBodies").o(wRequestBodies);
 
-	/**	<br/> The entity wRequestBodies
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wRequestBodies">Find the entity wRequestBodies in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _wRequestBodies(Wrap<AllWriter> c);
 
 	public AllWriter getWRequestBodies() {
@@ -966,20 +763,11 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	// wSchemas //
 	//////////////
 
-	/**	 The entity wSchemas
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wSchemas;
 	@JsonIgnore
 	public Wrap<AllWriter> wSchemasWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("wSchemas").o(wSchemas);
 
-	/**	<br/> The entity wSchemas
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:wSchemas">Find the entity wSchemas in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _wSchemas(Wrap<AllWriter> c);
 
 	public AllWriter getWSchemas() {

@@ -8,14 +8,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
-import com.opendatapolicing.enus.cluster.ClusterEnUSGenApiService;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.design.PageDesignEnUSGenApiService;
@@ -32,6 +34,9 @@ import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiService;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiService;
 import com.opendatapolicing.enus.user.SiteUserEnUSGenApiService;
 
+import io.vertx.config.ConfigRetriever;
+import io.vertx.config.ConfigRetrieverOptions;
+import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
@@ -45,18 +50,17 @@ import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.http.Cookie;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.shareddata.AsyncMap;
 import io.vertx.core.shareddata.SharedData;
 import io.vertx.core.spi.cluster.ClusterManager;
-import io.vertx.ext.auth.oauth2.AccessToken;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.auth.oauth2.OAuth2ClientOptions;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
+import io.vertx.ext.auth.oauth2.OAuth2Options;
+import io.vertx.ext.auth.oauth2.authorization.KeycloakAuthorization;
 import io.vertx.ext.auth.oauth2.providers.OpenIDConnectAuth;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
@@ -65,12 +69,12 @@ import io.vertx.ext.mail.MailClient;
 import io.vertx.ext.mail.MailConfig;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.Session;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
+import io.vertx.ext.web.openapi.RouterBuilder;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
@@ -99,7 +103,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	/**
 	 * For logging information and errors in the application. 
 	 **/
-	private static final Logger LOGGER = LoggerFactory.getLogger(AppVertx.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
 
 	/**	
 	 *	The main method for the Vert.x application that runs the Vert.x Runner class
@@ -145,22 +149,21 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			}
 		}
 		if(clusterHost != null) {
-			LOGGER.info(String.format("clusterHost: %s", clusterHost));
+			LOG.info(String.format("clusterHost: %s", clusterHost));
 			eventBusOptions.setHost(clusterHost);
 		}
 		if(clusterPort != null) {
-			LOGGER.info(String.format("clusterPort: %s", clusterPort));
+			LOG.info(String.format("clusterPort: %s", clusterPort));
 			eventBusOptions.setPort(clusterPort);
 		}
 		if(clusterPublicHost != null) {
-			LOGGER.info(String.format("clusterPublicHost: %s", clusterPublicHost));
+			LOG.info(String.format("clusterPublicHost: %s", clusterPublicHost));
 			eventBusOptions.setClusterPublicHost(clusterPublicHost);
 		}
 		if(clusterPublicPort != null) {
-			LOGGER.info(String.format("clusterPublicPort: %s", clusterPublicPort));
+			LOG.info(String.format("clusterPublicPort: %s", clusterPublicPort));
 			eventBusOptions.setClusterPublicPort(clusterPublicPort);
 		}
-		eventBusOptions.setClustered(true);
 		optionsVertx.setEventBusOptions(eventBusOptions);
 		optionsVertx.setClusterManager(gestionnaireCluster);
 		DeploymentOptions deploymentOptions = new DeploymentOptions();
@@ -175,7 +178,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			if (res.succeeded()) {
 				Vertx vertx = res.result();
 				EventBus eventBus = vertx.eventBus();
-				LOGGER.info("We now have a clustered event bus: {}", eventBus);
+				LOG.info("We now have a clustered event bus: {}", eventBus);
 				runner.accept(vertx);
 			} else {
 				res.cause().printStackTrace();
@@ -191,26 +194,65 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	@Override()
 	public void  start(Promise<Void> startPromise) throws Exception, Exception {
 
-		siteContextEnUS = new SiteContextEnUS();
-		siteContextEnUS.setVertx(vertx);
-		siteContextEnUS.initDeepSiteContextEnUS();
-
-		Future<Void> promiseSteps = configureData().future().compose(a -> 
-			configureCluster().future().compose(b -> 
-				configureOpenApi().future().compose(c -> 
-					configureHealthChecks().future().compose(d -> 
-						configureSharedWorkerExecutor().future().compose(e -> 
-							configureWebsockets().future().compose(f -> 
-								configureEmail().future().compose(g -> 
-									startServer().future()
+		try {
+			Future<Void> promiseSteps = configureSiteContext().future().compose(a ->
+				configureData().future().compose(b -> 
+					configureCluster().future().compose(c -> 
+						configureOpenApi().future().compose(d -> 
+							configureHealthChecks().future().compose(e -> 
+								configureSharedWorkerExecutor().future().compose(f -> 
+									configureWebsockets().future().compose(g -> 
+										configureEmail().future().compose(h -> 
+											startServer().future()
+										)
+									)
 								)
 							)
 						)
 					)
 				)
-			)
-		);
-		promiseSteps.setHandler(startPromise);
+			);
+			promiseSteps.onComplete(startPromise);
+		} catch (Exception ex) {
+			LOG.error("Couldn't start verticle. ", ex);
+		}
+	}
+
+	/**	
+	 **/
+	private Promise<Void> configureSiteContext() {
+		Promise<Void> promise = Promise.promise();
+
+		try {
+			ConfigRetrieverOptions retrieverOptions = new ConfigRetrieverOptions();
+			ConfigStoreOptions storeEnv = new ConfigStoreOptions().setType("env");
+			retrieverOptions.addStore(storeEnv);
+
+			String configPath = System.getenv("configPath");
+			if(StringUtils.isNotBlank(configPath)) {
+				ConfigStoreOptions configIni = new ConfigStoreOptions().setType("file").setFormat("properties")
+						.setConfig(new JsonObject().put("path", configPath).put("raw-data", true));
+				retrieverOptions.addStore(configIni);
+			}
+
+			ConfigRetriever configRetriever = ConfigRetriever.create(vertx, retrieverOptions);
+			configRetriever.getConfig(a -> {
+				JsonObject config = a.result();
+
+				siteContextEnUS = new SiteContextEnUS();
+				siteContextEnUS.setVertx(vertx);
+				siteContextEnUS.getSiteConfig().setConfig(config);
+				siteContextEnUS.initDeepSiteContextEnUS();
+
+				LOG.info("The site context was configured successfully. ");
+				promise.complete();
+			});
+		} catch(Exception ex) {
+			LOG.error("Unable to configure site context. ", ex);
+			promise.fail(ex);
+		}
+
+		return promise;
 	}
 
 	/**	
@@ -227,29 +269,34 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Initialize the database tables if not already created for the first time. 
 	 **/
 	private Promise<Void> configureData() {
-		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
+		try {
+			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 
-		PgConnectOptions pgOptions = new PgConnectOptions();
-		pgOptions.setPort(siteConfig.getJdbcPort());
-		pgOptions.setHost(siteConfig.getJdbcHost());
-		pgOptions.setDatabase(siteConfig.getJdbcDatabase());
-		pgOptions.setUser(siteConfig.getJdbcUsername());
-		pgOptions.setPassword(siteConfig.getJdbcPassword());
-		pgOptions.setIdleTimeout(siteConfig.getJdbcMaxIdleTime());
-		pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-		pgOptions.setConnectTimeout(siteConfig.getJdbcConnectTimeout());
+			PgConnectOptions pgOptions = new PgConnectOptions();
+			pgOptions.setPort(siteConfig.getJdbcPort());
+			pgOptions.setHost(siteConfig.getJdbcHost());
+			pgOptions.setDatabase(siteConfig.getJdbcDatabase());
+			pgOptions.setUser(siteConfig.getJdbcUsername());
+			pgOptions.setPassword(siteConfig.getJdbcPassword());
+			pgOptions.setIdleTimeout(siteConfig.getJdbcMaxIdleTime());
+			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
+			pgOptions.setConnectTimeout(siteConfig.getJdbcConnectTimeout());
 
-		PoolOptions poolOptions = new PoolOptions();
-		poolOptions.setMaxSize(siteConfig.getJdbcMaxPoolSize());
-		poolOptions.setMaxWaitQueueSize(siteConfig.getJdbcMaxWaitQueueSize());
+			PoolOptions poolOptions = new PoolOptions();
+			poolOptions.setMaxSize(siteConfig.getJdbcMaxPoolSize());
+			poolOptions.setMaxWaitQueueSize(siteConfig.getJdbcMaxWaitQueueSize());
 
-		pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
+			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
 
-		siteContextEnUS.setPgPool(pgPool);
+			siteContextEnUS.setPgPool(pgPool);
 
-		LOGGER.info(configureDataInitSuccess);
-		promise.complete();
+			LOG.info(configureDataInitSuccess);
+			promise.complete();
+		} catch (Exception ex) {
+			LOG.error(configureDataInitError, ex);
+			promise.fail(ex);
+		}
 
 		return promise;
 	}
@@ -263,26 +310,31 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Return a promise that configures a shared cluster data. 
 	 **/ 
 	private Promise<Void> configureCluster() {
-		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
-		SharedData sharedData = vertx.sharedData();
-		sharedData.getClusterWideMap("clusterData", res -> {
-			if (res.succeeded()) {
-				AsyncMap<Object, Object> clusterData = res.result();
-				clusterData.put("siteConfig", siteConfig, resPut -> {
-					if (resPut.succeeded()) {
-						LOGGER.info(configureClusterDataSuccess);
-						promise.complete();
-					} else {
-						LOGGER.error(configureClusterDataError, res.cause());
-						promise.fail(res.cause());
-					}
-				});
-			} else {
-				LOGGER.error(configureClusterDataError, res.cause());
-				promise.fail(res.cause());
-			}
-		});
+		try {
+			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
+			SharedData sharedData = vertx.sharedData();
+			sharedData.getClusterWideMap("clusterData", res -> {
+				if (res.succeeded()) {
+					AsyncMap<Object, Object> clusterData = res.result();
+					clusterData.put("siteConfig", siteConfig, resPut -> {
+						if (resPut.succeeded()) {
+							LOG.info(configureClusterDataSuccess);
+							promise.complete();
+						} else {
+							LOG.error(configureClusterDataError, res.cause());
+							promise.fail(res.cause());
+						}
+					});
+				} else {
+					LOG.error(configureClusterDataError, res.cause());
+					promise.fail(res.cause());
+				}
+			});
+		} catch (Exception ex) {
+			LOG.error(configureClusterDataError, ex);
+			promise.fail(ex);
+		}
 		return promise;
 	}
 
@@ -297,147 +349,148 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Return a promise that configures the authentication server and OpenAPI. 
 	 **/
 	private Promise<Void> configureOpenApi() {
-		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
-		String siteUrlBase = siteConfig.getSiteBaseUrl();
+		try {
+			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
+			String siteUrlBase = siteConfig.getSiteBaseUrl();
 
-		OAuth2ClientOptions oauth2ClientOptions = new OAuth2ClientOptions();
-		oauth2ClientOptions.setSite(siteConfig.getAuthUrl() + "/realms/" + siteConfig.getAuthRealm());
-		oauth2ClientOptions.setClientID(siteConfig.getAuthResource());
-		oauth2ClientOptions.setClientSecret(siteConfig.getAuthSecret());
-		oauth2ClientOptions.setFlow(OAuth2FlowType.AUTH_CODE);
-		JsonObject extraParams = new JsonObject();
-		extraParams.put("scope", "openid DefaultAuthScope SiteAdminScope");
-		oauth2ClientOptions.setExtraParameters(extraParams);
+			OAuth2Options oauth2ClientOptions = new OAuth2Options();
+			oauth2ClientOptions.setSite(siteConfig.getAuthUrl() + "/realms/" + siteConfig.getAuthRealm());
+			oauth2ClientOptions.setClientID(siteConfig.getAuthResource());
+			oauth2ClientOptions.setClientSecret(siteConfig.getAuthSecret());
+			oauth2ClientOptions.setFlow(OAuth2FlowType.AUTH_CODE);
+			JsonObject extraParams = new JsonObject();
+			extraParams.put("scope", "openid DefaultAuthScope SiteAdminScope");
+			oauth2ClientOptions.setExtraParameters(extraParams);
 
-		OpenIDConnectAuth.discover(vertx, oauth2ClientOptions, a -> {
-			if(a.succeeded()) {
-				OAuth2Auth authProvider = a.result();
-				siteContextEnUS.setAuthProvider(authProvider);
-	
-				OAuth2AuthHandler authHandler = OAuth2AuthHandler.create(authProvider, siteUrlBase + "/callback");
-				authHandler.addAuthority("DefaultAuthScope");
-				authHandler.addAuthority("SiteAdminScope");
-				authHandler.addAuthority("openid");
-				{
-					Router tempRouter = Router.router(vertx);
-					authHandler.setupCallback(tempRouter.get("/callback"));
-				}
-		
-		//		ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
-				LocalSessionStore sessionStore = LocalSessionStore.create(vertx, "opendatapolicing-sessions");
-				SessionHandler sessionHandler = SessionHandler.create(sessionStore);
-				sessionHandler.setCookieSecureFlag(true);
-				sessionHandler.setAuthProvider(authProvider);
-		
-				OpenAPI3RouterFactory.create(vertx, "openapi3-enUS.yaml", b -> {
-					if (b.succeeded()) {
-						OpenAPI3RouterFactory routerFactory = b.result();
-						routerFactory.mountServicesFromExtensions();
-						siteContextEnUS.setRouterFactory(routerFactory);
-		
-						routerFactory.addGlobalHandler(sessionHandler);
-						routerFactory.addHandlerByOperationId("callback", ctx -> {
-		
-							// Handle the callback of the flow
-							final String code = ctx.request().getParam("code");
-		
-							// code is a require value
-							if (code == null) {
-								ctx.fail(400);
-								return;
-							}
-		
-							final String state = ctx.request().getParam("state");
-		
-							final JsonObject config = new JsonObject().put("code", code);
-		
-							config.put("redirect_uri", siteUrlBase + "/callback");
-		
-							authProvider.authenticate(config, res -> {
-								if (res.failed()) {
-									ctx.fail(res.cause());
-								} else {
-									AccessToken token = (AccessToken) res.result();
-//									token.isAuthorized("SiteAdminScope", r -> {
-//										if(r.succeeded()) {
-											ctx.setUser(res.result());
-											Session session = ctx.session();
-											if (session != null) {
-												// the user has upgraded from unauthenticated to authenticated
-												// session should be upgraded as recommended by owasp
-												ctx.addCookie(Cookie.cookie("sessionIdBefore", session.id()).setSecure(true));
-												session.regenerateId();
-												// we should redirect the UA so this link becomes invalid
-												ctx.response()
-														// disable all caching
-														.putHeader(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
-														.putHeader("Pragma", "no-cache").putHeader(HttpHeaders.EXPIRES, "0")
-														// redirect (when there is no state, redirect to home
-														.putHeader(HttpHeaders.LOCATION, state != null ? state : "/").setStatusCode(302)
-														.end("Redirecting to " + (state != null ? state : "/") + ".");
-											} else {
-												// there is no session object so we cannot keep state
-												ctx.reroute(state != null ? state : "/");
-											}
-//										} else {
-//											String str = new JsonObject()
-//													.put("error", new JsonObject())
-//													.put("message", "Unauthorized").encodePrettily();
-//											Buffer buffer = Buffer.buffer().appendString(str);
-//											ctx.response().putHeader("Content-Length", Integer.toString(buffer.length()));
-//											ctx.response().write(buffer);
-//											ctx.response().setStatusCode(403);
-//											ctx.response().end();
-//										}
-//									});
-								}
-							});
-						});
-						routerFactory.addFailureHandlerByOperationId("callback", c -> {});
-		
-						routerFactory.addHandlerByOperationId("logout", rc -> {
-							Session session = rc.session();
-//							if (session != null) {
-//								session.destroy();
-//							}
-							rc.clearUser();
-							rc.reroute("/");
-						});
-						routerFactory.addFailureHandlerByOperationId("logout", c -> {});
-		
-//						routerFactory.addSecurityHandler("openIdConnect", authHandler);
-						routerFactory.addSecuritySchemaScopeValidator("openIdConnect", "DefaultAuthScope", authHandler);
-						routerFactory.addSecuritySchemaScopeValidator("openIdConnect", "SiteAdminScope", authHandler);
-						routerFactory.addSecuritySchemaScopeValidator("openIdConnect", "openid", authHandler);
-						Router router = routerFactory.getRouter();
-						siteContextEnUS.setRouter(router);
-		
-						LOGGER.info(configureOpenApiSuccess);
-						promise.complete();
-					} else {
-						LOGGER.error(configureOpenApiError, b.cause());
-						promise.fail(b.cause());
+			OpenIDConnectAuth.discover(vertx, oauth2ClientOptions, a -> {
+				if(a.succeeded()) {
+					OAuth2Auth oauth2AuthenticationProvider = a.result();
+					siteContextEnUS.setOauth2AuthenticationProvider(oauth2AuthenticationProvider);
+
+					AuthorizationProvider authorizationProvider = KeycloakAuthorization.create();
+					siteContextEnUS.setAuthorizationProvider(authorizationProvider);
+
+					OAuth2AuthHandler oauth2AuthHandler = OAuth2AuthHandler.create(vertx, oauth2AuthenticationProvider, siteUrlBase + "/callback");
+					{
+						Router tempRouter = Router.router(vertx);
+						oauth2AuthHandler.setupCallback(tempRouter.get("/callback"));
 					}
-				});
-			} else {
-				LOGGER.error(configureOpenApiError, a.cause());
-				promise.fail(a.cause());
-			}
-		});
+			
+			//		ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
+					LocalSessionStore sessionStore = LocalSessionStore.create(vertx, "opendatapolicing-sessions");
+					SessionHandler sessionHandler = SessionHandler.create(sessionStore);
+					sessionHandler.setCookieSecureFlag(true);
+					String siteBaseUrl = siteConfig.getSiteBaseUrl();
+					if(StringUtils.startsWith(siteBaseUrl, "https://"))
+						sessionHandler.setCookieSecureFlag(true);
+			
+					RouterBuilder.create(vertx, "src/main/resources/openapi3-enUS.yaml", b -> {
+						if (b.succeeded()) {
+							RouterBuilder routerBuilder = b.result();
+							routerBuilder.mountServicesFromExtensions();
+							siteContextEnUS.setRouterBuilder(routerBuilder);
+			
+							routerBuilder.rootHandler(sessionHandler);
+							routerBuilder.securityHandler("openIdConnect", oauth2AuthHandler);
+							routerBuilder.operation("callback").handler(ctx -> {
+			
+								// Handle the callback of the flow
+								final String code = ctx.request().getParam("code");
+			
+								// code is a require value
+								if (code == null) {
+									ctx.fail(400);
+									return;
+								}
+			
+								final String state = ctx.request().getParam("state");
+			
+								final JsonObject config = new JsonObject().put("code", code);
+			
+								config.put("redirect_uri", siteUrlBase + "/callback");
+			
+								oauth2AuthenticationProvider.authenticate(config, res -> {
+									if (res.failed()) {
+										LOG.error("Failed to authenticate user. ", res.cause());
+										ctx.fail(res.cause());
+									} else {
+										ctx.setUser(res.result());
+										Session session = ctx.session();
+										if (session != null) {
+											// the user has upgraded from unauthenticated to authenticated
+											// session should be upgraded as recommended by owasp
+											Cookie cookie = Cookie.cookie("sessionIdBefore", session.id());
+											if(StringUtils.startsWith(siteBaseUrl, "https://"))
+												cookie.setSecure(true);
+											ctx.addCookie(cookie);
+											session.regenerateId();
+											String redirectUri = session.get("redirect_uri");
+											// we should redirect the UA so this link becomes invalid
+											ctx.response()
+													// disable all caching
+													.putHeader(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+													.putHeader("Pragma", "no-cache")
+													.putHeader(HttpHeaders.EXPIRES, "0")
+													// redirect (when there is no state, redirect to home
+													.putHeader(HttpHeaders.LOCATION, redirectUri != null ? redirectUri : "/")
+													.setStatusCode(302)
+													.end("Redirecting to " + (redirectUri != null ? redirectUri : "/") + ".");
+										} else {
+											// there is no session object so we cannot keep state
+											ctx.reroute(state != null ? state : "/");
+										}
+									}
+								});
+							});
+							routerBuilder.operation("callback").failureHandler(c -> {});
+			
+							routerBuilder.operation("logout").handler(rc -> {
+								Session session = rc.session();
+								rc.clearUser();
+								rc.reroute("/");
+							});
+							routerBuilder.operation("logout").handler(c -> {});
+			
+							Router router = routerBuilder.createRouter();
+							siteContextEnUS.setRouter(router);
+			
+							LOG.info(configureOpenApiSuccess);
+							promise.complete();
+						} else {
+							LOG.error(configureOpenApiError, b.cause());
+							promise.fail(b.cause());
+						}
+					});
+				} else {
+					LOG.error(configureOpenApiError, a.cause());
+					promise.fail(a.cause());
+				}
+			});
+		} catch (Exception ex) {
+			LOG.error(configureOpenApiError, ex);
+			promise.fail(ex);
+		}
 		return promise;
 	}
 
-	/**	
+	/**
+	 * Val.Error.enUS:Could not configure the shared worker executor. 
+	 * Val.Success.enUS:The shared worker executor was configured successfully. 
+	 * 
 	 *	Configure a shared worker executor for running blocking tasks in the background. 
 	 *	Return a promise that configures the shared worker executor. 
-	 **/
+	 **/    
 	private Promise<Void> configureSharedWorkerExecutor() {
 		Promise<Void> promise = Promise.promise();
-
-		WorkerExecutor workerExecutor = vertx.createSharedWorkerExecutor("WorkerExecutor");
-		siteContextEnUS.setWorkerExecutor(workerExecutor);
-		promise.complete();
+		try {
+			WorkerExecutor workerExecutor = vertx.createSharedWorkerExecutor("WorkerExecutor");
+			siteContextEnUS.setWorkerExecutor(workerExecutor);
+			promise.complete();
+		} catch (Exception ex) {
+			LOG.error(configureSharedWorkerExecutorError, ex);
+			promise.fail(ex);
+		}
 		return promise;
 	}
 
@@ -456,98 +509,119 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 **/
 	private Promise<Void> configureHealthChecks() {
 		Promise<Void> promise = Promise.promise();
-		Router siteRouteur = siteContextEnUS.getRouter();
-		HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
+		try {
+			Router siteRouteur = siteContextEnUS.getRouter();
+			HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
 
-		healthCheckHandler.register("database", 2000, a -> {
-			siteContextEnUS.getPgPool().preparedQuery("select current_timestamp").execute(selectCAsync -> {
-				if(selectCAsync.succeeded()) {
-					a.complete(Status.OK());
-				} else {
-					LOGGER.error(configureHealthChecksErrorDatabase, a.future().cause());
+			healthCheckHandler.register("database", 2000, a -> {
+				siteContextEnUS.getPgPool().preparedQuery("select current_timestamp").execute(selectCAsync -> {
+					if(selectCAsync.succeeded()) {
+						a.complete(Status.OK());
+					} else {
+						LOG.error(configureHealthChecksErrorDatabase, a.future().cause());
+						promise.fail(a.future().cause());
+					}
+				});
+			});
+			healthCheckHandler.register("solr", 2000, a -> {
+				SolrQuery query = new SolrQuery();
+				query.setQuery("*:*");
+				try {
+					QueryResponse r = siteContextEnUS.getSolrClient().query(query);
+					if(r.getResults().size() > 0)
+						a.complete(Status.OK());
+					else {
+						LOG.error(configureHealthChecksEmptySolr, a.future().cause());
+						promise.fail(a.future().cause());
+					}
+				} catch (SolrServerException | IOException e) {
+					LOG.error(configureHealthChecksErrorSolr, a.future().cause());
 					promise.fail(a.future().cause());
 				}
 			});
-		});
-		healthCheckHandler.register("solr", 2000, a -> {
-			SolrQuery query = new SolrQuery();
-			query.setQuery("*:*");
-			try {
-				QueryResponse r = siteContextEnUS.getSolrClient().query(query);
-				if(r.getResults().size() > 0)
-					a.complete(Status.OK());
-				else {
-					LOGGER.error(configureHealthChecksEmptySolr, a.future().cause());
-					promise.fail(a.future().cause());
-				}
-			} catch (SolrServerException | IOException e) {
-				LOGGER.error(configureHealthChecksErrorSolr, a.future().cause());
-				promise.fail(a.future().cause());
-			}
-		});
-		siteRouteur.get("/health").handler(healthCheckHandler);
-		promise.complete();
+			siteRouteur.get("/health").handler(healthCheckHandler);
+			promise.complete();
+		} catch (Exception ex) {
+			LOG.error(configureHealthChecksErrorSolr, ex);
+			promise.fail(ex);
+		}
 		return promise;
 	}
 
 	/**	
+	 * Val.Error.enUS:Could not configure websockets. 
+	 * Val.Success.enUS:The websockets configured successfully. 
+	 * 
 	 *	Configure websockets for realtime messages. 
 	 **/
 	private Promise<Void> configureWebsockets() {
 		Promise<Void> promise = Promise.promise();
-		Router siteRouter = siteContextEnUS.getRouter();
-		SockJSBridgeOptions options = new SockJSBridgeOptions()
-				.addOutboundPermitted(new PermittedOptions().setAddressRegex("websocket.*"));
-		SockJSHandler sockJsHandler = SockJSHandler.create(vertx);
-		sockJsHandler.bridge(options);
-		siteRouter.route("/eventbus/*").handler(sockJsHandler);
-		promise.complete();
+		try {
+			Router siteRouter = siteContextEnUS.getRouter();
+			SockJSBridgeOptions options = new SockJSBridgeOptions()
+					.addOutboundPermitted(new PermittedOptions().setAddressRegex("websocket.*"));
+			SockJSHandler sockJsHandler = SockJSHandler.create(vertx);
+			sockJsHandler.bridge(options);
+			siteRouter.route("/eventbus/*").handler(sockJsHandler);
+			promise.complete();
+		} catch (Exception ex) {
+			LOG.error(configureWebsocketsError, ex);
+			promise.fail(ex);
+		}
 		return promise;
 	}
 
 	/**	
+	 * Val.Error.enUS:Could not configure the email. 
+	 * Val.Success.enUS:The email was configured successfully. 
+	 * 
 	 *	Configure sending email. 
 	 **/
 	private Promise<Void> configureEmail() {
-		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
-		MailConfig config = new MailConfig();
-		config.setHostname(siteConfig.getEmailHost());
-		config.setPort(siteConfig.getEmailPort());
-		config.setSsl(siteConfig.getEmailSsl());
-		config.setUsername(siteConfig.getEmailUsername());
-		config.setPassword(siteConfig.getEmailPassword());
-		MailClient mailClient = MailClient.createShared(vertx, config);
-		siteContextEnUS.setMailClient(mailClient);
-		promise.complete();
+		try {
+			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
+			MailConfig config = new MailConfig();
+			config.setHostname(siteConfig.getEmailHost());
+			config.setPort(siteConfig.getEmailPort());
+			config.setSsl(siteConfig.getEmailSsl());
+			config.setUsername(siteConfig.getEmailUsername());
+			config.setPassword(siteConfig.getEmailPassword());
+			MailClient mailClient = MailClient.createShared(vertx, config);
+			siteContextEnUS.setMailClient(mailClient);
+			promise.complete();
+		} catch (Exception ex) {
+			LOG.error(configureEmailError, ex);
+			promise.fail(ex);
+		}
 		return promise;
 	}
 
 	public void  errorAppVertx(SiteRequestEnUS siteRequest, AsyncResult<?> a) {
 		Throwable e = a.cause();
 		if(e != null)
-			LOGGER.error(ExceptionUtils.getStackTrace(e));
+			LOG.error(ExceptionUtils.getStackTrace(e));
 		if(siteRequest != null) {
 			Transaction tx = siteRequest.getTx();
 			if(tx != null) {
 				tx.rollback(b -> {
 					if(b.succeeded()) {
-						LOGGER.info("Rollback the SQL connection succeded. ");
+						LOG.info("Rollback the SQL connection succeded. ");
 						try {
 							SqlConnection connexionSql = siteRequest.getSqlConnection();
 				
 							if(connexionSql == null) {
-								LOGGER.info("Close the SQL connection succeded. ");
+								LOG.info("Close the SQL connection succeded. ");
 							} else {
 								connexionSql.close();
 								siteRequest.setSqlConnection(null);
-								LOGGER.info("Close the SQL connection succeded. ");
+								LOG.info("Close the SQL connection succeded. ");
 							}
 						} catch(Exception ex) {
-							LOGGER.error(String.format("sqlFermerEcole a échoué. ", ex));
+							LOG.error(String.format("sqlFermerEcole a échoué. ", ex));
 						}
 					} else {
-						LOGGER.error("Rollback the SQL connection failed. ", b.cause());
+						LOG.error("Rollback the SQL connection failed. ", b.cause());
 					}
 				});
 			}
@@ -568,7 +642,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
 
-		ClusterEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		SiteUserEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		PageDesignEnUSGenApiService.registerService(siteContextEnUS, vertx);
 		HtmlPartEnUSGenApiService.registerService(siteContextEnUS, vertx);
@@ -594,7 +667,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		module.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
 		module.addSerializer(LocalDate.class, new LocalDateSerializer());
 		module.addSerializer(LocalTime.class, new LocalTimeSerializer());
-		Json.mapper.registerModule(module);
+		DatabindCodec.mapper().registerModule(module);
 
 		String siteHostName = siteConfig.getSiteHostName();
 		String siteBaseUrl = siteConfig.getSiteBaseUrl();
@@ -603,17 +676,17 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		if(siteConfig.getSslPassthrough() != null && siteConfig.getSslPassthrough()) {
 			options.setKeyStoreOptions(new JksOptions().setPath(siteConfig.getSslJksPath()).setPassword(siteConfig.getSslJksPassword()));
 			options.setSsl(true);
-			LOGGER.info(String.format(startServerSsl, siteConfig.getSslJksPath()));
+			LOG.info(String.format(startServerSsl, siteConfig.getSslJksPath()));
 		}
 		options.setPort(sitePort);
 
-		LOGGER.info(String.format(startServerBeforeServer, siteBaseUrl));
+		LOG.info(String.format(startServerBeforeServer, siteBaseUrl));
 		vertx.createHttpServer(options).requestHandler(siteRouter).listen(ar -> {
 			if (ar.succeeded()) {
-				LOGGER.info(String.format(startServerSuccessServer, siteBaseUrl));
+				LOG.info(String.format(startServerSuccessServer, siteBaseUrl));
 				promise.complete();
 			} else {
-				LOGGER.error(startServerErrorServer, ar.cause());
+				LOG.error(startServerErrorServer, ar.cause());
 				promise.fail(ar.cause());
 			}
 		});
@@ -628,7 +701,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	@Override()
 	public void  stop(Promise<Void> stopPromise) throws Exception, Exception {
 		Promise<Void> promiseSteps = closeData();
-		promiseSteps.future().setHandler(stopPromise);
+		promiseSteps.future().onComplete(stopPromise);
 	}
 
 	/**	
@@ -643,7 +716,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 		if(pgPool != null) {
 			pgPool.close();
-			LOGGER.info(closeDataSuccess);
+			LOG.info(closeDataSuccess);
 			promise.complete();
 		}
 		return promise;

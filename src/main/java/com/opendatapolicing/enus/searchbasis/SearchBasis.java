@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.searchbasis; 
+package com.opendatapolicing.enus.searchbasis;  
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -77,10 +77,12 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _trafficSearchSearch(SearchList<TrafficSearch> l) {
-		l.setQuery("*:*");
-		l.addFilterQuery("contrabandKeys_indexed_longs:" + pk);
-		l.setC(TrafficSearch.class);
-		l.setStore(true);
+		if(searchKey != null) {
+			l.setQuery("*:*");
+			l.addFilterQuery("pk_indexed_long:" + searchKey);
+			l.setC(TrafficSearch.class);
+			l.setStore(true);
+		}
 	}
 
 	protected void _trafficSearch_(Wrap<TrafficSearch> w) {

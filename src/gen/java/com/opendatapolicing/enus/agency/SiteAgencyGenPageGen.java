@@ -2,10 +2,10 @@ package com.opendatapolicing.enus.agency;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
-import io.vertx.core.logging.LoggerFactory;
 import com.opendatapolicing.enus.search.SearchList;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
@@ -13,9 +13,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.logging.Logger;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
@@ -34,31 +34,18 @@ import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-/**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgencyGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
- * <br/>
- **/
 public abstract class SiteAgencyGenPageGen<DEV> extends PageLayout {
-	protected static final Logger LOGGER = LoggerFactory.getLogger(SiteAgencyGenPage.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(SiteAgencyGenPage.class);
 
 	////////////////////
 	// listSiteAgency //
 	////////////////////
 
-	/**	 The entity listSiteAgency
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<SiteAgency> listSiteAgency;
 	@JsonIgnore
 	public Wrap<SearchList<SiteAgency>> listSiteAgencyWrap = new Wrap<SearchList<SiteAgency>>().p(this).c(SearchList.class).var("listSiteAgency").o(listSiteAgency);
 
-	/**	<br/> The entity listSiteAgency
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgencyGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSiteAgency">Find the entity listSiteAgency in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _listSiteAgency(Wrap<SearchList<SiteAgency>> c);
 
 	public SearchList<SiteAgency> getListSiteAgency() {
@@ -88,20 +75,11 @@ public abstract class SiteAgencyGenPageGen<DEV> extends PageLayout {
 	// siteAgency_ //
 	/////////////////
 
-	/**	 The entity siteAgency_
-	 *	 is defined as null before being initialized. 
-	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteAgency siteAgency_;
 	@JsonIgnore
 	public Wrap<SiteAgency> siteAgency_Wrap = new Wrap<SiteAgency>().p(this).c(SiteAgency.class).var("siteAgency_").o(siteAgency_);
 
-	/**	<br/> The entity siteAgency_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgencyGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteAgency_">Find the entity siteAgency_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
 	protected abstract void _siteAgency_(Wrap<SiteAgency> c);
 
 	public SiteAgency getSiteAgency_() {

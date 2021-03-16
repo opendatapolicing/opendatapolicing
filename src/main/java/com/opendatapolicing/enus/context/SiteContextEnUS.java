@@ -4,16 +4,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.wrap.Wrap;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.WorkerExecutor;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.mail.MailClient;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
+import io.vertx.ext.web.openapi.RouterBuilder;
 import io.vertx.pgclient.PgPool;
 
 
@@ -27,7 +29,7 @@ public class SiteContextEnUS extends SiteContextEnUSGen<Object> {
 	protected void _vertx(Wrap<Vertx> c) {
 	}
 
-	protected void _routerFactory(Wrap<OpenAPI3RouterFactory> c) {
+	protected void _routerBuilder(Wrap<RouterBuilder> c) {
 	}
 
 	protected void _router(Wrap<Router> c) {
@@ -36,7 +38,10 @@ public class SiteContextEnUS extends SiteContextEnUSGen<Object> {
 	protected void _authHandler(Wrap<OAuth2AuthHandler> c) {
 	}
 
-	protected void _authProvider(Wrap<OAuth2Auth> c) {
+	protected void _oauth2AuthenticationProvider(Wrap<OAuth2Auth> c) {
+	}
+
+	protected void _authorizationProvider(Wrap<AuthorizationProvider> c) {
 	}
 
 	protected void _workerExecutor(Wrap<WorkerExecutor> c) {

@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficsearch; 
+package com.opendatapolicing.enus.trafficsearch;  
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -79,10 +79,12 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _trafficPersonSearch(SearchList<TrafficPerson> l) {
-		l.setQuery("*:*");
-		l.addFilterQuery("trafficSearchKeys_indexed_longs:" + pk);
-		l.setC(TrafficPerson.class);
-		l.setStore(true);
+		if(personKey != null) {
+			l.setQuery("*:*");
+			l.addFilterQuery("pk_indexed_long:" + personKey);
+			l.setC(TrafficPerson.class);
+			l.setStore(true);
+		}
 	}
 
 	protected void _trafficPerson_(Wrap<TrafficPerson> w) {

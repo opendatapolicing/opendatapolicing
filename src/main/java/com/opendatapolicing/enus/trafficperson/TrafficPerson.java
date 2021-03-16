@@ -77,10 +77,12 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _trafficStopSearch(SearchList<TrafficStop> l) {
-		l.setQuery("*:*");
-		l.addFilterQuery("personKeys_indexed_longs:" + pk);
-		l.setC(TrafficStop.class);
-		l.setStore(true);
+		if(trafficStopKey != null) {
+			l.setQuery("*:*");
+			l.addFilterQuery("pk_indexed_long:" + trafficStopKey);
+			l.setC(TrafficStop.class);
+			l.setStore(true);
+		}
 	}
 
 	protected void _trafficStop_(Wrap<TrafficStop> c) {

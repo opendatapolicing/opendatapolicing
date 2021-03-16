@@ -8,7 +8,7 @@ import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.api.OperationResponse;
+import io.vertx.ext.web.api.service.ServiceResponse;
 
 /**
  * Translate: false
@@ -20,7 +20,7 @@ public class SiteUserEnUSApiServiceImpl extends SiteUserEnUSGenApiServiceImpl {
 	}
 
 	@Override
-	public void sqlPOSTSiteUser(SiteUser o, Boolean inheritPk, Handler<AsyncResult<OperationResponse>> eventHandler) {
+	public void sqlPOSTSiteUser(SiteUser o, Boolean inheritPk, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		SiteRequestEnUS siteRequest_ = o.getSiteRequest_();
 		JsonObject jsonObject = siteRequest_.getJsonObject();
 		if(StringUtils.equals(o.getUserId(), siteRequest_.getUserId())) {

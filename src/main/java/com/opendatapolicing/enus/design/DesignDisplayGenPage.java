@@ -17,7 +17,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.json.JsonArray;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -52,7 +52,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.json.JsonArray;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -87,7 +87,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.json.JsonArray;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -122,7 +122,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.json.JsonArray;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -157,7 +157,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.api.OperationRequest;
+import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.json.JsonArray;
 import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -447,8 +447,8 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 
 	@Override public void htmlBodyDesignDisplayGenPage() {
 
-		OperationRequest operationRequest = siteRequest_.getOperationRequest();
-		JsonObject params = operationRequest.getParams();
+		ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
+		JsonObject params = serviceRequest.getParams();
 		if(listPageDesign == null || listPageDesign.size() == 0) {
 
 			{ e("h1").f();
@@ -504,7 +504,7 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 			} g("h1");
 			{ e("div").a("class", "").f();
 				{ e("div").f();
-					JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
+					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listPageDesign.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
 					String query1 = "objectText";
@@ -904,8 +904,8 @@ public class DesignDisplayGenPage extends DesignDisplayGenPageGen<PageLayout> {
 	public static void htmlSuggestedDesignDisplayGenPage(PageLayout p, String id, SearchList<PageDesign> listPageDesign) {
 		SiteRequestEnUS siteRequest_ = p.getSiteRequest_();
 		try {
-			OperationRequest operationRequest = siteRequest_.getOperationRequest();
-			JsonObject queryParams = Optional.ofNullable(operationRequest).map(OperationRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
+			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
+			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
 			String query1 = "objectText";
 			String query2 = "";
