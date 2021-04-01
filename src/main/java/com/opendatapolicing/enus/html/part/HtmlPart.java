@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.html.part;     
+package com.opendatapolicing.enus.html.part;  
 
 import java.util.List;
 

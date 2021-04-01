@@ -9,7 +9,6 @@ import java.lang.Long;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
-import io.vertx.sqlclient.Transaction;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import java.math.MathContext;
@@ -1031,7 +1030,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		this.userRealmRolesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserRealmRoles(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public SiteRequestEnUS addUserRealmRoles(String...objets) {
 		for(String o : objets) {
@@ -1143,7 +1142,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		this.userResourceRolesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetUserResourceRoles(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public SiteRequestEnUS addUserResourceRoles(String...objets) {
 		for(String o : objets) {
@@ -1256,8 +1255,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		this.xmlStack = xmlStack;
 		this.xmlStackWrap.alreadyInitialized = true;
 	}
-	public static Stack<String> staticSetXmlStack(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+	public static String staticSetXmlStack(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected SiteRequestEnUS xmlStackInit() {
 		if(!xmlStackWrap.alreadyInitialized) {
@@ -1548,38 +1547,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return requestMethod == null ? "" : requestMethod;
 	}
 
-	////////
-	// tx //
-	////////
-
-	@JsonInclude(Include.NON_NULL)
-	protected Transaction tx;
-	@JsonIgnore
-	public Wrap<Transaction> txWrap = new Wrap<Transaction>().p(this).c(Transaction.class).var("tx").o(tx);
-
-	protected abstract void _tx(Wrap<Transaction> c);
-
-	public Transaction getTx() {
-		return tx;
-	}
-
-	public void setTx(Transaction tx) {
-		this.tx = tx;
-		this.txWrap.alreadyInitialized = true;
-	}
-	public static Transaction staticSetTx(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteRequestEnUS txInit() {
-		if(!txWrap.alreadyInitialized) {
-			_tx(txWrap);
-			if(tx == null)
-				setTx(txWrap.o);
-		}
-		txWrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
 	///////////////////
 	// sqlConnection //
 	///////////////////
@@ -1726,7 +1693,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		requestPkInit();
 		requestUriInit();
 		requestMethodInit();
-		txInit();
 		sqlConnectionInit();
 		requestHeadersInit();
 		requestVarsInit();
@@ -1839,8 +1805,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.requestUri;
 			case "requestMethod":
 				return oSiteRequestEnUS.requestMethod;
-			case "tx":
-				return oSiteRequestEnUS.tx;
 			case "sqlConnection":
 				return oSiteRequestEnUS.sqlConnection;
 			case "requestHeaders":

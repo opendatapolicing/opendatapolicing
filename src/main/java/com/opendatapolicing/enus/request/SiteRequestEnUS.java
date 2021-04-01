@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.request; 
+package com.opendatapolicing.enus.request;  
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,11 +31,10 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.sqlclient.SqlConnection;
-import io.vertx.sqlclient.Transaction;
 
 /**
  * Keyword: classSimpleNameSiteRequest
- */      
+ */        
 public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Serializable {
 
 	/**	
@@ -221,9 +220,6 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	protected void _requestMethod(Wrap<String> c) {
 	}
 
-	protected void _tx(Wrap<Transaction> c) {
-	}
-
 	protected void _sqlConnection(Wrap<SqlConnection> c) {
 	}
 
@@ -242,7 +238,6 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 		o.setUserKey(userKey);
 		o.setSolrDocument(solrDocument);
 		o.setPageAdmin(pageAdmin);
-		o.setTx(tx);
 		o.setRequestHeaders(requestHeaders);
 		o.setRequestVars(requestVars);
 		return o;

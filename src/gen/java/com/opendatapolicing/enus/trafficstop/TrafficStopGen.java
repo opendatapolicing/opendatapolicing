@@ -2768,7 +2768,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.personRaceTitlesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPersonRaceTitles(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public TrafficStop addPersonRaceTitles(String...objets) {
 		for(String o : objets) {
@@ -2888,7 +2888,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.trafficSearchRaceTitlesWrap.alreadyInitialized = true;
 	}
 	public static String staticSetTrafficSearchRaceTitles(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public TrafficStop addTrafficSearchRaceTitles(String...objets) {
 		for(String o : objets) {

@@ -60,8 +60,10 @@ import java.sql.Timestamp;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
+import java.net.URLEncoder;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.CompositeFuture;
+import io.vertx.core.http.HttpHeaders;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
@@ -138,8 +140,17 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 					errorSiteUser(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("searchSiteUser failed. ", b.cause()));
-				errorSiteUser(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("searchSiteUser failed. ", ex));
+						errorSiteUser(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("searchSiteUser failed. ", b.cause()));
+					errorSiteUser(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -409,8 +420,17 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 					errorSiteUser(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("patchSiteUser failed. ", b.cause()));
-				errorSiteUser(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("patchSiteUser failed. ", ex));
+						errorSiteUser(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("patchSiteUser failed. ", b.cause()));
+					errorSiteUser(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -719,8 +739,17 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 					errorSiteUser(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("postSiteUser failed. ", b.cause()));
-				errorSiteUser(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("postSiteUser failed. ", ex));
+						errorSiteUser(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("postSiteUser failed. ", b.cause()));
+					errorSiteUser(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -1021,8 +1050,17 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 					errorSiteUser(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("searchpageSiteUser failed. ", b.cause()));
-				errorSiteUser(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("searchpageSiteUser failed. ", ex));
+						errorSiteUser(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("searchpageSiteUser failed. ", b.cause()));
+					errorSiteUser(null, eventHandler, b);
+				}
 			}
 		});
 	}

@@ -47,15 +47,15 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 
 /*
 CREATE TABLE PageDesign(
-	pk bigserial primary key
+	pageDesignCompleteName text
+	, designHidden boolean
+	, pageContentType text
+	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
-	, pageDesignCompleteName text
-	, designHidden boolean
-	, pageContentType text
 	);
 CREATE TABLE HtmlPart(
 	htmlLink text
@@ -112,16 +112,16 @@ CREATE TABLE SiteUser(
 	, userKey bigint
 	);
 CREATE TABLE SiteState(
-	stateName text
-	, stateAbbreviation text
-	, imageLeft integer
-	, imageTop integer
-	, pk bigserial primary key
+	pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
+	, stateName text
+	, stateAbbreviation text
+	, imageLeft integer
+	, imageTop integer
 	);
 CREATE TABLE SiteAgency(
 	pk bigserial primary key
@@ -137,7 +137,13 @@ CREATE TABLE SiteAgency(
 	, imageCoords text
 	);
 CREATE TABLE TrafficStop(
-	stopAgencyTitle text
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userKey bigint
+	, stopAgencyTitle text
 	, stopDateTime timestamp with time zone
 	, stopYear integer
 	, stopPurposeNum integer
@@ -152,29 +158,29 @@ CREATE TABLE TrafficStop(
 	, stopOfficerId text
 	, stopLocationId text
 	, stopCityId text
-	, pk bigserial primary key
+	);
+CREATE TABLE TrafficPerson(
+	pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
-	);
-CREATE TABLE TrafficPerson(
-	trafficStopKey bigint references TrafficStop(pk)
+	, trafficStopKey bigint references TrafficStop(pk)
 	, personAge integer
 	, personTypeId text
 	, personGenderId text
 	, personEthnicityId text
 	, personRaceId text
-	, pk bigserial primary key
+	);
+CREATE TABLE TrafficSearch(
+	pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
-	);
-CREATE TABLE TrafficSearch(
-	personKey bigint references TrafficPerson(pk)
+	, personKey bigint references TrafficPerson(pk)
 	, searchTypeNum integer
 	, searchVehicle boolean
 	, searchDriver boolean
@@ -183,15 +189,14 @@ CREATE TABLE TrafficSearch(
 	, searchVehicleSiezed boolean
 	, searchPersonalPropertySiezed boolean
 	, searchOtherPropertySiezed boolean
-	, pk bigserial primary key
+	);
+CREATE TABLE TrafficContraband(
+	pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
-	);
-CREATE TABLE TrafficContraband(
-	searchKey bigint references TrafficSearch(pk)
 	, contrabandOunces decimal
 	, contrabandPounds decimal
 	, contrabandPints decimal
@@ -202,12 +207,6 @@ CREATE TABLE TrafficContraband(
 	, contrabandMoney decimal
 	, contrabandWeapons decimal
 	, contrabandDollarAmount decimal
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userKey bigint
 	);
 CREATE TABLE SearchBasis(
 	pk bigserial primary key
@@ -216,14 +215,8 @@ CREATE TABLE SearchBasis(
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
-	, searchKey bigint references TrafficSearch(pk)
 	, searchBasisId text
 	, searchBasisTitle text
-	);
-CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
-	pk bigserial primary key
-	, pk1 bigint references PageDesign(pk)
-	, pk2 bigint references PageDesign(pk)
 	);
 CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	pk bigserial primary key

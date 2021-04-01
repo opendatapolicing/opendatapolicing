@@ -62,8 +62,10 @@ import java.sql.Timestamp;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
+import java.net.URLEncoder;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.CompositeFuture;
+import io.vertx.core.http.HttpHeaders;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
@@ -191,8 +193,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("putimportTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("putimportTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("putimportTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -381,8 +392,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("putmergeTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("putmergeTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("putmergeTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -574,8 +594,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("putcopyTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("putcopyTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("putcopyTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -613,8 +642,9 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 		});
 	}
 
-	public Future<TrafficStop> putcopyTrafficStopFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject, Handler<AsyncResult<TrafficStop>> eventHandler) {
+	public Future<TrafficStop> putcopyTrafficStopFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject) {
 		Promise<TrafficStop> promise = Promise.promise();
+
 		try {
 
 			jsonObject.put("saves", Optional.ofNullable(jsonObject.getJsonArray("saves")).orElse(new JsonArray()));
@@ -624,7 +654,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					jsonObject.remove(o.getKey());
 				else
 					jsonObject.put(o.getKey(), o.getValue());
-				jsonObject.getJsonArray("saves").add(o.getKey());
+				if(!jsonObject.getJsonArray("saves").contains(o.getKey()))
+					jsonObject.getJsonArray("saves").add(o.getKey());
 			});
 
 			sqlConnectionTrafficStop(siteRequest, a -> {
@@ -673,9 +704,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("putcopyTrafficStopFuture failed. "), e);
-			errorTrafficStop(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("putcopyTrafficStopFuture failed. "), ex);
+			promise.fail(ex);
+			errorTrafficStop(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -886,6 +918,22 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					}
 				}
 			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					sqlConnection.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
+			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
 					eventHandler.handle(Future.succeededFuture());
@@ -961,23 +1009,20 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						apiRequest.initDeepApiRequest(siteRequest);
 						siteRequest.setApiRequest_(apiRequest);
 						siteRequest.getVertx().eventBus().publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
-						postTrafficStopFuture(siteRequest, false, c -> {
-							if(c.succeeded()) {
-								TrafficStop trafficStop = c.result();
-								apiRequest.setPk(trafficStop.getPk());
-								postTrafficStopResponse(trafficStop, d -> {
-										if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("postTrafficStop succeeded. "));
-									} else {
-										LOG.error(String.format("postTrafficStop failed. ", d.cause()));
-										errorTrafficStop(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("postTrafficStop failed. ", c.cause()));
-								errorTrafficStop(siteRequest, eventHandler, c);
-							}
+						postTrafficStopFuture(siteRequest, false).onSuccess(trafficStop -> {
+							apiRequest.setPk(trafficStop.getPk());
+							postTrafficStopResponse(trafficStop, d -> {
+								if(d.succeeded()) {
+									eventHandler.handle(Future.succeededFuture(d.result()));
+									LOG.info(String.format("postTrafficStop succeeded. "));
+								} else {
+									LOG.error(String.format("postTrafficStop failed. ", d.cause()));
+									errorTrafficStop(siteRequest, eventHandler, d);
+								}
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("postTrafficStop failed. ", ex));
+							errorTrafficStop(siteRequest, eventHandler, Future.failedFuture(ex));
 						});
 					}
 				} catch(Exception ex) {
@@ -985,63 +1030,99 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("postTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("postTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("postTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
 
 
-	public Future<TrafficStop> postTrafficStopFuture(SiteRequestEnUS siteRequest, Boolean inheritPk, Handler<AsyncResult<TrafficStop>> eventHandler) {
+	public Future<TrafficStop> postTrafficStopFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<TrafficStop> promise = Promise.promise();
+
 		try {
-			sqlConnectionTrafficStop(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionTrafficStop(siteRequest, b -> {
-						if(b.succeeded()) {
-							createTrafficStop(siteRequest, c -> {
-								if(c.succeeded()) {
-									TrafficStop trafficStop = c.result();
-									sqlPOSTTrafficStop(trafficStop, inheritPk, d -> {
-										if(d.succeeded()) {
-											defineIndexTrafficStop(trafficStop, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														trafficStop.apiRequestTrafficStop();
-														siteRequest.getVertx().eventBus().publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<TrafficStop> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createTrafficStop(siteRequest, a -> {
+					if(a.succeeded()) {
+						TrafficStop trafficStop = a.result();
+						sqlPOSTTrafficStop(trafficStop, inheritPk, b -> {
+							if(b.succeeded()) {
+								defineTrafficStop(trafficStop, c -> {
+									if(c.succeeded()) {
+										attributeTrafficStop(trafficStop, d -> {
+											if(d.succeeded()) {
+												indexTrafficStop(trafficStop, e -> {
+													if(e.succeeded()) {
+														promise1.complete(trafficStop);
+													} else {
+														LOG.error(String.format("postTrafficStopFuture failed. ", e.cause()));
+														promise1.fail(e.cause());
 													}
-													eventHandler.handle(Future.succeededFuture(trafficStop));
-													promise.complete(trafficStop);
-												} else {
-													LOG.error(String.format("postTrafficStopFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOG.error(String.format("postTrafficStopFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("postTrafficStopFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("postTrafficStopFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+												});
+											} else {
+												LOG.error(String.format("postTrafficStopFuture failed. ", d.cause()));
+												promise1.fail(d.cause());
+											}
+										});
+									} else {
+										LOG.error(String.format("postTrafficStopFuture failed. ", c.cause()));
+										promise1.fail(c.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("postTrafficStopFuture failed. ", b.cause()));
+								promise1.fail(b.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("postTrafficStopFuture failed. ", a.cause()));
+						promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			errorTrafficStop(siteRequest, null, promise.future());
+			}).compose(trafficStop -> {
+				Promise<TrafficStop> promise2 = Promise.promise();
+				refreshTrafficStop(trafficStop, a -> {
+					if(a.succeeded()) {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficStop.apiRequestTrafficStop();
+							siteRequest.getVertx().eventBus().publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("postTrafficStopFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(trafficStop);
+					} else {
+						LOG.error(String.format("postTrafficStopFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("postTrafficStopFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			errorTrafficStop(siteRequest, null, promise.future());
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("postTrafficStopFuture failed. "), e);
-			errorTrafficStop(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("postTrafficStopFuture failed. "), ex);
+			promise.fail(ex);
+			errorTrafficStop(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -1450,8 +1531,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("patchTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("patchTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("patchTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -1487,9 +1577,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 		});
 	}
 
-	public Future<TrafficStop> patchTrafficStopFuture(TrafficStop o, Boolean inheritPk, Handler<AsyncResult<TrafficStop>> eventHandler) {
-		Promise<TrafficStop> promise = Promise.promise();
+	public Future<TrafficStop> patchTrafficStopFuture(TrafficStop o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+		Promise<TrafficStop> promise = Promise.promise();
+
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			if(apiRequest != null && apiRequest.getNumFound() == 1L) {
@@ -1534,9 +1625,10 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					eventHandler.handle(Future.failedFuture(a.cause()));
 				}
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("patchTrafficStopFuture failed. "), e);
-			errorTrafficStop(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
+			promise.fail(ex);
+			errorTrafficStop(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -1964,8 +2056,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("getTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("getTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("getTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -2034,8 +2135,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("searchTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("searchTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("searchTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -2242,8 +2352,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("adminsearchTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("adminsearchTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("adminsearchTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -2455,8 +2574,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					errorTrafficStop(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("searchpageTrafficStop failed. ", b.cause()));
-				errorTrafficStop(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("searchpageTrafficStop failed. ", ex));
+						errorTrafficStop(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("searchpageTrafficStop failed. ", b.cause()));
+					errorTrafficStop(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -2654,124 +2782,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			});
 		} else {
 			eventHandler.handle(Future.succeededFuture(responseOperation));
-		}
-	}
-
-	public void sqlConnectionTrafficStop(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
-
-			if(pgPool == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				pgPool.getConnection(a -> {
-					if(a.succeeded()) {
-						SqlConnection sqlConnection = a.result();
-						siteRequest.setSqlConnection(sqlConnection);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlConnectionTrafficStop failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTrafficStop failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlTransactionTrafficStop(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.failedFuture("sqlTransactionCloseTrafficStop failed, connection should not be null. "));
-			} else {
-				sqlConnection.begin(a -> {
-					Transaction tx = a.result();
-					siteRequest.setTx(tx);
-					eventHandler.handle(Future.succeededFuture());
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTransactionTrafficStop failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCommitTrafficStop(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.failedFuture("sqlCommitCloseTrafficStop failed, tx should not be null. "));
-			} else {
-				tx.commit(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlCommitTrafficStop failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTrafficStop failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlRollbackTrafficStop(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.failedFuture("sqlRollbackCloseTrafficStop failed, tx should not be null. "));
-			} else {
-				tx.rollback(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlRollbackTrafficStop failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTrafficStop failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCloseTrafficStop(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.failedFuture("sqlCloseTrafficStop failed, connection should not be null. "));
-			} else {
-				sqlConnection.close(a -> {
-					if(a.succeeded()) {
-						siteRequest.setSqlConnection(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlCloseTrafficStop failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlCloseTrafficStop failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 

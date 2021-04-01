@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -68,6 +69,7 @@ import io.vertx.ext.healthchecks.Status;
 import io.vertx.ext.mail.MailClient;
 import io.vertx.ext.mail.MailConfig;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
@@ -391,6 +393,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 							routerBuilder.mountServicesFromExtensions();
 							siteContextEnUS.setRouterBuilder(routerBuilder);
 			
+							Function<RoutingContext, JsonObject> extraPayloadMapper = routingContext -> new JsonObject().put("uri", routingContext.request().uri()).put("method", routingContext.request().method().name());
+							routerBuilder.serviceExtraPayloadMapper(extraPayloadMapper);
 							routerBuilder.rootHandler(sessionHandler);
 							routerBuilder.securityHandler("openIdConnect", oauth2AuthHandler);
 							routerBuilder.operation("callback").handler(ctx -> {
@@ -446,9 +450,14 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 							routerBuilder.operation("callback").failureHandler(c -> {});
 			
 							routerBuilder.operation("logout").handler(rc -> {
-								Session session = rc.session();
+								String redirectUri = rc.request().params().get("redirect_uri");
+								if(redirectUri == null)
+									redirectUri = "/";
 								rc.clearUser();
-								rc.reroute("/");
+								rc.response()
+										.putHeader(HttpHeaders.LOCATION, redirectUri)
+										.setStatusCode(302)
+										.end("Redirecting to " + redirectUri + ".");
 							});
 							routerBuilder.operation("logout").handler(c -> {});
 			

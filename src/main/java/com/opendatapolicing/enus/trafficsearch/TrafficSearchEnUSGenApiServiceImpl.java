@@ -628,7 +628,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					jsonObject.remove(o.getKey());
 				else
 					jsonObject.put(o.getKey(), o.getValue());
-				jsonObject.getJsonArray("saves").add(o.getKey());
+				if(!jsonObject.getJsonArray("saves").contains(o.getKey()))
+					jsonObject.getJsonArray("saves").add(o.getKey());
 			});
 
 			sqlConnectionTrafficSearch(siteRequest, a -> {
@@ -860,6 +861,22 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						break;
 					}
 				}
+			}
+			bSql.append(" WHERE pk=$" + num);
+			if(bParams.size() > 0) {
+			bParams.add(pk);
+			num++;
+				futures.add(Future.future(a -> {
+					sqlConnection.preparedQuery(bSql.toString())
+							.execute(Tuple.tuple(bParams)
+							, b
+					-> {
+						if(b.succeeded())
+							a.handle(Future.succeededFuture());
+						else
+							a.handle(Future.failedFuture(b.cause()));
+					});
+				}));
 			}
 			CompositeFuture.all(futures).onComplete( a -> {
 				if(a.succeeded()) {
