@@ -34,6 +34,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignPdfGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class DesignPdfGenPageGen<DEV> extends PageLayout {
 	protected static final Logger LOG = LoggerFactory.getLogger(DesignPdfGenPage.class);
 
@@ -41,11 +45,20 @@ public abstract class DesignPdfGenPageGen<DEV> extends PageLayout {
 	// listPageDesign //
 	////////////////////
 
+	/**	 The entity listPageDesign
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<PageDesign> listPageDesign;
 	@JsonIgnore
 	public Wrap<SearchList<PageDesign>> listPageDesignWrap = new Wrap<SearchList<PageDesign>>().p(this).c(SearchList.class).var("listPageDesign").o(listPageDesign);
 
+	/**	<br/> The entity listPageDesign
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignPdfGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listPageDesign">Find the entity listPageDesign in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _listPageDesign(Wrap<SearchList<PageDesign>> c);
 
 	public SearchList<PageDesign> getListPageDesign() {
@@ -75,11 +88,20 @@ public abstract class DesignPdfGenPageGen<DEV> extends PageLayout {
 	// pageDesign_ //
 	/////////////////
 
+	/**	 The entity pageDesign_
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected PageDesign pageDesign_;
 	@JsonIgnore
 	public Wrap<PageDesign> pageDesign_Wrap = new Wrap<PageDesign>().p(this).c(PageDesign.class).var("pageDesign_").o(pageDesign_);
 
+	/**	<br/> The entity pageDesign_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignPdfGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageDesign_">Find the entity pageDesign_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageDesign_(Wrap<PageDesign> c);
 
 	public PageDesign getPageDesign_() {

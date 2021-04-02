@@ -444,11 +444,8 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
-				patchSiteUserFuture(o, false, a -> {
-					if(a.succeeded()) {
-					} else {
-						errorSiteUser(siteRequest2, eventHandler, a);
-					}
+				patchSiteUserFuture(o, false).onFailure(ex -> {
+					errorSiteUser(siteRequest2, eventHandler, Future.failedFuture(ex));
 				})
 			);
 		});
@@ -466,56 +463,81 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 		});
 	}
 
-	public Future<SiteUser> patchSiteUserFuture(SiteUser o, Boolean inheritPk, Handler<AsyncResult<SiteUser>> eventHandler) {
-		Promise<SiteUser> promise = Promise.promise();
+	public Future<SiteUser> patchSiteUserFuture(SiteUser o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+		Promise<SiteUser> promise = Promise.promise();
+
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			if(apiRequest != null && apiRequest.getNumFound() == 1L) {
 				apiRequest.setOriginal(o);
 				apiRequest.setPk(o.getPk());
 			}
-			sqlConnectionSiteUser(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionSiteUser(siteRequest, b -> {
-						if(b.succeeded()) {
-							sqlPATCHSiteUser(o, inheritPk, c -> {
-								if(c.succeeded()) {
-									SiteUser siteUser = c.result();
-									defineIndexSiteUser(siteUser, d -> {
-										if(d.succeeded()) {
-											if(apiRequest != null) {
-												apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-												if(apiRequest.getNumFound() == 1L) {
-													siteUser.apiRequestSiteUser();
-												}
-												siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<SiteUser> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				sqlPATCHSiteUser(o, inheritPk, a -> {
+					if(a.succeeded()) {
+						SiteUser siteUser = a.result();
+						defineSiteUser(siteUser, c -> {
+							if(c.succeeded()) {
+								attributeSiteUser(siteUser, d -> {
+									if(d.succeeded()) {
+										indexSiteUser(siteUser, e -> {
+											if(e.succeeded()) {
+												promise1.complete(siteUser);
+											} else {
+												LOG.error(String.format("patchSiteUserFuture failed. ", e.cause()));
+												promise1.fail(e.cause());
 											}
-											eventHandler.handle(Future.succeededFuture(siteUser));
-											promise.complete(siteUser);
-										} else {
-											LOG.error(String.format("patchSiteUserFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("patchSiteUserFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("patchSiteUserFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+										});
+									} else {
+										LOG.error(String.format("patchSiteUserFuture failed. ", d.cause()));
+										promise1.fail(d.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("patchSiteUserFuture failed. ", c.cause()));
+								promise1.fail(c.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("patchSiteUserFuture failed. ", a.cause()));
+								promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorSiteUser(siteRequest, null, Future.failedFuture(ex));
+			}).compose(siteUser -> {
+				Promise<SiteUser> promise2 = Promise.promise();
+				refreshSiteUser(siteUser, a -> {
+					if(a.succeeded()) {
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							siteUser.apiRequestSiteUser();
+							siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("patchSiteUserFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(siteUser);
+					} else {
+						LOG.error(String.format("patchSiteUserFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("patchSiteUserFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorSiteUser(siteRequest, null, promise.future());
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("patchSiteUserFuture failed. "), e);
-			errorSiteUser(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("patchSiteUserFuture failed. "), ex);
+			promise.fail(ex);
+			errorSiteUser(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -715,23 +737,20 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 						apiRequest.initDeepApiRequest(siteRequest);
 						siteRequest.setApiRequest_(apiRequest);
 						siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-						postSiteUserFuture(siteRequest, false, c -> {
-							if(c.succeeded()) {
-								SiteUser siteUser = c.result();
-								apiRequest.setPk(siteUser.getPk());
-								postSiteUserResponse(siteUser, d -> {
-										if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("postSiteUser succeeded. "));
-									} else {
-										LOG.error(String.format("postSiteUser failed. ", d.cause()));
-										errorSiteUser(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("postSiteUser failed. ", c.cause()));
-								errorSiteUser(siteRequest, eventHandler, c);
-							}
+						postSiteUserFuture(siteRequest, false).onSuccess(siteUser -> {
+							apiRequest.setPk(siteUser.getPk());
+							postSiteUserResponse(siteUser, d -> {
+								if(d.succeeded()) {
+									eventHandler.handle(Future.succeededFuture(d.result()));
+									LOG.info(String.format("postSiteUser succeeded. "));
+								} else {
+									LOG.error(String.format("postSiteUser failed. ", d.cause()));
+									errorSiteUser(siteRequest, eventHandler, d);
+								}
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("postSiteUser failed. ", Future.failedFuture(ex)));
+							errorSiteUser(siteRequest, eventHandler, Future.failedFuture(ex));
 						});
 					}
 				} catch(Exception ex) {
@@ -755,56 +774,83 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 	}
 
 
-	public Future<SiteUser> postSiteUserFuture(SiteRequestEnUS siteRequest, Boolean inheritPk, Handler<AsyncResult<SiteUser>> eventHandler) {
+	public Future<SiteUser> postSiteUserFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<SiteUser> promise = Promise.promise();
+
 		try {
-			sqlConnectionSiteUser(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionSiteUser(siteRequest, b -> {
-						if(b.succeeded()) {
-							createSiteUser(siteRequest, c -> {
-								if(c.succeeded()) {
-									SiteUser siteUser = c.result();
-									sqlPOSTSiteUser(siteUser, inheritPk, d -> {
-										if(d.succeeded()) {
-											defineIndexSiteUser(siteUser, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														siteUser.apiRequestSiteUser();
-														siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<SiteUser> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createSiteUser(siteRequest, a -> {
+					if(a.succeeded()) {
+						SiteUser siteUser = a.result();
+						sqlPOSTSiteUser(siteUser, inheritPk, b -> {
+							if(b.succeeded()) {
+								defineSiteUser(siteUser, c -> {
+									if(c.succeeded()) {
+										attributeSiteUser(siteUser, d -> {
+											if(d.succeeded()) {
+												indexSiteUser(siteUser, e -> {
+													if(e.succeeded()) {
+														promise1.complete(siteUser);
+													} else {
+														LOG.error(String.format("postSiteUserFuture failed. ", e.cause()));
+														promise1.fail(e.cause());
 													}
-													eventHandler.handle(Future.succeededFuture(siteUser));
-													promise.complete(siteUser);
-												} else {
-													LOG.error(String.format("postSiteUserFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOG.error(String.format("postSiteUserFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("postSiteUserFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("postSiteUserFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+												});
+											} else {
+												LOG.error(String.format("postSiteUserFuture failed. ", d.cause()));
+												promise1.fail(d.cause());
+											}
+										});
+									} else {
+										LOG.error(String.format("postSiteUserFuture failed. ", c.cause()));
+										promise1.fail(c.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("postSiteUserFuture failed. ", b.cause()));
+								promise1.fail(b.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("postSiteUserFuture failed. ", a.cause()));
+						promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorSiteUser(siteRequest, null, Future.failedFuture(ex));
+			}).compose(siteUser -> {
+				Promise<SiteUser> promise2 = Promise.promise();
+				refreshSiteUser(siteUser, a -> {
+					if(a.succeeded()) {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							siteUser.apiRequestSiteUser();
+							siteRequest.getVertx().eventBus().publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("postSiteUserFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(siteUser);
+					} else {
+						LOG.error(String.format("postSiteUserFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("postSiteUserFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorSiteUser(siteRequest, null, promise.future());
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("postSiteUserFuture failed. "), e);
-			errorSiteUser(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("postSiteUserFuture failed. "), ex);
+			promise.fail(ex);
+			errorSiteUser(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -1117,56 +1163,6 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 
 	// General //
 
-	public Future<SiteUser> defineIndexSiteUser(SiteUser siteUser, Handler<AsyncResult<SiteUser>> eventHandler) {
-		Promise<SiteUser> promise = Promise.promise();
-		SiteRequestEnUS siteRequest = siteUser.getSiteRequest_();
-		defineSiteUser(siteUser, c -> {
-			if(c.succeeded()) {
-				attributeSiteUser(siteUser, d -> {
-					if(d.succeeded()) {
-						indexSiteUser(siteUser, e -> {
-							if(e.succeeded()) {
-								sqlCommitSiteUser(siteRequest, f -> {
-									if(f.succeeded()) {
-										sqlCloseSiteUser(siteRequest, g -> {
-											if(g.succeeded()) {
-												refreshSiteUser(siteUser, h -> {
-													if(h.succeeded()) {
-														eventHandler.handle(Future.succeededFuture(siteUser));
-														promise.complete(siteUser);
-													} else {
-														LOG.error(String.format("refreshSiteUser failed. ", h.cause()));
-														errorSiteUser(siteRequest, null, h);
-													}
-												});
-											} else {
-												LOG.error(String.format("defineIndexSiteUser failed. ", g.cause()));
-												errorSiteUser(siteRequest, null, g);
-											}
-										});
-									} else {
-										LOG.error(String.format("defineIndexSiteUser failed. ", f.cause()));
-										errorSiteUser(siteRequest, null, f);
-									}
-								});
-							} else {
-								LOG.error(String.format("defineIndexSiteUser failed. ", e.cause()));
-								errorSiteUser(siteRequest, null, e);
-							}
-						});
-					} else {
-						LOG.error(String.format("defineIndexSiteUser failed. ", d.cause()));
-						errorSiteUser(siteRequest, null, d);
-					}
-				});
-			} else {
-				LOG.error(String.format("defineIndexSiteUser failed. ", c.cause()));
-				errorSiteUser(siteRequest, null, c);
-			}
-		});
-		return promise.future();
-	}
-
 	public void createSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<SiteUser>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
@@ -1238,144 +1234,9 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 				}, resultHandler -> {
 				}
 			);
-			sqlRollbackSiteUser(siteRequest, a -> {
-				if(a.succeeded()) {
-					LOG.info(String.format("sql rollback. "));
-					sqlCloseSiteUser(siteRequest, b -> {
-						if(b.succeeded()) {
-							LOG.info(String.format("sql close. "));
-							if(eventHandler != null)
-								eventHandler.handle(Future.succeededFuture(responseOperation));
-						} else {
-							if(eventHandler != null)
-								eventHandler.handle(Future.succeededFuture(responseOperation));
-						}
-					});
-				} else {
-					if(eventHandler != null)
-						eventHandler.handle(Future.succeededFuture(responseOperation));
-				}
-			});
+			eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
 			eventHandler.handle(Future.succeededFuture(responseOperation));
-		}
-	}
-
-	public void sqlConnectionSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
-
-			if(pgPool == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				pgPool.getConnection(a -> {
-					if(a.succeeded()) {
-						SqlConnection sqlConnection = a.result();
-						siteRequest.setSqlConnection(sqlConnection);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlConnectionSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlSiteUser failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlTransactionSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.failedFuture("sqlTransactionCloseSiteUser failed, connection should not be null. "));
-			} else {
-				sqlConnection.begin(a -> {
-					Transaction tx = a.result();
-					siteRequest.setTx(tx);
-					eventHandler.handle(Future.succeededFuture());
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTransactionSiteUser failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCommitSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.failedFuture("sqlCommitCloseSiteUser failed, tx should not be null. "));
-			} else {
-				tx.commit(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlCommitSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlSiteUser failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlRollbackSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.failedFuture("sqlRollbackCloseSiteUser failed, tx should not be null. "));
-			} else {
-				tx.rollback(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlRollbackSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlSiteUser failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCloseSiteUser(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.failedFuture("sqlCloseSiteUser failed, connection should not be null. "));
-			} else {
-				sqlConnection.close(a -> {
-					if(a.succeeded()) {
-						siteRequest.setSqlConnection(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlCloseSiteUser failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlCloseSiteUser failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
@@ -1410,184 +1271,124 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 						User user = a.result();
 						siteContext.getAuthorizationProvider().getAuthorizations(user, b -> {
 							if(b.succeeded()) {
-								JsonObject userAttributes = user.attributes();
-								JsonObject accessToken = userAttributes.getJsonObject("accessToken");
-								String userId = userAttributes.getString("sub");
-								SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteUser(user, siteContext, serviceRequest);
-								sqlConnectionSiteUser(siteRequest, c -> {
-									if(c.succeeded()) {
-										sqlTransactionSiteUser(siteRequest, d -> {
-											if(d.succeeded()) {
-												SqlConnection sqlConnection = siteRequest.getSqlConnection();
-												sqlConnection.preparedQuery("SELECT pk FROM SiteUser WHERE userId=$1")
-														.collecting(Collectors.toList())
-														.execute(Tuple.of(userId)
-														, selectCAsync
-												-> {
-													if(selectCAsync.succeeded()) {
-														try {
-															Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-															SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-															if(userValues == null) {
-																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+								try {
+									JsonObject userAttributes = user.attributes();
+									JsonObject accessToken = userAttributes.getJsonObject("accessToken");
+									String userId = userAttributes.getString("sub");
+									SiteRequestEnUS siteRequest = generateSiteRequestEnUSForSiteUser(user, siteContext, serviceRequest);
+									SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(SiteUser.class);
+									searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+									searchList.initDeepSearchList(siteRequest);
+									SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
-																JsonObject jsonObject = new JsonObject();
-																jsonObject.put("userName", accessToken.getString("preferred_username"));
-																jsonObject.put("userFirstName", accessToken.getString("given_name"));
-																jsonObject.put("userLastName", accessToken.getString("family_name"));
-																jsonObject.put("userCompleteName", accessToken.getString("name"));
-																jsonObject.put("userId", accessToken.getString("sub"));
-																jsonObject.put("userEmail", accessToken.getString("email"));
-																userSiteUserDefine(siteRequest, jsonObject, false);
+									if(siteUser1 == null) {
+										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
 
-																SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-																siteRequest2.setTx(siteRequest.getTx());
-																siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-																siteRequest2.setJsonObject(jsonObject);
-																siteRequest2.setVertx(siteRequest.getVertx());
-																siteRequest2.setSiteContext_(siteContext);
-																siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-																siteRequest2.setUserId(siteRequest.getUserId());
-																siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+										JsonObject jsonObject = new JsonObject();
+										jsonObject.put("userName", accessToken.getString("preferred_username"));
+										jsonObject.put("userFirstName", accessToken.getString("given_name"));
+										jsonObject.put("userLastName", accessToken.getString("family_name"));
+										jsonObject.put("userCompleteName", accessToken.getString("name"));
+										jsonObject.put("userId", accessToken.getString("sub"));
+										jsonObject.put("userEmail", accessToken.getString("email"));
+										userSiteUserDefine(siteRequest, jsonObject, false);
 
-																ApiRequest apiRequest = new ApiRequest();
-																apiRequest.setRows(1);
-																apiRequest.setNumFound(1L);
-																apiRequest.setNumPATCH(0L);
-																apiRequest.initDeepApiRequest(siteRequest2);
-																siteRequest2.setApiRequest_(apiRequest);
+										SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+										siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+										siteRequest2.setJsonObject(jsonObject);
+										siteRequest2.setVertx(siteRequest.getVertx());
+										siteRequest2.setSiteContext_(siteContext);
+										siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+										siteRequest2.setUserId(siteRequest.getUserId());
+										siteRequest2.initDeepSiteRequestEnUS(siteRequest);
 
-																userService.createSiteUser(siteRequest2, e -> {
-																	if(e.succeeded()) {
-																		SiteUser siteUser = e.result();
-																		userService.sqlPOSTSiteUser(siteUser, false, f -> {
-																			if(f.succeeded()) {
-																				userService.defineIndexSiteUser(siteUser, g -> {
-																					if(g.succeeded()) {
-																						siteRequest.setSiteUser(siteUser);
-																						siteRequest.setUserName(accessToken.getString("preferred_username"));
-																						siteRequest.setUserFirstName(accessToken.getString("given_name"));
-																						siteRequest.setUserLastName(accessToken.getString("family_name"));
-																						siteRequest.setUserEmail(accessToken.getString("email"));
-																						siteRequest.setUserId(accessToken.getString("sub"));
-																						siteRequest.setUserKey(siteUser.getPk());
-																						eventHandler.handle(Future.succeededFuture(siteRequest));
-																					} else {
-																						errorSiteUser(siteRequest, null, g);
-																					}
-																				});
-																			} else {
-																				errorSiteUser(siteRequest, null, f);
-																			}
-																		});
-																	} else {
-																		errorSiteUser(siteRequest, null, e);
-																	}
-																});
-															} else {
-																Long pkUser = userValues.getLong(0);
-																SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-																searchList.setQuery("*:*");
-																searchList.setStore(true);
-																searchList.setC(SiteUser.class);
-																searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-																searchList.initDeepSearchList(siteRequest);
-																SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+										ApiRequest apiRequest = new ApiRequest();
+										apiRequest.setRows(1);
+										apiRequest.setNumFound(1L);
+										apiRequest.setNumPATCH(0L);
+										apiRequest.initDeepApiRequest(siteRequest2);
+										siteRequest2.setApiRequest_(apiRequest);
 
-																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
-																JsonObject jsonObject = new JsonObject();
-																jsonObject.put("setUserName", accessToken.getString("preferred_username"));
-																jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
-																jsonObject.put("setUserLastName", accessToken.getString("family_name"));
-																jsonObject.put("setUserCompleteName", accessToken.getString("name"));
-																jsonObject.put("setUserId", accessToken.getString("sub"));
-																jsonObject.put("setUserEmail", accessToken.getString("email"));
-																Boolean define = userSiteUserDefine(siteRequest, jsonObject, true);
-																if(define) {
-																	SiteUser siteUser;
-																	if(siteUser1 == null) {
-																		siteUser = new SiteUser();
-																		siteUser.setPk(pkUser);
-																		siteUser.setSiteRequest_(siteRequest);
-																	} else {
-																		siteUser = siteUser1;
-																	}
-
-																	SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-																	siteRequest2.setTx(siteRequest.getTx());
-																	siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-																	siteRequest2.setJsonObject(jsonObject);
-																	siteRequest2.setVertx(siteRequest.getVertx());
-																	siteRequest2.setSiteContext_(siteContext);
-																	siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-																	siteRequest2.setUserId(siteRequest.getUserId());
-																	siteRequest2.setUserKey(pkUser);
-																	siteRequest.setUserKey(pkUser);
-																	siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-																	siteUser.setSiteRequest_(siteRequest2);
-
-																	ApiRequest apiRequest = new ApiRequest();
-																	apiRequest.setRows(1);
-																	apiRequest.setNumFound(1L);
-																	apiRequest.setNumPATCH(0L);
-																	apiRequest.initDeepApiRequest(siteRequest2);
-																	siteRequest2.setApiRequest_(apiRequest);
-
-																	userService.sqlPATCHSiteUser(siteUser, false, e -> {
-																		if(e.succeeded()) {
-																			SiteUser siteUser2 = e.result();
-																			userService.defineIndexSiteUser(siteUser2, f -> {
-																				if(f.succeeded()) {
-																					siteRequest.setSiteUser(siteUser2);
-																					siteRequest.setUserName(siteUser2.getUserName());
-																					siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																					siteRequest.setUserLastName(siteUser2.getUserLastName());
-																					siteRequest.setUserKey(siteUser2.getPk());
-																					eventHandler.handle(Future.succeededFuture(siteRequest));
-																				} else {
-																					errorSiteUser(siteRequest, null, f);
-																				}
-																			});
-																		} else {
-																			errorSiteUser(siteRequest, null, e);
-																		}
-																	});
-																} else {
-																	siteRequest.setSiteUser(siteUser1);
-																	siteRequest.setUserName(siteUser1.getUserName());
-																	siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser1.getUserLastName());
-																	siteRequest.setUserKey(siteUser1.getPk());
-																	sqlRollbackSiteUser(siteRequest, e -> {
-																		if(e.succeeded()) {
-																			eventHandler.handle(Future.succeededFuture(siteRequest));
-																		} else {
-																			eventHandler.handle(Future.failedFuture(e.cause()));
-																			errorSiteUser(siteRequest, null, e);
-																		}
-																	});
-																}
-															}
-														} catch(Exception ex) {
-															LOG.error(String.format("userSiteUser failed. "), ex);
-															eventHandler.handle(Future.failedFuture(ex));
-														}
-													} else {
-														LOG.error(String.format("userSiteUser failed. ", selectCAsync.cause()));
-														eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
-													}
-												});
-											} else {
-												LOG.error(String.format("userSiteUser failed. ", d.cause()));
-												eventHandler.handle(Future.failedFuture(d.cause()));
-											}
+										userService.postSiteUserFuture(siteRequest2, false).onSuccess(siteUser -> {
+											siteRequest.setSiteUser(siteUser);
+											siteRequest.setUserName(accessToken.getString("preferred_username"));
+											siteRequest.setUserFirstName(accessToken.getString("given_name"));
+											siteRequest.setUserLastName(accessToken.getString("family_name"));
+											siteRequest.setUserEmail(accessToken.getString("email"));
+											siteRequest.setUserId(accessToken.getString("sub"));
+											siteRequest.setUserKey(siteUser.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
+										}).onFailure(ex -> {
+											errorSiteUser(siteRequest, null, Future.failedFuture(ex));
 										});
 									} else {
-										LOG.error(String.format("userSiteUser failed. ", c.cause()));
-										eventHandler.handle(Future.failedFuture(c.cause()));
+										Long pkUser = siteUser1.getPk();
+										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+
+										JsonObject jsonObject = new JsonObject();
+										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
+										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
+										jsonObject.put("setUserLastName", accessToken.getString("family_name"));
+										jsonObject.put("setUserCompleteName", accessToken.getString("name"));
+										jsonObject.put("setUserId", accessToken.getString("sub"));
+										jsonObject.put("setUserEmail", accessToken.getString("email"));
+										Boolean define = userSiteUserDefine(siteRequest, jsonObject, true);
+										if(define) {
+											SiteUser siteUser;
+											if(siteUser1 == null) {
+												siteUser = new SiteUser();
+												siteUser.setPk(pkUser);
+												siteUser.setSiteRequest_(siteRequest);
+											} else {
+												siteUser = siteUser1;
+											}
+
+											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+											siteRequest2.setJsonObject(jsonObject);
+											siteRequest2.setVertx(siteRequest.getVertx());
+											siteRequest2.setSiteContext_(siteContext);
+											siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+											siteRequest2.setUserId(siteRequest.getUserId());
+											siteRequest2.setUserKey(pkUser);
+											siteRequest.setUserKey(pkUser);
+											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+											siteUser.setSiteRequest_(siteRequest2);
+
+											ApiRequest apiRequest = new ApiRequest();
+											apiRequest.setRows(1);
+											apiRequest.setNumFound(1L);
+											apiRequest.setNumPATCH(0L);
+											apiRequest.initDeepApiRequest(siteRequest2);
+											siteRequest2.setApiRequest_(apiRequest);
+
+											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
+												siteRequest.setSiteUser(siteUser2);
+												siteRequest.setUserName(siteUser2.getUserName());
+												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+												siteRequest.setUserLastName(siteUser2.getUserLastName());
+												siteRequest.setUserKey(siteUser2.getPk());
+												eventHandler.handle(Future.succeededFuture(siteRequest));
+											}).onFailure(ex -> {
+												errorSiteUser(siteRequest, null, Future.failedFuture(ex));
+											});
+										} else {
+											siteRequest.setSiteUser(siteUser1);
+											siteRequest.setUserName(siteUser1.getUserName());
+											siteRequest.setUserFirstName(siteUser1.getUserFirstName());
+											siteRequest.setUserLastName(siteUser1.getUserLastName());
+											siteRequest.setUserKey(siteUser1.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
+										}
 									}
-								});
+								} catch(Exception ex) {
+									LOG.error(String.format("userSiteUser failed. "), ex);
+									eventHandler.handle(Future.failedFuture(ex));
+								}
 							} else {
 								LOG.error(String.format("userSiteUser failed. ", b.cause()));
 								eventHandler.handle(Future.failedFuture(b.cause()));
@@ -1959,12 +1760,9 @@ public class SiteUserEnUSGenApiServiceImpl implements SiteUserEnUSGenApiService 
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForSiteUser(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							o2.setSiteRequest_(siteRequest2);
 							futures2.add(
-								service.patchSiteUserFuture(o2, false, b -> {
-									if(b.succeeded()) {
-									} else {
-										LOG.info(String.format("SiteUser %s failed. ", o2.getPk()));
-										eventHandler.handle(Future.failedFuture(b.cause()));
-									}
+								service.patchSiteUserFuture(o2, false).onFailure(ex -> {
+									LOG.error(String.format("SiteUser %s failed. ", o2.getPk()), ex);
+									eventHandler.handle(Future.failedFuture(ex));
 								})
 							);
 						}

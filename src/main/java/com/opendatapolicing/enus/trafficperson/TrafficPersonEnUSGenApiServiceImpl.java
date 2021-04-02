@@ -1,8 +1,8 @@
 package com.opendatapolicing.enus.trafficperson;
 
-import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSApiServiceImpl;
 import com.opendatapolicing.enus.trafficstop.TrafficStop;
-import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSApiServiceImpl;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
@@ -64,8 +64,10 @@ import java.sql.Timestamp;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.AsyncResult;
+import java.net.URLEncoder;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.CompositeFuture;
+import io.vertx.core.http.HttpHeaders;
 import org.apache.http.client.utils.URLEncodedUtils;
 import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
@@ -193,8 +195,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("putimportTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("putimportTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("putimportTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -237,23 +248,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						}
 						siteRequest2.setJsonObject(json2);
 						futures.add(
-							patchTrafficPersonFuture(o, true, a -> {
-								if(a.succeeded()) {
-								} else {
-									LOG.error(String.format("listPUTImportTrafficPerson failed. ", a.cause()));
-									errorTrafficPerson(siteRequest2, eventHandler, a);
-								}
+							patchTrafficPersonFuture(o, true).onFailure(ex -> {
+								LOG.error(String.format("listPUTImportTrafficPerson failed. ", ex));
+								errorTrafficPerson(siteRequest2, eventHandler, Future.failedFuture(ex));
 							})
 						);
 					}
 				} else {
 					futures.add(
-						postTrafficPersonFuture(siteRequest2, true, a -> {
-							if(a.succeeded()) {
-							} else {
-								LOG.error(String.format("listPUTImportTrafficPerson failed. ", a.cause()));
-								errorTrafficPerson(siteRequest2, eventHandler, a);
-							}
+						postTrafficPersonFuture(siteRequest2, true).onFailure(ex -> {
+							LOG.error(String.format("listPUTImportTrafficPerson failed. ", ex));
+							errorTrafficPerson(siteRequest2, eventHandler, Future.failedFuture(ex));
 						})
 					);
 				}
@@ -383,8 +388,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("putmergeTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("putmergeTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("putmergeTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -425,23 +439,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						}
 						siteRequest2.setJsonObject(json2);
 						futures.add(
-							patchTrafficPersonFuture(o, false, a -> {
-								if(a.succeeded()) {
-								} else {
-									LOG.error(String.format("listPUTMergeTrafficPerson failed. ", a.cause()));
-									errorTrafficPerson(siteRequest2, eventHandler, a);
-								}
+							patchTrafficPersonFuture(o, false).onFailure(ex -> {
+								LOG.error(String.format("listPUTMergeTrafficPerson failed. ", ex));
+								errorTrafficPerson(siteRequest2, eventHandler, Future.failedFuture(ex));
 							})
 						);
 					}
 				} else {
 					futures.add(
-						postTrafficPersonFuture(siteRequest2, false, a -> {
-							if(a.succeeded()) {
-							} else {
-								LOG.error(String.format("listPUTMergeTrafficPerson failed. ", a.cause()));
-								errorTrafficPerson(siteRequest2, eventHandler, a);
-							}
+						postTrafficPersonFuture(siteRequest2, false).onFailure(ex -> {
+							LOG.error(String.format("listPUTMergeTrafficPerson failed. ", ex));
+							errorTrafficPerson(siteRequest2, eventHandler, Future.failedFuture(ex));
 						})
 					);
 				}
@@ -576,8 +584,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("putcopyTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("putcopyTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("putcopyTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -591,12 +608,9 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
-				putcopyTrafficPersonFuture(siteRequest2, JsonObject.mapFrom(o), a -> {
-					if(a.succeeded()) {
-					} else {
-						LOG.error(String.format("listPUTCopyTrafficPerson failed. ", a.cause()));
-						errorTrafficPerson(siteRequest, eventHandler, a);
-					}
+				putcopyTrafficPersonFuture(siteRequest2, JsonObject.mapFrom(o)).onFailure(ex -> {
+					LOG.error(String.format("listPUTCopyTrafficPerson failed. ", ex));
+					errorTrafficPerson(siteRequest, eventHandler, Future.failedFuture(ex));
 				})
 			);
 		});
@@ -615,8 +629,9 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 		});
 	}
 
-	public Future<TrafficPerson> putcopyTrafficPersonFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject, Handler<AsyncResult<TrafficPerson>> eventHandler) {
+	public Future<TrafficPerson> putcopyTrafficPersonFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject) {
 		Promise<TrafficPerson> promise = Promise.promise();
+
 		try {
 
 			jsonObject.put("saves", Optional.ofNullable(jsonObject.getJsonArray("saves")).orElse(new JsonArray()));
@@ -630,55 +645,79 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					jsonObject.getJsonArray("saves").add(o.getKey());
 			});
 
-			sqlConnectionTrafficPerson(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionTrafficPerson(siteRequest, b -> {
-						if(b.succeeded()) {
-							createTrafficPerson(siteRequest, c -> {
-								if(c.succeeded()) {
-									TrafficPerson trafficPerson = c.result();
-									sqlPUTCopyTrafficPerson(trafficPerson, jsonObject, d -> {
-										if(d.succeeded()) {
-											defineIndexTrafficPerson(trafficPerson, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														if(apiRequest.getNumFound() == 1L) {
-															trafficPerson.apiRequestTrafficPerson();
-														}
-														siteRequest.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<TrafficPerson> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createTrafficPerson(siteRequest, a -> {
+					if(a.succeeded()) {
+						TrafficPerson trafficPerson = a.result();
+						sqlPUTCopyTrafficPerson(trafficPerson, jsonObject, b -> {
+							if(b.succeeded()) {
+								defineTrafficPerson(trafficPerson, c -> {
+									if(c.succeeded()) {
+										attributeTrafficPerson(trafficPerson, d -> {
+											if(d.succeeded()) {
+												indexTrafficPerson(trafficPerson, e -> {
+													if(e.succeeded()) {
+														promise1.complete(trafficPerson);
+													} else {
+														LOG.error(String.format("putcopyTrafficPersonFuture failed. ", e.cause()));
+														promise1.fail(e.cause());
 													}
-													eventHandler.handle(Future.succeededFuture(trafficPerson));
-													promise.complete(trafficPerson);
-												} else {
-													LOG.error(String.format("putcopyTrafficPersonFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOG.error(String.format("putcopyTrafficPersonFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("putcopyTrafficPersonFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("putcopyTrafficPersonFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+												});
+											} else {
+												LOG.error(String.format("putcopyTrafficPersonFuture failed. ", d.cause()));
+												promise1.fail(d.cause());
+											}
+										});
+									} else {
+										LOG.error(String.format("putcopyTrafficPersonFuture failed. ", c.cause()));
+										promise1.fail(c.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("putcopyTrafficPersonFuture failed. ", b.cause()));
+								promise1.fail(b.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("putcopyTrafficPersonFuture failed. ", a.cause()));
+						promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
+			}).compose(trafficPerson -> {
+				Promise<TrafficPerson> promise2 = Promise.promise();
+				refreshTrafficPerson(trafficPerson, a -> {
+					if(a.succeeded()) {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficPerson.apiRequestTrafficPerson();
+							siteRequest.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("putcopyTrafficPersonFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(trafficPerson);
+					} else {
+						LOG.error(String.format("putcopyTrafficPersonFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("putcopyTrafficPersonFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficPerson(siteRequest, null, promise.future());
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("putcopyTrafficPersonFuture failed. "), e);
-			errorTrafficPerson(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
+			promise.fail(ex);
+			errorTrafficPerson(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -903,23 +942,20 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						apiRequest.initDeepApiRequest(siteRequest);
 						siteRequest.setApiRequest_(apiRequest);
 						siteRequest.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
-						postTrafficPersonFuture(siteRequest, false, c -> {
-							if(c.succeeded()) {
-								TrafficPerson trafficPerson = c.result();
-								apiRequest.setPk(trafficPerson.getPk());
-								postTrafficPersonResponse(trafficPerson, d -> {
-										if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("postTrafficPerson succeeded. "));
-									} else {
-										LOG.error(String.format("postTrafficPerson failed. ", d.cause()));
-										errorTrafficPerson(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("postTrafficPerson failed. ", c.cause()));
-								errorTrafficPerson(siteRequest, eventHandler, c);
-							}
+						postTrafficPersonFuture(siteRequest, false).onSuccess(trafficPerson -> {
+							apiRequest.setPk(trafficPerson.getPk());
+							postTrafficPersonResponse(trafficPerson, d -> {
+								if(d.succeeded()) {
+									eventHandler.handle(Future.succeededFuture(d.result()));
+									LOG.info(String.format("postTrafficPerson succeeded. "));
+								} else {
+									LOG.error(String.format("postTrafficPerson failed. ", d.cause()));
+									errorTrafficPerson(siteRequest, eventHandler, d);
+								}
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("postTrafficPerson failed. ", Future.failedFuture(ex)));
+							errorTrafficPerson(siteRequest, eventHandler, Future.failedFuture(ex));
 						});
 					}
 				} catch(Exception ex) {
@@ -927,63 +963,99 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("postTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("postTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("postTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
 
 
-	public Future<TrafficPerson> postTrafficPersonFuture(SiteRequestEnUS siteRequest, Boolean inheritPk, Handler<AsyncResult<TrafficPerson>> eventHandler) {
+	public Future<TrafficPerson> postTrafficPersonFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<TrafficPerson> promise = Promise.promise();
+
 		try {
-			sqlConnectionTrafficPerson(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionTrafficPerson(siteRequest, b -> {
-						if(b.succeeded()) {
-							createTrafficPerson(siteRequest, c -> {
-								if(c.succeeded()) {
-									TrafficPerson trafficPerson = c.result();
-									sqlPOSTTrafficPerson(trafficPerson, inheritPk, d -> {
-										if(d.succeeded()) {
-											defineIndexTrafficPerson(trafficPerson, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														trafficPerson.apiRequestTrafficPerson();
-														siteRequest.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<TrafficPerson> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createTrafficPerson(siteRequest, a -> {
+					if(a.succeeded()) {
+						TrafficPerson trafficPerson = a.result();
+						sqlPOSTTrafficPerson(trafficPerson, inheritPk, b -> {
+							if(b.succeeded()) {
+								defineTrafficPerson(trafficPerson, c -> {
+									if(c.succeeded()) {
+										attributeTrafficPerson(trafficPerson, d -> {
+											if(d.succeeded()) {
+												indexTrafficPerson(trafficPerson, e -> {
+													if(e.succeeded()) {
+														promise1.complete(trafficPerson);
+													} else {
+														LOG.error(String.format("postTrafficPersonFuture failed. ", e.cause()));
+														promise1.fail(e.cause());
 													}
-													eventHandler.handle(Future.succeededFuture(trafficPerson));
-													promise.complete(trafficPerson);
-												} else {
-													LOG.error(String.format("postTrafficPersonFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOG.error(String.format("postTrafficPersonFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("postTrafficPersonFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("postTrafficPersonFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+												});
+											} else {
+												LOG.error(String.format("postTrafficPersonFuture failed. ", d.cause()));
+												promise1.fail(d.cause());
+											}
+										});
+									} else {
+										LOG.error(String.format("postTrafficPersonFuture failed. ", c.cause()));
+										promise1.fail(c.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("postTrafficPersonFuture failed. ", b.cause()));
+								promise1.fail(b.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("postTrafficPersonFuture failed. ", a.cause()));
+						promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
+			}).compose(trafficPerson -> {
+				Promise<TrafficPerson> promise2 = Promise.promise();
+				refreshTrafficPerson(trafficPerson, a -> {
+					if(a.succeeded()) {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficPerson.apiRequestTrafficPerson();
+							siteRequest.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("postTrafficPersonFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(trafficPerson);
+					} else {
+						LOG.error(String.format("postTrafficPersonFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("postTrafficPersonFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficPerson(siteRequest, null, promise.future());
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("postTrafficPersonFuture failed. "), e);
-			errorTrafficPerson(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
+			promise.fail(ex);
+			errorTrafficPerson(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -1330,8 +1402,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("patchTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("patchTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("patchTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -1345,11 +1426,8 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
-				patchTrafficPersonFuture(o, false, a -> {
-					if(a.succeeded()) {
-					} else {
-						errorTrafficPerson(siteRequest2, eventHandler, a);
-					}
+				patchTrafficPersonFuture(o, false).onFailure(ex -> {
+					errorTrafficPerson(siteRequest2, eventHandler, Future.failedFuture(ex));
 				})
 			);
 		});
@@ -1367,56 +1445,81 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 		});
 	}
 
-	public Future<TrafficPerson> patchTrafficPersonFuture(TrafficPerson o, Boolean inheritPk, Handler<AsyncResult<TrafficPerson>> eventHandler) {
-		Promise<TrafficPerson> promise = Promise.promise();
+	public Future<TrafficPerson> patchTrafficPersonFuture(TrafficPerson o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+		Promise<TrafficPerson> promise = Promise.promise();
+
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
 			if(apiRequest != null && apiRequest.getNumFound() == 1L) {
 				apiRequest.setOriginal(o);
 				apiRequest.setPk(o.getPk());
 			}
-			sqlConnectionTrafficPerson(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionTrafficPerson(siteRequest, b -> {
-						if(b.succeeded()) {
-							sqlPATCHTrafficPerson(o, inheritPk, c -> {
-								if(c.succeeded()) {
-									TrafficPerson trafficPerson = c.result();
-									defineIndexTrafficPerson(trafficPerson, d -> {
-										if(d.succeeded()) {
-											if(apiRequest != null) {
-												apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-												if(apiRequest.getNumFound() == 1L) {
-													trafficPerson.apiRequestTrafficPerson();
-												}
-												siteRequest.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<TrafficPerson> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				sqlPATCHTrafficPerson(o, inheritPk, a -> {
+					if(a.succeeded()) {
+						TrafficPerson trafficPerson = a.result();
+						defineTrafficPerson(trafficPerson, c -> {
+							if(c.succeeded()) {
+								attributeTrafficPerson(trafficPerson, d -> {
+									if(d.succeeded()) {
+										indexTrafficPerson(trafficPerson, e -> {
+											if(e.succeeded()) {
+												promise1.complete(trafficPerson);
+											} else {
+												LOG.error(String.format("patchTrafficPersonFuture failed. ", e.cause()));
+												promise1.fail(e.cause());
 											}
-											eventHandler.handle(Future.succeededFuture(trafficPerson));
-											promise.complete(trafficPerson);
-										} else {
-											LOG.error(String.format("patchTrafficPersonFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("patchTrafficPersonFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("patchTrafficPersonFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+										});
+									} else {
+										LOG.error(String.format("patchTrafficPersonFuture failed. ", d.cause()));
+										promise1.fail(d.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("patchTrafficPersonFuture failed. ", c.cause()));
+								promise1.fail(c.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("patchTrafficPersonFuture failed. ", a.cause()));
+								promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
+			}).compose(trafficPerson -> {
+				Promise<TrafficPerson> promise2 = Promise.promise();
+				refreshTrafficPerson(trafficPerson, a -> {
+					if(a.succeeded()) {
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficPerson.apiRequestTrafficPerson();
+							siteRequest.getVertx().eventBus().publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("patchTrafficPersonFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(trafficPerson);
+					} else {
+						LOG.error(String.format("patchTrafficPersonFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("patchTrafficPersonFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficPerson(siteRequest, null, promise.future());
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("patchTrafficPersonFuture failed. "), e);
-			errorTrafficPerson(siteRequest, null, Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("patchTrafficPersonFuture failed. "), ex);
+			promise.fail(ex);
+			errorTrafficPerson(siteRequest, null, promise.future());
 		}
 		return promise.future();
 	}
@@ -1820,8 +1923,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("getTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("getTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("getTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -1890,8 +2002,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("searchTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("searchTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("searchTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -2098,8 +2219,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("adminsearchTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("adminsearchTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("adminsearchTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -2311,8 +2441,17 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					errorTrafficPerson(null, eventHandler, Future.failedFuture(ex));
 				}
 			} else {
-				LOG.error(String.format("searchpageTrafficPerson failed. ", b.cause()));
-				errorTrafficPerson(null, eventHandler, b);
+				if("Inactive Token".equals(b.cause().getMessage())) {
+					try {
+						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+					} catch(Exception ex) {
+						LOG.error(String.format("searchpageTrafficPerson failed. ", ex));
+						errorTrafficPerson(null, eventHandler, b);
+					}
+				} else {
+					LOG.error(String.format("searchpageTrafficPerson failed. ", b.cause()));
+					errorTrafficPerson(null, eventHandler, b);
+				}
 			}
 		});
 	}
@@ -2368,56 +2507,6 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 	}
 
 	// General //
-
-	public Future<TrafficPerson> defineIndexTrafficPerson(TrafficPerson trafficPerson, Handler<AsyncResult<TrafficPerson>> eventHandler) {
-		Promise<TrafficPerson> promise = Promise.promise();
-		SiteRequestEnUS siteRequest = trafficPerson.getSiteRequest_();
-		defineTrafficPerson(trafficPerson, c -> {
-			if(c.succeeded()) {
-				attributeTrafficPerson(trafficPerson, d -> {
-					if(d.succeeded()) {
-						indexTrafficPerson(trafficPerson, e -> {
-							if(e.succeeded()) {
-								sqlCommitTrafficPerson(siteRequest, f -> {
-									if(f.succeeded()) {
-										sqlCloseTrafficPerson(siteRequest, g -> {
-											if(g.succeeded()) {
-												refreshTrafficPerson(trafficPerson, h -> {
-													if(h.succeeded()) {
-														eventHandler.handle(Future.succeededFuture(trafficPerson));
-														promise.complete(trafficPerson);
-													} else {
-														LOG.error(String.format("refreshTrafficPerson failed. ", h.cause()));
-														errorTrafficPerson(siteRequest, null, h);
-													}
-												});
-											} else {
-												LOG.error(String.format("defineIndexTrafficPerson failed. ", g.cause()));
-												errorTrafficPerson(siteRequest, null, g);
-											}
-										});
-									} else {
-										LOG.error(String.format("defineIndexTrafficPerson failed. ", f.cause()));
-										errorTrafficPerson(siteRequest, null, f);
-									}
-								});
-							} else {
-								LOG.error(String.format("defineIndexTrafficPerson failed. ", e.cause()));
-								errorTrafficPerson(siteRequest, null, e);
-							}
-						});
-					} else {
-						LOG.error(String.format("defineIndexTrafficPerson failed. ", d.cause()));
-						errorTrafficPerson(siteRequest, null, d);
-					}
-				});
-			} else {
-				LOG.error(String.format("defineIndexTrafficPerson failed. ", c.cause()));
-				errorTrafficPerson(siteRequest, null, c);
-			}
-		});
-		return promise.future();
-	}
 
 	public void createTrafficPerson(SiteRequestEnUS siteRequest, Handler<AsyncResult<TrafficPerson>> eventHandler) {
 		try {
@@ -2490,144 +2579,9 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 				}, resultHandler -> {
 				}
 			);
-			sqlRollbackTrafficPerson(siteRequest, a -> {
-				if(a.succeeded()) {
-					LOG.info(String.format("sql rollback. "));
-					sqlCloseTrafficPerson(siteRequest, b -> {
-						if(b.succeeded()) {
-							LOG.info(String.format("sql close. "));
-							if(eventHandler != null)
-								eventHandler.handle(Future.succeededFuture(responseOperation));
-						} else {
-							if(eventHandler != null)
-								eventHandler.handle(Future.succeededFuture(responseOperation));
-						}
-					});
-				} else {
-					if(eventHandler != null)
-						eventHandler.handle(Future.succeededFuture(responseOperation));
-				}
-			});
+			eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
 			eventHandler.handle(Future.succeededFuture(responseOperation));
-		}
-	}
-
-	public void sqlConnectionTrafficPerson(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			PgPool pgPool = siteRequest.getSiteContext_().getPgPool();
-
-			if(pgPool == null) {
-				eventHandler.handle(Future.succeededFuture());
-			} else {
-				pgPool.getConnection(a -> {
-					if(a.succeeded()) {
-						SqlConnection sqlConnection = a.result();
-						siteRequest.setSqlConnection(sqlConnection);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlConnectionTrafficPerson failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTrafficPerson failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlTransactionTrafficPerson(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.failedFuture("sqlTransactionCloseTrafficPerson failed, connection should not be null. "));
-			} else {
-				sqlConnection.begin(a -> {
-					Transaction tx = a.result();
-					siteRequest.setTx(tx);
-					eventHandler.handle(Future.succeededFuture());
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTransactionTrafficPerson failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCommitTrafficPerson(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.failedFuture("sqlCommitCloseTrafficPerson failed, tx should not be null. "));
-			} else {
-				tx.commit(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlCommitTrafficPerson failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTrafficPerson failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlRollbackTrafficPerson(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			Transaction tx = siteRequest.getTx();
-
-			if(tx == null) {
-				eventHandler.handle(Future.failedFuture("sqlRollbackCloseTrafficPerson failed, tx should not be null. "));
-			} else {
-				tx.rollback(a -> {
-					if(a.succeeded()) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else if("Transaction already completed".equals(a.cause().getMessage())) {
-						siteRequest.setTx(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlRollbackTrafficPerson failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlTrafficPerson failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void sqlCloseTrafficPerson(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-
-			if(sqlConnection == null) {
-				eventHandler.handle(Future.failedFuture("sqlCloseTrafficPerson failed, connection should not be null. "));
-			} else {
-				sqlConnection.close(a -> {
-					if(a.succeeded()) {
-						siteRequest.setSqlConnection(null);
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("sqlCloseTrafficPerson failed. ", a.cause()));
-						eventHandler.handle(Future.failedFuture(a.cause()));
-					}
-				});
-			}
-		} catch(Exception e) {
-			LOG.error(String.format("sqlCloseTrafficPerson failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
 		}
 	}
 
@@ -2662,184 +2616,124 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						User user = a.result();
 						siteContext.getAuthorizationProvider().getAuthorizations(user, b -> {
 							if(b.succeeded()) {
-								JsonObject userAttributes = user.attributes();
-								JsonObject accessToken = userAttributes.getJsonObject("accessToken");
-								String userId = userAttributes.getString("sub");
-								SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficPerson(user, siteContext, serviceRequest);
-								sqlConnectionTrafficPerson(siteRequest, c -> {
-									if(c.succeeded()) {
-										sqlTransactionTrafficPerson(siteRequest, d -> {
-											if(d.succeeded()) {
-												SqlConnection sqlConnection = siteRequest.getSqlConnection();
-												sqlConnection.preparedQuery("SELECT pk FROM SiteUser WHERE userId=$1")
-														.collecting(Collectors.toList())
-														.execute(Tuple.of(userId)
-														, selectCAsync
-												-> {
-													if(selectCAsync.succeeded()) {
-														try {
-															Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-															SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-															if(userValues == null) {
-																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+								try {
+									JsonObject userAttributes = user.attributes();
+									JsonObject accessToken = userAttributes.getJsonObject("accessToken");
+									String userId = userAttributes.getString("sub");
+									SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficPerson(user, siteContext, serviceRequest);
+									SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(SiteUser.class);
+									searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+									searchList.initDeepSearchList(siteRequest);
+									SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
-																JsonObject jsonObject = new JsonObject();
-																jsonObject.put("userName", accessToken.getString("preferred_username"));
-																jsonObject.put("userFirstName", accessToken.getString("given_name"));
-																jsonObject.put("userLastName", accessToken.getString("family_name"));
-																jsonObject.put("userCompleteName", accessToken.getString("name"));
-																jsonObject.put("userId", accessToken.getString("sub"));
-																jsonObject.put("userEmail", accessToken.getString("email"));
-																userTrafficPersonDefine(siteRequest, jsonObject, false);
+									if(siteUser1 == null) {
+										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
 
-																SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-																siteRequest2.setTx(siteRequest.getTx());
-																siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-																siteRequest2.setJsonObject(jsonObject);
-																siteRequest2.setVertx(siteRequest.getVertx());
-																siteRequest2.setSiteContext_(siteContext);
-																siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-																siteRequest2.setUserId(siteRequest.getUserId());
-																siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+										JsonObject jsonObject = new JsonObject();
+										jsonObject.put("userName", accessToken.getString("preferred_username"));
+										jsonObject.put("userFirstName", accessToken.getString("given_name"));
+										jsonObject.put("userLastName", accessToken.getString("family_name"));
+										jsonObject.put("userCompleteName", accessToken.getString("name"));
+										jsonObject.put("userId", accessToken.getString("sub"));
+										jsonObject.put("userEmail", accessToken.getString("email"));
+										userTrafficPersonDefine(siteRequest, jsonObject, false);
 
-																ApiRequest apiRequest = new ApiRequest();
-																apiRequest.setRows(1);
-																apiRequest.setNumFound(1L);
-																apiRequest.setNumPATCH(0L);
-																apiRequest.initDeepApiRequest(siteRequest2);
-																siteRequest2.setApiRequest_(apiRequest);
+										SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+										siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+										siteRequest2.setJsonObject(jsonObject);
+										siteRequest2.setVertx(siteRequest.getVertx());
+										siteRequest2.setSiteContext_(siteContext);
+										siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+										siteRequest2.setUserId(siteRequest.getUserId());
+										siteRequest2.initDeepSiteRequestEnUS(siteRequest);
 
-																userService.createSiteUser(siteRequest2, e -> {
-																	if(e.succeeded()) {
-																		SiteUser siteUser = e.result();
-																		userService.sqlPOSTSiteUser(siteUser, false, f -> {
-																			if(f.succeeded()) {
-																				userService.defineIndexSiteUser(siteUser, g -> {
-																					if(g.succeeded()) {
-																						siteRequest.setSiteUser(siteUser);
-																						siteRequest.setUserName(accessToken.getString("preferred_username"));
-																						siteRequest.setUserFirstName(accessToken.getString("given_name"));
-																						siteRequest.setUserLastName(accessToken.getString("family_name"));
-																						siteRequest.setUserEmail(accessToken.getString("email"));
-																						siteRequest.setUserId(accessToken.getString("sub"));
-																						siteRequest.setUserKey(siteUser.getPk());
-																						eventHandler.handle(Future.succeededFuture(siteRequest));
-																					} else {
-																						errorTrafficPerson(siteRequest, null, g);
-																					}
-																				});
-																			} else {
-																				errorTrafficPerson(siteRequest, null, f);
-																			}
-																		});
-																	} else {
-																		errorTrafficPerson(siteRequest, null, e);
-																	}
-																});
-															} else {
-																Long pkUser = userValues.getLong(0);
-																SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-																searchList.setQuery("*:*");
-																searchList.setStore(true);
-																searchList.setC(SiteUser.class);
-																searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-																searchList.initDeepSearchList(siteRequest);
-																SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+										ApiRequest apiRequest = new ApiRequest();
+										apiRequest.setRows(1);
+										apiRequest.setNumFound(1L);
+										apiRequest.setNumPATCH(0L);
+										apiRequest.initDeepApiRequest(siteRequest2);
+										siteRequest2.setApiRequest_(apiRequest);
 
-																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
-																JsonObject jsonObject = new JsonObject();
-																jsonObject.put("setUserName", accessToken.getString("preferred_username"));
-																jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
-																jsonObject.put("setUserLastName", accessToken.getString("family_name"));
-																jsonObject.put("setUserCompleteName", accessToken.getString("name"));
-																jsonObject.put("setUserId", accessToken.getString("sub"));
-																jsonObject.put("setUserEmail", accessToken.getString("email"));
-																Boolean define = userTrafficPersonDefine(siteRequest, jsonObject, true);
-																if(define) {
-																	SiteUser siteUser;
-																	if(siteUser1 == null) {
-																		siteUser = new SiteUser();
-																		siteUser.setPk(pkUser);
-																		siteUser.setSiteRequest_(siteRequest);
-																	} else {
-																		siteUser = siteUser1;
-																	}
-
-																	SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-																	siteRequest2.setTx(siteRequest.getTx());
-																	siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-																	siteRequest2.setJsonObject(jsonObject);
-																	siteRequest2.setVertx(siteRequest.getVertx());
-																	siteRequest2.setSiteContext_(siteContext);
-																	siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-																	siteRequest2.setUserId(siteRequest.getUserId());
-																	siteRequest2.setUserKey(pkUser);
-																	siteRequest.setUserKey(pkUser);
-																	siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-																	siteUser.setSiteRequest_(siteRequest2);
-
-																	ApiRequest apiRequest = new ApiRequest();
-																	apiRequest.setRows(1);
-																	apiRequest.setNumFound(1L);
-																	apiRequest.setNumPATCH(0L);
-																	apiRequest.initDeepApiRequest(siteRequest2);
-																	siteRequest2.setApiRequest_(apiRequest);
-
-																	userService.sqlPATCHSiteUser(siteUser, false, e -> {
-																		if(e.succeeded()) {
-																			SiteUser siteUser2 = e.result();
-																			userService.defineIndexSiteUser(siteUser2, f -> {
-																				if(f.succeeded()) {
-																					siteRequest.setSiteUser(siteUser2);
-																					siteRequest.setUserName(siteUser2.getUserName());
-																					siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																					siteRequest.setUserLastName(siteUser2.getUserLastName());
-																					siteRequest.setUserKey(siteUser2.getPk());
-																					eventHandler.handle(Future.succeededFuture(siteRequest));
-																				} else {
-																					errorTrafficPerson(siteRequest, null, f);
-																				}
-																			});
-																		} else {
-																			errorTrafficPerson(siteRequest, null, e);
-																		}
-																	});
-																} else {
-																	siteRequest.setSiteUser(siteUser1);
-																	siteRequest.setUserName(siteUser1.getUserName());
-																	siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser1.getUserLastName());
-																	siteRequest.setUserKey(siteUser1.getPk());
-																	sqlRollbackTrafficPerson(siteRequest, e -> {
-																		if(e.succeeded()) {
-																			eventHandler.handle(Future.succeededFuture(siteRequest));
-																		} else {
-																			eventHandler.handle(Future.failedFuture(e.cause()));
-																			errorTrafficPerson(siteRequest, null, e);
-																		}
-																	});
-																}
-															}
-														} catch(Exception ex) {
-															LOG.error(String.format("userTrafficPerson failed. "), ex);
-															eventHandler.handle(Future.failedFuture(ex));
-														}
-													} else {
-														LOG.error(String.format("userTrafficPerson failed. ", selectCAsync.cause()));
-														eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
-													}
-												});
-											} else {
-												LOG.error(String.format("userTrafficPerson failed. ", d.cause()));
-												eventHandler.handle(Future.failedFuture(d.cause()));
-											}
+										userService.postSiteUserFuture(siteRequest2, false).onSuccess(siteUser -> {
+											siteRequest.setSiteUser(siteUser);
+											siteRequest.setUserName(accessToken.getString("preferred_username"));
+											siteRequest.setUserFirstName(accessToken.getString("given_name"));
+											siteRequest.setUserLastName(accessToken.getString("family_name"));
+											siteRequest.setUserEmail(accessToken.getString("email"));
+											siteRequest.setUserId(accessToken.getString("sub"));
+											siteRequest.setUserKey(siteUser.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
+										}).onFailure(ex -> {
+											errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
 										});
 									} else {
-										LOG.error(String.format("userTrafficPerson failed. ", c.cause()));
-										eventHandler.handle(Future.failedFuture(c.cause()));
+										Long pkUser = siteUser1.getPk();
+										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+
+										JsonObject jsonObject = new JsonObject();
+										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
+										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
+										jsonObject.put("setUserLastName", accessToken.getString("family_name"));
+										jsonObject.put("setUserCompleteName", accessToken.getString("name"));
+										jsonObject.put("setUserId", accessToken.getString("sub"));
+										jsonObject.put("setUserEmail", accessToken.getString("email"));
+										Boolean define = userTrafficPersonDefine(siteRequest, jsonObject, true);
+										if(define) {
+											SiteUser siteUser;
+											if(siteUser1 == null) {
+												siteUser = new SiteUser();
+												siteUser.setPk(pkUser);
+												siteUser.setSiteRequest_(siteRequest);
+											} else {
+												siteUser = siteUser1;
+											}
+
+											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+											siteRequest2.setJsonObject(jsonObject);
+											siteRequest2.setVertx(siteRequest.getVertx());
+											siteRequest2.setSiteContext_(siteContext);
+											siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+											siteRequest2.setUserId(siteRequest.getUserId());
+											siteRequest2.setUserKey(pkUser);
+											siteRequest.setUserKey(pkUser);
+											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+											siteUser.setSiteRequest_(siteRequest2);
+
+											ApiRequest apiRequest = new ApiRequest();
+											apiRequest.setRows(1);
+											apiRequest.setNumFound(1L);
+											apiRequest.setNumPATCH(0L);
+											apiRequest.initDeepApiRequest(siteRequest2);
+											siteRequest2.setApiRequest_(apiRequest);
+
+											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
+												siteRequest.setSiteUser(siteUser2);
+												siteRequest.setUserName(siteUser2.getUserName());
+												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+												siteRequest.setUserLastName(siteUser2.getUserLastName());
+												siteRequest.setUserKey(siteUser2.getPk());
+												eventHandler.handle(Future.succeededFuture(siteRequest));
+											}).onFailure(ex -> {
+												errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
+											});
+										} else {
+											siteRequest.setSiteUser(siteUser1);
+											siteRequest.setUserName(siteUser1.getUserName());
+											siteRequest.setUserFirstName(siteUser1.getUserFirstName());
+											siteRequest.setUserLastName(siteUser1.getUserLastName());
+											siteRequest.setUserKey(siteUser1.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
+										}
 									}
-								});
+								} catch(Exception ex) {
+									LOG.error(String.format("userTrafficPerson failed. "), ex);
+									eventHandler.handle(Future.failedFuture(ex));
+								}
 							} else {
 								LOG.error(String.format("userTrafficPerson failed. ", b.cause()));
 								eventHandler.handle(Future.failedFuture(b.cause()));
@@ -3232,7 +3126,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						TrafficStop o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficStopEnUSGenApiServiceImpl service = new TrafficStopEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(siteRequest.getSiteContext_());
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficPerson(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3245,12 +3139,9 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							o2.setPk(pk2);
 							o2.setSiteRequest_(siteRequest2);
 							futures.add(
-								service.patchTrafficStopFuture(o2, false, a -> {
-									if(a.succeeded()) {
-									} else {
-										LOG.info(String.format("TrafficStop %s failed. ", pk2));
-										eventHandler.handle(Future.failedFuture(a.cause()));
-									}
+								service.patchTrafficStopFuture(o2, false).onFailure(ex -> {
+									LOG.error(String.format("TrafficStop %s failed. ", pk2), ex);
+									eventHandler.handle(Future.failedFuture(ex));
 								})
 							);
 						}
@@ -3267,7 +3158,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						TrafficSearch o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficSearchEnUSGenApiServiceImpl service = new TrafficSearchEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(siteRequest.getSiteContext_());
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficPerson(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3280,12 +3171,9 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							o2.setPk(pk2);
 							o2.setSiteRequest_(siteRequest2);
 							futures.add(
-								service.patchTrafficSearchFuture(o2, false, a -> {
-									if(a.succeeded()) {
-									} else {
-										LOG.info(String.format("TrafficSearch %s failed. ", pk2));
-										eventHandler.handle(Future.failedFuture(a.cause()));
-									}
+								service.patchTrafficSearchFuture(o2, false).onFailure(ex -> {
+									LOG.error(String.format("TrafficSearch %s failed. ", pk2), ex);
+									eventHandler.handle(Future.failedFuture(ex));
 								})
 							);
 						}
@@ -3300,12 +3188,9 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficPerson(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							o2.setSiteRequest_(siteRequest2);
 							futures2.add(
-								service.patchTrafficPersonFuture(o2, false, b -> {
-									if(b.succeeded()) {
-									} else {
-										LOG.info(String.format("TrafficPerson %s failed. ", o2.getPk()));
-										eventHandler.handle(Future.failedFuture(b.cause()));
-									}
+								service.patchTrafficPersonFuture(o2, false).onFailure(ex -> {
+									LOG.error(String.format("TrafficPerson %s failed. ", o2.getPk()), ex);
+									eventHandler.handle(Future.failedFuture(ex));
 								})
 							);
 						}

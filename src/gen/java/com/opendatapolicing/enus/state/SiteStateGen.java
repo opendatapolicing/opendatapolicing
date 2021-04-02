@@ -47,6 +47,10 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class SiteStateGen<DEV> extends Cluster {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteState.class);
 
@@ -80,12 +84,21 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	// stateKey //
 	//////////////
 
+	/**	 The entity stateKey
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long stateKey;
 	@JsonIgnore
 	public Wrap<Long> stateKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("stateKey").o(stateKey);
 
+	/**	<br/> The entity stateKey
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateKey">Find the entity stateKey in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateKey(Wrap<Long> c);
 
 	public Long getStateKey() {
@@ -155,11 +168,20 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	// stateName //
 	///////////////
 
+	/**	 The entity stateName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stateName;
 	@JsonIgnore
 	public Wrap<String> stateNameWrap = new Wrap<String>().p(this).c(String.class).var("stateName").o(stateName);
 
+	/**	<br/> The entity stateName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateName">Find the entity stateName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateName(Wrap<String> c);
 
 	public String getStateName() {
@@ -288,11 +310,20 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	// stateAbbreviation //
 	///////////////////////
 
+	/**	 The entity stateAbbreviation
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stateAbbreviation;
 	@JsonIgnore
 	public Wrap<String> stateAbbreviationWrap = new Wrap<String>().p(this).c(String.class).var("stateAbbreviation").o(stateAbbreviation);
 
+	/**	<br/> The entity stateAbbreviation
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateAbbreviation">Find the entity stateAbbreviation in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateAbbreviation(Wrap<String> c);
 
 	public String getStateAbbreviation() {
@@ -421,12 +452,21 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	// imageLeft //
 	///////////////
 
+	/**	 The entity imageLeft
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageLeft;
 	@JsonIgnore
 	public Wrap<Integer> imageLeftWrap = new Wrap<Integer>().p(this).c(Integer.class).var("imageLeft").o(imageLeft);
 
+	/**	<br/> The entity imageLeft
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:imageLeft">Find the entity imageLeft in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _imageLeft(Wrap<Integer> c);
 
 	public Integer getImageLeft() {
@@ -562,12 +602,21 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	// imageTop //
 	//////////////
 
+	/**	 The entity imageTop
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageTop;
 	@JsonIgnore
 	public Wrap<Integer> imageTopWrap = new Wrap<Integer>().p(this).c(Integer.class).var("imageTop").o(imageTop);
 
+	/**	<br/> The entity imageTop
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:imageTop">Find the entity imageTop in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _imageTop(Wrap<Integer> c);
 
 	public Integer getImageTop() {
@@ -703,12 +752,21 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	// agencyKeys //
 	////////////////
 
+	/**	 The entity agencyKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> agencyKeys = new ArrayList<Long>();
 	@JsonIgnore
 	public Wrap<List<Long>> agencyKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("agencyKeys").o(agencyKeys);
 
+	/**	<br/> The entity agencyKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyKeys">Find the entity agencyKeys in Solr</a>
+	 * <br/>
+	 * @param agencyKeys is the entity already constructed. 
+	 **/
 	protected abstract void _agencyKeys(List<Long> o);
 
 	public List<Long> getAgencyKeys() {
@@ -891,11 +949,20 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	// stateCompleteName //
 	///////////////////////
 
+	/**	 The entity stateCompleteName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stateCompleteName;
 	@JsonIgnore
 	public Wrap<String> stateCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("stateCompleteName").o(stateCompleteName);
 
+	/**	<br/> The entity stateCompleteName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateCompleteName">Find the entity stateCompleteName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateCompleteName(Wrap<String> c);
 
 	public String getStateCompleteName() {

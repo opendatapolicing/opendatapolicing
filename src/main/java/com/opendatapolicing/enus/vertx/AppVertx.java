@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -26,7 +25,6 @@ import com.opendatapolicing.enus.html.part.HtmlPartEnUSGenApiService;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
-import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
 import com.opendatapolicing.enus.state.SiteStateEnUSGenApiService;
 import com.opendatapolicing.enus.trafficcontraband.TrafficContrabandEnUSGenApiService;
@@ -39,7 +37,6 @@ import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -82,8 +79,6 @@ import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
 import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
 import io.vertx.sqlclient.PoolOptions;
-import io.vertx.sqlclient.SqlConnection;
-import io.vertx.sqlclient.Transaction;
 
 /**	
  *	A Java class to start the Vert.x application as a main method. 
@@ -362,7 +357,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			oauth2ClientOptions.setClientSecret(siteConfig.getAuthSecret());
 			oauth2ClientOptions.setFlow(OAuth2FlowType.AUTH_CODE);
 			JsonObject extraParams = new JsonObject();
-			extraParams.put("scope", "openid DefaultAuthScope SiteAdminScope");
+			extraParams.put("scope", "DefaultAuthScope");
 			oauth2ClientOptions.setExtraParameters(extraParams);
 
 			OpenIDConnectAuth.discover(vertx, oauth2ClientOptions, a -> {
@@ -382,7 +377,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			//		ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
 					LocalSessionStore sessionStore = LocalSessionStore.create(vertx, "opendatapolicing-sessions");
 					SessionHandler sessionHandler = SessionHandler.create(sessionStore);
-					sessionHandler.setCookieSecureFlag(true);
 					String siteBaseUrl = siteConfig.getSiteBaseUrl();
 					if(StringUtils.startsWith(siteBaseUrl, "https://"))
 						sessionHandler.setCookieSecureFlag(true);
@@ -604,37 +598,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			promise.fail(ex);
 		}
 		return promise;
-	}
-
-	public void  errorAppVertx(SiteRequestEnUS siteRequest, AsyncResult<?> a) {
-		Throwable e = a.cause();
-		if(e != null)
-			LOG.error(ExceptionUtils.getStackTrace(e));
-		if(siteRequest != null) {
-			Transaction tx = siteRequest.getTx();
-			if(tx != null) {
-				tx.rollback(b -> {
-					if(b.succeeded()) {
-						LOG.info("Rollback the SQL connection succeded. ");
-						try {
-							SqlConnection connexionSql = siteRequest.getSqlConnection();
-				
-							if(connexionSql == null) {
-								LOG.info("Close the SQL connection succeded. ");
-							} else {
-								connexionSql.close();
-								siteRequest.setSqlConnection(null);
-								LOG.info("Close the SQL connection succeded. ");
-							}
-						} catch(Exception ex) {
-							LOG.error(String.format("sqlFermerEcole a échoué. ", ex));
-						}
-					} else {
-						LOG.error("Rollback the SQL connection failed. ", b.cause());
-					}
-				});
-			}
-		}
 	}
 
 	/**	

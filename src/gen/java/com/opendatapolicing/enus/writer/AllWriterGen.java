@@ -38,6 +38,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class AllWriterGen<DEV> extends Object {
 	protected static final Logger LOG = LoggerFactory.getLogger(AllWriter.class);
 
@@ -45,11 +49,20 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// siteRequest_ //
 	//////////////////
 
+	/**	 The entity siteRequest_
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
 	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
 
+	/**	<br/> The entity siteRequest_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> c);
 
 	public SiteRequestEnUS getSiteRequest_() {
@@ -77,11 +90,20 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// tabStr //
 	////////////
 
+	/**	 The entity tabStr
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String tabStr;
 	@JsonIgnore
 	public Wrap<String> tabStrWrap = new Wrap<String>().p(this).c(String.class).var("tabStr").o(tabStr);
 
+	/**	<br/> The entity tabStr
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:tabStr">Find the entity tabStr in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _tabStr(Wrap<String> c);
 
 	public String getTabStr() {
@@ -136,11 +158,20 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// file //
 	//////////
 
+	/**	 The entity file
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected File file;
 	@JsonIgnore
 	public Wrap<File> fileWrap = new Wrap<File>().p(this).c(File.class).var("file").o(file);
 
+	/**	<br/> The entity file
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:file">Find the entity file in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _file(Wrap<File> c);
 
 	public File getFile() {
@@ -168,11 +199,20 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// stringWriter //
 	//////////////////
 
+	/**	 The entity stringWriter
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected StringWriter stringWriter;
 	@JsonIgnore
 	public Wrap<StringWriter> stringWriterWrap = new Wrap<StringWriter>().p(this).c(StringWriter.class).var("stringWriter").o(stringWriter);
 
+	/**	<br/> The entity stringWriter
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stringWriter">Find the entity stringWriter in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stringWriter(Wrap<StringWriter> c);
 
 	public StringWriter getStringWriter() {
@@ -200,11 +240,20 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// buffer //
 	////////////
 
+	/**	 The entity buffer
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Buffer buffer;
 	@JsonIgnore
 	public Wrap<Buffer> bufferWrap = new Wrap<Buffer>().p(this).c(Buffer.class).var("buffer").o(buffer);
 
+	/**	<br/> The entity buffer
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:buffer">Find the entity buffer in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _buffer(Wrap<Buffer> c);
 
 	public Buffer getBuffer() {
@@ -232,11 +281,20 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// printWriter //
 	/////////////////
 
+	/**	 The entity printWriter
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected PrintWriter printWriter;
 	@JsonIgnore
 	public Wrap<PrintWriter> printWriterWrap = new Wrap<PrintWriter>().p(this).c(PrintWriter.class).var("printWriter").o(printWriter);
 
+	/**	<br/> The entity printWriter
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:printWriter">Find the entity printWriter in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _printWriter(Wrap<PrintWriter> c);
 
 	public PrintWriter getPrintWriter() {
@@ -264,11 +322,20 @@ public abstract class AllWriterGen<DEV> extends Object {
 	// empty //
 	///////////
 
+	/**	 The entity empty
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean empty;
 	@JsonIgnore
 	public Wrap<Boolean> emptyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("empty").o(empty);
 
+	/**	<br/> The entity empty
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:empty">Find the entity empty in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _empty(Wrap<Boolean> c);
 
 	public Boolean getEmpty() {

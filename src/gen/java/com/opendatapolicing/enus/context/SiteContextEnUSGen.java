@@ -43,6 +43,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class SiteContextEnUSGen<DEV> extends Object {
 
 /*
@@ -96,7 +100,13 @@ CREATE TABLE HtmlPart(
 	, userKey bigint
 	);
 CREATE TABLE SiteUser(
-	userId text
+	pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
+	, archived boolean
+	, deleted boolean
+	, userKey bigint
+	, userId text
 	, userName text
 	, userEmail text
 	, userFirstName text
@@ -104,12 +114,6 @@ CREATE TABLE SiteUser(
 	, userFullName text
 	, seeArchived boolean
 	, seeDeleted boolean
-	, pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, archived boolean
-	, deleted boolean
-	, userKey bigint
 	);
 CREATE TABLE SiteState(
 	pk bigserial primary key
@@ -197,6 +201,7 @@ CREATE TABLE TrafficContraband(
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
+	, searchKey bigint references TrafficSearch(pk)
 	, contrabandOunces decimal
 	, contrabandPounds decimal
 	, contrabandPints decimal
@@ -215,8 +220,14 @@ CREATE TABLE SearchBasis(
 	, archived boolean
 	, deleted boolean
 	, userKey bigint
+	, searchKey bigint references TrafficSearch(pk)
 	, searchBasisId text
 	, searchBasisTitle text
+	);
+CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references PageDesign(pk)
+	, pk2 bigint references PageDesign(pk)
 	);
 CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	pk bigserial primary key
@@ -231,11 +242,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// vertx //
 	///////////
 
+	/**	 The entity vertx
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Vertx vertx;
 	@JsonIgnore
 	public Wrap<Vertx> vertxWrap = new Wrap<Vertx>().p(this).c(Vertx.class).var("vertx").o(vertx);
 
+	/**	<br/> The entity vertx
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:vertx">Find the entity vertx in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _vertx(Wrap<Vertx> c);
 
 	public Vertx getVertx() {
@@ -263,11 +283,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// routerBuilder //
 	///////////////////
 
+	/**	 The entity routerBuilder
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected RouterBuilder routerBuilder;
 	@JsonIgnore
 	public Wrap<RouterBuilder> routerBuilderWrap = new Wrap<RouterBuilder>().p(this).c(RouterBuilder.class).var("routerBuilder").o(routerBuilder);
 
+	/**	<br/> The entity routerBuilder
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:routerBuilder">Find the entity routerBuilder in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _routerBuilder(Wrap<RouterBuilder> c);
 
 	public RouterBuilder getRouterBuilder() {
@@ -295,11 +324,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// router //
 	////////////
 
+	/**	 The entity router
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Router router;
 	@JsonIgnore
 	public Wrap<Router> routerWrap = new Wrap<Router>().p(this).c(Router.class).var("router").o(router);
 
+	/**	<br/> The entity router
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:router">Find the entity router in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _router(Wrap<Router> c);
 
 	public Router getRouter() {
@@ -327,11 +365,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// authHandler //
 	/////////////////
 
+	/**	 The entity authHandler
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected OAuth2AuthHandler authHandler;
 	@JsonIgnore
 	public Wrap<OAuth2AuthHandler> authHandlerWrap = new Wrap<OAuth2AuthHandler>().p(this).c(OAuth2AuthHandler.class).var("authHandler").o(authHandler);
 
+	/**	<br/> The entity authHandler
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:authHandler">Find the entity authHandler in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _authHandler(Wrap<OAuth2AuthHandler> c);
 
 	public OAuth2AuthHandler getAuthHandler() {
@@ -359,11 +406,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// oauth2AuthenticationProvider //
 	//////////////////////////////////
 
+	/**	 The entity oauth2AuthenticationProvider
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected OAuth2Auth oauth2AuthenticationProvider;
 	@JsonIgnore
 	public Wrap<OAuth2Auth> oauth2AuthenticationProviderWrap = new Wrap<OAuth2Auth>().p(this).c(OAuth2Auth.class).var("oauth2AuthenticationProvider").o(oauth2AuthenticationProvider);
 
+	/**	<br/> The entity oauth2AuthenticationProvider
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:oauth2AuthenticationProvider">Find the entity oauth2AuthenticationProvider in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _oauth2AuthenticationProvider(Wrap<OAuth2Auth> c);
 
 	public OAuth2Auth getOauth2AuthenticationProvider() {
@@ -391,11 +447,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// authorizationProvider //
 	///////////////////////////
 
+	/**	 The entity authorizationProvider
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected AuthorizationProvider authorizationProvider;
 	@JsonIgnore
 	public Wrap<AuthorizationProvider> authorizationProviderWrap = new Wrap<AuthorizationProvider>().p(this).c(AuthorizationProvider.class).var("authorizationProvider").o(authorizationProvider);
 
+	/**	<br/> The entity authorizationProvider
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:authorizationProvider">Find the entity authorizationProvider in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _authorizationProvider(Wrap<AuthorizationProvider> c);
 
 	public AuthorizationProvider getAuthorizationProvider() {
@@ -423,11 +488,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// workerExecutor //
 	////////////////////
 
+	/**	 The entity workerExecutor
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected WorkerExecutor workerExecutor;
 	@JsonIgnore
 	public Wrap<WorkerExecutor> workerExecutorWrap = new Wrap<WorkerExecutor>().p(this).c(WorkerExecutor.class).var("workerExecutor").o(workerExecutor);
 
+	/**	<br/> The entity workerExecutor
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:workerExecutor">Find the entity workerExecutor in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _workerExecutor(Wrap<WorkerExecutor> c);
 
 	public WorkerExecutor getWorkerExecutor() {
@@ -455,11 +529,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// siteConfig //
 	////////////////
 
+	/**	 The entity siteConfig
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SiteConfig(). 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteConfig siteConfig = new SiteConfig();
 	@JsonIgnore
 	public Wrap<SiteConfig> siteConfigWrap = new Wrap<SiteConfig>().p(this).c(SiteConfig.class).var("siteConfig").o(siteConfig);
 
+	/**	<br/> The entity siteConfig
+	 *  It is constructed before being initialized with the constructor by default SiteConfig(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteConfig">Find the entity siteConfig in Solr</a>
+	 * <br/>
+	 * @param siteConfig is the entity already constructed. 
+	 **/
 	protected abstract void _siteConfig(SiteConfig o);
 
 	public SiteConfig getSiteConfig() {
@@ -486,11 +569,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// pgPool //
 	////////////
 
+	/**	 The entity pgPool
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected PgPool pgPool;
 	@JsonIgnore
 	public Wrap<PgPool> pgPoolWrap = new Wrap<PgPool>().p(this).c(PgPool.class).var("pgPool").o(pgPool);
 
+	/**	<br/> The entity pgPool
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pgPool">Find the entity pgPool in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pgPool(Wrap<PgPool> c);
 
 	public PgPool getPgPool() {
@@ -518,11 +610,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// solrClient //
 	////////////////
 
+	/**	 The entity solrClient
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected HttpSolrClient solrClient;
 	@JsonIgnore
 	public Wrap<HttpSolrClient> solrClientWrap = new Wrap<HttpSolrClient>().p(this).c(HttpSolrClient.class).var("solrClient").o(solrClient);
 
+	/**	<br/> The entity solrClient
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrClient">Find the entity solrClient in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _solrClient(Wrap<HttpSolrClient> c);
 
 	public HttpSolrClient getSolrClient() {
@@ -550,11 +651,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// mailClient //
 	////////////////
 
+	/**	 The entity mailClient
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected MailClient mailClient;
 	@JsonIgnore
 	public Wrap<MailClient> mailClientWrap = new Wrap<MailClient>().p(this).c(MailClient.class).var("mailClient").o(mailClient);
 
+	/**	<br/> The entity mailClient
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:mailClient">Find the entity mailClient in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _mailClient(Wrap<MailClient> c);
 
 	public MailClient getMailClient() {
@@ -582,11 +692,20 @@ CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
 	// solrClientComputate //
 	/////////////////////////
 
+	/**	 The entity solrClientComputate
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected HttpSolrClient solrClientComputate;
 	@JsonIgnore
 	public Wrap<HttpSolrClient> solrClientComputateWrap = new Wrap<HttpSolrClient>().p(this).c(HttpSolrClient.class).var("solrClientComputate").o(solrClientComputate);
 
+	/**	<br/> The entity solrClientComputate
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.context.SiteContextEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrClientComputate">Find the entity solrClientComputate in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _solrClientComputate(Wrap<HttpSolrClient> c);
 
 	public HttpSolrClient getSolrClientComputate() {

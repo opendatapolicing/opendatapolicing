@@ -32,6 +32,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignPdfPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class DesignPdfPageGen<DEV> extends DesignPdfGenPage {
 	protected static final Logger LOG = LoggerFactory.getLogger(DesignPdfPage.class);
 

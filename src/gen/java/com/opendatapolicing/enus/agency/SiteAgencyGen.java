@@ -48,6 +48,10 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class SiteAgencyGen<DEV> extends Cluster {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteAgency.class);
 
@@ -81,12 +85,21 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// agencyKey //
 	///////////////
 
+	/**	 The entity agencyKey
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long agencyKey;
 	@JsonIgnore
 	public Wrap<Long> agencyKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("agencyKey").o(agencyKey);
 
+	/**	<br/> The entity agencyKey
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyKey">Find the entity agencyKey in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _agencyKey(Wrap<Long> c);
 
 	public Long getAgencyKey() {
@@ -156,11 +169,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// agencyName //
 	////////////////
 
+	/**	 The entity agencyName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyName;
 	@JsonIgnore
 	public Wrap<String> agencyNameWrap = new Wrap<String>().p(this).c(String.class).var("agencyName").o(agencyName);
 
+	/**	<br/> The entity agencyName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyName">Find the entity agencyName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _agencyName(Wrap<String> c);
 
 	public String getAgencyName() {
@@ -289,12 +311,21 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// stateSearch //
 	/////////////////
 
+	/**	 The entity stateSearch
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SiteState>(). 
+	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<SiteState> stateSearch = new SearchList<SiteState>();
 	@JsonIgnore
 	public Wrap<SearchList<SiteState>> stateSearchWrap = new Wrap<SearchList<SiteState>>().p(this).c(SearchList.class).var("stateSearch").o(stateSearch);
 
+	/**	<br/> The entity stateSearch
+	 *  It is constructed before being initialized with the constructor by default SearchList<SiteState>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateSearch">Find the entity stateSearch in Solr</a>
+	 * <br/>
+	 * @param stateSearch is the entity already constructed. 
+	 **/
 	protected abstract void _stateSearch(SearchList<SiteState> l);
 
 	public SearchList<SiteState> getStateSearch() {
@@ -321,11 +352,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// state_ //
 	////////////
 
+	/**	 The entity state_
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteState state_;
 	@JsonIgnore
 	public Wrap<SiteState> state_Wrap = new Wrap<SiteState>().p(this).c(SiteState.class).var("state_").o(state_);
 
+	/**	<br/> The entity state_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:state_">Find the entity state_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _state_(Wrap<SiteState> c);
 
 	public SiteState getState_() {
@@ -353,12 +393,21 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// stateKey //
 	//////////////
 
+	/**	 The entity stateKey
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long stateKey;
 	@JsonIgnore
 	public Wrap<Long> stateKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("stateKey").o(stateKey);
 
+	/**	<br/> The entity stateKey
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateKey">Find the entity stateKey in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateKey(Wrap<Long> c);
 
 	public Long getStateKey() {
@@ -512,12 +561,21 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// imageLeft //
 	///////////////
 
+	/**	 The entity imageLeft
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageLeft;
 	@JsonIgnore
 	public Wrap<Integer> imageLeftWrap = new Wrap<Integer>().p(this).c(Integer.class).var("imageLeft").o(imageLeft);
 
+	/**	<br/> The entity imageLeft
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:imageLeft">Find the entity imageLeft in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _imageLeft(Wrap<Integer> c);
 
 	public Integer getImageLeft() {
@@ -653,12 +711,21 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// imageTop //
 	//////////////
 
+	/**	 The entity imageTop
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageTop;
 	@JsonIgnore
 	public Wrap<Integer> imageTopWrap = new Wrap<Integer>().p(this).c(Integer.class).var("imageTop").o(imageTop);
 
+	/**	<br/> The entity imageTop
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:imageTop">Find the entity imageTop in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _imageTop(Wrap<Integer> c);
 
 	public Integer getImageTop() {
@@ -794,11 +861,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// imageCoords //
 	/////////////////
 
+	/**	 The entity imageCoords
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String imageCoords;
 	@JsonIgnore
 	public Wrap<String> imageCoordsWrap = new Wrap<String>().p(this).c(String.class).var("imageCoords").o(imageCoords);
 
+	/**	<br/> The entity imageCoords
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:imageCoords">Find the entity imageCoords in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _imageCoords(Wrap<String> c);
 
 	public String getImageCoords() {
@@ -925,11 +1001,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// stateId //
 	/////////////
 
+	/**	 The entity stateId
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stateId;
 	@JsonIgnore
 	public Wrap<String> stateIdWrap = new Wrap<String>().p(this).c(String.class).var("stateId").o(stateId);
 
+	/**	<br/> The entity stateId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateId">Find the entity stateId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateId(Wrap<String> c);
 
 	public String getStateId() {
@@ -992,11 +1077,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// stateName //
 	///////////////
 
+	/**	 The entity stateName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stateName;
 	@JsonIgnore
 	public Wrap<String> stateNameWrap = new Wrap<String>().p(this).c(String.class).var("stateName").o(stateName);
 
+	/**	<br/> The entity stateName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateName">Find the entity stateName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateName(Wrap<String> c);
 
 	public String getStateName() {
@@ -1059,11 +1153,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// stateAbbreviation //
 	///////////////////////
 
+	/**	 The entity stateAbbreviation
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String stateAbbreviation;
 	@JsonIgnore
 	public Wrap<String> stateAbbreviationWrap = new Wrap<String>().p(this).c(String.class).var("stateAbbreviation").o(stateAbbreviation);
 
+	/**	<br/> The entity stateAbbreviation
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateAbbreviation">Find the entity stateAbbreviation in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _stateAbbreviation(Wrap<String> c);
 
 	public String getStateAbbreviation() {
@@ -1126,11 +1229,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// agencyOnlyName //
 	////////////////////
 
+	/**	 The entity agencyOnlyName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyOnlyName;
 	@JsonIgnore
 	public Wrap<String> agencyOnlyNameWrap = new Wrap<String>().p(this).c(String.class).var("agencyOnlyName").o(agencyOnlyName);
 
+	/**	<br/> The entity agencyOnlyName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyOnlyName">Find the entity agencyOnlyName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _agencyOnlyName(Wrap<String> c);
 
 	public String getAgencyOnlyName() {
@@ -1193,11 +1305,20 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	// agencyCompleteName //
 	////////////////////////
 
+	/**	 The entity agencyCompleteName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyCompleteName;
 	@JsonIgnore
 	public Wrap<String> agencyCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("agencyCompleteName").o(agencyCompleteName);
 
+	/**	<br/> The entity agencyCompleteName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyCompleteName">Find the entity agencyCompleteName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _agencyCompleteName(Wrap<String> c);
 
 	public String getAgencyCompleteName() {

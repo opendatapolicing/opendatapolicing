@@ -1,6 +1,6 @@
 package com.opendatapolicing.enus.trafficstop;
 
-import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiServiceImpl;
+import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSApiServiceImpl;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
 import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
@@ -246,23 +246,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						}
 						siteRequest2.setJsonObject(json2);
 						futures.add(
-							patchTrafficStopFuture(o, true, a -> {
-								if(a.succeeded()) {
-								} else {
-									LOG.error(String.format("listPUTImportTrafficStop failed. ", a.cause()));
-									errorTrafficStop(siteRequest2, eventHandler, a);
-								}
+							patchTrafficStopFuture(o, true).onFailure(ex -> {
+								LOG.error(String.format("listPUTImportTrafficStop failed. ", ex));
+								errorTrafficStop(siteRequest2, eventHandler, Future.failedFuture(ex));
 							})
 						);
 					}
 				} else {
 					futures.add(
-						postTrafficStopFuture(siteRequest2, true, a -> {
-							if(a.succeeded()) {
-							} else {
-								LOG.error(String.format("listPUTImportTrafficStop failed. ", a.cause()));
-								errorTrafficStop(siteRequest2, eventHandler, a);
-							}
+						postTrafficStopFuture(siteRequest2, true).onFailure(ex -> {
+							LOG.error(String.format("listPUTImportTrafficStop failed. ", ex));
+							errorTrafficStop(siteRequest2, eventHandler, Future.failedFuture(ex));
 						})
 					);
 				}
@@ -443,23 +437,17 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						}
 						siteRequest2.setJsonObject(json2);
 						futures.add(
-							patchTrafficStopFuture(o, false, a -> {
-								if(a.succeeded()) {
-								} else {
-									LOG.error(String.format("listPUTMergeTrafficStop failed. ", a.cause()));
-									errorTrafficStop(siteRequest2, eventHandler, a);
-								}
+							patchTrafficStopFuture(o, false).onFailure(ex -> {
+								LOG.error(String.format("listPUTMergeTrafficStop failed. ", ex));
+								errorTrafficStop(siteRequest2, eventHandler, Future.failedFuture(ex));
 							})
 						);
 					}
 				} else {
 					futures.add(
-						postTrafficStopFuture(siteRequest2, false, a -> {
-							if(a.succeeded()) {
-							} else {
-								LOG.error(String.format("listPUTMergeTrafficStop failed. ", a.cause()));
-								errorTrafficStop(siteRequest2, eventHandler, a);
-							}
+						postTrafficStopFuture(siteRequest2, false).onFailure(ex -> {
+							LOG.error(String.format("listPUTMergeTrafficStop failed. ", ex));
+							errorTrafficStop(siteRequest2, eventHandler, Future.failedFuture(ex));
 						})
 					);
 				}
@@ -618,12 +606,9 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
-				putcopyTrafficStopFuture(siteRequest2, JsonObject.mapFrom(o), a -> {
-					if(a.succeeded()) {
-					} else {
-						LOG.error(String.format("listPUTCopyTrafficStop failed. ", a.cause()));
-						errorTrafficStop(siteRequest, eventHandler, a);
-					}
+				putcopyTrafficStopFuture(siteRequest2, JsonObject.mapFrom(o)).onFailure(ex -> {
+					LOG.error(String.format("listPUTCopyTrafficStop failed. ", ex));
+					errorTrafficStop(siteRequest, eventHandler, Future.failedFuture(ex));
 				})
 			);
 		});
@@ -658,51 +643,74 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 					jsonObject.getJsonArray("saves").add(o.getKey());
 			});
 
-			sqlConnectionTrafficStop(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionTrafficStop(siteRequest, b -> {
-						if(b.succeeded()) {
-							createTrafficStop(siteRequest, c -> {
-								if(c.succeeded()) {
-									TrafficStop trafficStop = c.result();
-									sqlPUTCopyTrafficStop(trafficStop, jsonObject, d -> {
-										if(d.succeeded()) {
-											defineIndexTrafficStop(trafficStop, e -> {
-												if(e.succeeded()) {
-													ApiRequest apiRequest = siteRequest.getApiRequest_();
-													if(apiRequest != null) {
-														apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-														if(apiRequest.getNumFound() == 1L) {
-															trafficStop.apiRequestTrafficStop();
-														}
-														siteRequest.getVertx().eventBus().publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<TrafficStop> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				createTrafficStop(siteRequest, a -> {
+					if(a.succeeded()) {
+						TrafficStop trafficStop = a.result();
+						sqlPUTCopyTrafficStop(trafficStop, jsonObject, b -> {
+							if(b.succeeded()) {
+								defineTrafficStop(trafficStop, c -> {
+									if(c.succeeded()) {
+										attributeTrafficStop(trafficStop, d -> {
+											if(d.succeeded()) {
+												indexTrafficStop(trafficStop, e -> {
+													if(e.succeeded()) {
+														promise1.complete(trafficStop);
+													} else {
+														LOG.error(String.format("putcopyTrafficStopFuture failed. ", e.cause()));
+														promise1.fail(e.cause());
 													}
-													eventHandler.handle(Future.succeededFuture(trafficStop));
-													promise.complete(trafficStop);
-												} else {
-													LOG.error(String.format("putcopyTrafficStopFuture failed. ", e.cause()));
-													eventHandler.handle(Future.failedFuture(e.cause()));
-												}
-											});
-										} else {
-											LOG.error(String.format("putcopyTrafficStopFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("putcopyTrafficStopFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("putcopyTrafficStopFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+												});
+											} else {
+												LOG.error(String.format("putcopyTrafficStopFuture failed. ", d.cause()));
+												promise1.fail(d.cause());
+											}
+										});
+									} else {
+										LOG.error(String.format("putcopyTrafficStopFuture failed. ", c.cause()));
+										promise1.fail(c.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("putcopyTrafficStopFuture failed. ", b.cause()));
+								promise1.fail(b.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("putcopyTrafficStopFuture failed. ", a.cause()));
+						promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficStop(siteRequest, null, Future.failedFuture(ex));
+			}).compose(trafficStop -> {
+				Promise<TrafficStop> promise2 = Promise.promise();
+				refreshTrafficStop(trafficStop, a -> {
+					if(a.succeeded()) {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficStop.apiRequestTrafficStop();
+							siteRequest.getVertx().eventBus().publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("putcopyTrafficStopFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(trafficStop);
+					} else {
+						LOG.error(String.format("putcopyTrafficStopFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("putcopyTrafficStopFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficStop(siteRequest, null, promise.future());
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("putcopyTrafficStopFuture failed. "), ex);
@@ -1021,7 +1029,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 								}
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postTrafficStop failed. ", ex));
+							LOG.error(String.format("postTrafficStop failed. ", Future.failedFuture(ex)));
 							errorTrafficStop(siteRequest, eventHandler, Future.failedFuture(ex));
 						});
 					}
@@ -1095,7 +1103,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
 				promise.fail(ex);
-			errorTrafficStop(siteRequest, null, promise.future());
+				errorTrafficStop(siteRequest, null, Future.failedFuture(ex));
 			}).compose(trafficStop -> {
 				Promise<TrafficStop> promise2 = Promise.promise();
 				refreshTrafficStop(trafficStop, a -> {
@@ -1117,7 +1125,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				LOG.info(String.format("postTrafficStopFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-			errorTrafficStop(siteRequest, null, promise.future());
+				errorTrafficStop(siteRequest, null, promise.future());
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postTrafficStopFuture failed. "), ex);
@@ -1555,11 +1563,8 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
-				patchTrafficStopFuture(o, false, a -> {
-					if(a.succeeded()) {
-					} else {
-						errorTrafficStop(siteRequest2, eventHandler, a);
-					}
+				patchTrafficStopFuture(o, false).onFailure(ex -> {
+					errorTrafficStop(siteRequest2, eventHandler, Future.failedFuture(ex));
 				})
 			);
 		});
@@ -1587,43 +1592,66 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				apiRequest.setOriginal(o);
 				apiRequest.setPk(o.getPk());
 			}
-			sqlConnectionTrafficStop(siteRequest, a -> {
-				if(a.succeeded()) {
-					sqlTransactionTrafficStop(siteRequest, b -> {
-						if(b.succeeded()) {
-							sqlPATCHTrafficStop(o, inheritPk, c -> {
-								if(c.succeeded()) {
-									TrafficStop trafficStop = c.result();
-									defineIndexTrafficStop(trafficStop, d -> {
-										if(d.succeeded()) {
-											if(apiRequest != null) {
-												apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-												if(apiRequest.getNumFound() == 1L) {
-													trafficStop.apiRequestTrafficStop();
-												}
-												siteRequest.getVertx().eventBus().publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
+			siteRequest.getSiteContext_().getPgPool().withTransaction(sqlConnection -> {
+				Promise<TrafficStop> promise1 = Promise.promise();
+				siteRequest.setSqlConnection(sqlConnection);
+				sqlPATCHTrafficStop(o, inheritPk, a -> {
+					if(a.succeeded()) {
+						TrafficStop trafficStop = a.result();
+						defineTrafficStop(trafficStop, c -> {
+							if(c.succeeded()) {
+								attributeTrafficStop(trafficStop, d -> {
+									if(d.succeeded()) {
+										indexTrafficStop(trafficStop, e -> {
+											if(e.succeeded()) {
+												promise1.complete(trafficStop);
+											} else {
+												LOG.error(String.format("patchTrafficStopFuture failed. ", e.cause()));
+												promise1.fail(e.cause());
 											}
-											eventHandler.handle(Future.succeededFuture(trafficStop));
-											promise.complete(trafficStop);
-										} else {
-											LOG.error(String.format("patchTrafficStopFuture failed. ", d.cause()));
-											eventHandler.handle(Future.failedFuture(d.cause()));
-										}
-									});
-								} else {
-									LOG.error(String.format("patchTrafficStopFuture failed. ", c.cause()));
-									eventHandler.handle(Future.failedFuture(c.cause()));
-								}
-							});
-						} else {
-							LOG.error(String.format("patchTrafficStopFuture failed. ", b.cause()));
-							eventHandler.handle(Future.failedFuture(b.cause()));
+										});
+									} else {
+										LOG.error(String.format("patchTrafficStopFuture failed. ", d.cause()));
+										promise1.fail(d.cause());
+									}
+								});
+							} else {
+								LOG.error(String.format("patchTrafficStopFuture failed. ", c.cause()));
+								promise1.fail(c.cause());
+							}
+						});
+					} else {
+						LOG.error(String.format("patchTrafficStopFuture failed. ", a.cause()));
+								promise1.fail(a.cause());
+					}
+				});
+				return promise1.future();
+			}).onSuccess(a -> {
+				siteRequest.setSqlConnection(null);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficStop(siteRequest, null, Future.failedFuture(ex));
+			}).compose(trafficStop -> {
+				Promise<TrafficStop> promise2 = Promise.promise();
+				refreshTrafficStop(trafficStop, a -> {
+					if(a.succeeded()) {
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficStop.apiRequestTrafficStop();
+							siteRequest.getVertx().eventBus().publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
 						}
-					});
-				} else {
-					LOG.error(String.format("patchTrafficStopFuture failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
+						promise.complete(trafficStop);
+					} else {
+						LOG.error(String.format("patchTrafficStopFuture failed. ", a.cause()));
+						promise2.fail(a.cause());
+					}
+				});
+				return promise2.future();
+			}).onSuccess(a -> {
+				LOG.info(String.format("patchTrafficStopFuture succeeded. "));
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				errorTrafficStop(siteRequest, null, promise.future());
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
@@ -2641,56 +2669,6 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 
 	// General //
 
-	public Future<TrafficStop> defineIndexTrafficStop(TrafficStop trafficStop, Handler<AsyncResult<TrafficStop>> eventHandler) {
-		Promise<TrafficStop> promise = Promise.promise();
-		SiteRequestEnUS siteRequest = trafficStop.getSiteRequest_();
-		defineTrafficStop(trafficStop, c -> {
-			if(c.succeeded()) {
-				attributeTrafficStop(trafficStop, d -> {
-					if(d.succeeded()) {
-						indexTrafficStop(trafficStop, e -> {
-							if(e.succeeded()) {
-								sqlCommitTrafficStop(siteRequest, f -> {
-									if(f.succeeded()) {
-										sqlCloseTrafficStop(siteRequest, g -> {
-											if(g.succeeded()) {
-												refreshTrafficStop(trafficStop, h -> {
-													if(h.succeeded()) {
-														eventHandler.handle(Future.succeededFuture(trafficStop));
-														promise.complete(trafficStop);
-													} else {
-														LOG.error(String.format("refreshTrafficStop failed. ", h.cause()));
-														errorTrafficStop(siteRequest, null, h);
-													}
-												});
-											} else {
-												LOG.error(String.format("defineIndexTrafficStop failed. ", g.cause()));
-												errorTrafficStop(siteRequest, null, g);
-											}
-										});
-									} else {
-										LOG.error(String.format("defineIndexTrafficStop failed. ", f.cause()));
-										errorTrafficStop(siteRequest, null, f);
-									}
-								});
-							} else {
-								LOG.error(String.format("defineIndexTrafficStop failed. ", e.cause()));
-								errorTrafficStop(siteRequest, null, e);
-							}
-						});
-					} else {
-						LOG.error(String.format("defineIndexTrafficStop failed. ", d.cause()));
-						errorTrafficStop(siteRequest, null, d);
-					}
-				});
-			} else {
-				LOG.error(String.format("defineIndexTrafficStop failed. ", c.cause()));
-				errorTrafficStop(siteRequest, null, c);
-			}
-		});
-		return promise.future();
-	}
-
 	public void createTrafficStop(SiteRequestEnUS siteRequest, Handler<AsyncResult<TrafficStop>> eventHandler) {
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
@@ -2762,24 +2740,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 				}, resultHandler -> {
 				}
 			);
-			sqlRollbackTrafficStop(siteRequest, a -> {
-				if(a.succeeded()) {
-					LOG.info(String.format("sql rollback. "));
-					sqlCloseTrafficStop(siteRequest, b -> {
-						if(b.succeeded()) {
-							LOG.info(String.format("sql close. "));
-							if(eventHandler != null)
-								eventHandler.handle(Future.succeededFuture(responseOperation));
-						} else {
-							if(eventHandler != null)
-								eventHandler.handle(Future.succeededFuture(responseOperation));
-						}
-					});
-				} else {
-					if(eventHandler != null)
-						eventHandler.handle(Future.succeededFuture(responseOperation));
-				}
-			});
+			eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
 			eventHandler.handle(Future.succeededFuture(responseOperation));
 		}
@@ -2816,184 +2777,124 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						User user = a.result();
 						siteContext.getAuthorizationProvider().getAuthorizations(user, b -> {
 							if(b.succeeded()) {
-								JsonObject userAttributes = user.attributes();
-								JsonObject accessToken = userAttributes.getJsonObject("accessToken");
-								String userId = userAttributes.getString("sub");
-								SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficStop(user, siteContext, serviceRequest);
-								sqlConnectionTrafficStop(siteRequest, c -> {
-									if(c.succeeded()) {
-										sqlTransactionTrafficStop(siteRequest, d -> {
-											if(d.succeeded()) {
-												SqlConnection sqlConnection = siteRequest.getSqlConnection();
-												sqlConnection.preparedQuery("SELECT pk FROM SiteUser WHERE userId=$1")
-														.collecting(Collectors.toList())
-														.execute(Tuple.of(userId)
-														, selectCAsync
-												-> {
-													if(selectCAsync.succeeded()) {
-														try {
-															Row userValues = selectCAsync.result().value().stream().findFirst().orElse(null);
-															SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
-															if(userValues == null) {
-																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+								try {
+									JsonObject userAttributes = user.attributes();
+									JsonObject accessToken = userAttributes.getJsonObject("accessToken");
+									String userId = userAttributes.getString("sub");
+									SiteRequestEnUS siteRequest = generateSiteRequestEnUSForTrafficStop(user, siteContext, serviceRequest);
+									SearchList<SiteUser> searchList = new SearchList<SiteUser>();
+									searchList.setQuery("*:*");
+									searchList.setStore(true);
+									searchList.setC(SiteUser.class);
+									searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
+									searchList.initDeepSearchList(siteRequest);
+									SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
-																JsonObject jsonObject = new JsonObject();
-																jsonObject.put("userName", accessToken.getString("preferred_username"));
-																jsonObject.put("userFirstName", accessToken.getString("given_name"));
-																jsonObject.put("userLastName", accessToken.getString("family_name"));
-																jsonObject.put("userCompleteName", accessToken.getString("name"));
-																jsonObject.put("userId", accessToken.getString("sub"));
-																jsonObject.put("userEmail", accessToken.getString("email"));
-																userTrafficStopDefine(siteRequest, jsonObject, false);
+									if(siteUser1 == null) {
+										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
 
-																SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-																siteRequest2.setTx(siteRequest.getTx());
-																siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-																siteRequest2.setJsonObject(jsonObject);
-																siteRequest2.setVertx(siteRequest.getVertx());
-																siteRequest2.setSiteContext_(siteContext);
-																siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-																siteRequest2.setUserId(siteRequest.getUserId());
-																siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+										JsonObject jsonObject = new JsonObject();
+										jsonObject.put("userName", accessToken.getString("preferred_username"));
+										jsonObject.put("userFirstName", accessToken.getString("given_name"));
+										jsonObject.put("userLastName", accessToken.getString("family_name"));
+										jsonObject.put("userCompleteName", accessToken.getString("name"));
+										jsonObject.put("userId", accessToken.getString("sub"));
+										jsonObject.put("userEmail", accessToken.getString("email"));
+										userTrafficStopDefine(siteRequest, jsonObject, false);
 
-																ApiRequest apiRequest = new ApiRequest();
-																apiRequest.setRows(1);
-																apiRequest.setNumFound(1L);
-																apiRequest.setNumPATCH(0L);
-																apiRequest.initDeepApiRequest(siteRequest2);
-																siteRequest2.setApiRequest_(apiRequest);
+										SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+										siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+										siteRequest2.setJsonObject(jsonObject);
+										siteRequest2.setVertx(siteRequest.getVertx());
+										siteRequest2.setSiteContext_(siteContext);
+										siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+										siteRequest2.setUserId(siteRequest.getUserId());
+										siteRequest2.initDeepSiteRequestEnUS(siteRequest);
 
-																userService.createSiteUser(siteRequest2, e -> {
-																	if(e.succeeded()) {
-																		SiteUser siteUser = e.result();
-																		userService.sqlPOSTSiteUser(siteUser, false, f -> {
-																			if(f.succeeded()) {
-																				userService.defineIndexSiteUser(siteUser, g -> {
-																					if(g.succeeded()) {
-																						siteRequest.setSiteUser(siteUser);
-																						siteRequest.setUserName(accessToken.getString("preferred_username"));
-																						siteRequest.setUserFirstName(accessToken.getString("given_name"));
-																						siteRequest.setUserLastName(accessToken.getString("family_name"));
-																						siteRequest.setUserEmail(accessToken.getString("email"));
-																						siteRequest.setUserId(accessToken.getString("sub"));
-																						siteRequest.setUserKey(siteUser.getPk());
-																						eventHandler.handle(Future.succeededFuture(siteRequest));
-																					} else {
-																						errorTrafficStop(siteRequest, null, g);
-																					}
-																				});
-																			} else {
-																				errorTrafficStop(siteRequest, null, f);
-																			}
-																		});
-																	} else {
-																		errorTrafficStop(siteRequest, null, e);
-																	}
-																});
-															} else {
-																Long pkUser = userValues.getLong(0);
-																SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-																searchList.setQuery("*:*");
-																searchList.setStore(true);
-																searchList.setC(SiteUser.class);
-																searchList.addFilterQuery("pk_indexed_long:" + pkUser);
-																searchList.initDeepSearchList(siteRequest);
-																SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
+										ApiRequest apiRequest = new ApiRequest();
+										apiRequest.setRows(1);
+										apiRequest.setNumFound(1L);
+										apiRequest.setNumPATCH(0L);
+										apiRequest.initDeepApiRequest(siteRequest2);
+										siteRequest2.setApiRequest_(apiRequest);
 
-																JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
-																JsonObject jsonObject = new JsonObject();
-																jsonObject.put("setUserName", accessToken.getString("preferred_username"));
-																jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
-																jsonObject.put("setUserLastName", accessToken.getString("family_name"));
-																jsonObject.put("setUserCompleteName", accessToken.getString("name"));
-																jsonObject.put("setUserId", accessToken.getString("sub"));
-																jsonObject.put("setUserEmail", accessToken.getString("email"));
-																Boolean define = userTrafficStopDefine(siteRequest, jsonObject, true);
-																if(define) {
-																	SiteUser siteUser;
-																	if(siteUser1 == null) {
-																		siteUser = new SiteUser();
-																		siteUser.setPk(pkUser);
-																		siteUser.setSiteRequest_(siteRequest);
-																	} else {
-																		siteUser = siteUser1;
-																	}
-
-																	SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-																	siteRequest2.setTx(siteRequest.getTx());
-																	siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
-																	siteRequest2.setJsonObject(jsonObject);
-																	siteRequest2.setVertx(siteRequest.getVertx());
-																	siteRequest2.setSiteContext_(siteContext);
-																	siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
-																	siteRequest2.setUserId(siteRequest.getUserId());
-																	siteRequest2.setUserKey(pkUser);
-																	siteRequest.setUserKey(pkUser);
-																	siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-																	siteUser.setSiteRequest_(siteRequest2);
-
-																	ApiRequest apiRequest = new ApiRequest();
-																	apiRequest.setRows(1);
-																	apiRequest.setNumFound(1L);
-																	apiRequest.setNumPATCH(0L);
-																	apiRequest.initDeepApiRequest(siteRequest2);
-																	siteRequest2.setApiRequest_(apiRequest);
-
-																	userService.sqlPATCHSiteUser(siteUser, false, e -> {
-																		if(e.succeeded()) {
-																			SiteUser siteUser2 = e.result();
-																			userService.defineIndexSiteUser(siteUser2, f -> {
-																				if(f.succeeded()) {
-																					siteRequest.setSiteUser(siteUser2);
-																					siteRequest.setUserName(siteUser2.getUserName());
-																					siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-																					siteRequest.setUserLastName(siteUser2.getUserLastName());
-																					siteRequest.setUserKey(siteUser2.getPk());
-																					eventHandler.handle(Future.succeededFuture(siteRequest));
-																				} else {
-																					errorTrafficStop(siteRequest, null, f);
-																				}
-																			});
-																		} else {
-																			errorTrafficStop(siteRequest, null, e);
-																		}
-																	});
-																} else {
-																	siteRequest.setSiteUser(siteUser1);
-																	siteRequest.setUserName(siteUser1.getUserName());
-																	siteRequest.setUserFirstName(siteUser1.getUserFirstName());
-																	siteRequest.setUserLastName(siteUser1.getUserLastName());
-																	siteRequest.setUserKey(siteUser1.getPk());
-																	sqlRollbackTrafficStop(siteRequest, e -> {
-																		if(e.succeeded()) {
-																			eventHandler.handle(Future.succeededFuture(siteRequest));
-																		} else {
-																			eventHandler.handle(Future.failedFuture(e.cause()));
-																			errorTrafficStop(siteRequest, null, e);
-																		}
-																	});
-																}
-															}
-														} catch(Exception ex) {
-															LOG.error(String.format("userTrafficStop failed. "), ex);
-															eventHandler.handle(Future.failedFuture(ex));
-														}
-													} else {
-														LOG.error(String.format("userTrafficStop failed. ", selectCAsync.cause()));
-														eventHandler.handle(Future.failedFuture(selectCAsync.cause()));
-													}
-												});
-											} else {
-												LOG.error(String.format("userTrafficStop failed. ", d.cause()));
-												eventHandler.handle(Future.failedFuture(d.cause()));
-											}
+										userService.postSiteUserFuture(siteRequest2, false).onSuccess(siteUser -> {
+											siteRequest.setSiteUser(siteUser);
+											siteRequest.setUserName(accessToken.getString("preferred_username"));
+											siteRequest.setUserFirstName(accessToken.getString("given_name"));
+											siteRequest.setUserLastName(accessToken.getString("family_name"));
+											siteRequest.setUserEmail(accessToken.getString("email"));
+											siteRequest.setUserId(accessToken.getString("sub"));
+											siteRequest.setUserKey(siteUser.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
+										}).onFailure(ex -> {
+											errorTrafficStop(siteRequest, null, Future.failedFuture(ex));
 										});
 									} else {
-										LOG.error(String.format("userTrafficStop failed. ", c.cause()));
-										eventHandler.handle(Future.failedFuture(c.cause()));
+										Long pkUser = siteUser1.getPk();
+										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
+
+										JsonObject jsonObject = new JsonObject();
+										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
+										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
+										jsonObject.put("setUserLastName", accessToken.getString("family_name"));
+										jsonObject.put("setUserCompleteName", accessToken.getString("name"));
+										jsonObject.put("setUserId", accessToken.getString("sub"));
+										jsonObject.put("setUserEmail", accessToken.getString("email"));
+										Boolean define = userTrafficStopDefine(siteRequest, jsonObject, true);
+										if(define) {
+											SiteUser siteUser;
+											if(siteUser1 == null) {
+												siteUser = new SiteUser();
+												siteUser.setPk(pkUser);
+												siteUser.setSiteRequest_(siteRequest);
+											} else {
+												siteUser = siteUser1;
+											}
+
+											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
+											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
+											siteRequest2.setJsonObject(jsonObject);
+											siteRequest2.setVertx(siteRequest.getVertx());
+											siteRequest2.setSiteContext_(siteContext);
+											siteRequest2.setSiteConfig_(siteContext.getSiteConfig());
+											siteRequest2.setUserId(siteRequest.getUserId());
+											siteRequest2.setUserKey(pkUser);
+											siteRequest.setUserKey(pkUser);
+											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
+											siteUser.setSiteRequest_(siteRequest2);
+
+											ApiRequest apiRequest = new ApiRequest();
+											apiRequest.setRows(1);
+											apiRequest.setNumFound(1L);
+											apiRequest.setNumPATCH(0L);
+											apiRequest.initDeepApiRequest(siteRequest2);
+											siteRequest2.setApiRequest_(apiRequest);
+
+											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
+												siteRequest.setSiteUser(siteUser2);
+												siteRequest.setUserName(siteUser2.getUserName());
+												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+												siteRequest.setUserLastName(siteUser2.getUserLastName());
+												siteRequest.setUserKey(siteUser2.getPk());
+												eventHandler.handle(Future.succeededFuture(siteRequest));
+											}).onFailure(ex -> {
+												errorTrafficStop(siteRequest, null, Future.failedFuture(ex));
+											});
+										} else {
+											siteRequest.setSiteUser(siteUser1);
+											siteRequest.setUserName(siteUser1.getUserName());
+											siteRequest.setUserFirstName(siteUser1.getUserFirstName());
+											siteRequest.setUserLastName(siteUser1.getUserLastName());
+											siteRequest.setUserKey(siteUser1.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
+										}
 									}
-								});
+								} catch(Exception ex) {
+									LOG.error(String.format("userTrafficStop failed. "), ex);
+									eventHandler.handle(Future.failedFuture(ex));
+								}
 							} else {
 								LOG.error(String.format("userTrafficStop failed. ", b.cause()));
 								eventHandler.handle(Future.failedFuture(b.cause()));
@@ -3385,7 +3286,7 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 						TrafficPerson o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficPersonEnUSGenApiServiceImpl service = new TrafficPersonEnUSGenApiServiceImpl(siteRequest.getSiteContext_());
+							TrafficPersonEnUSApiServiceImpl service = new TrafficPersonEnUSApiServiceImpl(siteRequest.getSiteContext_());
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficStop(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3398,12 +3299,9 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							o2.setPk(pk2);
 							o2.setSiteRequest_(siteRequest2);
 							futures.add(
-								service.patchTrafficPersonFuture(o2, false, a -> {
-									if(a.succeeded()) {
-									} else {
-										LOG.info(String.format("TrafficPerson %s failed. ", pk2));
-										eventHandler.handle(Future.failedFuture(a.cause()));
-									}
+								service.patchTrafficPersonFuture(o2, false).onFailure(ex -> {
+									LOG.error(String.format("TrafficPerson %s failed. ", pk2), ex);
+									eventHandler.handle(Future.failedFuture(ex));
 								})
 							);
 						}
@@ -3418,12 +3316,9 @@ public class TrafficStopEnUSGenApiServiceImpl implements TrafficStopEnUSGenApiSe
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUSForTrafficStop(siteRequest.getUser(), siteContext, siteRequest.getServiceRequest(), new JsonObject());
 							o2.setSiteRequest_(siteRequest2);
 							futures2.add(
-								service.patchTrafficStopFuture(o2, false, b -> {
-									if(b.succeeded()) {
-									} else {
-										LOG.info(String.format("TrafficStop %s failed. ", o2.getPk()));
-										eventHandler.handle(Future.failedFuture(b.cause()));
-									}
+								service.patchTrafficStopFuture(o2, false).onFailure(ex -> {
+									LOG.error(String.format("TrafficStop %s failed. ", o2.getPk()), ex);
+									eventHandler.handle(Future.failedFuture(ex));
 								})
 							);
 						}

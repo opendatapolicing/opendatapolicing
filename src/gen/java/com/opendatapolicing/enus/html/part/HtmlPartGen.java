@@ -48,6 +48,10 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class HtmlPartGen<DEV> extends Cluster {
 	protected static final Logger LOG = LoggerFactory.getLogger(HtmlPart.class);
 
@@ -81,12 +85,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlPartKey //
 	/////////////////
 
+	/**	 The entity htmlPartKey
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long htmlPartKey;
 	@JsonIgnore
 	public Wrap<Long> htmlPartKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("htmlPartKey").o(htmlPartKey);
 
+	/**	<br/> The entity htmlPartKey
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlPartKey">Find the entity htmlPartKey in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlPartKey(Wrap<Long> c);
 
 	public Long getHtmlPartKey() {
@@ -156,12 +169,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// pageDesignKeys //
 	////////////////////
 
+	/**	 The entity pageDesignKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> pageDesignKeys = new ArrayList<Long>();
 	@JsonIgnore
 	public Wrap<List<Long>> pageDesignKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("pageDesignKeys").o(pageDesignKeys);
 
+	/**	<br/> The entity pageDesignKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageDesignKeys">Find the entity pageDesignKeys in Solr</a>
+	 * <br/>
+	 * @param pageDesignKeys is the entity already constructed. 
+	 **/
 	protected abstract void _pageDesignKeys(List<Long> l);
 
 	public List<Long> getPageDesignKeys() {
@@ -344,11 +366,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlLink //
 	//////////////
 
+	/**	 The entity htmlLink
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlLink;
 	@JsonIgnore
 	public Wrap<String> htmlLinkWrap = new Wrap<String>().p(this).c(String.class).var("htmlLink").o(htmlLink);
 
+	/**	<br/> The entity htmlLink
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlLink">Find the entity htmlLink in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlLink(Wrap<String> c);
 
 	public String getHtmlLink() {
@@ -482,11 +513,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlElement //
 	/////////////////
 
+	/**	 The entity htmlElement
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlElement;
 	@JsonIgnore
 	public Wrap<String> htmlElementWrap = new Wrap<String>().p(this).c(String.class).var("htmlElement").o(htmlElement);
 
+	/**	<br/> The entity htmlElement
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlElement">Find the entity htmlElement in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlElement(Wrap<String> c);
 
 	public String getHtmlElement() {
@@ -620,11 +660,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlId //
 	////////////
 
+	/**	 The entity htmlId
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlId;
 	@JsonIgnore
 	public Wrap<String> htmlIdWrap = new Wrap<String>().p(this).c(String.class).var("htmlId").o(htmlId);
 
+	/**	<br/> The entity htmlId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlId">Find the entity htmlId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlId(Wrap<String> c);
 
 	public String getHtmlId() {
@@ -758,11 +807,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlClasses //
 	/////////////////
 
+	/**	 The entity htmlClasses
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlClasses;
 	@JsonIgnore
 	public Wrap<String> htmlClassesWrap = new Wrap<String>().p(this).c(String.class).var("htmlClasses").o(htmlClasses);
 
+	/**	<br/> The entity htmlClasses
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlClasses">Find the entity htmlClasses in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlClasses(Wrap<String> c);
 
 	public String getHtmlClasses() {
@@ -896,11 +954,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlStyle //
 	///////////////
 
+	/**	 The entity htmlStyle
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlStyle;
 	@JsonIgnore
 	public Wrap<String> htmlStyleWrap = new Wrap<String>().p(this).c(String.class).var("htmlStyle").o(htmlStyle);
 
+	/**	<br/> The entity htmlStyle
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlStyle">Find the entity htmlStyle in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlStyle(Wrap<String> c);
 
 	public String getHtmlStyle() {
@@ -1034,11 +1101,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlBefore //
 	////////////////
 
+	/**	 The entity htmlBefore
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlBefore;
 	@JsonIgnore
 	public Wrap<String> htmlBeforeWrap = new Wrap<String>().p(this).c(String.class).var("htmlBefore").o(htmlBefore);
 
+	/**	<br/> The entity htmlBefore
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlBefore">Find the entity htmlBefore in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlBefore(Wrap<String> c);
 
 	public String getHtmlBefore() {
@@ -1170,11 +1246,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlAfter //
 	///////////////
 
+	/**	 The entity htmlAfter
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlAfter;
 	@JsonIgnore
 	public Wrap<String> htmlAfterWrap = new Wrap<String>().p(this).c(String.class).var("htmlAfter").o(htmlAfter);
 
+	/**	<br/> The entity htmlAfter
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlAfter">Find the entity htmlAfter in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlAfter(Wrap<String> c);
 
 	public String getHtmlAfter() {
@@ -1306,11 +1391,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlText //
 	//////////////
 
+	/**	 The entity htmlText
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlText;
 	@JsonIgnore
 	public Wrap<String> htmlTextWrap = new Wrap<String>().p(this).c(String.class).var("htmlText").o(htmlText);
 
+	/**	<br/> The entity htmlText
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlText">Find the entity htmlText in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlText(Wrap<String> c);
 
 	public String getHtmlText() {
@@ -1442,11 +1536,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlVar //
 	/////////////
 
+	/**	 The entity htmlVar
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlVar;
 	@JsonIgnore
 	public Wrap<String> htmlVarWrap = new Wrap<String>().p(this).c(String.class).var("htmlVar").o(htmlVar);
 
+	/**	<br/> The entity htmlVar
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVar">Find the entity htmlVar in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlVar(Wrap<String> c);
 
 	public String getHtmlVar() {
@@ -1580,11 +1683,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlVarSpan //
 	/////////////////
 
+	/**	 The entity htmlVarSpan
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlVarSpan;
 	@JsonIgnore
 	public Wrap<String> htmlVarSpanWrap = new Wrap<String>().p(this).c(String.class).var("htmlVarSpan").o(htmlVarSpan);
 
+	/**	<br/> The entity htmlVarSpan
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVarSpan">Find the entity htmlVarSpan in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlVarSpan(Wrap<String> c);
 
 	public String getHtmlVarSpan() {
@@ -1718,11 +1830,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlVarForm //
 	/////////////////
 
+	/**	 The entity htmlVarForm
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlVarForm;
 	@JsonIgnore
 	public Wrap<String> htmlVarFormWrap = new Wrap<String>().p(this).c(String.class).var("htmlVarForm").o(htmlVarForm);
 
+	/**	<br/> The entity htmlVarForm
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVarForm">Find the entity htmlVarForm in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlVarForm(Wrap<String> c);
 
 	public String getHtmlVarForm() {
@@ -1856,11 +1977,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlVarInput //
 	//////////////////
 
+	/**	 The entity htmlVarInput
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlVarInput;
 	@JsonIgnore
 	public Wrap<String> htmlVarInputWrap = new Wrap<String>().p(this).c(String.class).var("htmlVarInput").o(htmlVarInput);
 
+	/**	<br/> The entity htmlVarInput
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVarInput">Find the entity htmlVarInput in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlVarInput(Wrap<String> c);
 
 	public String getHtmlVarInput() {
@@ -1994,11 +2124,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlVarForEach //
 	////////////////////
 
+	/**	 The entity htmlVarForEach
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlVarForEach;
 	@JsonIgnore
 	public Wrap<String> htmlVarForEachWrap = new Wrap<String>().p(this).c(String.class).var("htmlVarForEach").o(htmlVarForEach);
 
+	/**	<br/> The entity htmlVarForEach
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVarForEach">Find the entity htmlVarForEach in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlVarForEach(Wrap<String> c);
 
 	public String getHtmlVarForEach() {
@@ -2132,11 +2271,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlVarHtml //
 	/////////////////
 
+	/**	 The entity htmlVarHtml
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlVarHtml;
 	@JsonIgnore
 	public Wrap<String> htmlVarHtmlWrap = new Wrap<String>().p(this).c(String.class).var("htmlVarHtml").o(htmlVarHtml);
 
+	/**	<br/> The entity htmlVarHtml
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVarHtml">Find the entity htmlVarHtml in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlVarHtml(Wrap<String> c);
 
 	public String getHtmlVarHtml() {
@@ -2270,11 +2418,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlVarBase64Decode //
 	/////////////////////////
 
+	/**	 The entity htmlVarBase64Decode
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String htmlVarBase64Decode;
 	@JsonIgnore
 	public Wrap<String> htmlVarBase64DecodeWrap = new Wrap<String>().p(this).c(String.class).var("htmlVarBase64Decode").o(htmlVarBase64Decode);
 
+	/**	<br/> The entity htmlVarBase64Decode
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlVarBase64Decode">Find the entity htmlVarBase64Decode in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlVarBase64Decode(Wrap<String> c);
 
 	public String getHtmlVarBase64Decode() {
@@ -2408,11 +2565,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// htmlExclude //
 	/////////////////
 
+	/**	 The entity htmlExclude
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean htmlExclude;
 	@JsonIgnore
 	public Wrap<Boolean> htmlExcludeWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("htmlExclude").o(htmlExclude);
 
+	/**	<br/> The entity htmlExclude
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlExclude">Find the entity htmlExclude in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlExclude(Wrap<Boolean> c);
 
 	public Boolean getHtmlExclude() {
@@ -2548,11 +2714,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// pdfExclude //
 	////////////////
 
+	/**	 The entity pdfExclude
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean pdfExclude;
 	@JsonIgnore
 	public Wrap<Boolean> pdfExcludeWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("pdfExclude").o(pdfExclude);
 
+	/**	<br/> The entity pdfExclude
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pdfExclude">Find the entity pdfExclude in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pdfExclude(Wrap<Boolean> c);
 
 	public Boolean getPdfExclude() {
@@ -2688,11 +2863,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// loginLogout //
 	/////////////////
 
+	/**	 The entity loginLogout
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean loginLogout;
 	@JsonIgnore
 	public Wrap<Boolean> loginLogoutWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("loginLogout").o(loginLogout);
 
+	/**	<br/> The entity loginLogout
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:loginLogout">Find the entity loginLogout in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _loginLogout(Wrap<Boolean> c);
 
 	public Boolean getLoginLogout() {
@@ -2828,11 +3012,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// searchUri //
 	///////////////
 
+	/**	 The entity searchUri
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String searchUri;
 	@JsonIgnore
 	public Wrap<String> searchUriWrap = new Wrap<String>().p(this).c(String.class).var("searchUri").o(searchUri);
 
+	/**	<br/> The entity searchUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchUri">Find the entity searchUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _searchUri(Wrap<String> c);
 
 	public String getSearchUri() {
@@ -2966,11 +3159,20 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// mapTo //
 	///////////
 
+	/**	 The entity mapTo
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String mapTo;
 	@JsonIgnore
 	public Wrap<String> mapToWrap = new Wrap<String>().p(this).c(String.class).var("mapTo").o(mapTo);
 
+	/**	<br/> The entity mapTo
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:mapTo">Find the entity mapTo in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _mapTo(Wrap<String> c);
 
 	public String getMapTo() {
@@ -3104,12 +3306,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort1 //
 	///////////
 
+	/**	 The entity sort1
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort1;
 	@JsonIgnore
 	public Wrap<Double> sort1Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort1").o(sort1);
 
+	/**	<br/> The entity sort1
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort1">Find the entity sort1 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort1(Wrap<Double> c);
 
 	public Double getSort1() {
@@ -3250,12 +3461,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort2 //
 	///////////
 
+	/**	 The entity sort2
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort2;
 	@JsonIgnore
 	public Wrap<Double> sort2Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort2").o(sort2);
 
+	/**	<br/> The entity sort2
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort2">Find the entity sort2 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort2(Wrap<Double> c);
 
 	public Double getSort2() {
@@ -3396,12 +3616,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort3 //
 	///////////
 
+	/**	 The entity sort3
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort3;
 	@JsonIgnore
 	public Wrap<Double> sort3Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort3").o(sort3);
 
+	/**	<br/> The entity sort3
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort3">Find the entity sort3 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort3(Wrap<Double> c);
 
 	public Double getSort3() {
@@ -3542,12 +3771,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort4 //
 	///////////
 
+	/**	 The entity sort4
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort4;
 	@JsonIgnore
 	public Wrap<Double> sort4Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort4").o(sort4);
 
+	/**	<br/> The entity sort4
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort4">Find the entity sort4 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort4(Wrap<Double> c);
 
 	public Double getSort4() {
@@ -3688,12 +3926,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort5 //
 	///////////
 
+	/**	 The entity sort5
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort5;
 	@JsonIgnore
 	public Wrap<Double> sort5Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort5").o(sort5);
 
+	/**	<br/> The entity sort5
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort5">Find the entity sort5 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort5(Wrap<Double> c);
 
 	public Double getSort5() {
@@ -3834,12 +4081,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort6 //
 	///////////
 
+	/**	 The entity sort6
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort6;
 	@JsonIgnore
 	public Wrap<Double> sort6Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort6").o(sort6);
 
+	/**	<br/> The entity sort6
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort6">Find the entity sort6 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort6(Wrap<Double> c);
 
 	public Double getSort6() {
@@ -3980,12 +4236,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort7 //
 	///////////
 
+	/**	 The entity sort7
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort7;
 	@JsonIgnore
 	public Wrap<Double> sort7Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort7").o(sort7);
 
+	/**	<br/> The entity sort7
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort7">Find the entity sort7 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort7(Wrap<Double> c);
 
 	public Double getSort7() {
@@ -4126,12 +4391,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort8 //
 	///////////
 
+	/**	 The entity sort8
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort8;
 	@JsonIgnore
 	public Wrap<Double> sort8Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort8").o(sort8);
 
+	/**	<br/> The entity sort8
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort8">Find the entity sort8 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort8(Wrap<Double> c);
 
 	public Double getSort8() {
@@ -4272,12 +4546,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort9 //
 	///////////
 
+	/**	 The entity sort9
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort9;
 	@JsonIgnore
 	public Wrap<Double> sort9Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort9").o(sort9);
 
+	/**	<br/> The entity sort9
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort9">Find the entity sort9 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort9(Wrap<Double> c);
 
 	public Double getSort9() {
@@ -4418,12 +4701,21 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	// sort10 //
 	////////////
 
+	/**	 The entity sort10
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Double sort10;
 	@JsonIgnore
 	public Wrap<Double> sort10Wrap = new Wrap<Double>().p(this).c(Double.class).var("sort10").o(sort10);
 
+	/**	<br/> The entity sort10
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sort10">Find the entity sort10 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _sort10(Wrap<Double> c);
 
 	public Double getSort10() {

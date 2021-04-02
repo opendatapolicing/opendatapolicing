@@ -47,6 +47,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class PageLayoutGen<DEV> extends Object {
 	protected static final Logger LOG = LoggerFactory.getLogger(PageLayout.class);
 
@@ -54,11 +58,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// siteRequest_ //
 	//////////////////
 
+	/**	 The entity siteRequest_
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
 	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
 
+	/**	<br/> The entity siteRequest_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> c);
 
 	public SiteRequestEnUS getSiteRequest_() {
@@ -86,11 +99,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// siteBaseUrl //
 	/////////////////
 
+	/**	 The entity siteBaseUrl
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String siteBaseUrl;
 	@JsonIgnore
 	public Wrap<String> siteBaseUrlWrap = new Wrap<String>().p(this).c(String.class).var("siteBaseUrl").o(siteBaseUrl);
 
+	/**	<br/> The entity siteBaseUrl
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteBaseUrl">Find the entity siteBaseUrl in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _siteBaseUrl(Wrap<String> c);
 
 	public String getSiteBaseUrl() {
@@ -145,11 +167,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// staticBaseUrl //
 	///////////////////
 
+	/**	 The entity staticBaseUrl
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String staticBaseUrl;
 	@JsonIgnore
 	public Wrap<String> staticBaseUrlWrap = new Wrap<String>().p(this).c(String.class).var("staticBaseUrl").o(staticBaseUrl);
 
+	/**	<br/> The entity staticBaseUrl
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:staticBaseUrl">Find the entity staticBaseUrl in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _staticBaseUrl(Wrap<String> c);
 
 	public String getStaticBaseUrl() {
@@ -204,11 +235,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// map //
 	/////////
 
+	/**	 The entity map
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut Map<String, Object>(). 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Map<String, Object> map = new HashMap<String, Object>();
 	@JsonIgnore
 	public Wrap<Map<String, Object>> mapWrap = new Wrap<Map<String, Object>>().p(this).c(Map.class).var("map").o(map);
 
+	/**	<br/> The entity map
+	 *  It is constructed before being initialized with the constructor by default Map<String, Object>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:map">Find the entity map in Solr</a>
+	 * <br/>
+	 * @param map is the entity already constructed. 
+	 **/
 	protected abstract void _map(Map<String, Object> m);
 
 	public Map<String, Object> getMap() {
@@ -234,11 +274,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageSolrDocument //
 	//////////////////////
 
+	/**	 The entity pageSolrDocument
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument pageSolrDocument;
 	@JsonIgnore
 	public Wrap<SolrDocument> pageSolrDocumentWrap = new Wrap<SolrDocument>().p(this).c(SolrDocument.class).var("pageSolrDocument").o(pageSolrDocument);
 
+	/**	<br/> The entity pageSolrDocument
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageSolrDocument">Find the entity pageSolrDocument in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageSolrDocument(Wrap<SolrDocument> c);
 
 	public SolrDocument getPageSolrDocument() {
@@ -266,11 +315,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// w //
 	///////
 
+	/**	 The entity w
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter w;
 	@JsonIgnore
 	public Wrap<AllWriter> wWrap = new Wrap<AllWriter>().p(this).c(AllWriter.class).var("w").o(w);
 
+	/**	<br/> The entity w
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:w">Find the entity w in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _w(Wrap<AllWriter> c);
 
 	public AllWriter getW() {
@@ -300,11 +358,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// contextIconGroup //
 	//////////////////////
 
+	/**	 The entity contextIconGroup
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String contextIconGroup;
 	@JsonIgnore
 	public Wrap<String> contextIconGroupWrap = new Wrap<String>().p(this).c(String.class).var("contextIconGroup").o(contextIconGroup);
 
+	/**	<br/> The entity contextIconGroup
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextIconGroup">Find the entity contextIconGroup in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _contextIconGroup(Wrap<String> c);
 
 	public String getContextIconGroup() {
@@ -359,11 +426,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// contextIconName //
 	/////////////////////
 
+	/**	 The entity contextIconName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String contextIconName;
 	@JsonIgnore
 	public Wrap<String> contextIconNameWrap = new Wrap<String>().p(this).c(String.class).var("contextIconName").o(contextIconName);
 
+	/**	<br/> The entity contextIconName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextIconName">Find the entity contextIconName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _contextIconName(Wrap<String> c);
 
 	public String getContextIconName() {
@@ -418,11 +494,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// contextIconCssClasses //
 	///////////////////////////
 
+	/**	 The entity contextIconCssClasses
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String contextIconCssClasses;
 	@JsonIgnore
 	public Wrap<String> contextIconCssClassesWrap = new Wrap<String>().p(this).c(String.class).var("contextIconCssClasses").o(contextIconCssClasses);
 
+	/**	<br/> The entity contextIconCssClasses
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contextIconCssClasses">Find the entity contextIconCssClasses in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _contextIconCssClasses(Wrap<String> c);
 
 	public String getContextIconCssClasses() {
@@ -477,11 +562,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageVisibleToBots //
 	///////////////////////
 
+	/**	 The entity pageVisibleToBots
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean pageVisibleToBots;
 	@JsonIgnore
 	public Wrap<Boolean> pageVisibleToBotsWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("pageVisibleToBots").o(pageVisibleToBots);
 
+	/**	<br/> The entity pageVisibleToBots
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageVisibleToBots">Find the entity pageVisibleToBots in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageVisibleToBots(Wrap<Boolean> c);
 
 	public Boolean getPageVisibleToBots() {
@@ -541,11 +635,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageH1 //
 	////////////
 
+	/**	 The entity pageH1
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH1;
 	@JsonIgnore
 	public Wrap<String> pageH1Wrap = new Wrap<String>().p(this).c(String.class).var("pageH1").o(pageH1);
 
+	/**	<br/> The entity pageH1
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH1">Find the entity pageH1 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageH1(Wrap<String> c);
 
 	public String getPageH1() {
@@ -600,11 +703,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageH2 //
 	////////////
 
+	/**	 The entity pageH2
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH2;
 	@JsonIgnore
 	public Wrap<String> pageH2Wrap = new Wrap<String>().p(this).c(String.class).var("pageH2").o(pageH2);
 
+	/**	<br/> The entity pageH2
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH2">Find the entity pageH2 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageH2(Wrap<String> c);
 
 	public String getPageH2() {
@@ -659,11 +771,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageH3 //
 	////////////
 
+	/**	 The entity pageH3
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageH3;
 	@JsonIgnore
 	public Wrap<String> pageH3Wrap = new Wrap<String>().p(this).c(String.class).var("pageH3").o(pageH3);
 
+	/**	<br/> The entity pageH3
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH3">Find the entity pageH3 in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageH3(Wrap<String> c);
 
 	public String getPageH3() {
@@ -718,11 +839,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// _pageH1Short //
 	//////////////////
 
+	/**	 The entity _pageH1Short
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String _pageH1Short;
 	@JsonIgnore
 	public Wrap<String> _pageH1ShortWrap = new Wrap<String>().p(this).c(String.class).var("_pageH1Short").o(_pageH1Short);
 
+	/**	<br/> The entity _pageH1Short
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:_pageH1Short">Find the entity _pageH1Short in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void __pageH1Short(Wrap<String> c);
 
 	public String get_pageH1Short() {
@@ -777,11 +907,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// _pageH2Short //
 	//////////////////
 
+	/**	 The entity _pageH2Short
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String _pageH2Short;
 	@JsonIgnore
 	public Wrap<String> _pageH2ShortWrap = new Wrap<String>().p(this).c(String.class).var("_pageH2Short").o(_pageH2Short);
 
+	/**	<br/> The entity _pageH2Short
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:_pageH2Short">Find the entity _pageH2Short in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void __pageH2Short(Wrap<String> c);
 
 	public String get_pageH2Short() {
@@ -836,11 +975,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// _pageH3Short //
 	//////////////////
 
+	/**	 The entity _pageH3Short
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String _pageH3Short;
 	@JsonIgnore
 	public Wrap<String> _pageH3ShortWrap = new Wrap<String>().p(this).c(String.class).var("_pageH3Short").o(_pageH3Short);
 
+	/**	<br/> The entity _pageH3Short
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:_pageH3Short">Find the entity _pageH3Short in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void __pageH3Short(Wrap<String> c);
 
 	public String get_pageH3Short() {
@@ -895,11 +1043,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageTitle //
 	///////////////
 
+	/**	 The entity pageTitle
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageTitle;
 	@JsonIgnore
 	public Wrap<String> pageTitleWrap = new Wrap<String>().p(this).c(String.class).var("pageTitle").o(pageTitle);
 
+	/**	<br/> The entity pageTitle
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageTitle">Find the entity pageTitle in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageTitle(Wrap<String> c);
 
 	public String getPageTitle() {
@@ -954,11 +1111,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageUri //
 	/////////////
 
+	/**	 The entity pageUri
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUri;
 	@JsonIgnore
 	public Wrap<String> pageUriWrap = new Wrap<String>().p(this).c(String.class).var("pageUri").o(pageUri);
 
+	/**	<br/> The entity pageUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUri">Find the entity pageUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageUri(Wrap<String> c);
 
 	public String getPageUri() {
@@ -1013,11 +1179,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageUris //
 	//////////////
 
+	/**	 The entity pageUris
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> pageUris = new ArrayList<String>();
 	@JsonIgnore
 	public Wrap<List<String>> pageUrisWrap = new Wrap<List<String>>().p(this).c(List.class).var("pageUris").o(pageUris);
 
+	/**	<br/> The entity pageUris
+	 *  It is constructed before being initialized with the constructor by default List<String>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUris">Find the entity pageUris in Solr</a>
+	 * <br/>
+	 * @param pageUris is the entity already constructed. 
+	 **/
 	protected abstract void _pageUris(List<String> l);
 
 	public List<String> getPageUris() {
@@ -1029,7 +1204,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		this.pageUrisWrap.alreadyInitialized = true;
 	}
 	public static String staticSetPageUris(SiteRequestEnUS siteRequest_, String o) {
-		return null;
+		return o;
 	}
 	public PageLayout addPageUris(String...objets) {
 		for(String o : objets) {
@@ -1093,11 +1268,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageUrl //
 	/////////////
 
+	/**	 The entity pageUrl
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUrl;
 	@JsonIgnore
 	public Wrap<String> pageUrlWrap = new Wrap<String>().p(this).c(String.class).var("pageUrl").o(pageUrl);
 
+	/**	<br/> The entity pageUrl
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrl">Find the entity pageUrl in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageUrl(Wrap<String> c);
 
 	public String getPageUrl() {
@@ -1152,11 +1336,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageImageUri //
 	//////////////////
 
+	/**	 The entity pageImageUri
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageImageUri;
 	@JsonIgnore
 	public Wrap<String> pageImageUriWrap = new Wrap<String>().p(this).c(String.class).var("pageImageUri").o(pageImageUri);
 
+	/**	<br/> The entity pageImageUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageImageUri">Find the entity pageImageUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageImageUri(Wrap<String> c);
 
 	public String getPageImageUri() {
@@ -1211,11 +1404,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageImageUrl //
 	//////////////////
 
+	/**	 The entity pageImageUrl
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageImageUrl;
 	@JsonIgnore
 	public Wrap<String> pageImageUrlWrap = new Wrap<String>().p(this).c(String.class).var("pageImageUrl").o(pageImageUrl);
 
+	/**	<br/> The entity pageImageUrl
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageImageUrl">Find the entity pageImageUrl in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageImageUrl(Wrap<String> c);
 
 	public String getPageImageUrl() {
@@ -1270,11 +1472,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageVideoId //
 	/////////////////
 
+	/**	 The entity pageVideoId
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageVideoId;
 	@JsonIgnore
 	public Wrap<String> pageVideoIdWrap = new Wrap<String>().p(this).c(String.class).var("pageVideoId").o(pageVideoId);
 
+	/**	<br/> The entity pageVideoId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageVideoId">Find the entity pageVideoId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageVideoId(Wrap<String> c);
 
 	public String getPageVideoId() {
@@ -1329,11 +1540,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageVideoUrl //
 	//////////////////
 
+	/**	 The entity pageVideoUrl
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageVideoUrl;
 	@JsonIgnore
 	public Wrap<String> pageVideoUrlWrap = new Wrap<String>().p(this).c(String.class).var("pageVideoUrl").o(pageVideoUrl);
 
+	/**	<br/> The entity pageVideoUrl
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageVideoUrl">Find the entity pageVideoUrl in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageVideoUrl(Wrap<String> c);
 
 	public String getPageVideoUrl() {
@@ -1388,11 +1608,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageVideoUrlEmbed //
 	///////////////////////
 
+	/**	 The entity pageVideoUrlEmbed
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageVideoUrlEmbed;
 	@JsonIgnore
 	public Wrap<String> pageVideoUrlEmbedWrap = new Wrap<String>().p(this).c(String.class).var("pageVideoUrlEmbed").o(pageVideoUrlEmbed);
 
+	/**	<br/> The entity pageVideoUrlEmbed
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageVideoUrlEmbed">Find the entity pageVideoUrlEmbed in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageVideoUrlEmbed(Wrap<String> c);
 
 	public String getPageVideoUrlEmbed() {
@@ -1447,12 +1676,21 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageImageWidth //
 	////////////////////
 
+	/**	 The entity pageImageWidth
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer pageImageWidth;
 	@JsonIgnore
 	public Wrap<Integer> pageImageWidthWrap = new Wrap<Integer>().p(this).c(Integer.class).var("pageImageWidth").o(pageImageWidth);
 
+	/**	<br/> The entity pageImageWidth
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageImageWidth">Find the entity pageImageWidth in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageImageWidth(Wrap<Integer> c);
 
 	public Integer getPageImageWidth() {
@@ -1514,12 +1752,21 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageImageHeight //
 	/////////////////////
 
+	/**	 The entity pageImageHeight
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer pageImageHeight;
 	@JsonIgnore
 	public Wrap<Integer> pageImageHeightWrap = new Wrap<Integer>().p(this).c(Integer.class).var("pageImageHeight").o(pageImageHeight);
 
+	/**	<br/> The entity pageImageHeight
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageImageHeight">Find the entity pageImageHeight in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageImageHeight(Wrap<Integer> c);
 
 	public Integer getPageImageHeight() {
@@ -1581,11 +1828,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageImageContentType //
 	//////////////////////////
 
+	/**	 The entity pageImageContentType
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageImageContentType;
 	@JsonIgnore
 	public Wrap<String> pageImageContentTypeWrap = new Wrap<String>().p(this).c(String.class).var("pageImageContentType").o(pageImageContentType);
 
+	/**	<br/> The entity pageImageContentType
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageImageContentType">Find the entity pageImageContentType in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageImageContentType(Wrap<String> c);
 
 	public String getPageImageContentType() {
@@ -1640,11 +1896,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageContentType //
 	/////////////////////
 
+	/**	 The entity pageContentType
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageContentType;
 	@JsonIgnore
 	public Wrap<String> pageContentTypeWrap = new Wrap<String>().p(this).c(String.class).var("pageContentType").o(pageContentType);
 
+	/**	<br/> The entity pageContentType
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageContentType">Find the entity pageContentType in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageContentType(Wrap<String> c);
 
 	public String getPageContentType() {
@@ -1699,12 +1964,21 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageCreated //
 	/////////////////
 
+	/**	 The entity pageCreated
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected LocalDateTime pageCreated;
 	@JsonIgnore
 	public Wrap<LocalDateTime> pageCreatedWrap = new Wrap<LocalDateTime>().p(this).c(LocalDateTime.class).var("pageCreated").o(pageCreated);
 
+	/**	<br/> The entity pageCreated
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageCreated">Find the entity pageCreated in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageCreated(Wrap<LocalDateTime> c);
 
 	public LocalDateTime getPageCreated() {
@@ -1719,6 +1993,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		this.pageCreated = o == null ? null : LocalDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.pageCreatedWrap.alreadyInitialized = true;
 	}
+	/** Example: 2011-12-03T10:15:30+01:00 **/
 	public void setPageCreated(String o) {
 		this.pageCreated = PageLayout.staticSetPageCreated(siteRequest_, o);
 		this.pageCreatedWrap.alreadyInitialized = true;
@@ -1772,12 +2047,21 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageModified //
 	//////////////////
 
+	/**	 The entity pageModified
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected LocalDateTime pageModified;
 	@JsonIgnore
 	public Wrap<LocalDateTime> pageModifiedWrap = new Wrap<LocalDateTime>().p(this).c(LocalDateTime.class).var("pageModified").o(pageModified);
 
+	/**	<br/> The entity pageModified
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageModified">Find the entity pageModified in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageModified(Wrap<LocalDateTime> c);
 
 	public LocalDateTime getPageModified() {
@@ -1792,6 +2076,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		this.pageModified = o == null ? null : LocalDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.pageModifiedWrap.alreadyInitialized = true;
 	}
+	/** Example: 2011-12-03T10:15:30+01:00 **/
 	public void setPageModified(String o) {
 		this.pageModified = PageLayout.staticSetPageModified(siteRequest_, o);
 		this.pageModifiedWrap.alreadyInitialized = true;
@@ -1845,11 +2130,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageKeywords //
 	//////////////////
 
+	/**	 The entity pageKeywords
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageKeywords;
 	@JsonIgnore
 	public Wrap<String> pageKeywordsWrap = new Wrap<String>().p(this).c(String.class).var("pageKeywords").o(pageKeywords);
 
+	/**	<br/> The entity pageKeywords
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageKeywords">Find the entity pageKeywords in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageKeywords(Wrap<String> c);
 
 	public String getPageKeywords() {
@@ -1904,11 +2198,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageDescription //
 	/////////////////////
 
+	/**	 The entity pageDescription
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageDescription;
 	@JsonIgnore
 	public Wrap<String> pageDescriptionWrap = new Wrap<String>().p(this).c(String.class).var("pageDescription").o(pageDescription);
 
+	/**	<br/> The entity pageDescription
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageDescription">Find the entity pageDescription in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageDescription(Wrap<String> c);
 
 	public String getPageDescription() {
@@ -1963,11 +2266,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageHomeUri //
 	/////////////////
 
+	/**	 The entity pageHomeUri
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageHomeUri;
 	@JsonIgnore
 	public Wrap<String> pageHomeUriWrap = new Wrap<String>().p(this).c(String.class).var("pageHomeUri").o(pageHomeUri);
 
+	/**	<br/> The entity pageHomeUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageHomeUri">Find the entity pageHomeUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageHomeUri(Wrap<String> c);
 
 	public String getPageHomeUri() {
@@ -2022,11 +2334,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageSchoolUri //
 	///////////////////
 
+	/**	 The entity pageSchoolUri
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageSchoolUri;
 	@JsonIgnore
 	public Wrap<String> pageSchoolUriWrap = new Wrap<String>().p(this).c(String.class).var("pageSchoolUri").o(pageSchoolUri);
 
+	/**	<br/> The entity pageSchoolUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageSchoolUri">Find the entity pageSchoolUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageSchoolUri(Wrap<String> c);
 
 	public String getPageSchoolUri() {
@@ -2081,11 +2402,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageUserUri //
 	/////////////////
 
+	/**	 The entity pageUserUri
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageUserUri;
 	@JsonIgnore
 	public Wrap<String> pageUserUriWrap = new Wrap<String>().p(this).c(String.class).var("pageUserUri").o(pageUserUri);
 
+	/**	<br/> The entity pageUserUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUserUri">Find the entity pageUserUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageUserUri(Wrap<String> c);
 
 	public String getPageUserUri() {
@@ -2140,11 +2470,20 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	// pageLogoutUri //
 	///////////////////
 
+	/**	 The entity pageLogoutUri
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageLogoutUri;
 	@JsonIgnore
 	public Wrap<String> pageLogoutUriWrap = new Wrap<String>().p(this).c(String.class).var("pageLogoutUri").o(pageLogoutUri);
 
+	/**	<br/> The entity pageLogoutUri
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.page.PageLayout&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageLogoutUri">Find the entity pageLogoutUri in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageLogoutUri(Wrap<String> c);
 
 	public String getPageLogoutUri() {

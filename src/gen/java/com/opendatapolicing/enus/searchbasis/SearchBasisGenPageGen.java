@@ -34,6 +34,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasisGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class SearchBasisGenPageGen<DEV> extends PageLayout {
 	protected static final Logger LOG = LoggerFactory.getLogger(SearchBasisGenPage.class);
 
@@ -41,11 +45,20 @@ public abstract class SearchBasisGenPageGen<DEV> extends PageLayout {
 	// listSearchBasis //
 	/////////////////////
 
+	/**	 The entity listSearchBasis
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<SearchBasis> listSearchBasis;
 	@JsonIgnore
 	public Wrap<SearchList<SearchBasis>> listSearchBasisWrap = new Wrap<SearchList<SearchBasis>>().p(this).c(SearchList.class).var("listSearchBasis").o(listSearchBasis);
 
+	/**	<br/> The entity listSearchBasis
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasisGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSearchBasis">Find the entity listSearchBasis in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _listSearchBasis(Wrap<SearchList<SearchBasis>> c);
 
 	public SearchList<SearchBasis> getListSearchBasis() {
@@ -75,11 +88,20 @@ public abstract class SearchBasisGenPageGen<DEV> extends PageLayout {
 	// searchBasis_ //
 	//////////////////
 
+	/**	 The entity searchBasis_
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchBasis searchBasis_;
 	@JsonIgnore
 	public Wrap<SearchBasis> searchBasis_Wrap = new Wrap<SearchBasis>().p(this).c(SearchBasis.class).var("searchBasis_").o(searchBasis_);
 
+	/**	<br/> The entity searchBasis_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasisGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasis_">Find the entity searchBasis_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _searchBasis_(Wrap<SearchBasis> c);
 
 	public SearchBasis getSearchBasis_() {

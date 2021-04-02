@@ -48,6 +48,10 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class PageDesignGen<DEV> extends Cluster {
 	protected static final Logger LOG = LoggerFactory.getLogger(PageDesign.class);
 
@@ -81,12 +85,21 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	// pageDesignKey //
 	///////////////////
 
+	/**	 The entity pageDesignKey
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long pageDesignKey;
 	@JsonIgnore
 	public Wrap<Long> pageDesignKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("pageDesignKey").o(pageDesignKey);
 
+	/**	<br/> The entity pageDesignKey
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageDesignKey">Find the entity pageDesignKey in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageDesignKey(Wrap<Long> c);
 
 	public Long getPageDesignKey() {
@@ -156,12 +169,21 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	// childDesignKeys //
 	/////////////////////
 
+	/**	 The entity childDesignKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> childDesignKeys = new ArrayList<Long>();
 	@JsonIgnore
 	public Wrap<List<Long>> childDesignKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("childDesignKeys").o(childDesignKeys);
 
+	/**	<br/> The entity childDesignKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:childDesignKeys">Find the entity childDesignKeys in Solr</a>
+	 * <br/>
+	 * @param childDesignKeys is the entity already constructed. 
+	 **/
 	protected abstract void _childDesignKeys(List<Long> c);
 
 	public List<Long> getChildDesignKeys() {
@@ -260,12 +282,21 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	// parentDesignKeys //
 	//////////////////////
 
+	/**	 The entity parentDesignKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> parentDesignKeys = new ArrayList<Long>();
 	@JsonIgnore
 	public Wrap<List<Long>> parentDesignKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("parentDesignKeys").o(parentDesignKeys);
 
+	/**	<br/> The entity parentDesignKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:parentDesignKeys">Find the entity parentDesignKeys in Solr</a>
+	 * <br/>
+	 * @param parentDesignKeys is the entity already constructed. 
+	 **/
 	protected abstract void _parentDesignKeys(List<Long> c);
 
 	public List<Long> getParentDesignKeys() {
@@ -448,12 +479,21 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	// htmlPartKeys //
 	//////////////////
 
+	/**	 The entity htmlPartKeys
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
+	 */
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> htmlPartKeys = new ArrayList<Long>();
 	@JsonIgnore
 	public Wrap<List<Long>> htmlPartKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("htmlPartKeys").o(htmlPartKeys);
 
+	/**	<br/> The entity htmlPartKeys
+	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlPartKeys">Find the entity htmlPartKeys in Solr</a>
+	 * <br/>
+	 * @param htmlPartKeys is the entity already constructed. 
+	 **/
 	protected abstract void _htmlPartKeys(List<Long> o);
 
 	public List<Long> getHtmlPartKeys() {
@@ -636,11 +676,20 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	// pageDesignCompleteName //
 	////////////////////////////
 
+	/**	 The entity pageDesignCompleteName
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageDesignCompleteName;
 	@JsonIgnore
 	public Wrap<String> pageDesignCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("pageDesignCompleteName").o(pageDesignCompleteName);
 
+	/**	<br/> The entity pageDesignCompleteName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageDesignCompleteName">Find the entity pageDesignCompleteName in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageDesignCompleteName(Wrap<String> c);
 
 	public String getPageDesignCompleteName() {
@@ -769,11 +818,20 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	// designHidden //
 	//////////////////
 
+	/**	 The entity designHidden
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean designHidden;
 	@JsonIgnore
 	public Wrap<Boolean> designHiddenWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("designHidden").o(designHidden);
 
+	/**	<br/> The entity designHidden
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:designHidden">Find the entity designHidden in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _designHidden(Wrap<Boolean> c);
 
 	public Boolean getDesignHidden() {
@@ -904,11 +962,20 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	// pageContentType //
 	/////////////////////
 
+	/**	 The entity pageContentType
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageContentType;
 	@JsonIgnore
 	public Wrap<String> pageContentTypeWrap = new Wrap<String>().p(this).c(String.class).var("pageContentType").o(pageContentType);
 
+	/**	<br/> The entity pageContentType
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageContentType">Find the entity pageContentType in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageContentType(Wrap<String> c);
 
 	public String getPageContentType() {

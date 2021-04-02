@@ -34,6 +34,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteStateGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class SiteStateGenPageGen<DEV> extends PageLayout {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteStateGenPage.class);
 
@@ -41,11 +45,20 @@ public abstract class SiteStateGenPageGen<DEV> extends PageLayout {
 	// listSiteState //
 	///////////////////
 
+	/**	 The entity listSiteState
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<SiteState> listSiteState;
 	@JsonIgnore
 	public Wrap<SearchList<SiteState>> listSiteStateWrap = new Wrap<SearchList<SiteState>>().p(this).c(SearchList.class).var("listSiteState").o(listSiteState);
 
+	/**	<br/> The entity listSiteState
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteStateGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listSiteState">Find the entity listSiteState in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _listSiteState(Wrap<SearchList<SiteState>> c);
 
 	public SearchList<SiteState> getListSiteState() {
@@ -75,11 +88,20 @@ public abstract class SiteStateGenPageGen<DEV> extends PageLayout {
 	// siteState_ //
 	////////////////
 
+	/**	 The entity siteState_
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SiteState siteState_;
 	@JsonIgnore
 	public Wrap<SiteState> siteState_Wrap = new Wrap<SiteState>().p(this).c(SiteState.class).var("siteState_").o(siteState_);
 
+	/**	<br/> The entity siteState_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteStateGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteState_">Find the entity siteState_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _siteState_(Wrap<SiteState> c);
 
 	public SiteState getSiteState_() {

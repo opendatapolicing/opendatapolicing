@@ -34,6 +34,10 @@ import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.trafficstop.TrafficStop;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStopGenPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class TrafficStopGenPageGen<DEV> extends PageLayout {
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficStopGenPage.class);
 
@@ -41,11 +45,20 @@ public abstract class TrafficStopGenPageGen<DEV> extends PageLayout {
 	// listTrafficStop //
 	/////////////////////
 
+	/**	 The entity listTrafficStop
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<TrafficStop> listTrafficStop;
 	@JsonIgnore
 	public Wrap<SearchList<TrafficStop>> listTrafficStopWrap = new Wrap<SearchList<TrafficStop>>().p(this).c(SearchList.class).var("listTrafficStop").o(listTrafficStop);
 
+	/**	<br/> The entity listTrafficStop
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStopGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:listTrafficStop">Find the entity listTrafficStop in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _listTrafficStop(Wrap<SearchList<TrafficStop>> c);
 
 	public SearchList<TrafficStop> getListTrafficStop() {
@@ -75,11 +88,20 @@ public abstract class TrafficStopGenPageGen<DEV> extends PageLayout {
 	// trafficStop_ //
 	//////////////////
 
+	/**	 The entity trafficStop_
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficStop trafficStop_;
 	@JsonIgnore
 	public Wrap<TrafficStop> trafficStop_Wrap = new Wrap<TrafficStop>().p(this).c(TrafficStop.class).var("trafficStop_").o(trafficStop_);
 
+	/**	<br/> The entity trafficStop_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStopGenPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficStop_">Find the entity trafficStop_ in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _trafficStop_(Wrap<TrafficStop> c);
 
 	public TrafficStop getTrafficStop_() {

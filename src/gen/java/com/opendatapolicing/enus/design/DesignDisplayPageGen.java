@@ -36,6 +36,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+/**	
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/>
+ **/
 public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	protected static final Logger LOG = LoggerFactory.getLogger(DesignDisplayPage.class);
 
@@ -43,11 +47,20 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	// pageDesignId //
 	//////////////////
 
+	/**	 The entity pageDesignId
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected String pageDesignId;
 	@JsonIgnore
 	public Wrap<String> pageDesignIdWrap = new Wrap<String>().p(this).c(String.class).var("pageDesignId").o(pageDesignId);
 
+	/**	<br/> The entity pageDesignId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageDesignId">Find the entity pageDesignId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _pageDesignId(Wrap<String> c);
 
 	public String getPageDesignId() {
@@ -102,11 +115,20 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	// htmlPartSearch //
 	////////////////////
 
+	/**	 The entity htmlPartSearch
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<HtmlPart>(). 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected SearchList<HtmlPart> htmlPartSearch = new SearchList<HtmlPart>();
 	@JsonIgnore
 	public Wrap<SearchList<HtmlPart>> htmlPartSearchWrap = new Wrap<SearchList<HtmlPart>>().p(this).c(SearchList.class).var("htmlPartSearch").o(htmlPartSearch);
 
+	/**	<br/> The entity htmlPartSearch
+	 *  It is constructed before being initialized with the constructor by default SearchList<HtmlPart>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlPartSearch">Find the entity htmlPartSearch in Solr</a>
+	 * <br/>
+	 * @param htmlPartSearch is the entity already constructed. 
+	 **/
 	protected abstract void _htmlPartSearch(SearchList<HtmlPart> l);
 
 	public SearchList<HtmlPart> getHtmlPartSearch() {
@@ -133,11 +155,20 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	// htmlPartList //
 	//////////////////
 
+	/**	 The entity htmlPartList
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected List<HtmlPart> htmlPartList;
 	@JsonIgnore
 	public Wrap<List<HtmlPart>> htmlPartListWrap = new Wrap<List<HtmlPart>>().p(this).c(List.class).var("htmlPartList").o(htmlPartList);
 
+	/**	<br/> The entity htmlPartList
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlPartList">Find the entity htmlPartList in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _htmlPartList(Wrap<List<HtmlPart>> c);
 
 	public List<HtmlPart> getHtmlPartList() {
@@ -176,11 +207,20 @@ public abstract class DesignDisplayPageGen<DEV> extends DesignDisplayGenPage {
 	// requestVars //
 	/////////////////
 
+	/**	 The entity requestVars
+	 *	 is defined as null before being initialized. 
+	 */
 	@JsonInclude(Include.NON_NULL)
 	protected Map<String, String> requestVars;
 	@JsonIgnore
 	public Wrap<Map<String, String>> requestVarsWrap = new Wrap<Map<String, String>>().p(this).c(Map.class).var("requestVars").o(requestVars);
 
+	/**	<br/> The entity requestVars
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.DesignDisplayPage&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:requestVars">Find the entity requestVars in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
 	protected abstract void _requestVars(Wrap<Map<String, String>> w);
 
 	public Map<String, String> getRequestVars() {
