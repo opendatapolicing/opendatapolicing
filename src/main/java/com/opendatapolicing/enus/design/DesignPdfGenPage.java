@@ -302,10 +302,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("Page");
 			o.htmDesignHidden("Page");
 		} g("div");
@@ -325,10 +321,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("POST");
@@ -374,10 +366,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("PUTCopy");
 			o.htmDesignHidden("PUTCopy");
 		} g("div");
@@ -395,10 +383,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 	public void htmlFormPATCHPageDesign(PageDesign o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("PATCH");
@@ -422,10 +406,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignCompleteName("Search");
 			o.htmDesignHidden("Search");
 		} g("div");
@@ -440,7 +420,6 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 		} g("div");
 	}
@@ -507,7 +486,7 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listPageDesign.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -907,7 +886,7 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -978,7 +957,7 @@ public class DesignPdfGenPage extends DesignPdfGenPageGen<PageLayout> {
 					.a("name", "suggestPageDesign")
 					.a("id", "suggestPageDesign", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestPageDesignObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,pageDesignCompleteName' } ], $('#suggestListPageDesign", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestPageDesign( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageDesignCompleteName' } ], $('#suggestListPageDesign", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/pdf?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listPageDesign != null)
 					p.a("value", query2);

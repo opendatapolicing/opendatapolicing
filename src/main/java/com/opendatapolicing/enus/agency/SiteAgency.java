@@ -201,14 +201,4 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 		else
 			c.o(agencyName + " in " + stateName + " (" + stateAbbreviation + ")");
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override() protected void  _objectTitle(Wrap<String> c) {
-		if(StringUtils.equals(agencyName, stateName))
-			c.o(stateName + " (" + stateAbbreviation + ")");
-		else
-			c.o(agencyName + " in " + stateName + " (" + stateAbbreviation + ")");
-	}
 }

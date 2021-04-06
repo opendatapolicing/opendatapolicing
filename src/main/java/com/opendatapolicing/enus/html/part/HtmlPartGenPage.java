@@ -70,8 +70,8 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(htmlPart_ != null && htmlPart_.getObjectTitle() != null)
-			c.o(htmlPart_.getObjectTitle());
+		if(htmlPart_ != null && htmlPart_.getHtmlPartTitle() != null)
+			c.o(htmlPart_.getHtmlPartTitle());
 		else if(htmlPart_ != null)
 			c.o("HTML parts");
 		else if(listHtmlPart == null || listHtmlPart.size() == 0)
@@ -143,10 +143,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignKeys("Page");
 			o.htmHtmlLink("Page");
 		} g("div");
@@ -210,10 +206,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignKeys("POST");
@@ -303,10 +295,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignKeys("PUTCopy");
 			o.htmHtmlLink("PUTCopy");
 		} g("div");
@@ -368,10 +356,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 	public void htmlFormPATCHHtmlPart(HtmlPart o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignKeys("PATCH");
@@ -439,10 +423,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPageDesignKeys("Search");
 			o.htmHtmlLink("Search");
 		} g("div");
@@ -492,8 +472,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
-			o.htmObjectTitle("Search");
 		} g("div");
 	}
 
@@ -559,7 +537,7 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listHtmlPart.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -689,9 +667,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			if(getColumnCreated()) {
 				e("th").f().sx("created").g("th");
 			}
-			if(getColumnObjectTitle()) {
-				e("th").f().sx("").g("th");
-			}
 			} g("tr");
 	}
 
@@ -718,16 +693,6 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 						} g("a");
 					} g("td");
 				}
-				if(getColumnObjectTitle()) {
-					{ e("td").f();
-						{ e("a").a("href", uri).f();
-							e("i").a("class", "far fa-puzzle-piece ").f().g("i");
-							{ e("span").f();
-								sx(o.strObjectTitle());
-							} g("span");
-						} g("a");
-					} g("td");
-				}
 			} g("tr");
 		}
 	}
@@ -745,18 +710,10 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 				e("td").f();
 				g("td");
 			}
-			if(getColumnObjectTitle()) {
-				e("td").f();
-				g("td");
-			}
 		} g("tr");
 	}
 
 	public Boolean getColumnCreated() {
-		return true;
-	}
-
-	public Boolean getColumnObjectTitle() {
 		return true;
 	}
 
@@ -959,7 +916,7 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -1030,7 +987,7 @@ public class HtmlPartGenPage extends HtmlPartGenPageGen<PageLayout> {
 					.a("name", "suggestHtmlPart")
 					.a("id", "suggestHtmlPart", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestHtmlPartObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListHtmlPart", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestHtmlPart( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,htmlPartTitle' } ], $('#suggestListHtmlPart", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/html-part?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listHtmlPart != null)
 					p.a("value", query2);

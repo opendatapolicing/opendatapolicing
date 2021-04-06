@@ -278,11 +278,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "search key")
-				.a("class", "valueObjectSuggest suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setSearchKey")
 				.a("id", classApiMethodMethod, "_searchKey")
 				.a("autocomplete", "off");
-				a("oninput", "suggestSearchBasisSearchKey($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchBasisKeys:" + pk + "'}", "], $('#listSearchBasisSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestSearchBasisSearchKey($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchBasisKeys:" + pk + "'}", "], $('#listSearchBasisSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -3817,158 +3817,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		} g("div");
 	}
 
-	//////////////////////////
-	// searchBasisShortName //
-	//////////////////////////
-
-	/**	 The entity searchBasisShortName
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String searchBasisShortName;
-	@JsonIgnore
-	public Wrap<String> searchBasisShortNameWrap = new Wrap<String>().p(this).c(String.class).var("searchBasisShortName").o(searchBasisShortName);
-
-	/**	<br/> The entity searchBasisShortName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisShortName">Find the entity searchBasisShortName in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _searchBasisShortName(Wrap<String> w);
-
-	public String getSearchBasisShortName() {
-		return searchBasisShortName;
-	}
-	public void setSearchBasisShortName(String o) {
-		this.searchBasisShortName = SearchBasis.staticSetSearchBasisShortName(siteRequest_, o);
-		this.searchBasisShortNameWrap.alreadyInitialized = true;
-	}
-	public static String staticSetSearchBasisShortName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected SearchBasis searchBasisShortNameInit() {
-		if(!searchBasisShortNameWrap.alreadyInitialized) {
-			_searchBasisShortName(searchBasisShortNameWrap);
-			if(searchBasisShortName == null)
-				setSearchBasisShortName(searchBasisShortNameWrap.o);
-		}
-		searchBasisShortNameWrap.alreadyInitialized(true);
-		return (SearchBasis)this;
-	}
-
-	public static String staticSolrSearchBasisShortName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrSearchBasisShortName(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqSearchBasisShortName(SiteRequestEnUS siteRequest_, String o) {
-		return SearchBasis.staticSolrStrSearchBasisShortName(siteRequest_, SearchBasis.staticSolrSearchBasisShortName(siteRequest_, SearchBasis.staticSetSearchBasisShortName(siteRequest_, o)));
-	}
-
-	public String solrSearchBasisShortName() {
-		return SearchBasis.staticSolrSearchBasisShortName(siteRequest_, searchBasisShortName);
-	}
-
-	public String strSearchBasisShortName() {
-		return searchBasisShortName == null ? "" : searchBasisShortName;
-	}
-
-	public String sqlSearchBasisShortName() {
-		return searchBasisShortName;
-	}
-
-	public String jsonSearchBasisShortName() {
-		return searchBasisShortName == null ? "" : searchBasisShortName;
-	}
-
-	public String htmTooltipSearchBasisShortName() {
-		return null;
-	}
-
-	public String htmSearchBasisShortName() {
-		return searchBasisShortName == null ? "" : StringEscapeUtils.escapeHtml4(strSearchBasisShortName());
-	}
-
-	/////////////////////////////
-	// searchBasisCompleteName //
-	/////////////////////////////
-
-	/**	 The entity searchBasisCompleteName
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String searchBasisCompleteName;
-	@JsonIgnore
-	public Wrap<String> searchBasisCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("searchBasisCompleteName").o(searchBasisCompleteName);
-
-	/**	<br/> The entity searchBasisCompleteName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisCompleteName">Find the entity searchBasisCompleteName in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _searchBasisCompleteName(Wrap<String> c);
-
-	public String getSearchBasisCompleteName() {
-		return searchBasisCompleteName;
-	}
-	public void setSearchBasisCompleteName(String o) {
-		this.searchBasisCompleteName = SearchBasis.staticSetSearchBasisCompleteName(siteRequest_, o);
-		this.searchBasisCompleteNameWrap.alreadyInitialized = true;
-	}
-	public static String staticSetSearchBasisCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected SearchBasis searchBasisCompleteNameInit() {
-		if(!searchBasisCompleteNameWrap.alreadyInitialized) {
-			_searchBasisCompleteName(searchBasisCompleteNameWrap);
-			if(searchBasisCompleteName == null)
-				setSearchBasisCompleteName(searchBasisCompleteNameWrap.o);
-		}
-		searchBasisCompleteNameWrap.alreadyInitialized(true);
-		return (SearchBasis)this;
-	}
-
-	public static String staticSolrSearchBasisCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrSearchBasisCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqSearchBasisCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return SearchBasis.staticSolrStrSearchBasisCompleteName(siteRequest_, SearchBasis.staticSolrSearchBasisCompleteName(siteRequest_, SearchBasis.staticSetSearchBasisCompleteName(siteRequest_, o)));
-	}
-
-	public String solrSearchBasisCompleteName() {
-		return SearchBasis.staticSolrSearchBasisCompleteName(siteRequest_, searchBasisCompleteName);
-	}
-
-	public String strSearchBasisCompleteName() {
-		return searchBasisCompleteName == null ? "" : searchBasisCompleteName;
-	}
-
-	public String sqlSearchBasisCompleteName() {
-		return searchBasisCompleteName;
-	}
-
-	public String jsonSearchBasisCompleteName() {
-		return searchBasisCompleteName == null ? "" : searchBasisCompleteName;
-	}
-
-	public String htmTooltipSearchBasisCompleteName() {
-		return null;
-	}
-
-	public String htmSearchBasisCompleteName() {
-		return searchBasisCompleteName == null ? "" : StringEscapeUtils.escapeHtml4(strSearchBasisCompleteName());
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -4035,8 +3883,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		searchOtherPropertySiezedInit();
 		searchBasisIdInit();
 		searchBasisTitleInit();
-		searchBasisShortNameInit();
-		searchBasisCompleteNameInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -4171,10 +4017,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				return oSearchBasis.searchBasisId;
 			case "searchBasisTitle":
 				return oSearchBasis.searchBasisTitle;
-			case "searchBasisShortName":
-				return oSearchBasis.searchBasisShortName;
-			case "searchBasisCompleteName":
-				return oSearchBasis.searchBasisCompleteName;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -4306,10 +4148,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSetSearchBasisId(siteRequest_, o);
 		case "searchBasisTitle":
 			return SearchBasis.staticSetSearchBasisTitle(siteRequest_, o);
-		case "searchBasisShortName":
-			return SearchBasis.staticSetSearchBasisShortName(siteRequest_, o);
-		case "searchBasisCompleteName":
-			return SearchBasis.staticSetSearchBasisCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -4410,10 +4248,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSolrSearchBasisId(siteRequest_, (String)o);
 		case "searchBasisTitle":
 			return SearchBasis.staticSolrSearchBasisTitle(siteRequest_, (String)o);
-		case "searchBasisShortName":
-			return SearchBasis.staticSolrSearchBasisShortName(siteRequest_, (String)o);
-		case "searchBasisCompleteName":
-			return SearchBasis.staticSolrSearchBasisCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -4514,10 +4348,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSolrStrSearchBasisId(siteRequest_, (String)o);
 		case "searchBasisTitle":
 			return SearchBasis.staticSolrStrSearchBasisTitle(siteRequest_, (String)o);
-		case "searchBasisShortName":
-			return SearchBasis.staticSolrStrSearchBasisShortName(siteRequest_, (String)o);
-		case "searchBasisCompleteName":
-			return SearchBasis.staticSolrStrSearchBasisCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -4618,10 +4448,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSolrFqSearchBasisId(siteRequest_, o);
 		case "searchBasisTitle":
 			return SearchBasis.staticSolrFqSearchBasisTitle(siteRequest_, o);
-		case "searchBasisShortName":
-			return SearchBasis.staticSolrFqSearchBasisShortName(siteRequest_, o);
-		case "searchBasisCompleteName":
-			return SearchBasis.staticSolrFqSearchBasisCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -4972,18 +4798,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				if(searchBasisTitle != null)
 					oSearchBasis.setSearchBasisTitle(searchBasisTitle);
 			}
-
-			if(saves.contains("searchBasisShortName")) {
-				String searchBasisShortName = (String)solrDocument.get("searchBasisShortName_stored_string");
-				if(searchBasisShortName != null)
-					oSearchBasis.setSearchBasisShortName(searchBasisShortName);
-			}
-
-			if(saves.contains("searchBasisCompleteName")) {
-				String searchBasisCompleteName = (String)solrDocument.get("searchBasisCompleteName_stored_string");
-				if(searchBasisCompleteName != null)
-					oSearchBasis.setSearchBasisCompleteName(searchBasisCompleteName);
-			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -5194,14 +5008,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			document.addField("searchBasisTitle_indexed_string", searchBasisTitle);
 			document.addField("searchBasisTitle_stored_string", searchBasisTitle);
 		}
-		if(searchBasisShortName != null) {
-			document.addField("searchBasisShortName_indexed_string", searchBasisShortName);
-			document.addField("searchBasisShortName_stored_string", searchBasisShortName);
-		}
-		if(searchBasisCompleteName != null) {
-			document.addField("searchBasisCompleteName_indexed_string", searchBasisCompleteName);
-			document.addField("searchBasisCompleteName_stored_string", searchBasisCompleteName);
-		}
 		super.indexCluster(document);
 
 	}
@@ -5294,10 +5100,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				return "searchBasisId_indexed_string";
 			case "searchBasisTitle":
 				return "searchBasisTitle_indexed_string";
-			case "searchBasisShortName":
-				return "searchBasisShortName_indexed_string";
-			case "searchBasisCompleteName":
-				return "searchBasisCompleteName_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -5499,14 +5301,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		if(searchBasisTitle != null)
 			oSearchBasis.setSearchBasisTitle(searchBasisTitle);
 
-		String searchBasisShortName = (String)solrDocument.get("searchBasisShortName_stored_string");
-		if(searchBasisShortName != null)
-			oSearchBasis.setSearchBasisShortName(searchBasisShortName);
-
-		String searchBasisCompleteName = (String)solrDocument.get("searchBasisCompleteName_stored_string");
-		if(searchBasisCompleteName != null)
-			oSearchBasis.setSearchBasisCompleteName(searchBasisCompleteName);
-
 		super.storeCluster(solrDocument);
 	}
 
@@ -5605,10 +5399,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				apiRequest.addVars("searchBasisId");
 			if(!Objects.equals(searchBasisTitle, original.getSearchBasisTitle()))
 				apiRequest.addVars("searchBasisTitle");
-			if(!Objects.equals(searchBasisShortName, original.getSearchBasisShortName()))
-				apiRequest.addVars("searchBasisShortName");
-			if(!Objects.equals(searchBasisCompleteName, original.getSearchBasisCompleteName()))
-				apiRequest.addVars("searchBasisCompleteName");
 			super.apiRequestCluster();
 		}
 	}
@@ -5618,7 +5408,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), searchBasisKey, searchKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle, searchBasisShortName, searchBasisCompleteName);
+		return Objects.hash(super.hashCode(), searchBasisKey, searchKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle);
 	}
 
 	////////////
@@ -5674,9 +5464,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				&& Objects.equals( searchPersonalPropertySiezed, that.searchPersonalPropertySiezed )
 				&& Objects.equals( searchOtherPropertySiezed, that.searchOtherPropertySiezed )
 				&& Objects.equals( searchBasisId, that.searchBasisId )
-				&& Objects.equals( searchBasisTitle, that.searchBasisTitle )
-				&& Objects.equals( searchBasisShortName, that.searchBasisShortName )
-				&& Objects.equals( searchBasisCompleteName, that.searchBasisCompleteName );
+				&& Objects.equals( searchBasisTitle, that.searchBasisTitle );
 	}
 
 	//////////////
@@ -5730,8 +5518,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		sb.append( ", searchOtherPropertySiezed: " ).append(searchOtherPropertySiezed);
 		sb.append( ", searchBasisId: \"" ).append(searchBasisId).append( "\"" );
 		sb.append( ", searchBasisTitle: \"" ).append(searchBasisTitle).append( "\"" );
-		sb.append( ", searchBasisShortName: \"" ).append(searchBasisShortName).append( "\"" );
-		sb.append( ", searchBasisCompleteName: \"" ).append(searchBasisCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

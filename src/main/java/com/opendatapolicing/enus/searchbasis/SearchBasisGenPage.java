@@ -62,8 +62,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		if(searchBasis_ != null && searchBasis_.getSearchBasisCompleteName() != null)
-			c.o(searchBasis_.getSearchBasisCompleteName());
+		c.o("");
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -71,8 +70,8 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(searchBasis_ != null && searchBasis_.getSearchBasisCompleteName() != null)
-			c.o(searchBasis_.getSearchBasisCompleteName());
+		if(searchBasis_ != null && searchBasis_.getObjectTitle() != null)
+			c.o(searchBasis_.getObjectTitle());
 		else if(searchBasis_ != null)
 			c.o("search bases");
 		else if(listSearchBasis == null || listSearchBasis.size() == 0)
@@ -144,10 +143,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchBasisTitle("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -160,10 +155,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchBasisTitle("POST");
@@ -202,10 +193,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchBasisTitle("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -216,10 +203,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 	public void htmlFormPATCHSearchBasis(SearchBasis o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchBasisTitle("PATCH");
@@ -236,10 +219,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchBasisTitle("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -247,7 +226,6 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 			o.htmSearchBasisId("Search");
 		} g("div");
@@ -315,7 +293,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSearchBasis.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -715,7 +693,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -786,7 +764,7 @@ public class SearchBasisGenPage extends SearchBasisGenPageGen<PageLayout> {
 					.a("name", "suggestSearchBasis")
 					.a("id", "suggestSearchBasis", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestSearchBasisObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,searchBasisCompleteName' } ], $('#suggestListSearchBasis", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestSearchBasis( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ], $('#suggestListSearchBasis", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/search-basis?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listSearchBasis != null)
 					p.a("value", query2);

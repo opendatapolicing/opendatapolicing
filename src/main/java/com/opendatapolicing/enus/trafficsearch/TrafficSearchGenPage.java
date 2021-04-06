@@ -62,8 +62,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		if(trafficSearch_ != null && trafficSearch_.getTrafficSearchCompleteName() != null)
-			c.o(trafficSearch_.getTrafficSearchCompleteName());
+		c.o("");
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -71,8 +70,8 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficSearch_ != null && trafficSearch_.getTrafficSearchCompleteName() != null)
-			c.o(trafficSearch_.getTrafficSearchCompleteName());
+		if(trafficSearch_ != null && trafficSearch_.getObjectTitle() != null)
+			c.o(trafficSearch_.getObjectTitle());
 		else if(trafficSearch_ != null)
 			c.o("traffic searches");
 		else if(listTrafficSearch == null || listTrafficSearch.size() == 0)
@@ -162,10 +161,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("Page");
 			o.htmContrabandKeys("Page");
 			o.htmSearchBasisKeys("Page");
@@ -189,10 +184,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("POST");
@@ -242,10 +233,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("PUTCopy");
 			o.htmContrabandKeys("PUTCopy");
 			o.htmSearchBasisKeys("PUTCopy");
@@ -266,10 +253,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 	public void htmlFormPATCHTrafficSearch(TrafficSearch o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("PATCH");
@@ -296,10 +279,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmPersonKey("Search");
 			o.htmContrabandKeys("Search");
 			o.htmSearchBasisKeys("Search");
@@ -318,7 +297,6 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 			o.htmSearchTypeNum("Search");
 		} g("div");
@@ -386,7 +364,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficSearch.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -786,7 +764,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -857,7 +835,7 @@ public class TrafficSearchGenPage extends TrafficSearchGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficSearch")
 					.a("id", "suggestTrafficSearch", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficSearchObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ], $('#suggestListTrafficSearch", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestTrafficSearch( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ], $('#suggestListTrafficSearch", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/traffic-search?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficSearch != null)
 					p.a("value", query2);

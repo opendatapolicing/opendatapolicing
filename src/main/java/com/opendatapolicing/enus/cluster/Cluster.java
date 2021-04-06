@@ -98,41 +98,6 @@ public class Cluster extends ClusterGen<Object> {
 		c.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
 	}
 
-	/**   
-	 * {@inheritDoc}
-	 * Stored: true
-	 */ 
-	protected void  _modifiedIsoOffsetDateTime(Wrap<String> c) {
-		if(modified != null)
-			c.o(modified.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 2
-	 * HtmlCell: 1
-	 * DisplayName.enUS: archived
-	 */ 
-	protected void _archived(Wrap<Boolean> c) {
-		c.o(false);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 2
-	 * HtmlCell: 2
-	 * DisplayName.enUS: deleted
-	 */ 
-	protected void _deleted(Wrap<Boolean> c) {
-		c.o(false);
-	}
-
 	/**
 	 * {@inheritDoc}
 	 * Indexed: true
@@ -169,24 +134,6 @@ public class Cluster extends ClusterGen<Object> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 */ 
-	protected void _sessionId(Wrap<String> c) {
-	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Var.enUS: userKey
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * Modify: false
-	 */                 
-	protected void _userKey(Wrap<Long> c) {
-	}
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
 	 * Saves: true
 	 */ 
 	protected void _saves(List<String> l) {
@@ -200,6 +147,8 @@ public class Cluster extends ClusterGen<Object> {
 	 * HtmlColumn: 2
 	 */ 
 	protected void _objectTitle(Wrap<String> c) {
+		if(pk != null)
+			c.o(pk.toString());
 	}
 
 	/**
@@ -207,13 +156,9 @@ public class Cluster extends ClusterGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 * VarId: true
-	 * DisplayName.enUS: ID
 	 */ 
 	protected void _objectId(Wrap<String> c) {
-		if(objectTitle != null) {
-			c.o(toId(objectTitle));
-		}
-		else if(pk != null){
+		if(pk != null){
 			c.o(pk.toString());
 		}
 	}
@@ -229,104 +174,6 @@ public class Cluster extends ClusterGen<Object> {
 		}
 
 		return s;
-	}
-
-	protected void _objectNameVar(Wrap<String> c) {
-		if(objectId != null) {
-			Class<?> cl = getClass();
-
-			try {
-				String o = toId(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase((String)FieldUtils.getField(cl, cl.getSimpleName() + "_NameVar").get(this)), "-"));
-				c.o(o);
-			} catch (Exception e) {
-				ExceptionUtils.rethrow(e);
-			}
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Suggested: true
-	 */    
-	protected void _objectSuggest(Wrap<String> c) { 
-		StringBuilder b = new StringBuilder();
-		if(pk != null)
-			b.append(" ").append(pk);
-		if(objectNameVar != null)
-			b.append(" ").append(objectNameVar);
-		if(objectId != null)
-			b.append(" ").append(objectId);
-		if(objectTitle != null)
-			b.append(" ").append(objectTitle);
-		c.o(b.toString());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Text: true
-	 */ 
-	protected void _objectText(Wrap<String> c) { 
-		StringBuilder b = new StringBuilder();
-		if(pk != null)
-			b.append(" ").append(pk);
-		if(objectNameVar != null)
-			b.append(" ").append(objectNameVar);
-		if(objectId != null)
-			b.append(" ").append(objectId);
-		if(objectTitle != null)
-			b.append(" ").append(objectTitle);
-		c.o(b.toString());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarUrlId: true
-	 */ 
-	protected void _pageUrlId(Wrap<String> c) {
-		if(objectId != null) {
-			String o = siteRequest_.getSiteConfig_().getSiteBaseUrl() + "/" + objectNameVar + "/" + objectId;
-			c.o(o);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarUrlPk: true
-	 */ 
-	protected void _pageUrlPk(Wrap<String> c) {
-		if(pk != null) {
-			String o = siteRequest_.getSiteConfig_().getSiteBaseUrl() + "/" + objectNameVar + "/" + pk;
-			c.o(o);
-		}
-	}
-
-	/**	
-	 * {@inheritDoc}
-	 * Indexe: true
-	 * Stocke: true
-	 **/   
-	protected void _pageUrlApi(Wrap<String> c)  {
-		if(pk != null) {
-			String o = siteRequest_.getSiteConfig_().getSiteBaseUrl() + "/api/" + objectNameVar + "/" + pk;
-			c.o(o);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * H1: true
-	 */ 
-	protected void _pageH1(Wrap<String> c) {
-		try {
-			Class<?> cl = getClass();
-			c.o((String)FieldUtils.getField(cl, cl.getSimpleName() + "_NameSingular").get(this) + ": " + objectTitle);
-		} catch (Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
 	}
 
 	public Cluster e(String localName) {
@@ -485,27 +332,5 @@ public class Cluster extends ClusterGen<Object> {
 		w.s(">");
 		
 		return this;
-	}
-
-	@Override public void htmPk(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ s.e("div").a("class", "w3-padding ").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3- ").f();
-							s.e("label").a("class", "").f().sx("primary key").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row  ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-								{ s.e("div").a("class", "w3-rest ").f();
-									s.e("a").a("href", StringUtils.substringBeforeLast(pageUrlApi, "/"), "?fq=pk:", pk).a("class", "varCluster", pk, "Pk ").f().sx(strPk()).g("a");
-								} s.g("div");
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			}
-		} s.g("div");
 	}
 }

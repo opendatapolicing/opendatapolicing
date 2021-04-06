@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.lang.Boolean;
 import java.lang.String;
 import org.slf4j.Logger;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -695,370 +694,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		} s.g("div");
 	}
 
-	///////////////////////////////
-	// modifiedIsoOffsetDateTime //
-	///////////////////////////////
-
-	/**	 The entity modifiedIsoOffsetDateTime
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String modifiedIsoOffsetDateTime;
-	@JsonIgnore
-	public Wrap<String> modifiedIsoOffsetDateTimeWrap = new Wrap<String>().p(this).c(String.class).var("modifiedIsoOffsetDateTime").o(modifiedIsoOffsetDateTime);
-
-	/**	<br/> The entity modifiedIsoOffsetDateTime
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:modifiedIsoOffsetDateTime">Find the entity modifiedIsoOffsetDateTime in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _modifiedIsoOffsetDateTime(Wrap<String> c);
-
-	public String getModifiedIsoOffsetDateTime() {
-		return modifiedIsoOffsetDateTime;
-	}
-	public void setModifiedIsoOffsetDateTime(String o) {
-		this.modifiedIsoOffsetDateTime = Cluster.staticSetModifiedIsoOffsetDateTime(siteRequest_, o);
-		this.modifiedIsoOffsetDateTimeWrap.alreadyInitialized = true;
-	}
-	public static String staticSetModifiedIsoOffsetDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster modifiedIsoOffsetDateTimeInit() {
-		if(!modifiedIsoOffsetDateTimeWrap.alreadyInitialized) {
-			_modifiedIsoOffsetDateTime(modifiedIsoOffsetDateTimeWrap);
-			if(modifiedIsoOffsetDateTime == null)
-				setModifiedIsoOffsetDateTime(modifiedIsoOffsetDateTimeWrap.o);
-		}
-		modifiedIsoOffsetDateTimeWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrModifiedIsoOffsetDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrModifiedIsoOffsetDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqModifiedIsoOffsetDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrModifiedIsoOffsetDateTime(siteRequest_, Cluster.staticSolrModifiedIsoOffsetDateTime(siteRequest_, Cluster.staticSetModifiedIsoOffsetDateTime(siteRequest_, o)));
-	}
-
-	public String solrModifiedIsoOffsetDateTime() {
-		return Cluster.staticSolrModifiedIsoOffsetDateTime(siteRequest_, modifiedIsoOffsetDateTime);
-	}
-
-	public String strModifiedIsoOffsetDateTime() {
-		return modifiedIsoOffsetDateTime == null ? "" : modifiedIsoOffsetDateTime;
-	}
-
-	public String sqlModifiedIsoOffsetDateTime() {
-		return modifiedIsoOffsetDateTime;
-	}
-
-	public String jsonModifiedIsoOffsetDateTime() {
-		return modifiedIsoOffsetDateTime == null ? "" : modifiedIsoOffsetDateTime;
-	}
-
-	public String htmTooltipModifiedIsoOffsetDateTime() {
-		return null;
-	}
-
-	public String htmModifiedIsoOffsetDateTime() {
-		return modifiedIsoOffsetDateTime == null ? "" : StringEscapeUtils.escapeHtml4(strModifiedIsoOffsetDateTime());
-	}
-
-	//////////////
-	// archived //
-	//////////////
-
-	/**	 The entity archived
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected Boolean archived;
-	@JsonIgnore
-	public Wrap<Boolean> archivedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("archived").o(archived);
-
-	/**	<br/> The entity archived
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:archived">Find the entity archived in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _archived(Wrap<Boolean> c);
-
-	public Boolean getArchived() {
-		return archived;
-	}
-
-	public void setArchived(Boolean archived) {
-		this.archived = archived;
-		this.archivedWrap.alreadyInitialized = true;
-	}
-	public void setArchived(String o) {
-		this.archived = Cluster.staticSetArchived(siteRequest_, o);
-		this.archivedWrap.alreadyInitialized = true;
-	}
-	public static Boolean staticSetArchived(SiteRequestEnUS siteRequest_, String o) {
-		return Boolean.parseBoolean(o);
-	}
-	protected Cluster archivedInit() {
-		if(!archivedWrap.alreadyInitialized) {
-			_archived(archivedWrap);
-			if(archived == null)
-				setArchived(archivedWrap.o);
-		}
-		archivedWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static Boolean staticSolrArchived(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
-	}
-
-	public static String staticSolrStrArchived(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqArchived(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrArchived(siteRequest_, Cluster.staticSolrArchived(siteRequest_, Cluster.staticSetArchived(siteRequest_, o)));
-	}
-
-	public Boolean solrArchived() {
-		return Cluster.staticSolrArchived(siteRequest_, archived);
-	}
-
-	public String strArchived() {
-		return archived == null ? "" : archived.toString();
-	}
-
-	public Boolean sqlArchived() {
-		return archived;
-	}
-
-	public String jsonArchived() {
-		return archived == null ? "" : archived.toString();
-	}
-
-	public String htmTooltipArchived() {
-		return null;
-	}
-
-	public String htmArchived() {
-		return archived == null ? "" : StringEscapeUtils.escapeHtml4(strArchived());
-	}
-
-	public void inputArchived(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				s.e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_archived")
-					.a("value", "true");
-			} else {
-				s.e("select")
-					.a("id", classApiMethodMethod, "_archived");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				s.a("class", "setArchived classCluster inputCluster", pk, "Archived w3-input w3-border ");
-				s.a("name", "setArchived");
-			} else {
-				s.a("class", "valueArchived classCluster inputCluster", pk, "Archived w3-input w3-border ");
-				s.a("name", "archived");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				s.a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setArchived', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_archived')); }, function() { addError($('#", classApiMethodMethod, "_archived')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getArchived() != null && getArchived())
-					s.a("checked", "checked");
-				s.fg();
-			} else {
-				s.f();
-				s.e("option").a("value", "").a("selected", "selected").f().g("option");
-				s.e("option").a("value", "true").f().sx("true").g("option");
-				s.e("option").a("value", "false").f().sx("false").g("option");
-				s.g("select");
-			}
-
-		} else {
-				s.e("span").a("class", "varCluster", pk, "Archived ").f().sx(htmArchived()).g("span");
-		}
-	}
-
-	public void htmArchived(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ s.e("div").a("class", "w3-padding ").f();
-				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterArchived").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-gray ").f();
-							s.e("label").a("for", classApiMethodMethod, "_archived").a("class", "").f().sx("archived").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-
-								inputArchived(classApiMethodMethod);
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			} s.g("div");
-		} s.g("div");
-	}
-
-	/////////////
-	// deleted //
-	/////////////
-
-	/**	 The entity deleted
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected Boolean deleted;
-	@JsonIgnore
-	public Wrap<Boolean> deletedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("deleted").o(deleted);
-
-	/**	<br/> The entity deleted
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:deleted">Find the entity deleted in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _deleted(Wrap<Boolean> c);
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
-		this.deletedWrap.alreadyInitialized = true;
-	}
-	public void setDeleted(String o) {
-		this.deleted = Cluster.staticSetDeleted(siteRequest_, o);
-		this.deletedWrap.alreadyInitialized = true;
-	}
-	public static Boolean staticSetDeleted(SiteRequestEnUS siteRequest_, String o) {
-		return Boolean.parseBoolean(o);
-	}
-	protected Cluster deletedInit() {
-		if(!deletedWrap.alreadyInitialized) {
-			_deleted(deletedWrap);
-			if(deleted == null)
-				setDeleted(deletedWrap.o);
-		}
-		deletedWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static Boolean staticSolrDeleted(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
-	}
-
-	public static String staticSolrStrDeleted(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqDeleted(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrDeleted(siteRequest_, Cluster.staticSolrDeleted(siteRequest_, Cluster.staticSetDeleted(siteRequest_, o)));
-	}
-
-	public Boolean solrDeleted() {
-		return Cluster.staticSolrDeleted(siteRequest_, deleted);
-	}
-
-	public String strDeleted() {
-		return deleted == null ? "" : deleted.toString();
-	}
-
-	public Boolean sqlDeleted() {
-		return deleted;
-	}
-
-	public String jsonDeleted() {
-		return deleted == null ? "" : deleted.toString();
-	}
-
-	public String htmTooltipDeleted() {
-		return null;
-	}
-
-	public String htmDeleted() {
-		return deleted == null ? "" : StringEscapeUtils.escapeHtml4(strDeleted());
-	}
-
-	public void inputDeleted(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				s.e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_deleted")
-					.a("value", "true");
-			} else {
-				s.e("select")
-					.a("id", classApiMethodMethod, "_deleted");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				s.a("class", "setDeleted classCluster inputCluster", pk, "Deleted w3-input w3-border ");
-				s.a("name", "setDeleted");
-			} else {
-				s.a("class", "valueDeleted classCluster inputCluster", pk, "Deleted w3-input w3-border ");
-				s.a("name", "deleted");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				s.a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setDeleted', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_deleted')); }, function() { addError($('#", classApiMethodMethod, "_deleted')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getDeleted() != null && getDeleted())
-					s.a("checked", "checked");
-				s.fg();
-			} else {
-				s.f();
-				s.e("option").a("value", "").a("selected", "selected").f().g("option");
-				s.e("option").a("value", "true").f().sx("true").g("option");
-				s.e("option").a("value", "false").f().sx("false").g("option");
-				s.g("select");
-			}
-
-		} else {
-				s.e("span").a("class", "varCluster", pk, "Deleted ").f().sx(htmDeleted()).g("span");
-		}
-	}
-
-	public void htmDeleted(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ s.e("div").a("class", "w3-padding ").f();
-				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterDeleted").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-gray ").f();
-							s.e("label").a("for", classApiMethodMethod, "_deleted").a("class", "").f().sx("deleted").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-
-								inputDeleted(classApiMethodMethod);
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			} s.g("div");
-		} s.g("div");
-	}
-
 	////////////////////////
 	// classCanonicalName //
 	////////////////////////
@@ -1306,189 +941,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public String htmClassCanonicalNames() {
 		return classCanonicalNames == null ? "" : StringEscapeUtils.escapeHtml4(strClassCanonicalNames());
-	}
-
-	///////////////
-	// sessionId //
-	///////////////
-
-	/**	 The entity sessionId
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String sessionId;
-	@JsonIgnore
-	public Wrap<String> sessionIdWrap = new Wrap<String>().p(this).c(String.class).var("sessionId").o(sessionId);
-
-	/**	<br/> The entity sessionId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:sessionId">Find the entity sessionId in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _sessionId(Wrap<String> c);
-
-	public String getSessionId() {
-		return sessionId;
-	}
-	public void setSessionId(String o) {
-		this.sessionId = Cluster.staticSetSessionId(siteRequest_, o);
-		this.sessionIdWrap.alreadyInitialized = true;
-	}
-	public static String staticSetSessionId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster sessionIdInit() {
-		if(!sessionIdWrap.alreadyInitialized) {
-			_sessionId(sessionIdWrap);
-			if(sessionId == null)
-				setSessionId(sessionIdWrap.o);
-		}
-		sessionIdWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrSessionId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrSessionId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqSessionId(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrSessionId(siteRequest_, Cluster.staticSolrSessionId(siteRequest_, Cluster.staticSetSessionId(siteRequest_, o)));
-	}
-
-	public String solrSessionId() {
-		return Cluster.staticSolrSessionId(siteRequest_, sessionId);
-	}
-
-	public String strSessionId() {
-		return sessionId == null ? "" : sessionId;
-	}
-
-	public String sqlSessionId() {
-		return sessionId;
-	}
-
-	public String jsonSessionId() {
-		return sessionId == null ? "" : sessionId;
-	}
-
-	public String htmTooltipSessionId() {
-		return null;
-	}
-
-	public String htmSessionId() {
-		return sessionId == null ? "" : StringEscapeUtils.escapeHtml4(strSessionId());
-	}
-
-	/////////////
-	// userKey //
-	/////////////
-
-	/**	 The entity userKey
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonSerialize(using = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected Long userKey;
-	@JsonIgnore
-	public Wrap<Long> userKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("userKey").o(userKey);
-
-	/**	<br/> The entity userKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKey">Find the entity userKey in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _userKey(Wrap<Long> c);
-
-	public Long getUserKey() {
-		return userKey;
-	}
-
-	public void setUserKey(Long userKey) {
-		this.userKey = userKey;
-		this.userKeyWrap.alreadyInitialized = true;
-	}
-	public void setUserKey(String o) {
-		this.userKey = Cluster.staticSetUserKey(siteRequest_, o);
-		this.userKeyWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetUserKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected Cluster userKeyInit() {
-		if(!userKeyWrap.alreadyInitialized) {
-			_userKey(userKeyWrap);
-			if(userKey == null)
-				setUserKey(userKeyWrap.o);
-		}
-		userKeyWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static Long staticSolrUserKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrUserKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqUserKey(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrUserKey(siteRequest_, Cluster.staticSolrUserKey(siteRequest_, Cluster.staticSetUserKey(siteRequest_, o)));
-	}
-
-	public Long solrUserKey() {
-		return Cluster.staticSolrUserKey(siteRequest_, userKey);
-	}
-
-	public String strUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
-	public Long sqlUserKey() {
-		return userKey;
-	}
-
-	public String jsonUserKey() {
-		return userKey == null ? "" : userKey.toString();
-	}
-
-	public String htmTooltipUserKey() {
-		return null;
-	}
-
-	public String htmUserKey() {
-		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
-	}
-
-	public void inputUserKey(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		s.e("span").a("class", "varCluster", pk, "UserKey ").f().sx(htmUserKey()).g("span");
-	}
-
-	public void htmUserKey(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ s.e("div").a("class", "w3-padding ").f();
-				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterUserKey").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-
-								inputUserKey(classApiMethodMethod);
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			} s.g("div");
-		} s.g("div");
 	}
 
 	///////////
@@ -1763,538 +1215,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectId == null ? "" : StringEscapeUtils.escapeHtml4(strObjectId());
 	}
 
-	///////////////////
-	// objectNameVar //
-	///////////////////
-
-	/**	 The entity objectNameVar
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String objectNameVar;
-	@JsonIgnore
-	public Wrap<String> objectNameVarWrap = new Wrap<String>().p(this).c(String.class).var("objectNameVar").o(objectNameVar);
-
-	/**	<br/> The entity objectNameVar
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectNameVar">Find the entity objectNameVar in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _objectNameVar(Wrap<String> c);
-
-	public String getObjectNameVar() {
-		return objectNameVar;
-	}
-	public void setObjectNameVar(String o) {
-		this.objectNameVar = Cluster.staticSetObjectNameVar(siteRequest_, o);
-		this.objectNameVarWrap.alreadyInitialized = true;
-	}
-	public static String staticSetObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster objectNameVarInit() {
-		if(!objectNameVarWrap.alreadyInitialized) {
-			_objectNameVar(objectNameVarWrap);
-			if(objectNameVar == null)
-				setObjectNameVar(objectNameVarWrap.o);
-		}
-		objectNameVarWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqObjectNameVar(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrObjectNameVar(siteRequest_, Cluster.staticSolrObjectNameVar(siteRequest_, Cluster.staticSetObjectNameVar(siteRequest_, o)));
-	}
-
-	public String solrObjectNameVar() {
-		return Cluster.staticSolrObjectNameVar(siteRequest_, objectNameVar);
-	}
-
-	public String strObjectNameVar() {
-		return objectNameVar == null ? "" : objectNameVar;
-	}
-
-	public String sqlObjectNameVar() {
-		return objectNameVar;
-	}
-
-	public String jsonObjectNameVar() {
-		return objectNameVar == null ? "" : objectNameVar;
-	}
-
-	public String htmTooltipObjectNameVar() {
-		return null;
-	}
-
-	public String htmObjectNameVar() {
-		return objectNameVar == null ? "" : StringEscapeUtils.escapeHtml4(strObjectNameVar());
-	}
-
-	///////////////////
-	// objectSuggest //
-	///////////////////
-
-	/**	 The entity objectSuggest
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String objectSuggest;
-	@JsonIgnore
-	public Wrap<String> objectSuggestWrap = new Wrap<String>().p(this).c(String.class).var("objectSuggest").o(objectSuggest);
-
-	/**	<br/> The entity objectSuggest
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectSuggest">Find the entity objectSuggest in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _objectSuggest(Wrap<String> c);
-
-	public String getObjectSuggest() {
-		return objectSuggest;
-	}
-	public void setObjectSuggest(String o) {
-		this.objectSuggest = Cluster.staticSetObjectSuggest(siteRequest_, o);
-		this.objectSuggestWrap.alreadyInitialized = true;
-	}
-	public static String staticSetObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster objectSuggestInit() {
-		if(!objectSuggestWrap.alreadyInitialized) {
-			_objectSuggest(objectSuggestWrap);
-			if(objectSuggest == null)
-				setObjectSuggest(objectSuggestWrap.o);
-		}
-		objectSuggestWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqObjectSuggest(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrObjectSuggest(siteRequest_, Cluster.staticSolrObjectSuggest(siteRequest_, Cluster.staticSetObjectSuggest(siteRequest_, o)));
-	}
-
-	public String solrObjectSuggest() {
-		return Cluster.staticSolrObjectSuggest(siteRequest_, objectSuggest);
-	}
-
-	public String strObjectSuggest() {
-		return objectSuggest == null ? "" : objectSuggest;
-	}
-
-	public String sqlObjectSuggest() {
-		return objectSuggest;
-	}
-
-	public String jsonObjectSuggest() {
-		return objectSuggest == null ? "" : objectSuggest;
-	}
-
-	public String htmTooltipObjectSuggest() {
-		return null;
-	}
-
-	public String htmObjectSuggest() {
-		return objectSuggest == null ? "" : StringEscapeUtils.escapeHtml4(strObjectSuggest());
-	}
-
-	////////////////
-	// objectText //
-	////////////////
-
-	/**	 The entity objectText
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String objectText;
-	@JsonIgnore
-	public Wrap<String> objectTextWrap = new Wrap<String>().p(this).c(String.class).var("objectText").o(objectText);
-
-	/**	<br/> The entity objectText
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectText">Find the entity objectText in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _objectText(Wrap<String> c);
-
-	public String getObjectText() {
-		return objectText;
-	}
-	public void setObjectText(String o) {
-		this.objectText = Cluster.staticSetObjectText(siteRequest_, o);
-		this.objectTextWrap.alreadyInitialized = true;
-	}
-	public static String staticSetObjectText(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster objectTextInit() {
-		if(!objectTextWrap.alreadyInitialized) {
-			_objectText(objectTextWrap);
-			if(objectText == null)
-				setObjectText(objectTextWrap.o);
-		}
-		objectTextWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrObjectText(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrObjectText(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqObjectText(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrObjectText(siteRequest_, Cluster.staticSolrObjectText(siteRequest_, Cluster.staticSetObjectText(siteRequest_, o)));
-	}
-
-	public String solrObjectText() {
-		return Cluster.staticSolrObjectText(siteRequest_, objectText);
-	}
-
-	public String strObjectText() {
-		return objectText == null ? "" : objectText;
-	}
-
-	public String sqlObjectText() {
-		return objectText;
-	}
-
-	public String jsonObjectText() {
-		return objectText == null ? "" : objectText;
-	}
-
-	public String htmTooltipObjectText() {
-		return null;
-	}
-
-	public String htmObjectText() {
-		return objectText == null ? "" : StringEscapeUtils.escapeHtml4(strObjectText());
-	}
-
-	///////////////
-	// pageUrlId //
-	///////////////
-
-	/**	 The entity pageUrlId
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String pageUrlId;
-	@JsonIgnore
-	public Wrap<String> pageUrlIdWrap = new Wrap<String>().p(this).c(String.class).var("pageUrlId").o(pageUrlId);
-
-	/**	<br/> The entity pageUrlId
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlId">Find the entity pageUrlId in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _pageUrlId(Wrap<String> c);
-
-	public String getPageUrlId() {
-		return pageUrlId;
-	}
-	public void setPageUrlId(String o) {
-		this.pageUrlId = Cluster.staticSetPageUrlId(siteRequest_, o);
-		this.pageUrlIdWrap.alreadyInitialized = true;
-	}
-	public static String staticSetPageUrlId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster pageUrlIdInit() {
-		if(!pageUrlIdWrap.alreadyInitialized) {
-			_pageUrlId(pageUrlIdWrap);
-			if(pageUrlId == null)
-				setPageUrlId(pageUrlIdWrap.o);
-		}
-		pageUrlIdWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrPageUrlId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrPageUrlId(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqPageUrlId(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrPageUrlId(siteRequest_, Cluster.staticSolrPageUrlId(siteRequest_, Cluster.staticSetPageUrlId(siteRequest_, o)));
-	}
-
-	public String solrPageUrlId() {
-		return Cluster.staticSolrPageUrlId(siteRequest_, pageUrlId);
-	}
-
-	public String strPageUrlId() {
-		return pageUrlId == null ? "" : pageUrlId;
-	}
-
-	public String sqlPageUrlId() {
-		return pageUrlId;
-	}
-
-	public String jsonPageUrlId() {
-		return pageUrlId == null ? "" : pageUrlId;
-	}
-
-	public String htmTooltipPageUrlId() {
-		return null;
-	}
-
-	public String htmPageUrlId() {
-		return pageUrlId == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlId());
-	}
-
-	///////////////
-	// pageUrlPk //
-	///////////////
-
-	/**	 The entity pageUrlPk
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String pageUrlPk;
-	@JsonIgnore
-	public Wrap<String> pageUrlPkWrap = new Wrap<String>().p(this).c(String.class).var("pageUrlPk").o(pageUrlPk);
-
-	/**	<br/> The entity pageUrlPk
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlPk">Find the entity pageUrlPk in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _pageUrlPk(Wrap<String> c);
-
-	public String getPageUrlPk() {
-		return pageUrlPk;
-	}
-	public void setPageUrlPk(String o) {
-		this.pageUrlPk = Cluster.staticSetPageUrlPk(siteRequest_, o);
-		this.pageUrlPkWrap.alreadyInitialized = true;
-	}
-	public static String staticSetPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster pageUrlPkInit() {
-		if(!pageUrlPkWrap.alreadyInitialized) {
-			_pageUrlPk(pageUrlPkWrap);
-			if(pageUrlPk == null)
-				setPageUrlPk(pageUrlPkWrap.o);
-		}
-		pageUrlPkWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqPageUrlPk(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrPageUrlPk(siteRequest_, Cluster.staticSolrPageUrlPk(siteRequest_, Cluster.staticSetPageUrlPk(siteRequest_, o)));
-	}
-
-	public String solrPageUrlPk() {
-		return Cluster.staticSolrPageUrlPk(siteRequest_, pageUrlPk);
-	}
-
-	public String strPageUrlPk() {
-		return pageUrlPk == null ? "" : pageUrlPk;
-	}
-
-	public String sqlPageUrlPk() {
-		return pageUrlPk;
-	}
-
-	public String jsonPageUrlPk() {
-		return pageUrlPk == null ? "" : pageUrlPk;
-	}
-
-	public String htmTooltipPageUrlPk() {
-		return null;
-	}
-
-	public String htmPageUrlPk() {
-		return pageUrlPk == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlPk());
-	}
-
-	////////////////
-	// pageUrlApi //
-	////////////////
-
-	/**	 The entity pageUrlApi
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String pageUrlApi;
-	@JsonIgnore
-	public Wrap<String> pageUrlApiWrap = new Wrap<String>().p(this).c(String.class).var("pageUrlApi").o(pageUrlApi);
-
-	/**	<br/> The entity pageUrlApi
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageUrlApi">Find the entity pageUrlApi in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _pageUrlApi(Wrap<String> c);
-
-	public String getPageUrlApi() {
-		return pageUrlApi;
-	}
-	public void setPageUrlApi(String o) {
-		this.pageUrlApi = Cluster.staticSetPageUrlApi(siteRequest_, o);
-		this.pageUrlApiWrap.alreadyInitialized = true;
-	}
-	public static String staticSetPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster pageUrlApiInit() {
-		if(!pageUrlApiWrap.alreadyInitialized) {
-			_pageUrlApi(pageUrlApiWrap);
-			if(pageUrlApi == null)
-				setPageUrlApi(pageUrlApiWrap.o);
-		}
-		pageUrlApiWrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqPageUrlApi(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrPageUrlApi(siteRequest_, Cluster.staticSolrPageUrlApi(siteRequest_, Cluster.staticSetPageUrlApi(siteRequest_, o)));
-	}
-
-	public String solrPageUrlApi() {
-		return Cluster.staticSolrPageUrlApi(siteRequest_, pageUrlApi);
-	}
-
-	public String strPageUrlApi() {
-		return pageUrlApi == null ? "" : pageUrlApi;
-	}
-
-	public String sqlPageUrlApi() {
-		return pageUrlApi;
-	}
-
-	public String jsonPageUrlApi() {
-		return pageUrlApi == null ? "" : pageUrlApi;
-	}
-
-	public String htmTooltipPageUrlApi() {
-		return null;
-	}
-
-	public String htmPageUrlApi() {
-		return pageUrlApi == null ? "" : StringEscapeUtils.escapeHtml4(strPageUrlApi());
-	}
-
-	////////////
-	// pageH1 //
-	////////////
-
-	/**	 The entity pageH1
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String pageH1;
-	@JsonIgnore
-	public Wrap<String> pageH1Wrap = new Wrap<String>().p(this).c(String.class).var("pageH1").o(pageH1);
-
-	/**	<br/> The entity pageH1
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pageH1">Find the entity pageH1 in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _pageH1(Wrap<String> c);
-
-	public String getPageH1() {
-		return pageH1;
-	}
-	public void setPageH1(String o) {
-		this.pageH1 = Cluster.staticSetPageH1(siteRequest_, o);
-		this.pageH1Wrap.alreadyInitialized = true;
-	}
-	public static String staticSetPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected Cluster pageH1Init() {
-		if(!pageH1Wrap.alreadyInitialized) {
-			_pageH1(pageH1Wrap);
-			if(pageH1 == null)
-				setPageH1(pageH1Wrap.o);
-		}
-		pageH1Wrap.alreadyInitialized(true);
-		return (Cluster)this;
-	}
-
-	public static String staticSolrPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqPageH1(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrPageH1(siteRequest_, Cluster.staticSolrPageH1(siteRequest_, Cluster.staticSetPageH1(siteRequest_, o)));
-	}
-
-	public String solrPageH1() {
-		return Cluster.staticSolrPageH1(siteRequest_, pageH1);
-	}
-
-	public String strPageH1() {
-		return pageH1 == null ? "" : pageH1;
-	}
-
-	public String sqlPageH1() {
-		return pageH1;
-	}
-
-	public String jsonPageH1() {
-		return pageH1 == null ? "" : pageH1;
-	}
-
-	public String htmTooltipPageH1() {
-		return null;
-	}
-
-	public String htmPageH1() {
-		return pageH1 == null ? "" : StringEscapeUtils.escapeHtml4(strPageH1());
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -2321,24 +1241,12 @@ public abstract class ClusterGen<DEV> extends Object {
 		idInit();
 		createdInit();
 		modifiedInit();
-		modifiedIsoOffsetDateTimeInit();
-		archivedInit();
-		deletedInit();
 		classCanonicalNameInit();
 		classSimpleNameInit();
 		classCanonicalNamesInit();
-		sessionIdInit();
-		userKeyInit();
 		savesInit();
 		objectTitleInit();
 		objectIdInit();
-		objectNameVarInit();
-		objectSuggestInit();
-		objectTextInit();
-		pageUrlIdInit();
-		pageUrlPkInit();
-		pageUrlApiInit();
-		pageH1Init();
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -2392,42 +1300,18 @@ public abstract class ClusterGen<DEV> extends Object {
 				return oCluster.created;
 			case "modified":
 				return oCluster.modified;
-			case "modifiedIsoOffsetDateTime":
-				return oCluster.modifiedIsoOffsetDateTime;
-			case "archived":
-				return oCluster.archived;
-			case "deleted":
-				return oCluster.deleted;
 			case "classCanonicalName":
 				return oCluster.classCanonicalName;
 			case "classSimpleName":
 				return oCluster.classSimpleName;
 			case "classCanonicalNames":
 				return oCluster.classCanonicalNames;
-			case "sessionId":
-				return oCluster.sessionId;
-			case "userKey":
-				return oCluster.userKey;
 			case "saves":
 				return oCluster.saves;
 			case "objectTitle":
 				return oCluster.objectTitle;
 			case "objectId":
 				return oCluster.objectId;
-			case "objectNameVar":
-				return oCluster.objectNameVar;
-			case "objectSuggest":
-				return oCluster.objectSuggest;
-			case "objectText":
-				return oCluster.objectText;
-			case "pageUrlId":
-				return oCluster.pageUrlId;
-			case "pageUrlPk":
-				return oCluster.pageUrlPk;
-			case "pageUrlApi":
-				return oCluster.pageUrlApi;
-			case "pageH1":
-				return oCluster.pageH1;
 			default:
 				return null;
 		}
@@ -2477,42 +1361,18 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSetCreated(siteRequest_, o);
 		case "modified":
 			return Cluster.staticSetModified(siteRequest_, o);
-		case "modifiedIsoOffsetDateTime":
-			return Cluster.staticSetModifiedIsoOffsetDateTime(siteRequest_, o);
-		case "archived":
-			return Cluster.staticSetArchived(siteRequest_, o);
-		case "deleted":
-			return Cluster.staticSetDeleted(siteRequest_, o);
 		case "classCanonicalName":
 			return Cluster.staticSetClassCanonicalName(siteRequest_, o);
 		case "classSimpleName":
 			return Cluster.staticSetClassSimpleName(siteRequest_, o);
 		case "classCanonicalNames":
 			return Cluster.staticSetClassCanonicalNames(siteRequest_, o);
-		case "sessionId":
-			return Cluster.staticSetSessionId(siteRequest_, o);
-		case "userKey":
-			return Cluster.staticSetUserKey(siteRequest_, o);
 		case "saves":
 			return Cluster.staticSetSaves(siteRequest_, o);
 		case "objectTitle":
 			return Cluster.staticSetObjectTitle(siteRequest_, o);
 		case "objectId":
 			return Cluster.staticSetObjectId(siteRequest_, o);
-		case "objectNameVar":
-			return Cluster.staticSetObjectNameVar(siteRequest_, o);
-		case "objectSuggest":
-			return Cluster.staticSetObjectSuggest(siteRequest_, o);
-		case "objectText":
-			return Cluster.staticSetObjectText(siteRequest_, o);
-		case "pageUrlId":
-			return Cluster.staticSetPageUrlId(siteRequest_, o);
-		case "pageUrlPk":
-			return Cluster.staticSetPageUrlPk(siteRequest_, o);
-		case "pageUrlApi":
-			return Cluster.staticSetPageUrlApi(siteRequest_, o);
-		case "pageH1":
-			return Cluster.staticSetPageH1(siteRequest_, o);
 			default:
 				return null;
 		}
@@ -2537,42 +1397,18 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSolrCreated(siteRequest_, (ZonedDateTime)o);
 		case "modified":
 			return Cluster.staticSolrModified(siteRequest_, (ZonedDateTime)o);
-		case "modifiedIsoOffsetDateTime":
-			return Cluster.staticSolrModifiedIsoOffsetDateTime(siteRequest_, (String)o);
-		case "archived":
-			return Cluster.staticSolrArchived(siteRequest_, (Boolean)o);
-		case "deleted":
-			return Cluster.staticSolrDeleted(siteRequest_, (Boolean)o);
 		case "classCanonicalName":
 			return Cluster.staticSolrClassCanonicalName(siteRequest_, (String)o);
 		case "classSimpleName":
 			return Cluster.staticSolrClassSimpleName(siteRequest_, (String)o);
 		case "classCanonicalNames":
 			return Cluster.staticSolrClassCanonicalNames(siteRequest_, (String)o);
-		case "sessionId":
-			return Cluster.staticSolrSessionId(siteRequest_, (String)o);
-		case "userKey":
-			return Cluster.staticSolrUserKey(siteRequest_, (Long)o);
 		case "saves":
 			return Cluster.staticSolrSaves(siteRequest_, (String)o);
 		case "objectTitle":
 			return Cluster.staticSolrObjectTitle(siteRequest_, (String)o);
 		case "objectId":
 			return Cluster.staticSolrObjectId(siteRequest_, (String)o);
-		case "objectNameVar":
-			return Cluster.staticSolrObjectNameVar(siteRequest_, (String)o);
-		case "objectSuggest":
-			return Cluster.staticSolrObjectSuggest(siteRequest_, (String)o);
-		case "objectText":
-			return Cluster.staticSolrObjectText(siteRequest_, (String)o);
-		case "pageUrlId":
-			return Cluster.staticSolrPageUrlId(siteRequest_, (String)o);
-		case "pageUrlPk":
-			return Cluster.staticSolrPageUrlPk(siteRequest_, (String)o);
-		case "pageUrlApi":
-			return Cluster.staticSolrPageUrlApi(siteRequest_, (String)o);
-		case "pageH1":
-			return Cluster.staticSolrPageH1(siteRequest_, (String)o);
 			default:
 				return null;
 		}
@@ -2597,42 +1433,18 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSolrStrCreated(siteRequest_, (Date)o);
 		case "modified":
 			return Cluster.staticSolrStrModified(siteRequest_, (Date)o);
-		case "modifiedIsoOffsetDateTime":
-			return Cluster.staticSolrStrModifiedIsoOffsetDateTime(siteRequest_, (String)o);
-		case "archived":
-			return Cluster.staticSolrStrArchived(siteRequest_, (Boolean)o);
-		case "deleted":
-			return Cluster.staticSolrStrDeleted(siteRequest_, (Boolean)o);
 		case "classCanonicalName":
 			return Cluster.staticSolrStrClassCanonicalName(siteRequest_, (String)o);
 		case "classSimpleName":
 			return Cluster.staticSolrStrClassSimpleName(siteRequest_, (String)o);
 		case "classCanonicalNames":
 			return Cluster.staticSolrStrClassCanonicalNames(siteRequest_, (String)o);
-		case "sessionId":
-			return Cluster.staticSolrStrSessionId(siteRequest_, (String)o);
-		case "userKey":
-			return Cluster.staticSolrStrUserKey(siteRequest_, (Long)o);
 		case "saves":
 			return Cluster.staticSolrStrSaves(siteRequest_, (String)o);
 		case "objectTitle":
 			return Cluster.staticSolrStrObjectTitle(siteRequest_, (String)o);
 		case "objectId":
 			return Cluster.staticSolrStrObjectId(siteRequest_, (String)o);
-		case "objectNameVar":
-			return Cluster.staticSolrStrObjectNameVar(siteRequest_, (String)o);
-		case "objectSuggest":
-			return Cluster.staticSolrStrObjectSuggest(siteRequest_, (String)o);
-		case "objectText":
-			return Cluster.staticSolrStrObjectText(siteRequest_, (String)o);
-		case "pageUrlId":
-			return Cluster.staticSolrStrPageUrlId(siteRequest_, (String)o);
-		case "pageUrlPk":
-			return Cluster.staticSolrStrPageUrlPk(siteRequest_, (String)o);
-		case "pageUrlApi":
-			return Cluster.staticSolrStrPageUrlApi(siteRequest_, (String)o);
-		case "pageH1":
-			return Cluster.staticSolrStrPageH1(siteRequest_, (String)o);
 			default:
 				return null;
 		}
@@ -2657,42 +1469,18 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Cluster.staticSolrFqCreated(siteRequest_, o);
 		case "modified":
 			return Cluster.staticSolrFqModified(siteRequest_, o);
-		case "modifiedIsoOffsetDateTime":
-			return Cluster.staticSolrFqModifiedIsoOffsetDateTime(siteRequest_, o);
-		case "archived":
-			return Cluster.staticSolrFqArchived(siteRequest_, o);
-		case "deleted":
-			return Cluster.staticSolrFqDeleted(siteRequest_, o);
 		case "classCanonicalName":
 			return Cluster.staticSolrFqClassCanonicalName(siteRequest_, o);
 		case "classSimpleName":
 			return Cluster.staticSolrFqClassSimpleName(siteRequest_, o);
 		case "classCanonicalNames":
 			return Cluster.staticSolrFqClassCanonicalNames(siteRequest_, o);
-		case "sessionId":
-			return Cluster.staticSolrFqSessionId(siteRequest_, o);
-		case "userKey":
-			return Cluster.staticSolrFqUserKey(siteRequest_, o);
 		case "saves":
 			return Cluster.staticSolrFqSaves(siteRequest_, o);
 		case "objectTitle":
 			return Cluster.staticSolrFqObjectTitle(siteRequest_, o);
 		case "objectId":
 			return Cluster.staticSolrFqObjectId(siteRequest_, o);
-		case "objectNameVar":
-			return Cluster.staticSolrFqObjectNameVar(siteRequest_, o);
-		case "objectSuggest":
-			return Cluster.staticSolrFqObjectSuggest(siteRequest_, o);
-		case "objectText":
-			return Cluster.staticSolrFqObjectText(siteRequest_, o);
-		case "pageUrlId":
-			return Cluster.staticSolrFqPageUrlId(siteRequest_, o);
-		case "pageUrlPk":
-			return Cluster.staticSolrFqPageUrlPk(siteRequest_, o);
-		case "pageUrlApi":
-			return Cluster.staticSolrFqPageUrlApi(siteRequest_, o);
-		case "pageH1":
-			return Cluster.staticSolrFqPageH1(siteRequest_, o);
 			default:
 				return null;
 		}
@@ -2729,21 +1517,6 @@ public abstract class ClusterGen<DEV> extends Object {
 					setCreated(val);
 				saves.add("created");
 				return val;
-			case "archived":
-				if(val != null)
-					setArchived(val);
-				saves.add("archived");
-				return val;
-			case "deleted":
-				if(val != null)
-					setDeleted(val);
-				saves.add("deleted");
-				return val;
-			case "userkey":
-				if(val != null)
-					setUserKey(val);
-				saves.add("userKey");
-				return val;
 			default:
 				return null;
 		}
@@ -2777,21 +1550,6 @@ public abstract class ClusterGen<DEV> extends Object {
 				else if(val instanceof OffsetDateTime)
 					setCreated(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
 				saves.add("created");
-				return val;
-			case "archived":
-				if(val instanceof Boolean)
-					setArchived((Boolean)val);
-				saves.add("archived");
-				return val;
-			case "deleted":
-				if(val instanceof Boolean)
-					setDeleted((Boolean)val);
-				saves.add("deleted");
-				return val;
-			case "userkey":
-				if(val instanceof Long)
-					setUserKey((Long)val);
-				saves.add("userKey");
 				return val;
 			default:
 				return null;
@@ -2865,17 +1623,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			document.addField("modified_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
 			document.addField("modified_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
 		}
-		if(modifiedIsoOffsetDateTime != null) {
-			document.addField("modifiedIsoOffsetDateTime_stored_string", modifiedIsoOffsetDateTime);
-		}
-		if(archived != null) {
-			document.addField("archived_indexed_boolean", archived);
-			document.addField("archived_stored_boolean", archived);
-		}
-		if(deleted != null) {
-			document.addField("deleted_indexed_boolean", deleted);
-			document.addField("deleted_stored_boolean", deleted);
-		}
 		if(classCanonicalName != null) {
 			document.addField("classCanonicalName_indexed_string", classCanonicalName);
 			document.addField("classCanonicalName_stored_string", classCanonicalName);
@@ -2891,14 +1638,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			for(java.lang.String o : classCanonicalNames) {
 				document.addField("classCanonicalNames_stored_strings", o);
 			}
-		}
-		if(sessionId != null) {
-			document.addField("sessionId_indexed_string", sessionId);
-			document.addField("sessionId_stored_string", sessionId);
-		}
-		if(userKey != null) {
-			document.addField("userKey_indexed_long", userKey);
-			document.addField("userKey_stored_long", userKey);
 		}
 		if(saves != null) {
 			for(java.lang.String o : saves) {
@@ -2916,21 +1655,6 @@ public abstract class ClusterGen<DEV> extends Object {
 			document.addField("objectId_indexed_string", objectId);
 			document.addField("objectId_stored_string", objectId);
 		}
-		if(objectSuggest != null) {
-			document.addField("objectSuggest_suggested", objectSuggest);
-		}
-		if(objectText != null) {
-			document.addField("objectText_text_enUS", objectText.toString());
-			document.addField("objectText_indexed_string", objectText);
-		}
-		if(pageUrlId != null) {
-			document.addField("pageUrlId_indexed_string", pageUrlId);
-			document.addField("pageUrlId_stored_string", pageUrlId);
-		}
-		if(pageUrlPk != null) {
-			document.addField("pageUrlPk_indexed_string", pageUrlPk);
-			document.addField("pageUrlPk_stored_string", pageUrlPk);
-		}
 	}
 
 	public static String varIndexedCluster(String entityVar) {
@@ -2945,34 +1669,18 @@ public abstract class ClusterGen<DEV> extends Object {
 				return "created_indexed_date";
 			case "modified":
 				return "modified_indexed_date";
-			case "archived":
-				return "archived_indexed_boolean";
-			case "deleted":
-				return "deleted_indexed_boolean";
 			case "classCanonicalName":
 				return "classCanonicalName_indexed_string";
 			case "classSimpleName":
 				return "classSimpleName_indexed_string";
 			case "classCanonicalNames":
 				return "classCanonicalNames_indexed_strings";
-			case "sessionId":
-				return "sessionId_indexed_string";
-			case "userKey":
-				return "userKey_indexed_long";
 			case "saves":
 				return "saves_indexed_strings";
 			case "objectTitle":
 				return "objectTitle_indexed_string";
 			case "objectId":
 				return "objectId_indexed_string";
-			case "objectSuggest":
-				return "objectSuggest_suggested";
-			case "objectText":
-				return "objectText_text_enUS";
-			case "pageUrlId":
-				return "pageUrlId_indexed_string";
-			case "pageUrlPk":
-				return "pageUrlPk_indexed_string";
 			default:
 				return null;
 		}
@@ -2980,10 +1688,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public static String varSearchCluster(String entityVar) {
 		switch(entityVar) {
-			case "objectText":
-				return "objectText_text_enUS";
-			case "objectSuggest":
-				return "objectSuggest_suggested";
 			default:
 				return null;
 		}
@@ -2991,8 +1695,6 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	public static String varSuggestedCluster(String entityVar) {
 		switch(entityVar) {
-			case "objectSuggest":
-				return "objectSuggest_suggested";
 			default:
 				return null;
 		}
@@ -3027,18 +1729,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		if(modified != null)
 			oCluster.setModified(modified);
 
-		String modifiedIsoOffsetDateTime = (String)solrDocument.get("modifiedIsoOffsetDateTime_stored_string");
-		if(modifiedIsoOffsetDateTime != null)
-			oCluster.setModifiedIsoOffsetDateTime(modifiedIsoOffsetDateTime);
-
-		Boolean archived = (Boolean)solrDocument.get("archived_stored_boolean");
-		if(archived != null)
-			oCluster.setArchived(archived);
-
-		Boolean deleted = (Boolean)solrDocument.get("deleted_stored_boolean");
-		if(deleted != null)
-			oCluster.setDeleted(deleted);
-
 		String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
 		if(classCanonicalName != null)
 			oCluster.setClassCanonicalName(classCanonicalName);
@@ -3051,14 +1741,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		if(classCanonicalNames != null)
 			oCluster.classCanonicalNames.addAll(classCanonicalNames);
 
-		String sessionId = (String)solrDocument.get("sessionId_stored_string");
-		if(sessionId != null)
-			oCluster.setSessionId(sessionId);
-
-		Long userKey = (Long)solrDocument.get("userKey_stored_long");
-		if(userKey != null)
-			oCluster.setUserKey(userKey);
-
 		List<String> saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null)
 			oCluster.saves.addAll(saves);
@@ -3070,21 +1752,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		String objectId = (String)solrDocument.get("objectId_stored_string");
 		if(objectId != null)
 			oCluster.setObjectId(objectId);
-
-		String objectSuggest = (String)solrDocument.get("objectSuggest_suggested");
-		oCluster.setObjectSuggest(objectSuggest);
-
-		String objectText = (String)solrDocument.get("objectText_stored_string");
-		if(objectText != null)
-			oCluster.setObjectText(objectText);
-
-		String pageUrlId = (String)solrDocument.get("pageUrlId_stored_string");
-		if(pageUrlId != null)
-			oCluster.setPageUrlId(pageUrlId);
-
-		String pageUrlPk = (String)solrDocument.get("pageUrlPk_stored_string");
-		if(pageUrlPk != null)
-			oCluster.setPageUrlPk(pageUrlPk);
 	}
 
 	//////////////////
@@ -3106,36 +1773,18 @@ public abstract class ClusterGen<DEV> extends Object {
 				apiRequest.addVars("created");
 			if(!Objects.equals(modified, original.getModified()))
 				apiRequest.addVars("modified");
-			if(!Objects.equals(modifiedIsoOffsetDateTime, original.getModifiedIsoOffsetDateTime()))
-				apiRequest.addVars("modifiedIsoOffsetDateTime");
-			if(!Objects.equals(archived, original.getArchived()))
-				apiRequest.addVars("archived");
-			if(!Objects.equals(deleted, original.getDeleted()))
-				apiRequest.addVars("deleted");
 			if(!Objects.equals(classCanonicalName, original.getClassCanonicalName()))
 				apiRequest.addVars("classCanonicalName");
 			if(!Objects.equals(classSimpleName, original.getClassSimpleName()))
 				apiRequest.addVars("classSimpleName");
 			if(!Objects.equals(classCanonicalNames, original.getClassCanonicalNames()))
 				apiRequest.addVars("classCanonicalNames");
-			if(!Objects.equals(sessionId, original.getSessionId()))
-				apiRequest.addVars("sessionId");
-			if(!Objects.equals(userKey, original.getUserKey()))
-				apiRequest.addVars("userKey");
 			if(!Objects.equals(saves, original.getSaves()))
 				apiRequest.addVars("saves");
 			if(!Objects.equals(objectTitle, original.getObjectTitle()))
 				apiRequest.addVars("objectTitle");
 			if(!Objects.equals(objectId, original.getObjectId()))
 				apiRequest.addVars("objectId");
-			if(!Objects.equals(objectSuggest, original.getObjectSuggest()))
-				apiRequest.addVars("objectSuggest");
-			if(!Objects.equals(objectText, original.getObjectText()))
-				apiRequest.addVars("objectText");
-			if(!Objects.equals(pageUrlId, original.getPageUrlId()))
-				apiRequest.addVars("pageUrlId");
-			if(!Objects.equals(pageUrlPk, original.getPageUrlPk()))
-				apiRequest.addVars("pageUrlPk");
 		}
 	}
 
@@ -3144,7 +1793,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(pk, inheritPk, id, created, modified, modifiedIsoOffsetDateTime, archived, deleted, classCanonicalName, classSimpleName, classCanonicalNames, sessionId, userKey, saves, objectTitle, objectId, objectSuggest, objectText, pageUrlId, pageUrlPk);
+		return Objects.hash(pk, inheritPk, id, created, modified, classCanonicalName, classSimpleName, classCanonicalNames, saves, objectTitle, objectId);
 	}
 
 	////////////
@@ -3162,21 +1811,12 @@ public abstract class ClusterGen<DEV> extends Object {
 				&& Objects.equals( id, that.id )
 				&& Objects.equals( created, that.created )
 				&& Objects.equals( modified, that.modified )
-				&& Objects.equals( modifiedIsoOffsetDateTime, that.modifiedIsoOffsetDateTime )
-				&& Objects.equals( archived, that.archived )
-				&& Objects.equals( deleted, that.deleted )
 				&& Objects.equals( classCanonicalName, that.classCanonicalName )
 				&& Objects.equals( classSimpleName, that.classSimpleName )
 				&& Objects.equals( classCanonicalNames, that.classCanonicalNames )
-				&& Objects.equals( sessionId, that.sessionId )
-				&& Objects.equals( userKey, that.userKey )
 				&& Objects.equals( saves, that.saves )
 				&& Objects.equals( objectTitle, that.objectTitle )
-				&& Objects.equals( objectId, that.objectId )
-				&& Objects.equals( objectSuggest, that.objectSuggest )
-				&& Objects.equals( objectText, that.objectText )
-				&& Objects.equals( pageUrlId, that.pageUrlId )
-				&& Objects.equals( pageUrlPk, that.pageUrlPk );
+				&& Objects.equals( objectId, that.objectId );
 	}
 
 	//////////////
@@ -3191,21 +1831,12 @@ public abstract class ClusterGen<DEV> extends Object {
 		sb.append( ", id: \"" ).append(id).append( "\"" );
 		sb.append( ", created: " ).append(created);
 		sb.append( ", modified: " ).append(modified);
-		sb.append( ", modifiedIsoOffsetDateTime: \"" ).append(modifiedIsoOffsetDateTime).append( "\"" );
-		sb.append( ", archived: " ).append(archived);
-		sb.append( ", deleted: " ).append(deleted);
 		sb.append( ", classCanonicalName: \"" ).append(classCanonicalName).append( "\"" );
 		sb.append( ", classSimpleName: \"" ).append(classSimpleName).append( "\"" );
 		sb.append( ", classCanonicalNames: " ).append(classCanonicalNames);
-		sb.append( ", sessionId: \"" ).append(sessionId).append( "\"" );
-		sb.append( ", userKey: " ).append(userKey);
 		sb.append( ", saves: " ).append(saves);
 		sb.append( ", objectTitle: \"" ).append(objectTitle).append( "\"" );
 		sb.append( ", objectId: \"" ).append(objectId).append( "\"" );
-		sb.append( ", objectSuggest: \"" ).append(objectSuggest).append( "\"" );
-		sb.append( ", objectText: \"" ).append(objectText).append( "\"" );
-		sb.append( ", pageUrlId: \"" ).append(pageUrlId).append( "\"" );
-		sb.append( ", pageUrlPk: \"" ).append(pageUrlPk).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

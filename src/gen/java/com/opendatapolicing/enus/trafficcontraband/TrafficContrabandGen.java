@@ -279,11 +279,11 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "search key")
-				.a("class", "valueObjectSuggest suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setSearchKey")
 				.a("id", classApiMethodMethod, "_searchKey")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficContrabandSearchKey($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'contrabandKeys:" + pk + "'}", "], $('#listTrafficContrabandSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficContrabandSearchKey($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'contrabandKeys:" + pk + "'}", "], $('#listTrafficContrabandSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -5124,158 +5124,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		} g("div");
 	}
 
-	////////////////////////////
-	// trafficSearchShortName //
-	////////////////////////////
-
-	/**	 The entity trafficSearchShortName
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String trafficSearchShortName;
-	@JsonIgnore
-	public Wrap<String> trafficSearchShortNameWrap = new Wrap<String>().p(this).c(String.class).var("trafficSearchShortName").o(trafficSearchShortName);
-
-	/**	<br/> The entity trafficSearchShortName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchShortName">Find the entity trafficSearchShortName in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _trafficSearchShortName(Wrap<String> w);
-
-	public String getTrafficSearchShortName() {
-		return trafficSearchShortName;
-	}
-	public void setTrafficSearchShortName(String o) {
-		this.trafficSearchShortName = TrafficContraband.staticSetTrafficSearchShortName(siteRequest_, o);
-		this.trafficSearchShortNameWrap.alreadyInitialized = true;
-	}
-	public static String staticSetTrafficSearchShortName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected TrafficContraband trafficSearchShortNameInit() {
-		if(!trafficSearchShortNameWrap.alreadyInitialized) {
-			_trafficSearchShortName(trafficSearchShortNameWrap);
-			if(trafficSearchShortName == null)
-				setTrafficSearchShortName(trafficSearchShortNameWrap.o);
-		}
-		trafficSearchShortNameWrap.alreadyInitialized(true);
-		return (TrafficContraband)this;
-	}
-
-	public static String staticSolrTrafficSearchShortName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrTrafficSearchShortName(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqTrafficSearchShortName(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficContraband.staticSolrStrTrafficSearchShortName(siteRequest_, TrafficContraband.staticSolrTrafficSearchShortName(siteRequest_, TrafficContraband.staticSetTrafficSearchShortName(siteRequest_, o)));
-	}
-
-	public String solrTrafficSearchShortName() {
-		return TrafficContraband.staticSolrTrafficSearchShortName(siteRequest_, trafficSearchShortName);
-	}
-
-	public String strTrafficSearchShortName() {
-		return trafficSearchShortName == null ? "" : trafficSearchShortName;
-	}
-
-	public String sqlTrafficSearchShortName() {
-		return trafficSearchShortName;
-	}
-
-	public String jsonTrafficSearchShortName() {
-		return trafficSearchShortName == null ? "" : trafficSearchShortName;
-	}
-
-	public String htmTooltipTrafficSearchShortName() {
-		return null;
-	}
-
-	public String htmTrafficSearchShortName() {
-		return trafficSearchShortName == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficSearchShortName());
-	}
-
-	///////////////////////////////
-	// trafficSearchCompleteName //
-	///////////////////////////////
-
-	/**	 The entity trafficSearchCompleteName
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String trafficSearchCompleteName;
-	@JsonIgnore
-	public Wrap<String> trafficSearchCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("trafficSearchCompleteName").o(trafficSearchCompleteName);
-
-	/**	<br/> The entity trafficSearchCompleteName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchCompleteName">Find the entity trafficSearchCompleteName in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _trafficSearchCompleteName(Wrap<String> c);
-
-	public String getTrafficSearchCompleteName() {
-		return trafficSearchCompleteName;
-	}
-	public void setTrafficSearchCompleteName(String o) {
-		this.trafficSearchCompleteName = TrafficContraband.staticSetTrafficSearchCompleteName(siteRequest_, o);
-		this.trafficSearchCompleteNameWrap.alreadyInitialized = true;
-	}
-	public static String staticSetTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected TrafficContraband trafficSearchCompleteNameInit() {
-		if(!trafficSearchCompleteNameWrap.alreadyInitialized) {
-			_trafficSearchCompleteName(trafficSearchCompleteNameWrap);
-			if(trafficSearchCompleteName == null)
-				setTrafficSearchCompleteName(trafficSearchCompleteNameWrap.o);
-		}
-		trafficSearchCompleteNameWrap.alreadyInitialized(true);
-		return (TrafficContraband)this;
-	}
-
-	public static String staticSolrTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficContraband.staticSolrStrTrafficSearchCompleteName(siteRequest_, TrafficContraband.staticSolrTrafficSearchCompleteName(siteRequest_, TrafficContraband.staticSetTrafficSearchCompleteName(siteRequest_, o)));
-	}
-
-	public String solrTrafficSearchCompleteName() {
-		return TrafficContraband.staticSolrTrafficSearchCompleteName(siteRequest_, trafficSearchCompleteName);
-	}
-
-	public String strTrafficSearchCompleteName() {
-		return trafficSearchCompleteName == null ? "" : trafficSearchCompleteName;
-	}
-
-	public String sqlTrafficSearchCompleteName() {
-		return trafficSearchCompleteName;
-	}
-
-	public String jsonTrafficSearchCompleteName() {
-		return trafficSearchCompleteName == null ? "" : trafficSearchCompleteName;
-	}
-
-	public String htmTooltipTrafficSearchCompleteName() {
-		return null;
-	}
-
-	public String htmTrafficSearchCompleteName() {
-		return trafficSearchCompleteName == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficSearchCompleteName());
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -5350,8 +5198,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		contrabandMoneyInit();
 		contrabandWeaponsInit();
 		contrabandDollarAmountInit();
-		trafficSearchShortNameInit();
-		trafficSearchCompleteNameInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -5502,10 +5348,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				return oTrafficContraband.contrabandWeapons;
 			case "contrabandDollarAmount":
 				return oTrafficContraband.contrabandDollarAmount;
-			case "trafficSearchShortName":
-				return oTrafficContraband.trafficSearchShortName;
-			case "trafficSearchCompleteName":
-				return oTrafficContraband.trafficSearchCompleteName;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -5653,10 +5495,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSetContrabandWeapons(siteRequest_, o);
 		case "contrabandDollarAmount":
 			return TrafficContraband.staticSetContrabandDollarAmount(siteRequest_, o);
-		case "trafficSearchShortName":
-			return TrafficContraband.staticSetTrafficSearchShortName(siteRequest_, o);
-		case "trafficSearchCompleteName":
-			return TrafficContraband.staticSetTrafficSearchCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -5773,10 +5611,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSolrContrabandWeapons(siteRequest_, (BigDecimal)o);
 		case "contrabandDollarAmount":
 			return TrafficContraband.staticSolrContrabandDollarAmount(siteRequest_, (BigDecimal)o);
-		case "trafficSearchShortName":
-			return TrafficContraband.staticSolrTrafficSearchShortName(siteRequest_, (String)o);
-		case "trafficSearchCompleteName":
-			return TrafficContraband.staticSolrTrafficSearchCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -5893,10 +5727,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSolrStrContrabandWeapons(siteRequest_, (Double)o);
 		case "contrabandDollarAmount":
 			return TrafficContraband.staticSolrStrContrabandDollarAmount(siteRequest_, (Double)o);
-		case "trafficSearchShortName":
-			return TrafficContraband.staticSolrStrTrafficSearchShortName(siteRequest_, (String)o);
-		case "trafficSearchCompleteName":
-			return TrafficContraband.staticSolrStrTrafficSearchCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -6013,10 +5843,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSolrFqContrabandWeapons(siteRequest_, o);
 		case "contrabandDollarAmount":
 			return TrafficContraband.staticSolrFqContrabandDollarAmount(siteRequest_, o);
-		case "trafficSearchShortName":
-			return TrafficContraband.staticSolrFqTrafficSearchShortName(siteRequest_, o);
-		case "trafficSearchCompleteName":
-			return TrafficContraband.staticSolrFqTrafficSearchCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -6495,18 +6321,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				if(contrabandDollarAmount != null)
 					oTrafficContraband.setContrabandDollarAmount(contrabandDollarAmount);
 			}
-
-			if(saves.contains("trafficSearchShortName")) {
-				String trafficSearchShortName = (String)solrDocument.get("trafficSearchShortName_stored_string");
-				if(trafficSearchShortName != null)
-					oTrafficContraband.setTrafficSearchShortName(trafficSearchShortName);
-			}
-
-			if(saves.contains("trafficSearchCompleteName")) {
-				String trafficSearchCompleteName = (String)solrDocument.get("trafficSearchCompleteName_stored_string");
-				if(trafficSearchCompleteName != null)
-					oTrafficContraband.setTrafficSearchCompleteName(trafficSearchCompleteName);
-			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -6749,14 +6563,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			document.addField("contrabandDollarAmount_indexed_double", contrabandDollarAmount.doubleValue());
 			document.addField("contrabandDollarAmount_stored_double", contrabandDollarAmount.doubleValue());
 		}
-		if(trafficSearchShortName != null) {
-			document.addField("trafficSearchShortName_indexed_string", trafficSearchShortName);
-			document.addField("trafficSearchShortName_stored_string", trafficSearchShortName);
-		}
-		if(trafficSearchCompleteName != null) {
-			document.addField("trafficSearchCompleteName_indexed_string", trafficSearchCompleteName);
-			document.addField("trafficSearchCompleteName_stored_string", trafficSearchCompleteName);
-		}
 		super.indexCluster(document);
 
 	}
@@ -6865,10 +6671,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				return "contrabandWeapons_indexed_double";
 			case "contrabandDollarAmount":
 				return "contrabandDollarAmount_indexed_double";
-			case "trafficSearchShortName":
-				return "trafficSearchShortName_indexed_string";
-			case "trafficSearchCompleteName":
-				return "trafficSearchCompleteName_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -7102,14 +6904,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		if(contrabandDollarAmount != null)
 			oTrafficContraband.setContrabandDollarAmount(contrabandDollarAmount);
 
-		String trafficSearchShortName = (String)solrDocument.get("trafficSearchShortName_stored_string");
-		if(trafficSearchShortName != null)
-			oTrafficContraband.setTrafficSearchShortName(trafficSearchShortName);
-
-		String trafficSearchCompleteName = (String)solrDocument.get("trafficSearchCompleteName_stored_string");
-		if(trafficSearchCompleteName != null)
-			oTrafficContraband.setTrafficSearchCompleteName(trafficSearchCompleteName);
-
 		super.storeCluster(solrDocument);
 	}
 
@@ -7224,10 +7018,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				apiRequest.addVars("contrabandWeapons");
 			if(!Objects.equals(contrabandDollarAmount, original.getContrabandDollarAmount()))
 				apiRequest.addVars("contrabandDollarAmount");
-			if(!Objects.equals(trafficSearchShortName, original.getTrafficSearchShortName()))
-				apiRequest.addVars("trafficSearchShortName");
-			if(!Objects.equals(trafficSearchCompleteName, original.getTrafficSearchCompleteName()))
-				apiRequest.addVars("trafficSearchCompleteName");
 			super.apiRequestCluster();
 		}
 	}
@@ -7237,7 +7027,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), contrabandKey, searchKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, contrabandOunces, contrabandPounds, contrabandPints, contrabandGallons, contrabandDosages, contrabandGrams, contrabandKilos, contrabandMoney, contrabandWeapons, contrabandDollarAmount, trafficSearchShortName, trafficSearchCompleteName);
+		return Objects.hash(super.hashCode(), contrabandKey, searchKey, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, contrabandOunces, contrabandPounds, contrabandPints, contrabandGallons, contrabandDosages, contrabandGrams, contrabandKilos, contrabandMoney, contrabandWeapons, contrabandDollarAmount);
 	}
 
 	////////////
@@ -7301,9 +7091,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				&& Objects.equals( contrabandKilos, that.contrabandKilos )
 				&& Objects.equals( contrabandMoney, that.contrabandMoney )
 				&& Objects.equals( contrabandWeapons, that.contrabandWeapons )
-				&& Objects.equals( contrabandDollarAmount, that.contrabandDollarAmount )
-				&& Objects.equals( trafficSearchShortName, that.trafficSearchShortName )
-				&& Objects.equals( trafficSearchCompleteName, that.trafficSearchCompleteName );
+				&& Objects.equals( contrabandDollarAmount, that.contrabandDollarAmount );
 	}
 
 	//////////////
@@ -7365,8 +7153,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		sb.append( ", contrabandMoney: " ).append(contrabandMoney);
 		sb.append( ", contrabandWeapons: " ).append(contrabandWeapons);
 		sb.append( ", contrabandDollarAmount: " ).append(contrabandDollarAmount);
-		sb.append( ", trafficSearchShortName: \"" ).append(trafficSearchShortName).append( "\"" );
-		sb.append( ", trafficSearchCompleteName: \"" ).append(trafficSearchCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

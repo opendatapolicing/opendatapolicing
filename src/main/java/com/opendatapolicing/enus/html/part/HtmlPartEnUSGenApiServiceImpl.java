@@ -278,23 +278,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
-			if(siteRequest.getSessionId() != null) {
-				if(bParams.size() > 0) {
-					bSql.append(", ");
-				}
-				bSql.append("sessionId=$" + num);
-				num++;
-				bParams.add(siteRequest.getSessionId());
-			}
-			if(siteRequest.getUserKey() != null) {
-				if(bParams.size() > 0) {
-					bSql.append(", ");
-				}
-				bSql.append("userKey=$" + num);
-				num++;
-				bParams.add(siteRequest.getUserKey());
-			}
-
 			if(jsonObject != null) {
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
@@ -307,24 +290,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 						bSql.append("inheritPk=$" + num);
 						num++;
 						bParams.add(o2.sqlInheritPk());
-						break;
-					case "archived":
-						o2.setArchived(jsonObject.getBoolean(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append("archived=$" + num);
-						num++;
-						bParams.add(o2.sqlArchived());
-						break;
-					case "deleted":
-						o2.setDeleted(jsonObject.getBoolean(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append("deleted=$" + num);
-						num++;
-						bParams.add(o2.sqlDeleted());
 						break;
 					case "pageDesignKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
@@ -1329,24 +1294,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case "archived":
-						o2.setArchived(jsonObject.getBoolean(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append("archived=$" + num);
-						num++;
-						bParams.add(o2.sqlArchived());
-						break;
-					case "deleted":
-						o2.setDeleted(jsonObject.getBoolean(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append("deleted=$" + num);
-						num++;
-						bParams.add(o2.sqlDeleted());
-						break;
 					case "pageDesignKeys":
 						{
 							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
@@ -1948,14 +1895,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			o2.setSiteRequest_(siteRequest);
 			List<Future> futures = new ArrayList<>();
 
-			if(o.getUserKey() == null && siteRequest.getUserKey() != null) {
-				if(bParams.size() > 0)
-					bSql.append(", ");
-				bSql.append("userKey=$" + num);
-				num++;
-				bParams.add(siteRequest.getUserKey());
-			}
-
 			for(String methodName : methodNames) {
 				switch(methodName) {
 					case "setInheritPk":
@@ -1965,22 +1904,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 							bSql.append("inheritPk=$" + num);
 							num++;
 							bParams.add(o2.sqlInheritPk());
-						break;
-					case "setArchived":
-							o2.setArchived(jsonObject.getBoolean(methodName));
-							if(bParams.size() > 0)
-								bSql.append(", ");
-							bSql.append("archived=$" + num);
-							num++;
-							bParams.add(o2.sqlArchived());
-						break;
-					case "setDeleted":
-							o2.setDeleted(jsonObject.getBoolean(methodName));
-							if(bParams.size() > 0)
-								bSql.append(", ");
-							bSql.append("deleted=$" + num);
-							num++;
-							bParams.add(o2.sqlDeleted());
 						break;
 					case "addPageDesignKeys":
 						{
@@ -2906,9 +2829,9 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			Long userKey = siteRequest.getUserKey();
 			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())))).orElse(ZonedDateTime.now(ZoneId.of(siteRequest.getSiteConfig_().getSiteZone())));
 
-			sqlConnection.preparedQuery("INSERT INTO HtmlPart(created, userKey) VALUES($1, $2) RETURNING pk")
+			sqlConnection.preparedQuery("INSERT INTO HtmlPart(created) VALUES($1) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(created.toOffsetDateTime(), userKey)
+					.execute(Tuple.of(created.toOffsetDateTime())
 					, createAsync
 			-> {
 				if(createAsync.succeeded()) {
@@ -2951,25 +2874,27 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			SiteConfig siteConfig = siteRequest.getSiteConfig_();
 			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
 			MailClient mailClient = siteContext.getMailClient();
-			MailMessage message = new MailMessage();
-			message.setFrom(siteConfig.getEmailFrom());
-			message.setTo(siteConfig.getEmailAdmin());
-			if(e != null && siteConfig.getEmailFrom() != null)
-				message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-			message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-			WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-			workerExecutor.executeBlocking(
-				blockingCodeHandler -> {
-					mailClient.sendMail(message, result -> {
-						if (result.succeeded()) {
-							LOG.info(result.result().toString());
-						} else {
-							LOG.error("sendMail failed. ", result.cause());
-						}
-					});
-				}, resultHandler -> {
-				}
-			);
+			if(mailClient != null) {
+				MailMessage message = new MailMessage();
+				message.setFrom(siteConfig.getEmailFrom());
+				message.setTo(siteConfig.getEmailAdmin());
+				if(e != null && siteConfig.getEmailFrom() != null)
+					message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+				message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+				WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
+				workerExecutor.executeBlocking(
+					blockingCodeHandler -> {
+						mailClient.sendMail(message, result -> {
+							if (result.succeeded()) {
+								LOG.info(result.result().toString());
+							} else {
+								LOG.error("sendMail failed. ", result.cause());
+							}
+						});
+					}, resultHandler -> {
+					}
+				);
+			}
 			eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
 			eventHandler.handle(Future.succeededFuture(responseOperation));
@@ -3499,7 +3424,7 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && BooleanUtils.isFalse(Optional.ofNullable(siteRequest.getApiRequest_()).map(ApiRequest::getEmpty).orElse(true))) {
+			if(refresh && Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
 				searchList.setStore(true);
 				searchList.setQuery("*:*");

@@ -144,10 +144,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -165,10 +161,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("POST");
@@ -212,10 +204,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -231,10 +219,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 	public void htmlFormPATCHSiteAgency(SiteAgency o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("PATCH");
@@ -256,10 +240,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmAgencyName("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -272,8 +252,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
-			o.htmObjectTitle("Search");
 		} g("div");
 	}
 
@@ -339,7 +317,7 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSiteAgency.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -469,9 +447,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			if(getColumnCreated()) {
 				e("th").f().sx("created").g("th");
 			}
-			if(getColumnObjectTitle()) {
-				e("th").f().sx("").g("th");
-			}
 			} g("tr");
 	}
 
@@ -498,16 +473,6 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 						} g("a");
 					} g("td");
 				}
-				if(getColumnObjectTitle()) {
-					{ e("td").f();
-						{ e("a").a("href", uri).f();
-							e("i").a("class", "far fa-road ").f().g("i");
-							{ e("span").f();
-								sx(o.strObjectTitle());
-							} g("span");
-						} g("a");
-					} g("td");
-				}
 			} g("tr");
 		}
 	}
@@ -525,18 +490,10 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 				e("td").f();
 				g("td");
 			}
-			if(getColumnObjectTitle()) {
-				e("td").f();
-				g("td");
-			}
 		} g("tr");
 	}
 
 	public Boolean getColumnCreated() {
-		return true;
-	}
-
-	public Boolean getColumnObjectTitle() {
 		return true;
 	}
 
@@ -739,7 +696,7 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -810,7 +767,7 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 					.a("name", "suggestSiteAgency")
 					.a("id", "suggestSiteAgency", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestSiteAgencyObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,agencyCompleteName' } ], $('#suggestListSiteAgency", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestSiteAgency( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,agencyCompleteName' } ], $('#suggestListSiteAgency", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/agency?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listSiteAgency != null)
 					p.a("value", query2);

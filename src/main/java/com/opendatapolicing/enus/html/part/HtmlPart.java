@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.html.part;  
+package com.opendatapolicing.enus.html.part;     
 
 import java.util.List;
 
@@ -481,10 +481,11 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 
 	/**
 	 * {@inheritDoc}
-	 * Var.enUS: _objectTitle
+	 * Indexed: true
+	 * Stored: true
+	 * VarTitle: true
 	 */ 
-	@Override()
-	protected void  _objectTitle(Wrap<String> c) {
+	protected void _htmlPartTitle(Wrap<String> c) {
 		StringBuilder b = new StringBuilder();
 		if(htmlBefore != null)
 			b.append(htmlBefore);
@@ -515,10 +516,8 @@ public class HtmlPart extends HtmlPartGen<Cluster> {
 		c.o(b.toString());
 	}
 
-	@Override()
-	protected void  _objectId(Wrap<String> c) {
-		if(pk != null){
-			c.o(pk.toString());
-		}
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(htmlPartTitle);
 	}
 }

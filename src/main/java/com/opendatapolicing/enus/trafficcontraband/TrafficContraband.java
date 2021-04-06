@@ -668,51 +668,51 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	@Override public String strContrabandDollarAmount() {
 		return "$" + super.strContrabandDollarAmount() + " worth";
 	}
-
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 */ 
-	protected void _trafficSearchShortName(Wrap<String> w) {
-		StringBuilder b = new StringBuilder();
-		if(contrabandDollarAmount != null && contrabandDollarAmount.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandDollarAmount()).append(" of ");
-		if(contrabandOunces != null && contrabandOunces.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandOunces()).append(" ");
-		if(contrabandPounds != null && contrabandPounds.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandPounds()).append(" ");
-		if(contrabandPints != null && contrabandPints.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandPints()).append(" ");
-		if(contrabandGallons != null && contrabandGallons.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandGallons()).append(" ");
-		if(contrabandDosages != null && contrabandDosages.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandDosages()).append(" ");
-		if(contrabandGrams != null && contrabandGrams.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandGrams()).append(" ");
-		if(contrabandKilos != null && contrabandKilos.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandKilos()).append(" ");
-		if(contrabandMoney != null && contrabandMoney.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandMoney()).append(" ");
-		if(contrabandWeapons != null && contrabandWeapons.compareTo(BigDecimal.ZERO) != 0)
-			b.append(strContrabandMoney()).append(" ");
-		b.append("contraband");
-		w.o(b.toString());
-	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarH2: true
-	 * VarTitle: true
-	 */ 
-	protected void _trafficSearchCompleteName(Wrap<String> c) {
-		c.o(trafficSearchShortName);
-	}
-
-	@Override
-	protected void _objectTitle(Wrap<String> c) {
-		c.o(trafficSearchCompleteName);
-	}
+//
+//	/**  
+//	 * {@inheritDoc}
+//	 * Indexed: true
+//	 * Stored: true
+//	 */ 
+//	protected void _trafficSearchShortName(Wrap<String> w) {
+//		StringBuilder b = new StringBuilder();
+//		if(contrabandDollarAmount != null && contrabandDollarAmount.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandDollarAmount()).append(" of ");
+//		if(contrabandOunces != null && contrabandOunces.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandOunces()).append(" ");
+//		if(contrabandPounds != null && contrabandPounds.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandPounds()).append(" ");
+//		if(contrabandPints != null && contrabandPints.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandPints()).append(" ");
+//		if(contrabandGallons != null && contrabandGallons.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandGallons()).append(" ");
+//		if(contrabandDosages != null && contrabandDosages.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandDosages()).append(" ");
+//		if(contrabandGrams != null && contrabandGrams.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandGrams()).append(" ");
+//		if(contrabandKilos != null && contrabandKilos.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandKilos()).append(" ");
+//		if(contrabandMoney != null && contrabandMoney.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandMoney()).append(" ");
+//		if(contrabandWeapons != null && contrabandWeapons.compareTo(BigDecimal.ZERO) != 0)
+//			b.append(strContrabandMoney()).append(" ");
+//		b.append("contraband");
+//		w.o(b.toString());
+//	}
+//
+//	/**   
+//	 * {@inheritDoc}
+//	 * Indexed: true
+//	 * Stored: true
+//	 * VarH2: true
+//	 * VarTitle: true
+//	 */ 
+//	protected void _trafficSearchCompleteName(Wrap<String> c) {
+//		c.o(trafficSearchShortName);
+//	}
+//
+//	@Override
+//	protected void _objectTitle(Wrap<String> c) {
+//		c.o(trafficSearchCompleteName);
+//	}
 }

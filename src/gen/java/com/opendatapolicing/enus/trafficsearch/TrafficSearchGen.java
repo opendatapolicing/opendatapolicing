@@ -281,11 +281,11 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "person key")
-				.a("class", "valueObjectSuggest suggestPersonKey w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestPersonKey w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setPersonKey")
 				.a("id", classApiMethodMethod, "_personKey")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchPersonKey($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficPersonCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'trafficSearchKeys:" + pk + "'}", "], $('#listTrafficSearchPersonKey_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficSearchPersonKey($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'trafficSearchKeys:" + pk + "'}", "], $('#listTrafficSearchPersonKey_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -560,11 +560,11 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "contrabands")
-				.a("class", "valueObjectSuggest suggestContrabandKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestContrabandKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setContrabandKeys")
 				.a("id", classApiMethodMethod, "_contrabandKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchContrabandKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchContrabandKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficSearchContrabandKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchContrabandKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -757,11 +757,11 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "search bases")
-				.a("class", "valueObjectSuggest suggestSearchBasisKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestSearchBasisKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setSearchBasisKeys")
 				.a("id", classApiMethodMethod, "_searchBasisKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchSearchBasisKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,searchBasisCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchSearchBasisKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficSearchSearchBasisKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,searchBasisCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchSearchBasisKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -4463,82 +4463,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		} g("div");
 	}
 
-	///////////////////////////////
-	// trafficSearchCompleteName //
-	///////////////////////////////
-
-	/**	 The entity trafficSearchCompleteName
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected String trafficSearchCompleteName;
-	@JsonIgnore
-	public Wrap<String> trafficSearchCompleteNameWrap = new Wrap<String>().p(this).c(String.class).var("trafficSearchCompleteName").o(trafficSearchCompleteName);
-
-	/**	<br/> The entity trafficSearchCompleteName
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearch&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchCompleteName">Find the entity trafficSearchCompleteName in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _trafficSearchCompleteName(Wrap<String> c);
-
-	public String getTrafficSearchCompleteName() {
-		return trafficSearchCompleteName;
-	}
-	public void setTrafficSearchCompleteName(String o) {
-		this.trafficSearchCompleteName = TrafficSearch.staticSetTrafficSearchCompleteName(siteRequest_, o);
-		this.trafficSearchCompleteNameWrap.alreadyInitialized = true;
-	}
-	public static String staticSetTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected TrafficSearch trafficSearchCompleteNameInit() {
-		if(!trafficSearchCompleteNameWrap.alreadyInitialized) {
-			_trafficSearchCompleteName(trafficSearchCompleteNameWrap);
-			if(trafficSearchCompleteName == null)
-				setTrafficSearchCompleteName(trafficSearchCompleteNameWrap.o);
-		}
-		trafficSearchCompleteNameWrap.alreadyInitialized(true);
-		return (TrafficSearch)this;
-	}
-
-	public static String staticSolrTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqTrafficSearchCompleteName(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficSearch.staticSolrStrTrafficSearchCompleteName(siteRequest_, TrafficSearch.staticSolrTrafficSearchCompleteName(siteRequest_, TrafficSearch.staticSetTrafficSearchCompleteName(siteRequest_, o)));
-	}
-
-	public String solrTrafficSearchCompleteName() {
-		return TrafficSearch.staticSolrTrafficSearchCompleteName(siteRequest_, trafficSearchCompleteName);
-	}
-
-	public String strTrafficSearchCompleteName() {
-		return trafficSearchCompleteName == null ? "" : trafficSearchCompleteName;
-	}
-
-	public String sqlTrafficSearchCompleteName() {
-		return trafficSearchCompleteName;
-	}
-
-	public String jsonTrafficSearchCompleteName() {
-		return trafficSearchCompleteName == null ? "" : trafficSearchCompleteName;
-	}
-
-	public String htmTooltipTrafficSearchCompleteName() {
-		return null;
-	}
-
-	public String htmTrafficSearchCompleteName() {
-		return trafficSearchCompleteName == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficSearchCompleteName());
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -4605,7 +4529,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		searchVehicleSiezedInit();
 		searchPersonalPropertySiezedInit();
 		searchOtherPropertySiezedInit();
-		trafficSearchCompleteNameInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -4740,8 +4663,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				return oTrafficSearch.searchPersonalPropertySiezed;
 			case "searchOtherPropertySiezed":
 				return oTrafficSearch.searchOtherPropertySiezed;
-			case "trafficSearchCompleteName":
-				return oTrafficSearch.trafficSearchCompleteName;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -4883,8 +4804,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSetSearchPersonalPropertySiezed(siteRequest_, o);
 		case "searchOtherPropertySiezed":
 			return TrafficSearch.staticSetSearchOtherPropertySiezed(siteRequest_, o);
-		case "trafficSearchCompleteName":
-			return TrafficSearch.staticSetTrafficSearchCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -4985,8 +4904,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrSearchPersonalPropertySiezed(siteRequest_, (Boolean)o);
 		case "searchOtherPropertySiezed":
 			return TrafficSearch.staticSolrSearchOtherPropertySiezed(siteRequest_, (Boolean)o);
-		case "trafficSearchCompleteName":
-			return TrafficSearch.staticSolrTrafficSearchCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -5087,8 +5004,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrStrSearchPersonalPropertySiezed(siteRequest_, (Boolean)o);
 		case "searchOtherPropertySiezed":
 			return TrafficSearch.staticSolrStrSearchOtherPropertySiezed(siteRequest_, (Boolean)o);
-		case "trafficSearchCompleteName":
-			return TrafficSearch.staticSolrStrTrafficSearchCompleteName(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -5189,8 +5104,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrFqSearchPersonalPropertySiezed(siteRequest_, o);
 		case "searchOtherPropertySiezed":
 			return TrafficSearch.staticSolrFqSearchOtherPropertySiezed(siteRequest_, o);
-		case "trafficSearchCompleteName":
-			return TrafficSearch.staticSolrFqTrafficSearchCompleteName(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -5597,12 +5510,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				if(searchOtherPropertySiezed != null)
 					oTrafficSearch.setSearchOtherPropertySiezed(searchOtherPropertySiezed);
 			}
-
-			if(saves.contains("trafficSearchCompleteName")) {
-				String trafficSearchCompleteName = (String)solrDocument.get("trafficSearchCompleteName_stored_string");
-				if(trafficSearchCompleteName != null)
-					oTrafficSearch.setTrafficSearchCompleteName(trafficSearchCompleteName);
-			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -5821,10 +5728,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			document.addField("searchOtherPropertySiezed_indexed_boolean", searchOtherPropertySiezed);
 			document.addField("searchOtherPropertySiezed_stored_boolean", searchOtherPropertySiezed);
 		}
-		if(trafficSearchCompleteName != null) {
-			document.addField("trafficSearchCompleteName_indexed_string", trafficSearchCompleteName);
-			document.addField("trafficSearchCompleteName_stored_string", trafficSearchCompleteName);
-		}
 		super.indexCluster(document);
 
 	}
@@ -5917,8 +5820,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				return "searchPersonalPropertySiezed_indexed_boolean";
 			case "searchOtherPropertySiezed":
 				return "searchOtherPropertySiezed_indexed_boolean";
-			case "trafficSearchCompleteName":
-				return "trafficSearchCompleteName_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -6120,10 +6021,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		if(searchOtherPropertySiezed != null)
 			oTrafficSearch.setSearchOtherPropertySiezed(searchOtherPropertySiezed);
 
-		String trafficSearchCompleteName = (String)solrDocument.get("trafficSearchCompleteName_stored_string");
-		if(trafficSearchCompleteName != null)
-			oTrafficSearch.setTrafficSearchCompleteName(trafficSearchCompleteName);
-
 		super.storeCluster(solrDocument);
 	}
 
@@ -6222,8 +6119,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				apiRequest.addVars("searchPersonalPropertySiezed");
 			if(!Objects.equals(searchOtherPropertySiezed, original.getSearchOtherPropertySiezed()))
 				apiRequest.addVars("searchOtherPropertySiezed");
-			if(!Objects.equals(trafficSearchCompleteName, original.getTrafficSearchCompleteName()))
-				apiRequest.addVars("trafficSearchCompleteName");
 			super.apiRequestCluster();
 		}
 	}
@@ -6233,7 +6128,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), trafficSearchKey, personKey, contrabandKeys, searchBasisKeys, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, trafficSearchCompleteName);
+		return Objects.hash(super.hashCode(), trafficSearchKey, personKey, contrabandKeys, searchBasisKeys, stopAgencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed);
 	}
 
 	////////////
@@ -6289,8 +6184,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				&& Objects.equals( searchProperty, that.searchProperty )
 				&& Objects.equals( searchVehicleSiezed, that.searchVehicleSiezed )
 				&& Objects.equals( searchPersonalPropertySiezed, that.searchPersonalPropertySiezed )
-				&& Objects.equals( searchOtherPropertySiezed, that.searchOtherPropertySiezed )
-				&& Objects.equals( trafficSearchCompleteName, that.trafficSearchCompleteName );
+				&& Objects.equals( searchOtherPropertySiezed, that.searchOtherPropertySiezed );
 	}
 
 	//////////////
@@ -6344,7 +6238,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		sb.append( ", searchVehicleSiezed: " ).append(searchVehicleSiezed);
 		sb.append( ", searchPersonalPropertySiezed: " ).append(searchPersonalPropertySiezed);
 		sb.append( ", searchOtherPropertySiezed: " ).append(searchOtherPropertySiezed);
-		sb.append( ", trafficSearchCompleteName: \"" ).append(trafficSearchCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

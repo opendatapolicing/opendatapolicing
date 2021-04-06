@@ -881,11 +881,11 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "agencies")
-				.a("class", "valueObjectSuggest suggestAgencyKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestAgencyKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setAgencyKeys")
 				.a("id", classApiMethodMethod, "_agencyKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestSiteStateAgencyKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,agencyCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'stateKey:" + pk + "'}", "], $('#listSiteStateAgencyKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestSiteStateAgencyKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,agencyCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'stateKey:" + pk + "'}", "], $('#listSiteStateAgencyKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 

@@ -62,8 +62,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		if(trafficStop_ != null && trafficStop_.getTrafficStopCompleteName() != null)
-			c.o(trafficStop_.getTrafficStopCompleteName());
+		c.o("");
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -71,8 +70,8 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficStop_ != null && trafficStop_.getTrafficStopCompleteName() != null)
-			c.o(trafficStop_.getTrafficStopCompleteName());
+		if(trafficStop_ != null && trafficStop_.getObjectTitle() != null)
+			c.o(trafficStop_.getObjectTitle());
 		else if(trafficStop_ != null)
 			c.o("traffic stops");
 		else if(listTrafficStop == null || listTrafficStop.size() == 0)
@@ -144,10 +143,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopAgencyTitle("Page");
 			o.htmStopDateTime("Page");
 			o.htmStopPurposeTitle("Page");
@@ -177,10 +172,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopAgencyTitle("POST");
@@ -236,10 +227,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopAgencyTitle("PUTCopy");
 			o.htmStopDateTime("PUTCopy");
 		} g("div");
@@ -265,10 +252,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 	public void htmlFormPATCHTrafficStop(TrafficStop o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopAgencyTitle("PATCH");
@@ -300,10 +283,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStopAgencyTitle("Search");
 			o.htmStopDateTime("Search");
 			o.htmStopPurposeTitle("Search");
@@ -328,7 +307,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 			o.htmStopYear("Search");
 			o.htmStopPurposeNum("Search");
@@ -398,7 +376,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficStop.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -798,7 +776,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -869,7 +847,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficStop")
 					.a("id", "suggestTrafficStop", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficStopObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficStopCompleteName' } ], $('#suggestListTrafficStop", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestTrafficStop( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ], $('#suggestListTrafficStop", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/traffic-stop?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficStop != null)
 					p.a("value", query2);

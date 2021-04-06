@@ -133,14 +133,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmCreated("Page");
 			o.htmModified("Page");
 		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmSeeArchived("Page");
-			o.htmSeeDeleted("Page");
-		} g("div");
 	}
 
 	public void htmlFormPOSTSiteUser(SiteUser o) {
@@ -148,14 +140,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmSeeArchived("POST");
-			o.htmSeeDeleted("POST");
 		} g("div");
 	}
 
@@ -187,27 +171,11 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PUTCopy");
 		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmSeeArchived("PUTCopy");
-			o.htmSeeDeleted("PUTCopy");
-		} g("div");
 	}
 
 	public void htmlFormPATCHSiteUser(SiteUser o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmSeeArchived("PATCH");
-			o.htmSeeDeleted("PATCH");
 		} g("div");
 	}
 
@@ -218,17 +186,8 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmSeeArchived("Search");
-			o.htmSeeDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
 			o.htmUserKey("Search");
-			o.htmObjectTitle("Search");
 			o.htmUserId("Search");
 			o.htmUserName("Search");
 			o.htmUserEmail("Search");
@@ -300,7 +259,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSiteUser.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -430,9 +389,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			if(getColumnCreated()) {
 				e("th").f().sx("created").g("th");
 			}
-			if(getColumnObjectTitle()) {
-				e("th").f().sx("").g("th");
-			}
 			} g("tr");
 	}
 
@@ -459,16 +415,6 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 						} g("a");
 					} g("td");
 				}
-				if(getColumnObjectTitle()) {
-					{ e("td").f();
-						{ e("a").a("href", uri).f();
-							e("i").a("class", "far fa-user-cog ").f().g("i");
-							{ e("span").f();
-								sx(o.strObjectTitle());
-							} g("span");
-						} g("a");
-					} g("td");
-				}
 			} g("tr");
 		}
 	}
@@ -486,18 +432,10 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 				e("td").f();
 				g("td");
 			}
-			if(getColumnObjectTitle()) {
-				e("td").f();
-				g("td");
-			}
 		} g("tr");
 	}
 
 	public Boolean getColumnCreated() {
-		return true;
-	}
-
-	public Boolean getColumnObjectTitle() {
 		return true;
 	}
 
@@ -598,7 +536,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -669,7 +607,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 					.a("name", "suggestSiteUser")
 					.a("id", "suggestSiteUser", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestSiteUserObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ], $('#suggestListSiteUser", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestSiteUser( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ], $('#suggestListSiteUser", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/user?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listSiteUser != null)
 					p.a("value", query2);

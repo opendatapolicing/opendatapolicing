@@ -298,11 +298,11 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "page designs")
-				.a("class", "valueObjectSuggest suggestPageDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestPageDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setPageDesignKeys")
 				.a("id", classApiMethodMethod, "_pageDesignKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestHtmlPartPageDesignKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,pageDesignCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'htmlPartKeys:" + pk + "'}", "], $('#listHtmlPartPageDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestHtmlPartPageDesignKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageDesignCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'htmlPartKeys:" + pk + "'}", "], $('#listHtmlPartPageDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -4852,6 +4852,82 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		} g("div");
 	}
 
+	///////////////////
+	// htmlPartTitle //
+	///////////////////
+
+	/**	 The entity htmlPartTitle
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String htmlPartTitle;
+	@JsonIgnore
+	public Wrap<String> htmlPartTitleWrap = new Wrap<String>().p(this).c(String.class).var("htmlPartTitle").o(htmlPartTitle);
+
+	/**	<br/> The entity htmlPartTitle
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.html.part.HtmlPart&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:htmlPartTitle">Find the entity htmlPartTitle in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _htmlPartTitle(Wrap<String> c);
+
+	public String getHtmlPartTitle() {
+		return htmlPartTitle;
+	}
+	public void setHtmlPartTitle(String o) {
+		this.htmlPartTitle = HtmlPart.staticSetHtmlPartTitle(siteRequest_, o);
+		this.htmlPartTitleWrap.alreadyInitialized = true;
+	}
+	public static String staticSetHtmlPartTitle(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected HtmlPart htmlPartTitleInit() {
+		if(!htmlPartTitleWrap.alreadyInitialized) {
+			_htmlPartTitle(htmlPartTitleWrap);
+			if(htmlPartTitle == null)
+				setHtmlPartTitle(htmlPartTitleWrap.o);
+		}
+		htmlPartTitleWrap.alreadyInitialized(true);
+		return (HtmlPart)this;
+	}
+
+	public static String staticSolrHtmlPartTitle(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrHtmlPartTitle(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqHtmlPartTitle(SiteRequestEnUS siteRequest_, String o) {
+		return HtmlPart.staticSolrStrHtmlPartTitle(siteRequest_, HtmlPart.staticSolrHtmlPartTitle(siteRequest_, HtmlPart.staticSetHtmlPartTitle(siteRequest_, o)));
+	}
+
+	public String solrHtmlPartTitle() {
+		return HtmlPart.staticSolrHtmlPartTitle(siteRequest_, htmlPartTitle);
+	}
+
+	public String strHtmlPartTitle() {
+		return htmlPartTitle == null ? "" : htmlPartTitle;
+	}
+
+	public String sqlHtmlPartTitle() {
+		return htmlPartTitle;
+	}
+
+	public String jsonHtmlPartTitle() {
+		return htmlPartTitle == null ? "" : htmlPartTitle;
+	}
+
+	public String htmTooltipHtmlPartTitle() {
+		return null;
+	}
+
+	public String htmHtmlPartTitle() {
+		return htmlPartTitle == null ? "" : StringEscapeUtils.escapeHtml4(strHtmlPartTitle());
+	}
+
 	//////////////
 	// initDeep //
 	//////////////
@@ -4905,6 +4981,7 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		sort8Init();
 		sort9Init();
 		sort10Init();
+		htmlPartTitleInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -5011,6 +5088,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				return oHtmlPart.sort9;
 			case "sort10":
 				return oHtmlPart.sort10;
+			case "htmlPartTitle":
+				return oHtmlPart.htmlPartTitle;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -5119,6 +5198,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSetSort9(siteRequest_, o);
 		case "sort10":
 			return HtmlPart.staticSetSort10(siteRequest_, o);
+		case "htmlPartTitle":
+			return HtmlPart.staticSetHtmlPartTitle(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -5197,6 +5278,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSolrSort9(siteRequest_, (Double)o);
 		case "sort10":
 			return HtmlPart.staticSolrSort10(siteRequest_, (Double)o);
+		case "htmlPartTitle":
+			return HtmlPart.staticSolrHtmlPartTitle(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -5275,6 +5358,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSolrStrSort9(siteRequest_, (Double)o);
 		case "sort10":
 			return HtmlPart.staticSolrStrSort10(siteRequest_, (Double)o);
+		case "htmlPartTitle":
+			return HtmlPart.staticSolrStrHtmlPartTitle(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -5353,6 +5438,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			return HtmlPart.staticSolrFqSort9(siteRequest_, o);
 		case "sort10":
 			return HtmlPart.staticSolrFqSort10(siteRequest_, o);
+		case "htmlPartTitle":
+			return HtmlPart.staticSolrFqHtmlPartTitle(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -5907,6 +5994,12 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				if(sort10 != null)
 					oHtmlPart.setSort10(sort10);
 			}
+
+			if(saves.contains("htmlPartTitle")) {
+				String htmlPartTitle = (String)solrDocument.get("htmlPartTitle_stored_string");
+				if(htmlPartTitle != null)
+					oHtmlPart.setHtmlPartTitle(htmlPartTitle);
+			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -6074,6 +6167,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 			document.addField("sort10_indexed_double", sort10);
 			document.addField("sort10_stored_double", sort10);
 		}
+		if(htmlPartTitle != null) {
+			document.addField("htmlPartTitle_indexed_string", htmlPartTitle);
+			document.addField("htmlPartTitle_stored_string", htmlPartTitle);
+		}
 		super.indexCluster(document);
 
 	}
@@ -6138,6 +6235,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				return "sort9_indexed_double";
 			case "sort10":
 				return "sort10_indexed_double";
+			case "htmlPartTitle":
+				return "htmlPartTitle_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -6295,6 +6394,10 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		if(sort10 != null)
 			oHtmlPart.setSort10(sort10);
 
+		String htmlPartTitle = (String)solrDocument.get("htmlPartTitle_stored_string");
+		if(htmlPartTitle != null)
+			oHtmlPart.setHtmlPartTitle(htmlPartTitle);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -6371,6 +6474,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				apiRequest.addVars("sort9");
 			if(!Objects.equals(sort10, original.getSort10()))
 				apiRequest.addVars("sort10");
+			if(!Objects.equals(htmlPartTitle, original.getHtmlPartTitle()))
+				apiRequest.addVars("htmlPartTitle");
 			super.apiRequestCluster();
 		}
 	}
@@ -6380,7 +6485,7 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), htmlPartKey, pageDesignKeys, htmlLink, htmlElement, htmlId, htmlClasses, htmlStyle, htmlBefore, htmlAfter, htmlText, htmlVar, htmlVarSpan, htmlVarForm, htmlVarInput, htmlVarForEach, htmlVarHtml, htmlVarBase64Decode, htmlExclude, pdfExclude, loginLogout, searchUri, mapTo, sort1, sort2, sort3, sort4, sort5, sort6, sort7, sort8, sort9, sort10);
+		return Objects.hash(super.hashCode(), htmlPartKey, pageDesignKeys, htmlLink, htmlElement, htmlId, htmlClasses, htmlStyle, htmlBefore, htmlAfter, htmlText, htmlVar, htmlVarSpan, htmlVarForm, htmlVarInput, htmlVarForEach, htmlVarHtml, htmlVarBase64Decode, htmlExclude, pdfExclude, loginLogout, searchUri, mapTo, sort1, sort2, sort3, sort4, sort5, sort6, sort7, sort8, sort9, sort10, htmlPartTitle);
 	}
 
 	////////////
@@ -6425,7 +6530,8 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 				&& Objects.equals( sort7, that.sort7 )
 				&& Objects.equals( sort8, that.sort8 )
 				&& Objects.equals( sort9, that.sort9 )
-				&& Objects.equals( sort10, that.sort10 );
+				&& Objects.equals( sort10, that.sort10 )
+				&& Objects.equals( htmlPartTitle, that.htmlPartTitle );
 	}
 
 	//////////////
@@ -6468,6 +6574,7 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		sb.append( ", sort8: " ).append(sort8);
 		sb.append( ", sort9: " ).append(sort9);
 		sb.append( ", sort10: " ).append(sort10);
+		sb.append( ", htmlPartTitle: \"" ).append(htmlPartTitle).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

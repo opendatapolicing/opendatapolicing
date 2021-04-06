@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficstop;            
+package com.opendatapolicing.enus.trafficstop;         
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -387,41 +387,36 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 				l.add(count.getName());
 		}
 	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarH2: true
-	 * VarTitle: true
-	 */ 
-	protected void _trafficStopCompleteName(Wrap<String> c) {
-		StringBuilder b = new StringBuilder();
-		b.append(strStopDateTime());
-		if(stopPurposeTitle != null)
-			b.append(" ").append(stopPurposeTitle.toLowerCase());
-		if(stopActionTitle != null)
-			b.append(" with ").append(stopActionTitle.toLowerCase());
-		if(stopDriverArrest)
-			b.append(", driver arrested");
-		if(stopPassengerArrest)
-			b.append(", passenger arrested");
-		if(stopEncounterForce)
-			b.append(", force encountered");
-		if(stopEngageForce)
-			b.append(", force engaged");
-		if(stopOfficerInjury)
-			b.append(", officer injured");
-		if(stopDriverInjury)
-			b.append(", driver injured");
-		if(stopPassengerInjury)
-			b.append(", passenger injured");
-		c.o(b.toString());
-	}
-
-	@Override
-	protected void _objectTitle(Wrap<String> c) {
-		c.o(trafficStopCompleteName);
-	}
+//
+//	/**   
+//	 * {@inheritDoc}
+//	 * Indexed: true
+//	 * Stored: true
+//	 * VarH2: true
+//	 * VarTitle: true
+//	 */ 
+//	protected void _trafficStopCompleteName(Wrap<String> c) {
+//		StringBuilder b = new StringBuilder();
+//		b.append(strStopDateTime());
+//		if(stopPurposeTitle != null)
+//			b.append(" ").append(stopPurposeTitle.toLowerCase());
+//		if(stopActionTitle != null)
+//			b.append(" with ").append(stopActionTitle.toLowerCase());
+//		if(stopDriverArrest)
+//			b.append(", driver arrested");
+//		if(stopPassengerArrest)
+//			b.append(", passenger arrested");
+//		if(stopEncounterForce)
+//			b.append(", force encountered");
+//		if(stopEngageForce)
+//			b.append(", force engaged");
+//		if(stopOfficerInjury)
+//			b.append(", officer injured");
+//		if(stopDriverInjury)
+//			b.append(", driver injured");
+//		if(stopPassengerInjury)
+//			b.append(", passenger injured");
+//		c.o(b.toString());
+//	}
 }
 

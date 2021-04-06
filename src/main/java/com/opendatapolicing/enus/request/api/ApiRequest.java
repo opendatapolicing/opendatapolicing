@@ -40,10 +40,6 @@ public class ApiRequest extends ApiRequestGen<Object> {
 		c.o("PATCH-" + uuid);
 	}
 
-	protected void _empty(Wrap<Boolean> c) {
-		c.o(Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getJsonObject).map(b -> b.size()).orElse(0) == 0);
-	}
-
 	protected void _pk(Wrap<Long> c) {
 	}
 

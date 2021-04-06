@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.design;   
+package com.opendatapolicing.enus.design;  
 
 import java.util.List;
 
@@ -138,7 +138,7 @@ public class PageDesign extends PageDesignGen<Cluster> {
 	 * DisplayName.enUS: hidden
 	 * Indexed: true
 	 * Stored: true
-	 */                
+	 */               
 	protected void _designHidden(Wrap<Boolean> c) {
 		c.o(false);
 	}
@@ -156,10 +156,24 @@ public class PageDesign extends PageDesignGen<Cluster> {
 		c.o("text/html;charset=UTF-8");
 	}
 
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(pageDesignCompleteName);
+	}
+
 	/**
 	 * {@inheritDoc}
-	 */
-	@Override() protected void  _objectTitle(Wrap<String> c) {
-		c.o(pageDesignCompleteName);
+	 * Indexed: true
+	 * Stored: true
+	 * VarId: true
+	 * DisplayName.enUS: ID
+	 */ 
+	protected void _objectId(Wrap<String> c) {
+		if(objectTitle != null) {
+			c.o(toId(objectTitle));
+		}
+		else if(pk != null){
+			c.o(pk.toString());
+		}
 	}
 }

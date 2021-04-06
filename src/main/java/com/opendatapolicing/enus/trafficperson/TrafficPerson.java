@@ -470,37 +470,37 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 			w.o("White"); break;
 		}
 	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 */ 
-	protected void _trafficPersonShortName(Wrap<String> w) {
-		StringBuilder b = new StringBuilder();
-		b.append("person");
-		if(personAge != null)
-			b.append(" age ").append(strPersonAge());
-		b.append(" ").append(strPersonGenderTitle());
-		b.append(" ").append(strPersonRaceTitle());
-		b.append(" ").append(strPersonEthnicityTitle());
-		b.append(" ").append(strPersonTypeTitle());
-		w.o(b.toString().toLowerCase());
-	}
-
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarH2: true
-	 * VarTitle: true
-	 */ 
-	protected void _trafficPersonCompleteName(Wrap<String> c) {
-		c.o(trafficPersonShortName);
-	}
-
-	@Override
-	protected void _objectTitle(Wrap<String> c) {
-		c.o(trafficPersonCompleteName);
-	}
+//
+//	/**   
+//	 * {@inheritDoc}
+//	 * Indexed: true
+//	 * Stored: true
+//	 */ 
+//	protected void _trafficPersonShortName(Wrap<String> w) {
+//		StringBuilder b = new StringBuilder();
+//		b.append("person");
+//		if(personAge != null)
+//			b.append(" age ").append(strPersonAge());
+//		b.append(" ").append(strPersonGenderTitle());
+//		b.append(" ").append(strPersonRaceTitle());
+//		b.append(" ").append(strPersonEthnicityTitle());
+//		b.append(" ").append(strPersonTypeTitle());
+//		w.o(b.toString().toLowerCase());
+//	}
+//
+//	/**  
+//	 * {@inheritDoc}
+//	 * Indexed: true
+//	 * Stored: true
+//	 * VarH2: true
+//	 * VarTitle: true
+//	 */ 
+//	protected void _trafficPersonCompleteName(Wrap<String> c) {
+//		c.o(trafficPersonShortName);
+//	}
+//
+//	@Override
+//	protected void _objectTitle(Wrap<String> c) {
+//		c.o(trafficPersonCompleteName);
+//	}
 }

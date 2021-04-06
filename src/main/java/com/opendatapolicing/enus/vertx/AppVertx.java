@@ -585,13 +585,15 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		try {
 			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 			MailConfig config = new MailConfig();
-			config.setHostname(siteConfig.getEmailHost());
-			config.setPort(siteConfig.getEmailPort());
-			config.setSsl(siteConfig.getEmailSsl());
-			config.setUsername(siteConfig.getEmailUsername());
-			config.setPassword(siteConfig.getEmailPassword());
-			MailClient mailClient = MailClient.createShared(vertx, config);
-			siteContextEnUS.setMailClient(mailClient);
+			if(StringUtils.isNotBlank(siteConfig.getEmailHost())) {
+				config.setHostname(siteConfig.getEmailHost());
+				config.setPort(siteConfig.getEmailPort());
+				config.setSsl(siteConfig.getEmailSsl());
+				config.setUsername(siteConfig.getEmailUsername());
+				config.setPassword(siteConfig.getEmailPassword());
+				MailClient mailClient = MailClient.createShared(vertx, config);
+				siteContextEnUS.setMailClient(mailClient);
+			}
 			promise.complete();
 		} catch (Exception ex) {
 			LOG.error(configureEmailError, ex);

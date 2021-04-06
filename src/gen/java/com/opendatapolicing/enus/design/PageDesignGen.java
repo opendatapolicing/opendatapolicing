@@ -411,11 +411,11 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "parent designs")
-				.a("class", "valueObjectSuggest suggestParentDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestParentDesignKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setParentDesignKeys")
 				.a("id", classApiMethodMethod, "_parentDesignKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestPageDesignParentDesignKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,pageDesignCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'childDesignKeys:" + pk + "'}", "], $('#listPageDesignParentDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestPageDesignParentDesignKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageDesignCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'childDesignKeys:" + pk + "'}", "], $('#listPageDesignParentDesignKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -608,11 +608,11 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "parts")
-				.a("class", "valueObjectSuggest suggestHtmlPartKeys w3-input w3-border w3-cell w3-cell-middle ")
+				.a("class", "value suggestHtmlPartKeys w3-input w3-border w3-cell w3-cell-middle ")
 				.a("name", "setHtmlPartKeys")
 				.a("id", classApiMethodMethod, "_htmlPartKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestPageDesignHtmlPartKeys($(this).val() ? [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'pageDesignKeys:" + pk + "'}", "], $('#listPageDesignHtmlPartKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestPageDesignHtmlPartKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,htmlPartTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'pageDesignKeys:" + pk + "'}", "], $('#listPageDesignHtmlPartKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -1101,6 +1101,82 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	}
 
 	//////////////
+	// objectId //
+	//////////////
+
+	/**	 The entity objectId
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String objectId;
+	@JsonIgnore
+	public Wrap<String> objectIdWrap = new Wrap<String>().p(this).c(String.class).var("objectId").o(objectId);
+
+	/**	<br/> The entity objectId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectId">Find the entity objectId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _objectId(Wrap<String> c);
+
+	public String getObjectId() {
+		return objectId;
+	}
+	public void setObjectId(String o) {
+		this.objectId = PageDesign.staticSetObjectId(siteRequest_, o);
+		this.objectIdWrap.alreadyInitialized = true;
+	}
+	public static String staticSetObjectId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected PageDesign objectIdInit() {
+		if(!objectIdWrap.alreadyInitialized) {
+			_objectId(objectIdWrap);
+			if(objectId == null)
+				setObjectId(objectIdWrap.o);
+		}
+		objectIdWrap.alreadyInitialized(true);
+		return (PageDesign)this;
+	}
+
+	public static String staticSolrObjectId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrObjectId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqObjectId(SiteRequestEnUS siteRequest_, String o) {
+		return PageDesign.staticSolrStrObjectId(siteRequest_, PageDesign.staticSolrObjectId(siteRequest_, PageDesign.staticSetObjectId(siteRequest_, o)));
+	}
+
+	public String solrObjectId() {
+		return PageDesign.staticSolrObjectId(siteRequest_, objectId);
+	}
+
+	public String strObjectId() {
+		return objectId == null ? "" : objectId;
+	}
+
+	public String sqlObjectId() {
+		return objectId;
+	}
+
+	public String jsonObjectId() {
+		return objectId == null ? "" : objectId;
+	}
+
+	public String htmTooltipObjectId() {
+		return null;
+	}
+
+	public String htmObjectId() {
+		return objectId == null ? "" : StringEscapeUtils.escapeHtml4(strObjectId());
+	}
+
+	//////////////
 	// initDeep //
 	//////////////
 
@@ -1128,6 +1204,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		pageDesignCompleteNameInit();
 		designHiddenInit();
 		pageContentTypeInit();
+		objectIdInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -1184,6 +1261,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				return oPageDesign.designHidden;
 			case "pageContentType":
 				return oPageDesign.pageContentType;
+			case "objectId":
+				return oPageDesign.objectId;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -1252,6 +1331,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			return PageDesign.staticSetDesignHidden(siteRequest_, o);
 		case "pageContentType":
 			return PageDesign.staticSetPageContentType(siteRequest_, o);
+		case "objectId":
+			return PageDesign.staticSetObjectId(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -1280,6 +1361,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			return PageDesign.staticSolrDesignHidden(siteRequest_, (Boolean)o);
 		case "pageContentType":
 			return PageDesign.staticSolrPageContentType(siteRequest_, (String)o);
+		case "objectId":
+			return PageDesign.staticSolrObjectId(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -1308,6 +1391,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			return PageDesign.staticSolrStrDesignHidden(siteRequest_, (Boolean)o);
 		case "pageContentType":
 			return PageDesign.staticSolrStrPageContentType(siteRequest_, (String)o);
+		case "objectId":
+			return PageDesign.staticSolrStrObjectId(siteRequest_, (String)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -1336,6 +1421,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			return PageDesign.staticSolrFqDesignHidden(siteRequest_, o);
 		case "pageContentType":
 			return PageDesign.staticSolrFqPageContentType(siteRequest_, o);
+		case "objectId":
+			return PageDesign.staticSolrFqObjectId(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -1466,6 +1553,12 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				if(pageContentType != null)
 					oPageDesign.setPageContentType(pageContentType);
 			}
+
+			if(saves.contains("objectId")) {
+				String objectId = (String)solrDocument.get("objectId_stored_string");
+				if(objectId != null)
+					oPageDesign.setObjectId(objectId);
+			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -1544,6 +1637,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 			document.addField("pageContentType_indexed_string", pageContentType);
 			document.addField("pageContentType_stored_string", pageContentType);
 		}
+		if(objectId != null) {
+			document.addField("objectId_indexed_string", objectId);
+			document.addField("objectId_stored_string", objectId);
+		}
 		super.indexCluster(document);
 
 	}
@@ -1564,6 +1661,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				return "designHidden_indexed_boolean";
 			case "pageContentType":
 				return "pageContentType_indexed_string";
+			case "objectId":
+				return "objectId_indexed_string";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -1621,6 +1720,10 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		if(pageContentType != null)
 			oPageDesign.setPageContentType(pageContentType);
 
+		String objectId = (String)solrDocument.get("objectId_stored_string");
+		if(objectId != null)
+			oPageDesign.setObjectId(objectId);
+
 		super.storeCluster(solrDocument);
 	}
 
@@ -1647,6 +1750,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				apiRequest.addVars("designHidden");
 			if(!Objects.equals(pageContentType, original.getPageContentType()))
 				apiRequest.addVars("pageContentType");
+			if(!Objects.equals(objectId, original.getObjectId()))
+				apiRequest.addVars("objectId");
 			super.apiRequestCluster();
 		}
 	}
@@ -1656,7 +1761,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), pageDesignKey, childDesignKeys, parentDesignKeys, htmlPartKeys, pageDesignCompleteName, designHidden, pageContentType);
+		return Objects.hash(super.hashCode(), pageDesignKey, childDesignKeys, parentDesignKeys, htmlPartKeys, pageDesignCompleteName, designHidden, pageContentType, objectId);
 	}
 
 	////////////
@@ -1676,7 +1781,8 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 				&& Objects.equals( htmlPartKeys, that.htmlPartKeys )
 				&& Objects.equals( pageDesignCompleteName, that.pageDesignCompleteName )
 				&& Objects.equals( designHidden, that.designHidden )
-				&& Objects.equals( pageContentType, that.pageContentType );
+				&& Objects.equals( pageContentType, that.pageContentType )
+				&& Objects.equals( objectId, that.objectId );
 	}
 
 	//////////////
@@ -1694,6 +1800,7 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		sb.append( ", pageDesignCompleteName: \"" ).append(pageDesignCompleteName).append( "\"" );
 		sb.append( ", designHidden: " ).append(designHidden);
 		sb.append( ", pageContentType: \"" ).append(pageContentType).append( "\"" );
+		sb.append( ", objectId: \"" ).append(objectId).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
 	}

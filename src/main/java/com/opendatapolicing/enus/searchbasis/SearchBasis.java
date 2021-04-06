@@ -555,35 +555,35 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 			w.o("Witness Observation"); break;
 		}
 	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 */ 
-	protected void _searchBasisShortName(Wrap<String> w) {
-		StringBuilder b = new StringBuilder();
-		if(searchBasisTitle != null)
-			b.append(strSearchBasisTitle());
-		w.o(b.toString());
-	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarH2: true
-	 * VarTitle: true
-	 */ 
-	protected void _searchBasisCompleteName(Wrap<String> c) {
-		if(searchKey == null)
-			c.o(String.format("%s basis", searchBasisShortName));
-		else
-			c.o(String.format("%s basis of search %s", searchBasisShortName, searchKey));
-	}
-
-	@Override
-	protected void _objectTitle(Wrap<String> c) {
-		c.o(searchBasisCompleteName);
-	}
+//
+//	/**   
+//	 * {@inheritDoc}
+//	 * Indexed: true
+//	 * Stored: true
+//	 */ 
+//	protected void _searchBasisShortName(Wrap<String> w) {
+//		StringBuilder b = new StringBuilder();
+//		if(searchBasisTitle != null)
+//			b.append(strSearchBasisTitle());
+//		w.o(b.toString());
+//	}
+//
+//	/**   
+//	 * {@inheritDoc}
+//	 * Indexed: true
+//	 * Stored: true
+//	 * VarH2: true
+//	 * VarTitle: true
+//	 */ 
+//	protected void _searchBasisCompleteName(Wrap<String> c) {
+//		if(searchKey == null)
+//			c.o(String.format("%s basis", searchBasisShortName));
+//		else
+//			c.o(String.format("%s basis of search %s", searchBasisShortName, searchKey));
+//	}
+//
+//	@Override
+//	protected void _objectTitle(Wrap<String> c) {
+//		c.o(searchBasisCompleteName);
+//	}
 }

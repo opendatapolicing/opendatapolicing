@@ -18,7 +18,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.lang.Boolean;
 import java.time.ZoneOffset;
 import java.lang.String;
 import java.math.RoundingMode;
@@ -543,79 +542,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		return id == null ? "" : id;
 	}
 
-	///////////
-	// empty //
-	///////////
-
-	/**	 The entity empty
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected Boolean empty;
-	@JsonIgnore
-	public Wrap<Boolean> emptyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("empty").o(empty);
-
-	/**	<br/> The entity empty
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:empty">Find the entity empty in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _empty(Wrap<Boolean> c);
-
-	public Boolean getEmpty() {
-		return empty;
-	}
-
-	public void setEmpty(Boolean empty) {
-		this.empty = empty;
-		this.emptyWrap.alreadyInitialized = true;
-	}
-	public void setEmpty(String o) {
-		this.empty = ApiRequest.staticSetEmpty(siteRequest_, o);
-		this.emptyWrap.alreadyInitialized = true;
-	}
-	public static Boolean staticSetEmpty(SiteRequestEnUS siteRequest_, String o) {
-		return Boolean.parseBoolean(o);
-	}
-	protected ApiRequest emptyInit() {
-		if(!emptyWrap.alreadyInitialized) {
-			_empty(emptyWrap);
-			if(empty == null)
-				setEmpty(emptyWrap.o);
-		}
-		emptyWrap.alreadyInitialized(true);
-		return (ApiRequest)this;
-	}
-
-	public static Boolean staticSolrEmpty(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
-	}
-
-	public static String staticSolrStrEmpty(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqEmpty(SiteRequestEnUS siteRequest_, String o) {
-		return ApiRequest.staticSolrStrEmpty(siteRequest_, ApiRequest.staticSolrEmpty(siteRequest_, ApiRequest.staticSetEmpty(siteRequest_, o)));
-	}
-
-	public Boolean solrEmpty() {
-		return ApiRequest.staticSolrEmpty(siteRequest_, empty);
-	}
-
-	public String strEmpty() {
-		return empty == null ? "" : empty.toString();
-	}
-
-	public Boolean sqlEmpty() {
-		return empty;
-	}
-
-	public String jsonEmpty() {
-		return empty == null ? "" : empty.toString();
-	}
-
 	////////
 	// pk //
 	////////
@@ -1043,7 +969,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		numPATCHInit();
 		uuidInit();
 		idInit();
-		emptyInit();
 		pkInit();
 		originalInit();
 		pksInit();
@@ -1104,8 +1029,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 				return oApiRequest.uuid;
 			case "id":
 				return oApiRequest.id;
-			case "empty":
-				return oApiRequest.empty;
 			case "pk":
 				return oApiRequest.pk;
 			case "original":
@@ -1167,8 +1090,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			return ApiRequest.staticSetUuid(siteRequest_, o);
 		case "id":
 			return ApiRequest.staticSetId(siteRequest_, o);
-		case "empty":
-			return ApiRequest.staticSetEmpty(siteRequest_, o);
 		case "pk":
 			return ApiRequest.staticSetPk(siteRequest_, o);
 		case "pks":
@@ -1203,8 +1124,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			return ApiRequest.staticSolrUuid(siteRequest_, (String)o);
 		case "id":
 			return ApiRequest.staticSolrId(siteRequest_, (String)o);
-		case "empty":
-			return ApiRequest.staticSolrEmpty(siteRequest_, (Boolean)o);
 		case "pk":
 			return ApiRequest.staticSolrPk(siteRequest_, (Long)o);
 		case "pks":
@@ -1239,8 +1158,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			return ApiRequest.staticSolrStrUuid(siteRequest_, (String)o);
 		case "id":
 			return ApiRequest.staticSolrStrId(siteRequest_, (String)o);
-		case "empty":
-			return ApiRequest.staticSolrStrEmpty(siteRequest_, (Boolean)o);
 		case "pk":
 			return ApiRequest.staticSolrStrPk(siteRequest_, (Long)o);
 		case "pks":
@@ -1275,8 +1192,6 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			return ApiRequest.staticSolrFqUuid(siteRequest_, o);
 		case "id":
 			return ApiRequest.staticSolrFqId(siteRequest_, o);
-		case "empty":
-			return ApiRequest.staticSolrFqEmpty(siteRequest_, o);
 		case "pk":
 			return ApiRequest.staticSolrFqPk(siteRequest_, o);
 		case "pks":

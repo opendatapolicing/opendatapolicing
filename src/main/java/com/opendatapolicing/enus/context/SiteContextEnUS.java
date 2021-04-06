@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.context;  
+package com.opendatapolicing.enus.context; 
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;

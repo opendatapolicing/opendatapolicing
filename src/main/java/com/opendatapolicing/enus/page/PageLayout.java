@@ -555,34 +555,6 @@ public class PageLayout extends PageLayoutGen<Object> {
 							sx("my user page");
 						} g("a");
 					} g("div");
-					{ e("div").a("class", "w3-cell-row ").f();
-						e("label").a("for", "Page_seeArchived").a("class", "").f().sx("see archived").g("label");
-						e("input")
-							.a("type", "checkbox")
-							.a("value", "true")
-							.a("class", "setSeeArchived")
-							.a("name", "setSeeArchived")
-							.a("id", "Page_seeArchived")
-							.a("onchange", "patchSiteUserVal([{ name: 'fq', value: 'pk:' + ", siteRequest_.getUserKey(), " }], 'setSeeArchived', $(this).prop('checked'), function() { addGlow($('#Page_seeArchived')); }, function() { addError($('#Page_seeArchived')); }); ")
-							;
-							if(o.getSeeArchived() != null && o.getSeeArchived())
-								a("checked", "checked");
-						fg();
-					} g("div");
-					{ e("div").a("class", "w3-cell-row ").f();
-						e("label").a("for", "Page_seeDeleted").a("class", "").f().sx("see deleted").g("label");
-						e("input")
-							.a("type", "checkbox")
-							.a("value", "true")
-							.a("class", "setSeeDeleted")
-							.a("name", "setSeeDeleted")
-							.a("id", "Page_seeDeleted")
-							.a("onchange", "patchSiteUserVal([{ name: 'fq', value: 'pk:' + ", siteRequest_.getUserKey(), " }], 'setSeeDeleted', $(this).prop('checked'), function() { addGlow($('#Page_seeDeleted')); }, function() { addError($('#Page_seeDeleted')); }); ")
-							;
-							if(o.getSeeDeleted() != null && o.getSeeDeleted())
-								a("checked", "checked");
-						fg();
-					} g("div");
 				} g("div");
 			} g("div");
 			e("div").a("class", "site-bar-item w3-bar-item ").f();
@@ -792,57 +764,6 @@ public class PageLayout extends PageLayoutGen<Object> {
 	}
 
 	public void  htmlFormOptionsUtilisateurSite(SiteUser o) {
-		{ e("div").a("class", "w3-cell-row ").f();
-			{ e("div").a("class", "w3-cell w3-cell-middle w3-center w3-mobile ").f();
-				{ e("form").a("id", "voirArchiveForm").a("style", "display: inline-block; ").f();
-					e("input")
-						.a("type", "hidden")
-						.a("name", "voirArchive")
-						.a("id", "Page_voirArchive")
-						.a("value", "false")
-					.fg();
-
-					e("input")
-						.a("type", "checkbox")
-						.a("value", "true")
-						.a("class", "setSeeArchived")
-						.a("name", "setSeeArchived")
-						.a("id", "Page_voirArchive")
-						.a("onchange", "patchUtilisateurSite($('#UtilisateurSiteForm'), $('#voirArchiveForm')); ")
-						;
-						if(o.getSeeArchived() != null && o.getSeeArchived())
-							a("checked", "checked");
-					fg();
-
-					e("label").a("for", "Page_voirArchive").a("class", "").f().sx("voir archivé").g("label");
-				} g("form");
-			} g("div");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			{ e("div").a("class", "w3-cell w3-cell-middle w3-center w3-mobile ").f();
-				{ e("form").a("id", "voirSupprimeForm").a("style", "display: inline-block; ").f();
-					e("input")
-						.a("type", "hidden")
-						.a("name", "voirSupprime")
-						.a("id", "Page_voirSupprime")
-						.a("value", "false")
-					.fg();
-
-					e("input");
-						a("type", "checkbox");
-						a("value", "true");
-						a("class", "setSeeDeleted");
-						a("name", "setSeeDeleted");
-						a("id", "Page_voirSupprime");
-						a("onchange", "patchUtilisateurSite($('#UtilisateurSiteForm'), $('#voirSupprimeForm')); ");
-						if(o.getSeeDeleted() != null && o.getSeeDeleted())
-							a("checked", "checked");
-					fg();
-
-					e("label").a("for", "Page_voirSupprime").a("class", "").f().sx("voir supprimé").g("label");
-				} g("form");
-			} g("div");
-		} g("div");
 	}
 
 	public Integer htmlPageLayout2(String pageContentType, List<HtmlPart> htmlPartList, HtmlPart htmlPartParent, Integer start, Integer size) {

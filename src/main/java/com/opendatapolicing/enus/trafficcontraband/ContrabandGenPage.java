@@ -62,8 +62,7 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageH2(Wrap<String> c) {
-		if(trafficContraband_ != null && trafficContraband_.getTrafficSearchCompleteName() != null)
-			c.o(trafficContraband_.getTrafficSearchCompleteName());
+		c.o("");
 	}
 
 	@Override protected void _pageH3(Wrap<String> c) {
@@ -71,8 +70,8 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 	}
 
 	@Override protected void _pageTitle(Wrap<String> c) {
-		if(trafficContraband_ != null && trafficContraband_.getTrafficSearchCompleteName() != null)
-			c.o(trafficContraband_.getTrafficSearchCompleteName());
+		if(trafficContraband_ != null && trafficContraband_.getObjectTitle() != null)
+			c.o(trafficContraband_.getObjectTitle());
 		else if(trafficContraband_ != null)
 			c.o("contrabands");
 		else if(listTrafficContraband == null || listTrafficContraband.size() == 0)
@@ -144,10 +143,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -173,10 +168,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("POST");
@@ -228,10 +219,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -255,10 +242,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 	public void htmlFormPATCHTrafficContraband(TrafficContraband o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("PATCH");
@@ -288,10 +271,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmSearchKey("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -312,7 +291,6 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
 			o.htmObjectTitle("Search");
 		} g("div");
 	}
@@ -379,7 +357,7 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listTrafficContraband.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -779,7 +757,7 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -850,7 +828,7 @@ public class ContrabandGenPage extends ContrabandGenPageGen<PageLayout> {
 					.a("name", "suggestTrafficContraband")
 					.a("id", "suggestTrafficContraband", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestTrafficContrabandObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,trafficSearchCompleteName' } ], $('#suggestListTrafficContraband", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestTrafficContraband( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ], $('#suggestListTrafficContraband", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/contraband?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listTrafficContraband != null)
 					p.a("value", query2);

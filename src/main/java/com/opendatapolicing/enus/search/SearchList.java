@@ -101,11 +101,6 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 	protected void _queryResponse(Wrap<QueryResponse> c) {
 		if(this.c != null)
 			solrQuery.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
-		SiteUser siteUser = siteRequest_.getSiteUser();
-		if(siteUser == null || !siteUser.getSeeDeleted())
-			solrQuery.addFilterQuery("deleted_indexed_boolean:false");
-		if(siteUser == null || !siteUser.getSeeArchived())
-			solrQuery.addFilterQuery("archived_indexed_boolean:false");
 		if(solrQuery.getQuery() != null) {
 			try {
 				QueryResponse o = siteRequest_.getSiteContext_().getSolrClient().query(solrQuery);

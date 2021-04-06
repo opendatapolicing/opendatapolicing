@@ -49,6 +49,17 @@ import com.opendatapolicing.enus.wrap.Wrap;
  */           
 public class SiteUser extends SiteUserGen<Cluster> {   
 
+	/**   
+	 * {@inheritDoc}
+	 * Var.enUS: userKey
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * Modify: false
+	 */                 
+	protected void _userKey(Wrap<Long> c) {
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * Indexed: true
@@ -111,35 +122,5 @@ public class SiteUser extends SiteUserGen<Cluster> {
 	 * Define: true
 	 */
 	protected void _userFullName(Wrap<String> c) {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 2
-	 * DisplayName.enUS: see archived
-	 */
-	protected void _seeArchived(Wrap<Boolean> c) {
-		c.o(false);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 3
-	 * DisplayName.enUS: see deleted
-	 */
-	protected void _seeDeleted(Wrap<Boolean> c) {
-		c.o(false);
-	}
-
-	@Override protected void  _objectTitle(Wrap<String> c) {
-		c.o(userFullName + " " + userName);
 	}
 }

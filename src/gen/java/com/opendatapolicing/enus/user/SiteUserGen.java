@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
 import java.lang.String;
 import java.math.RoundingMode;
@@ -76,6 +75,113 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public static final String SiteUser_NameAdjectivePlural = "site users";
 	public static final String SiteUser_IconGroup = "regular";
 	public static final String SiteUser_IconName = "user-cog";
+
+	/////////////
+	// userKey //
+	/////////////
+
+	/**	 The entity userKey
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long userKey;
+	@JsonIgnore
+	public Wrap<Long> userKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("userKey").o(userKey);
+
+	/**	<br/> The entity userKey
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:userKey">Find the entity userKey in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _userKey(Wrap<Long> c);
+
+	public Long getUserKey() {
+		return userKey;
+	}
+
+	public void setUserKey(Long userKey) {
+		this.userKey = userKey;
+		this.userKeyWrap.alreadyInitialized = true;
+	}
+	public void setUserKey(String o) {
+		this.userKey = SiteUser.staticSetUserKey(siteRequest_, o);
+		this.userKeyWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetUserKey(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteUser userKeyInit() {
+		if(!userKeyWrap.alreadyInitialized) {
+			_userKey(userKeyWrap);
+			if(userKey == null)
+				setUserKey(userKeyWrap.o);
+		}
+		userKeyWrap.alreadyInitialized(true);
+		return (SiteUser)this;
+	}
+
+	public static Long staticSolrUserKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrUserKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqUserKey(SiteRequestEnUS siteRequest_, String o) {
+		return SiteUser.staticSolrStrUserKey(siteRequest_, SiteUser.staticSolrUserKey(siteRequest_, SiteUser.staticSetUserKey(siteRequest_, o)));
+	}
+
+	public Long solrUserKey() {
+		return SiteUser.staticSolrUserKey(siteRequest_, userKey);
+	}
+
+	public String strUserKey() {
+		return userKey == null ? "" : userKey.toString();
+	}
+
+	public Long sqlUserKey() {
+		return userKey;
+	}
+
+	public String jsonUserKey() {
+		return userKey == null ? "" : userKey.toString();
+	}
+
+	public String htmTooltipUserKey() {
+		return null;
+	}
+
+	public String htmUserKey() {
+		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
+	}
+
+	public void inputUserKey(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		e("span").a("class", "varSiteUser", pk, "UserKey ").f().sx(htmUserKey()).g("span");
+	}
+
+	public void htmUserKey(String classApiMethodMethod) {
+		SiteUser s = (SiteUser)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserKey").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputUserKey(classApiMethodMethod);
+							} g("div");
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
 
 	//////////////
 	// userKeys //
@@ -1022,294 +1128,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		} g("div");
 	}
 
-	/////////////////
-	// seeArchived //
-	/////////////////
-
-	/**	 The entity seeArchived
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected Boolean seeArchived;
-	@JsonIgnore
-	public Wrap<Boolean> seeArchivedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("seeArchived").o(seeArchived);
-
-	/**	<br/> The entity seeArchived
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:seeArchived">Find the entity seeArchived in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _seeArchived(Wrap<Boolean> c);
-
-	public Boolean getSeeArchived() {
-		return seeArchived;
-	}
-
-	public void setSeeArchived(Boolean seeArchived) {
-		this.seeArchived = seeArchived;
-		this.seeArchivedWrap.alreadyInitialized = true;
-	}
-	public void setSeeArchived(String o) {
-		this.seeArchived = SiteUser.staticSetSeeArchived(siteRequest_, o);
-		this.seeArchivedWrap.alreadyInitialized = true;
-	}
-	public static Boolean staticSetSeeArchived(SiteRequestEnUS siteRequest_, String o) {
-		return Boolean.parseBoolean(o);
-	}
-	protected SiteUser seeArchivedInit() {
-		if(!seeArchivedWrap.alreadyInitialized) {
-			_seeArchived(seeArchivedWrap);
-			if(seeArchived == null)
-				setSeeArchived(seeArchivedWrap.o);
-		}
-		seeArchivedWrap.alreadyInitialized(true);
-		return (SiteUser)this;
-	}
-
-	public static Boolean staticSolrSeeArchived(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
-	}
-
-	public static String staticSolrStrSeeArchived(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqSeeArchived(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUser.staticSolrStrSeeArchived(siteRequest_, SiteUser.staticSolrSeeArchived(siteRequest_, SiteUser.staticSetSeeArchived(siteRequest_, o)));
-	}
-
-	public Boolean solrSeeArchived() {
-		return SiteUser.staticSolrSeeArchived(siteRequest_, seeArchived);
-	}
-
-	public String strSeeArchived() {
-		return seeArchived == null ? "" : seeArchived.toString();
-	}
-
-	public Boolean sqlSeeArchived() {
-		return seeArchived;
-	}
-
-	public String jsonSeeArchived() {
-		return seeArchived == null ? "" : seeArchived.toString();
-	}
-
-	public String htmTooltipSeeArchived() {
-		return null;
-	}
-
-	public String htmSeeArchived() {
-		return seeArchived == null ? "" : StringEscapeUtils.escapeHtml4(strSeeArchived());
-	}
-
-	public void inputSeeArchived(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_seeArchived")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_seeArchived");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSeeArchived classSiteUser inputSiteUser", pk, "SeeArchived w3-input w3-border ");
-				a("name", "setSeeArchived");
-			} else {
-				a("class", "valueSeeArchived classSiteUser inputSiteUser", pk, "SeeArchived w3-input w3-border ");
-				a("name", "seeArchived");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSeeArchived', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_seeArchived')); }, function() { addError($('#", classApiMethodMethod, "_seeArchived')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSeeArchived() != null && getSeeArchived())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "SeeArchived ").f().sx(htmSeeArchived()).g("span");
-		}
-	}
-
-	public void htmSeeArchived(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserSeeArchived").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
-							e("label").a("for", classApiMethodMethod, "_seeArchived").a("class", "").f().sx("see archived").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSeeArchived(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
-	////////////////
-	// seeDeleted //
-	////////////////
-
-	/**	 The entity seeDeleted
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected Boolean seeDeleted;
-	@JsonIgnore
-	public Wrap<Boolean> seeDeletedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("seeDeleted").o(seeDeleted);
-
-	/**	<br/> The entity seeDeleted
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:seeDeleted">Find the entity seeDeleted in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _seeDeleted(Wrap<Boolean> c);
-
-	public Boolean getSeeDeleted() {
-		return seeDeleted;
-	}
-
-	public void setSeeDeleted(Boolean seeDeleted) {
-		this.seeDeleted = seeDeleted;
-		this.seeDeletedWrap.alreadyInitialized = true;
-	}
-	public void setSeeDeleted(String o) {
-		this.seeDeleted = SiteUser.staticSetSeeDeleted(siteRequest_, o);
-		this.seeDeletedWrap.alreadyInitialized = true;
-	}
-	public static Boolean staticSetSeeDeleted(SiteRequestEnUS siteRequest_, String o) {
-		return Boolean.parseBoolean(o);
-	}
-	protected SiteUser seeDeletedInit() {
-		if(!seeDeletedWrap.alreadyInitialized) {
-			_seeDeleted(seeDeletedWrap);
-			if(seeDeleted == null)
-				setSeeDeleted(seeDeletedWrap.o);
-		}
-		seeDeletedWrap.alreadyInitialized(true);
-		return (SiteUser)this;
-	}
-
-	public static Boolean staticSolrSeeDeleted(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o;
-	}
-
-	public static String staticSolrStrSeeDeleted(SiteRequestEnUS siteRequest_, Boolean o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqSeeDeleted(SiteRequestEnUS siteRequest_, String o) {
-		return SiteUser.staticSolrStrSeeDeleted(siteRequest_, SiteUser.staticSolrSeeDeleted(siteRequest_, SiteUser.staticSetSeeDeleted(siteRequest_, o)));
-	}
-
-	public Boolean solrSeeDeleted() {
-		return SiteUser.staticSolrSeeDeleted(siteRequest_, seeDeleted);
-	}
-
-	public String strSeeDeleted() {
-		return seeDeleted == null ? "" : seeDeleted.toString();
-	}
-
-	public Boolean sqlSeeDeleted() {
-		return seeDeleted;
-	}
-
-	public String jsonSeeDeleted() {
-		return seeDeleted == null ? "" : seeDeleted.toString();
-	}
-
-	public String htmTooltipSeeDeleted() {
-		return null;
-	}
-
-	public String htmSeeDeleted() {
-		return seeDeleted == null ? "" : StringEscapeUtils.escapeHtml4(strSeeDeleted());
-	}
-
-	public void inputSeeDeleted(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_seeDeleted")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_seeDeleted");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSeeDeleted classSiteUser inputSiteUser", pk, "SeeDeleted w3-input w3-border ");
-				a("name", "setSeeDeleted");
-			} else {
-				a("class", "valueSeeDeleted classSiteUser inputSiteUser", pk, "SeeDeleted w3-input w3-border ");
-				a("name", "seeDeleted");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSeeDeleted', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_seeDeleted')); }, function() { addError($('#", classApiMethodMethod, "_seeDeleted')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSeeDeleted() != null && getSeeDeleted())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "SeeDeleted ").f().sx(htmSeeDeleted()).g("span");
-		}
-	}
-
-	public void htmSeeDeleted(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserSeeDeleted").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
-							e("label").a("for", classApiMethodMethod, "_seeDeleted").a("class", "").f().sx("see deleted").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSeeDeleted(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -1331,6 +1149,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 
 	public void initSiteUser() {
+		userKeyInit();
 		userKeysInit();
 		userIdInit();
 		userNameInit();
@@ -1338,8 +1157,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		userFirstNameInit();
 		userLastNameInit();
 		userFullNameInit();
-		seeArchivedInit();
-		seeDeletedInit();
 	}
 
 	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -1382,6 +1199,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public Object obtainSiteUser(String var) {
 		SiteUser oSiteUser = (SiteUser)this;
 		switch(var) {
+			case "userKey":
+				return oSiteUser.userKey;
 			case "userKeys":
 				return oSiteUser.userKeys;
 			case "userId":
@@ -1396,10 +1215,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				return oSiteUser.userLastName;
 			case "userFullName":
 				return oSiteUser.userFullName;
-			case "seeArchived":
-				return oSiteUser.seeArchived;
-			case "seeDeleted":
-				return oSiteUser.seeDeleted;
 			default:
 				return super.obtainCluster(var);
 		}
@@ -1439,6 +1254,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 	public static Object staticSetSiteUser(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "userKey":
+			return SiteUser.staticSetUserKey(siteRequest_, o);
 		case "userKeys":
 			return SiteUser.staticSetUserKeys(siteRequest_, o);
 		case "userId":
@@ -1453,10 +1270,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSetUserLastName(siteRequest_, o);
 		case "userFullName":
 			return SiteUser.staticSetUserFullName(siteRequest_, o);
-		case "seeArchived":
-			return SiteUser.staticSetSeeArchived(siteRequest_, o);
-		case "seeDeleted":
-			return SiteUser.staticSetSeeDeleted(siteRequest_, o);
 			default:
 				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
 		}
@@ -1471,6 +1284,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 	public static Object staticSolrSiteUser(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "userKey":
+			return SiteUser.staticSolrUserKey(siteRequest_, (Long)o);
 		case "userKeys":
 			return SiteUser.staticSolrUserKeys(siteRequest_, (Long)o);
 		case "userId":
@@ -1485,10 +1300,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrUserLastName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteUser.staticSolrUserFullName(siteRequest_, (String)o);
-		case "seeArchived":
-			return SiteUser.staticSolrSeeArchived(siteRequest_, (Boolean)o);
-		case "seeDeleted":
-			return SiteUser.staticSolrSeeDeleted(siteRequest_, (Boolean)o);
 			default:
 				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
 		}
@@ -1503,6 +1314,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 	public static String staticSolrStrSiteUser(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
+		case "userKey":
+			return SiteUser.staticSolrStrUserKey(siteRequest_, (Long)o);
 		case "userKeys":
 			return SiteUser.staticSolrStrUserKeys(siteRequest_, (Long)o);
 		case "userId":
@@ -1517,10 +1330,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrStrUserLastName(siteRequest_, (String)o);
 		case "userFullName":
 			return SiteUser.staticSolrStrUserFullName(siteRequest_, (String)o);
-		case "seeArchived":
-			return SiteUser.staticSolrStrSeeArchived(siteRequest_, (Boolean)o);
-		case "seeDeleted":
-			return SiteUser.staticSolrStrSeeDeleted(siteRequest_, (Boolean)o);
 			default:
 				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
 		}
@@ -1535,6 +1344,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 	public static String staticSolrFqSiteUser(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
+		case "userKey":
+			return SiteUser.staticSolrFqUserKey(siteRequest_, o);
 		case "userKeys":
 			return SiteUser.staticSolrFqUserKeys(siteRequest_, o);
 		case "userId":
@@ -1549,10 +1360,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return SiteUser.staticSolrFqUserLastName(siteRequest_, o);
 		case "userFullName":
 			return SiteUser.staticSolrFqUserFullName(siteRequest_, o);
-		case "seeArchived":
-			return SiteUser.staticSolrFqSeeArchived(siteRequest_, o);
-		case "seeDeleted":
-			return SiteUser.staticSolrFqSeeDeleted(siteRequest_, o);
 			default:
 				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
 		}
@@ -1579,6 +1386,11 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 	public Object defineSiteUser(String var, String val) {
 		switch(var.toLowerCase()) {
+			case "userkey":
+				if(val != null)
+					setUserKey(val);
+				saves.add("userKey");
+				return val;
 			case "userid":
 				if(val != null)
 					setUserId(val);
@@ -1609,16 +1421,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 					setUserFullName(val);
 				saves.add("userFullName");
 				return val;
-			case "seearchived":
-				if(val != null)
-					setSeeArchived(val);
-				saves.add("seeArchived");
-				return val;
-			case "seedeleted":
-				if(val != null)
-					setSeeDeleted(val);
-				saves.add("seeDeleted");
-				return val;
 			default:
 				return super.defineCluster(var, val);
 		}
@@ -1641,6 +1443,11 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 	public Object defineSiteUser(String var, Object val) {
 		switch(var.toLowerCase()) {
+			case "userkey":
+				if(val instanceof Long)
+					setUserKey((Long)val);
+				saves.add("userKey");
+				return val;
 			case "userid":
 				if(val instanceof String)
 					setUserId((String)val);
@@ -1671,16 +1478,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 					setUserFullName((String)val);
 				saves.add("userFullName");
 				return val;
-			case "seearchived":
-				if(val instanceof Boolean)
-					setSeeArchived((Boolean)val);
-				saves.add("seeArchived");
-				return val;
-			case "seedeleted":
-				if(val instanceof Boolean)
-					setSeeDeleted((Boolean)val);
-				saves.add("seeDeleted");
-				return val;
 			default:
 				return super.defineCluster(var, val);
 		}
@@ -1697,6 +1494,12 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		SiteUser oSiteUser = (SiteUser)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
+
+			if(saves.contains("userKey")) {
+				Long userKey = (Long)solrDocument.get("userKey_stored_long");
+				if(userKey != null)
+					oSiteUser.setUserKey(userKey);
+			}
 
 			if(saves.contains("userKeys")) {
 				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
@@ -1739,18 +1542,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				if(userFullName != null)
 					oSiteUser.setUserFullName(userFullName);
 			}
-
-			if(saves.contains("seeArchived")) {
-				Boolean seeArchived = (Boolean)solrDocument.get("seeArchived_stored_boolean");
-				if(seeArchived != null)
-					oSiteUser.setSeeArchived(seeArchived);
-			}
-
-			if(saves.contains("seeDeleted")) {
-				Boolean seeDeleted = (Boolean)solrDocument.get("seeDeleted_stored_boolean");
-				if(seeDeleted != null)
-					oSiteUser.setSeeDeleted(seeDeleted);
-			}
 		}
 
 		super.populateCluster(solrDocument);
@@ -1789,6 +1580,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	}
 
 	public void indexSiteUser(SolrInputDocument document) {
+		if(userKey != null) {
+			document.addField("userKey_indexed_long", userKey);
+			document.addField("userKey_stored_long", userKey);
+		}
 		if(userKeys != null) {
 			for(java.lang.Long o : userKeys) {
 				document.addField("userKeys_indexed_longs", o);
@@ -1821,20 +1616,14 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			document.addField("userFullName_indexed_string", userFullName);
 			document.addField("userFullName_stored_string", userFullName);
 		}
-		if(seeArchived != null) {
-			document.addField("seeArchived_indexed_boolean", seeArchived);
-			document.addField("seeArchived_stored_boolean", seeArchived);
-		}
-		if(seeDeleted != null) {
-			document.addField("seeDeleted_indexed_boolean", seeDeleted);
-			document.addField("seeDeleted_stored_boolean", seeDeleted);
-		}
 		super.indexCluster(document);
 
 	}
 
 	public static String varIndexedSiteUser(String entityVar) {
 		switch(entityVar) {
+			case "userKey":
+				return "userKey_indexed_long";
 			case "userKeys":
 				return "userKeys_indexed_longs";
 			case "userId":
@@ -1849,10 +1638,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				return "userLastName_indexed_string";
 			case "userFullName":
 				return "userFullName_indexed_string";
-			case "seeArchived":
-				return "seeArchived_indexed_boolean";
-			case "seeDeleted":
-				return "seeDeleted_indexed_boolean";
 			default:
 				return Cluster.varIndexedCluster(entityVar);
 		}
@@ -1882,6 +1667,10 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public void storeSiteUser(SolrDocument solrDocument) {
 		SiteUser oSiteUser = (SiteUser)this;
 
+		Long userKey = (Long)solrDocument.get("userKey_stored_long");
+		if(userKey != null)
+			oSiteUser.setUserKey(userKey);
+
 		List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
 		if(userKeys != null)
 			oSiteUser.userKeys.addAll(userKeys);
@@ -1910,14 +1699,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		if(userFullName != null)
 			oSiteUser.setUserFullName(userFullName);
 
-		Boolean seeArchived = (Boolean)solrDocument.get("seeArchived_stored_boolean");
-		if(seeArchived != null)
-			oSiteUser.setSeeArchived(seeArchived);
-
-		Boolean seeDeleted = (Boolean)solrDocument.get("seeDeleted_stored_boolean");
-		if(seeDeleted != null)
-			oSiteUser.setSeeDeleted(seeDeleted);
-
 		super.storeCluster(solrDocument);
 	}
 
@@ -1930,6 +1711,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof SiteUser) {
 			SiteUser original = (SiteUser)o;
+			if(!Objects.equals(userKey, original.getUserKey()))
+				apiRequest.addVars("userKey");
 			if(!Objects.equals(userKeys, original.getUserKeys()))
 				apiRequest.addVars("userKeys");
 			if(!Objects.equals(userId, original.getUserId()))
@@ -1944,10 +1727,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				apiRequest.addVars("userLastName");
 			if(!Objects.equals(userFullName, original.getUserFullName()))
 				apiRequest.addVars("userFullName");
-			if(!Objects.equals(seeArchived, original.getSeeArchived()))
-				apiRequest.addVars("seeArchived");
-			if(!Objects.equals(seeDeleted, original.getSeeDeleted()))
-				apiRequest.addVars("seeDeleted");
 			super.apiRequestCluster();
 		}
 	}
@@ -1957,7 +1736,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), userKeys, userId, userName, userEmail, userFirstName, userLastName, userFullName, seeArchived, seeDeleted);
+		return Objects.hash(super.hashCode(), userKey, userKeys, userId, userName, userEmail, userFirstName, userLastName, userFullName);
 	}
 
 	////////////
@@ -1971,15 +1750,14 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			return false;
 		SiteUser that = (SiteUser)o;
 		return super.equals(o)
+				&& Objects.equals( userKey, that.userKey )
 				&& Objects.equals( userKeys, that.userKeys )
 				&& Objects.equals( userId, that.userId )
 				&& Objects.equals( userName, that.userName )
 				&& Objects.equals( userEmail, that.userEmail )
 				&& Objects.equals( userFirstName, that.userFirstName )
 				&& Objects.equals( userLastName, that.userLastName )
-				&& Objects.equals( userFullName, that.userFullName )
-				&& Objects.equals( seeArchived, that.seeArchived )
-				&& Objects.equals( seeDeleted, that.seeDeleted );
+				&& Objects.equals( userFullName, that.userFullName );
 	}
 
 	//////////////
@@ -1990,15 +1768,14 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString() + "\n");
 		sb.append("SiteUser { ");
-		sb.append( "userKeys: " ).append(userKeys);
+		sb.append( "userKey: " ).append(userKey);
+		sb.append( ", userKeys: " ).append(userKeys);
 		sb.append( ", userId: \"" ).append(userId).append( "\"" );
 		sb.append( ", userName: \"" ).append(userName).append( "\"" );
 		sb.append( ", userEmail: \"" ).append(userEmail).append( "\"" );
 		sb.append( ", userFirstName: \"" ).append(userFirstName).append( "\"" );
 		sb.append( ", userLastName: \"" ).append(userLastName).append( "\"" );
 		sb.append( ", userFullName: \"" ).append(userFullName).append( "\"" );
-		sb.append( ", seeArchived: " ).append(seeArchived);
-		sb.append( ", seeDeleted: " ).append(seeDeleted);
 		sb.append(" }");
 		return sb.toString();
 	}

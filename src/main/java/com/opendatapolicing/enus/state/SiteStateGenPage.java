@@ -144,10 +144,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Page");
-			o.htmDeleted("Page");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("Page");
 			o.htmStateAbbreviation("Page");
 		} g("div");
@@ -165,10 +161,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmPk("POST");
 			o.htmCreated("POST");
 			o.htmModified("POST");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("POST");
-			o.htmDeleted("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("POST");
@@ -212,10 +204,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PUTCopy");
-			o.htmDeleted("PUTCopy");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("PUTCopy");
 			o.htmStateAbbreviation("PUTCopy");
 		} g("div");
@@ -231,10 +219,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 	public void htmlFormPATCHSiteState(SiteState o) {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmCreated("PATCH");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("PATCH");
-			o.htmDeleted("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("PATCH");
@@ -256,10 +240,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmArchived("Search");
-			o.htmDeleted("Search");
-		} g("div");
-		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmStateName("Search");
 			o.htmStateAbbreviation("Search");
 		} g("div");
@@ -272,8 +252,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
-			o.htmUserKey("Search");
-			o.htmObjectTitle("Search");
 		} g("div");
 	}
 
@@ -339,7 +317,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 					JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 					Long num = listSiteState.getQueryResponse().getResults().getNumFound();
 					String q = "*:*";
-					String query1 = "objectText";
+					String query1 = "";
 					String query2 = "";
 					String query = "*:*";
 					for(String paramName : queryParams.fieldNames()) {
@@ -469,9 +447,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			if(getColumnCreated()) {
 				e("th").f().sx("created").g("th");
 			}
-			if(getColumnObjectTitle()) {
-				e("th").f().sx("").g("th");
-			}
 			} g("tr");
 	}
 
@@ -498,16 +473,6 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 						} g("a");
 					} g("td");
 				}
-				if(getColumnObjectTitle()) {
-					{ e("td").f();
-						{ e("a").a("href", uri).f();
-							e("i").a("class", "far fa-globe-americas ").f().g("i");
-							{ e("span").f();
-								sx(o.strObjectTitle());
-							} g("span");
-						} g("a");
-					} g("td");
-				}
 			} g("tr");
 		}
 	}
@@ -525,18 +490,10 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 				e("td").f();
 				g("td");
 			}
-			if(getColumnObjectTitle()) {
-				e("td").f();
-				g("td");
-			}
 		} g("tr");
 	}
 
 	public Boolean getColumnCreated() {
-		return true;
-	}
-
-	public Boolean getColumnObjectTitle() {
 		return true;
 	}
 
@@ -739,7 +696,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 			ServiceRequest serviceRequest = siteRequest_.getServiceRequest();
 			JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
 			String q = "*:*";
-			String query1 = "objectText";
+			String query1 = "";
 			String query2 = "";
 			for(String paramName : queryParams.fieldNames()) {
 				String entityVar = null;
@@ -810,7 +767,7 @@ public class SiteStateGenPage extends SiteStateGenPageGen<PageLayout> {
 					.a("name", "suggestSiteState")
 					.a("id", "suggestSiteState", id)
 					.a("autocomplete", "off")
-					.a("oninput", "suggestSiteStateObjectSuggest( [ { 'name': 'q', 'value': 'objectSuggest:' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,pageUrlPk,stateCompleteName' } ], $('#suggestListSiteState", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
+					.a("oninput", "suggestSiteState( [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,stateCompleteName' } ], $('#suggestListSiteState", id, "'), ", p.getSiteRequest_().getRequestPk(), "); ")
 					.a("onkeyup", "if (event.keyCode === 13) { event.preventDefault(); window.location.href = '/state?q=", query1, ":' + encodeURIComponent(this.value) + '", fqs, sorts, "&start=", start2, "&rows=", rows1, "'; }"); 
 				if(listSiteState != null)
 					p.a("value", query2);
