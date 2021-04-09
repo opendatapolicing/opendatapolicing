@@ -187,6 +187,7 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
+			o.htmObjectTitle("Search");
 			o.htmUserKey("Search");
 			o.htmUserId("Search");
 			o.htmUserName("Search");
@@ -389,6 +390,9 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 			if(getColumnCreated()) {
 				e("th").f().sx("created").g("th");
 			}
+			if(getColumnObjectTitle()) {
+				e("th").f().sx("").g("th");
+			}
 			} g("tr");
 	}
 
@@ -415,6 +419,16 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 						} g("a");
 					} g("td");
 				}
+				if(getColumnObjectTitle()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							e("i").a("class", "far fa-user-cog ").f().g("i");
+							{ e("span").f();
+								sx(o.strObjectTitle());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
 			} g("tr");
 		}
 	}
@@ -432,10 +446,18 @@ public class SiteUserGenPage extends SiteUserGenPageGen<PageLayout> {
 				e("td").f();
 				g("td");
 			}
+			if(getColumnObjectTitle()) {
+				e("td").f();
+				g("td");
+			}
 		} g("tr");
 	}
 
 	public Boolean getColumnCreated() {
+		return true;
+	}
+
+	public Boolean getColumnObjectTitle() {
 		return true;
 	}
 

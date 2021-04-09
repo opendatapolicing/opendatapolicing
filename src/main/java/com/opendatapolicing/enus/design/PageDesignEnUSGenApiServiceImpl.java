@@ -12,9 +12,9 @@ import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchResult;
+import com.opendatapolicing.enus.vertx.MailVerticle;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
+import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -232,8 +232,6 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(PageDesign.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("inheritPk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -423,8 +421,6 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(PageDesign.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -710,7 +706,8 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(pageDesign -> {
+				promise.complete(pageDesign);
 				LOG.info(String.format("putcopyPageDesignFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1041,7 +1038,8 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(pageDesign -> {
+				promise.complete(pageDesign);
 				LOG.info(String.format("postPageDesignFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1087,12 +1085,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 					case "childDesignKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1119,12 +1115,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 					case "parentDesignKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1151,12 +1145,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 					case "htmlPartKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.html.part.HtmlPart> searchList = new SearchList<com.opendatapolicing.enus.html.part.HtmlPart>();
+								SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.html.part.HtmlPart.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(HtmlPart.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1357,7 +1349,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 															errorPageDesign(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
-										} else {
+												} else {
 													LOG.error(String.format("patchPageDesign failed. ", d.cause()));
 													errorPageDesign(siteRequest, null, d);
 												}
@@ -1488,7 +1480,8 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(pageDesign -> {
+				promise.complete(pageDesign);
 				LOG.info(String.format("patchPageDesignFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1533,12 +1526,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1568,12 +1559,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							for(Integer i = 0; i <  addAllChildDesignKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllChildDesignKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(PageDesign.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1605,12 +1594,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							for(Integer i = 0; i <  setChildDesignKeysValues.size(); i++) {
 								Long l = Long.parseLong(setChildDesignKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(PageDesign.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1658,12 +1645,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1691,12 +1676,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1726,12 +1709,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							for(Integer i = 0; i <  addAllParentDesignKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllParentDesignKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(PageDesign.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1763,12 +1744,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							for(Integer i = 0; i <  setParentDesignKeysValues.size(); i++) {
 								Long l = Long.parseLong(setParentDesignKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(PageDesign.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1816,12 +1795,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1849,12 +1826,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.html.part.HtmlPart> searchList = new SearchList<com.opendatapolicing.enus.html.part.HtmlPart>();
+								SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.html.part.HtmlPart.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(HtmlPart.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1884,12 +1859,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							for(Integer i = 0; i <  addAllHtmlPartKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllHtmlPartKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.html.part.HtmlPart> searchList = new SearchList<com.opendatapolicing.enus.html.part.HtmlPart>();
+									SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.html.part.HtmlPart.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(HtmlPart.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1921,12 +1894,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 							for(Integer i = 0; i <  setHtmlPartKeysValues.size(); i++) {
 								Long l = Long.parseLong(setHtmlPartKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.html.part.HtmlPart> searchList = new SearchList<com.opendatapolicing.enus.html.part.HtmlPart>();
+									SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.html.part.HtmlPart.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(HtmlPart.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1974,12 +1945,10 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.html.part.HtmlPart> searchList = new SearchList<com.opendatapolicing.enus.html.part.HtmlPart>();
+								SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.html.part.HtmlPart.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(HtmlPart.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -3013,110 +2982,6 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 		}
 	}
 
-	// HomePageSearchPage //
-
-	@Override
-	public void homepagesearchpagePageDesignId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		homepagesearchpagePageDesign(serviceRequest, eventHandler);
-	}
-
-	@Override
-	public void homepagesearchpagePageDesign(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		userPageDesign(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setRequestUri("/");
-					siteRequest.setRequestMethod("HomePageSearchPage");
-					{
-						aSearchPageDesign(siteRequest, false, true, false, "/", "HomePageSearchPage", c -> {
-							if(c.succeeded()) {
-								SearchList<PageDesign> listPageDesign = c.result();
-								homepagesearchpagePageDesignResponse(listPageDesign, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("homepagesearchpagePageDesign succeeded. "));
-									} else {
-										LOG.error(String.format("homepagesearchpagePageDesign failed. ", d.cause()));
-										errorPageDesign(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("homepagesearchpagePageDesign failed. ", c.cause()));
-								errorPageDesign(siteRequest, eventHandler, c);
-							}
-						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("homepagesearchpagePageDesign failed. ", ex));
-					errorPageDesign(null, eventHandler, Future.failedFuture(ex));
-				}
-			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("homepagesearchpagePageDesign failed. ", ex));
-						errorPageDesign(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("homepagesearchpagePageDesign failed. ", b.cause()));
-					errorPageDesign(null, eventHandler, b);
-				}
-			}
-		});
-	}
-
-
-	public void homepagesearchpagePageDesignPageInit(DesignDisplayPage page, SearchList<PageDesign> listPageDesign) {
-	}
-	public void homepagesearchpagePageDesignResponse(SearchList<PageDesign> listPageDesign, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listPageDesign.getSiteRequest_();
-		try {
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(siteRequest, buffer);
-			siteRequest.setW(w);
-			response200HomePageSearchPagePageDesign(listPageDesign, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("homepagesearchpagePageDesignResponse failed. ", a.cause()));
-					errorPageDesign(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("homepagesearchpagePageDesignResponse failed. ", ex));
-			errorPageDesign(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200HomePageSearchPagePageDesign(SearchList<PageDesign> listPageDesign, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = listPageDesign.getSiteRequest_();
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(listPageDesign.getSiteRequest_(), buffer);
-			DesignDisplayPage page = new DesignDisplayPage();
-			SolrDocument pageSolrDocument = new SolrDocument();
-			MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
-			siteRequest.setRequestHeaders(requestHeaders);
-
-			pageSolrDocument.setField("pageUri_frFR_stored_string", "/");
-			page.setPageSolrDocument(pageSolrDocument);
-			page.setW(w);
-			if(listPageDesign.size() == 1)
-				siteRequest.setRequestPk(listPageDesign.get(0).getPk());
-			siteRequest.setW(w);
-			page.setListPageDesign(listPageDesign);
-			page.setSiteRequest_(siteRequest);
-			homepagesearchpagePageDesignPageInit(page, listPageDesign);
-			page.initDeepDesignDisplayPage(siteRequest);
-			page.html();
-			eventHandler.handle(Future.succeededFuture(new ServiceResponse(200, "OK", buffer, requestHeaders)));
-		} catch(Exception e) {
-			LOG.error(String.format("response200HomePageSearchPagePageDesign failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
 	// General //
 
 	public void createPageDesign(SiteRequestEnUS siteRequest, Handler<AsyncResult<PageDesign>> eventHandler) {
@@ -3169,32 +3034,14 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 		);
 		if(siteRequest != null) {
 			SiteConfig siteConfig = siteRequest.getSiteConfig_();
-			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-			MailClient mailClient = siteContext.getMailClient();
-			if(mailClient != null) {
-				MailMessage message = new MailMessage();
-				message.setFrom(siteConfig.getEmailFrom());
-				message.setTo(siteConfig.getEmailAdmin());
-				if(e != null && siteConfig.getEmailFrom() != null)
-					message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-				message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-				WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-				workerExecutor.executeBlocking(
-					blockingCodeHandler -> {
-						mailClient.sendMail(message, result -> {
-							if (result.succeeded()) {
-								LOG.info(result.result().toString());
-							} else {
-								LOG.error("sendMail failed. ", result.cause());
-							}
-						});
-					}, resultHandler -> {
-					}
-				);
-			}
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			DeliveryOptions options = new DeliveryOptions();
+			options.addHeader(MailVerticle.MAIL_HEADER_SUBJECT, String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			siteRequest.getVertx().eventBus().publish(MailVerticle.MAIL_EVENTBUS_ADDRESS, String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		}
 	}
 
@@ -3244,8 +3091,6 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
 									if(siteUser1 == null) {
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("userName", accessToken.getString("preferred_username"));
 										jsonObject.put("userFirstName", accessToken.getString("given_name"));
@@ -3285,8 +3130,6 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 										});
 									} else {
 										Long pkUser = siteUser1.getPk();
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
 										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
@@ -3296,14 +3139,6 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 										jsonObject.put("setUserEmail", accessToken.getString("email"));
 										Boolean define = userPageDesignDefine(siteRequest, jsonObject, true);
 										if(define) {
-											SiteUser siteUser;
-											if(siteUser1 == null) {
-												siteUser = new SiteUser();
-												siteUser.setPk(pkUser);
-												siteUser.setSiteRequest_(siteRequest);
-											} else {
-												siteUser = siteUser1;
-											}
 
 											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
 											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
@@ -3315,7 +3150,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 											siteRequest2.setUserKey(pkUser);
 											siteRequest.setUserKey(pkUser);
 											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-											siteUser.setSiteRequest_(siteRequest2);
+											siteUser1.setSiteRequest_(siteRequest2);
 
 											ApiRequest apiRequest = new ApiRequest();
 											apiRequest.setRows(1);
@@ -3324,15 +3159,15 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 											apiRequest.initDeepApiRequest(siteRequest2);
 											siteRequest2.setApiRequest_(apiRequest);
 
-											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
-												siteRequest.setSiteUser(siteUser2);
-												siteRequest.setUserName(siteUser2.getUserName());
-												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-												siteRequest.setUserLastName(siteUser2.getUserLastName());
-												siteRequest.setUserKey(siteUser2.getPk());
-												eventHandler.handle(Future.succeededFuture(siteRequest));
+											userService.patchSiteUserFuture(siteUser1, false).onSuccess(siteUser2 -> {
+											siteRequest.setSiteUser(siteUser2);
+											siteRequest.setUserName(siteUser2.getUserName());
+											siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+											siteRequest.setUserLastName(siteUser2.getUserLastName());
+											siteRequest.setUserKey(siteUser2.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
 											}).onFailure(ex -> {
-												errorPageDesign(siteRequest, null, Future.failedFuture(ex));
+											errorPageDesign(siteRequest, null, Future.failedFuture(ex));
 											});
 										} else {
 											siteRequest.setSiteUser(siteUser1);
@@ -3712,7 +3547,7 @@ public class PageDesignEnUSGenApiServiceImpl implements PageDesignEnUSGenApiServ
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
+			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 				searchList.setStore(true);
 				searchList.setQuery("*:*");

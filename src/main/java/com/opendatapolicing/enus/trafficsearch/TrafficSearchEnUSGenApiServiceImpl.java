@@ -12,9 +12,9 @@ import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchResult;
+import com.opendatapolicing.enus.vertx.MailVerticle;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
+import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -232,8 +232,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(TrafficSearch.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("inheritPk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -423,8 +421,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(TrafficSearch.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -710,7 +706,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(trafficSearch -> {
+				promise.complete(trafficSearch);
 				LOG.info(String.format("putcopyTrafficSearchFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1078,7 +1075,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(trafficSearch -> {
+				promise.complete(trafficSearch);
 				LOG.info(String.format("postTrafficSearchFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1125,12 +1123,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(entityVar));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficPerson.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1152,12 +1148,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					case "contrabandKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband> searchList = new SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband>();
+								SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficcontraband.TrafficContraband.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficContraband.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1184,12 +1178,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					case "searchBasisKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis> searchList = new SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis>();
+								SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.searchbasis.SearchBasis.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(SearchBasis.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1435,7 +1427,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 															errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
-										} else {
+												} else {
 													LOG.error(String.format("patchTrafficSearch failed. ", d.cause()));
 													errorTrafficSearch(siteRequest, null, d);
 												}
@@ -1566,7 +1558,8 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(trafficSearch -> {
+				promise.complete(trafficSearch);
 				LOG.info(String.format("patchTrafficSearchFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1612,12 +1605,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							o2.setPersonKey(jsonObject.getString(methodName));
 							Long l = o2.getPersonKey();
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficPerson.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1641,12 +1632,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							o2.setPersonKey(jsonObject.getString(methodName));
 							Long l = o2.getPersonKey();
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson> searchList = new SearchList<com.opendatapolicing.enus.trafficperson.TrafficPerson>();
+								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficperson.TrafficPerson.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficPerson.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1667,12 +1656,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband> searchList = new SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband>();
+								SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficcontraband.TrafficContraband.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficContraband.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1702,12 +1689,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Integer i = 0; i <  addAllContrabandKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllContrabandKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband> searchList = new SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband>();
+									SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.trafficcontraband.TrafficContraband.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(TrafficContraband.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1739,12 +1724,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Integer i = 0; i <  setContrabandKeysValues.size(); i++) {
 								Long l = Long.parseLong(setContrabandKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband> searchList = new SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband>();
+									SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.trafficcontraband.TrafficContraband.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(TrafficContraband.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1792,12 +1775,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband> searchList = new SearchList<com.opendatapolicing.enus.trafficcontraband.TrafficContraband>();
+								SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficcontraband.TrafficContraband.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficContraband.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1825,12 +1806,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis> searchList = new SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis>();
+								SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.searchbasis.SearchBasis.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(SearchBasis.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1860,12 +1839,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Integer i = 0; i <  addAllSearchBasisKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllSearchBasisKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis> searchList = new SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis>();
+									SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.searchbasis.SearchBasis.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(SearchBasis.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1897,12 +1874,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 							for(Integer i = 0; i <  setSearchBasisKeysValues.size(); i++) {
 								Long l = Long.parseLong(setSearchBasisKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis> searchList = new SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis>();
+									SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.searchbasis.SearchBasis.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(SearchBasis.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1950,12 +1925,10 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis> searchList = new SearchList<com.opendatapolicing.enus.searchbasis.SearchBasis>();
+								SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.searchbasis.SearchBasis.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(SearchBasis.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -2772,32 +2745,14 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 		);
 		if(siteRequest != null) {
 			SiteConfig siteConfig = siteRequest.getSiteConfig_();
-			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-			MailClient mailClient = siteContext.getMailClient();
-			if(mailClient != null) {
-				MailMessage message = new MailMessage();
-				message.setFrom(siteConfig.getEmailFrom());
-				message.setTo(siteConfig.getEmailAdmin());
-				if(e != null && siteConfig.getEmailFrom() != null)
-					message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-				message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-				WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-				workerExecutor.executeBlocking(
-					blockingCodeHandler -> {
-						mailClient.sendMail(message, result -> {
-							if (result.succeeded()) {
-								LOG.info(result.result().toString());
-							} else {
-								LOG.error("sendMail failed. ", result.cause());
-							}
-						});
-					}, resultHandler -> {
-					}
-				);
-			}
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			DeliveryOptions options = new DeliveryOptions();
+			options.addHeader(MailVerticle.MAIL_HEADER_SUBJECT, String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			siteRequest.getVertx().eventBus().publish(MailVerticle.MAIL_EVENTBUS_ADDRESS, String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		}
 	}
 
@@ -2847,8 +2802,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
 									if(siteUser1 == null) {
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("userName", accessToken.getString("preferred_username"));
 										jsonObject.put("userFirstName", accessToken.getString("given_name"));
@@ -2888,8 +2841,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 										});
 									} else {
 										Long pkUser = siteUser1.getPk();
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
 										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
@@ -2899,14 +2850,6 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 										jsonObject.put("setUserEmail", accessToken.getString("email"));
 										Boolean define = userTrafficSearchDefine(siteRequest, jsonObject, true);
 										if(define) {
-											SiteUser siteUser;
-											if(siteUser1 == null) {
-												siteUser = new SiteUser();
-												siteUser.setPk(pkUser);
-												siteUser.setSiteRequest_(siteRequest);
-											} else {
-												siteUser = siteUser1;
-											}
 
 											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
 											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
@@ -2918,7 +2861,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 											siteRequest2.setUserKey(pkUser);
 											siteRequest.setUserKey(pkUser);
 											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-											siteUser.setSiteRequest_(siteRequest2);
+											siteUser1.setSiteRequest_(siteRequest2);
 
 											ApiRequest apiRequest = new ApiRequest();
 											apiRequest.setRows(1);
@@ -2927,15 +2870,15 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 											apiRequest.initDeepApiRequest(siteRequest2);
 											siteRequest2.setApiRequest_(apiRequest);
 
-											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
-												siteRequest.setSiteUser(siteUser2);
-												siteRequest.setUserName(siteUser2.getUserName());
-												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-												siteRequest.setUserLastName(siteUser2.getUserLastName());
-												siteRequest.setUserKey(siteUser2.getPk());
-												eventHandler.handle(Future.succeededFuture(siteRequest));
+											userService.patchSiteUserFuture(siteUser1, false).onSuccess(siteUser2 -> {
+											siteRequest.setSiteUser(siteUser2);
+											siteRequest.setUserName(siteUser2.getUserName());
+											siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+											siteRequest.setUserLastName(siteUser2.getUserLastName());
+											siteRequest.setUserKey(siteUser2.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
 											}).onFailure(ex -> {
-												errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
+											errorTrafficSearch(siteRequest, null, Future.failedFuture(ex));
 											});
 										} else {
 											siteRequest.setSiteUser(siteUser1);
@@ -3315,7 +3258,7 @@ public class TrafficSearchEnUSGenApiServiceImpl implements TrafficSearchEnUSGenA
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
+			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
 				searchList.setStore(true);
 				searchList.setQuery("*:*");

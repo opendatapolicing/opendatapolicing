@@ -8,9 +8,9 @@ import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchResult;
+import com.opendatapolicing.enus.vertx.MailVerticle;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
+import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -248,7 +248,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(htmlPart -> {
+				promise.complete(htmlPart);
 				LOG.info(String.format("postHtmlPartFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -294,12 +295,10 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 					case "pageDesignKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -773,8 +772,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(HtmlPart.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("inheritPk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -964,8 +961,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(HtmlPart.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -1251,7 +1246,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(htmlPart -> {
+				promise.complete(htmlPart);
 				LOG.info(String.format("putcopyHtmlPartFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1733,7 +1729,7 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 															errorHtmlPart(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
-										} else {
+												} else {
 													LOG.error(String.format("patchHtmlPart failed. ", d.cause()));
 													errorHtmlPart(siteRequest, null, d);
 												}
@@ -1864,7 +1860,8 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(htmlPart -> {
+				promise.complete(htmlPart);
 				LOG.info(String.format("patchHtmlPartFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1909,12 +1906,10 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1944,12 +1939,10 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 							for(Integer i = 0; i <  addAllPageDesignKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllPageDesignKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(PageDesign.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1981,12 +1974,10 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 							for(Integer i = 0; i <  setPageDesignKeysValues.size(); i++) {
 								Long l = Long.parseLong(setPageDesignKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+									SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(PageDesign.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -2034,12 +2025,10 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.design.PageDesign> searchList = new SearchList<com.opendatapolicing.enus.design.PageDesign>();
+								SearchList<PageDesign> searchList = new SearchList<PageDesign>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.design.PageDesign.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(PageDesign.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -2872,32 +2861,14 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 		);
 		if(siteRequest != null) {
 			SiteConfig siteConfig = siteRequest.getSiteConfig_();
-			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-			MailClient mailClient = siteContext.getMailClient();
-			if(mailClient != null) {
-				MailMessage message = new MailMessage();
-				message.setFrom(siteConfig.getEmailFrom());
-				message.setTo(siteConfig.getEmailAdmin());
-				if(e != null && siteConfig.getEmailFrom() != null)
-					message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-				message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-				WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-				workerExecutor.executeBlocking(
-					blockingCodeHandler -> {
-						mailClient.sendMail(message, result -> {
-							if (result.succeeded()) {
-								LOG.info(result.result().toString());
-							} else {
-								LOG.error("sendMail failed. ", result.cause());
-							}
-						});
-					}, resultHandler -> {
-					}
-				);
-			}
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			DeliveryOptions options = new DeliveryOptions();
+			options.addHeader(MailVerticle.MAIL_HEADER_SUBJECT, String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			siteRequest.getVertx().eventBus().publish(MailVerticle.MAIL_EVENTBUS_ADDRESS, String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		}
 	}
 
@@ -2947,8 +2918,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
 									if(siteUser1 == null) {
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("userName", accessToken.getString("preferred_username"));
 										jsonObject.put("userFirstName", accessToken.getString("given_name"));
@@ -2988,8 +2957,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 										});
 									} else {
 										Long pkUser = siteUser1.getPk();
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
 										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
@@ -2999,14 +2966,6 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 										jsonObject.put("setUserEmail", accessToken.getString("email"));
 										Boolean define = userHtmlPartDefine(siteRequest, jsonObject, true);
 										if(define) {
-											SiteUser siteUser;
-											if(siteUser1 == null) {
-												siteUser = new SiteUser();
-												siteUser.setPk(pkUser);
-												siteUser.setSiteRequest_(siteRequest);
-											} else {
-												siteUser = siteUser1;
-											}
 
 											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
 											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
@@ -3018,7 +2977,7 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 											siteRequest2.setUserKey(pkUser);
 											siteRequest.setUserKey(pkUser);
 											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-											siteUser.setSiteRequest_(siteRequest2);
+											siteUser1.setSiteRequest_(siteRequest2);
 
 											ApiRequest apiRequest = new ApiRequest();
 											apiRequest.setRows(1);
@@ -3027,15 +2986,15 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 											apiRequest.initDeepApiRequest(siteRequest2);
 											siteRequest2.setApiRequest_(apiRequest);
 
-											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
-												siteRequest.setSiteUser(siteUser2);
-												siteRequest.setUserName(siteUser2.getUserName());
-												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-												siteRequest.setUserLastName(siteUser2.getUserLastName());
-												siteRequest.setUserKey(siteUser2.getPk());
-												eventHandler.handle(Future.succeededFuture(siteRequest));
+											userService.patchSiteUserFuture(siteUser1, false).onSuccess(siteUser2 -> {
+											siteRequest.setSiteUser(siteUser2);
+											siteRequest.setUserName(siteUser2.getUserName());
+											siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+											siteRequest.setUserLastName(siteUser2.getUserLastName());
+											siteRequest.setUserKey(siteUser2.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
 											}).onFailure(ex -> {
-												errorHtmlPart(siteRequest, null, Future.failedFuture(ex));
+											errorHtmlPart(siteRequest, null, Future.failedFuture(ex));
 											});
 										} else {
 											siteRequest.setSiteUser(siteUser1);
@@ -3424,7 +3383,7 @@ public class HtmlPartEnUSGenApiServiceImpl implements HtmlPartEnUSGenApiService 
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
+			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				SearchList<HtmlPart> searchList = new SearchList<HtmlPart>();
 				searchList.setStore(true);
 				searchList.setQuery("*:*");

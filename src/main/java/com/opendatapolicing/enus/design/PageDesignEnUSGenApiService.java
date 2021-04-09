@@ -48,6 +48,4 @@ public interface PageDesignEnUSGenApiService {
 	public void designpdfsearchpagePageDesign(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
 	public void designemailsearchpagePageDesignId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
 	public void designemailsearchpagePageDesign(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
-	public void homepagesearchpagePageDesignId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
-	public void homepagesearchpagePageDesign(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
 }

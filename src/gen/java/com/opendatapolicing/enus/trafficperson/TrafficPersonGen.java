@@ -1844,7 +1844,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				.a("name", "setTrafficSearchKeys")
 				.a("id", classApiMethodMethod, "_trafficSearchKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficPersonTrafficSearchKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'personKey:" + pk + "'}", "], $('#listTrafficPersonTrafficSearchKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficPersonTrafficSearchKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'personKey:" + pk + "'}", "], $('#listTrafficPersonTrafficSearchKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 

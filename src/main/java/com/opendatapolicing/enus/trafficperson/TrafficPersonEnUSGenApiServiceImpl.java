@@ -10,9 +10,9 @@ import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchResult;
+import com.opendatapolicing.enus.vertx.MailVerticle;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
+import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -230,8 +230,6 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(TrafficPerson.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("inheritPk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -421,8 +419,6 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(TrafficPerson.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -708,7 +704,8 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(trafficPerson -> {
+				promise.complete(trafficPerson);
 				LOG.info(String.format("putcopyTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1028,7 +1025,8 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(trafficPerson -> {
+				promise.complete(trafficPerson);
 				LOG.info(String.format("postTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1075,12 +1073,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(entityVar));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop> searchList = new SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop>();
+								SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficstop.TrafficStop.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficStop.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1102,12 +1098,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					case "trafficSearchKeys":
 						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
+								SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficSearch.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1326,7 +1320,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 															errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
-										} else {
+												} else {
 													LOG.error(String.format("patchTrafficPerson failed. ", d.cause()));
 													errorTrafficPerson(siteRequest, null, d);
 												}
@@ -1457,7 +1451,8 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(trafficPerson -> {
+				promise.complete(trafficPerson);
 				LOG.info(String.format("patchTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1503,12 +1498,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							o2.setTrafficStopKey(jsonObject.getString(methodName));
 							Long l = o2.getTrafficStopKey();
 							if(l != null && !l.equals(o.getTrafficStopKey())) {
-								SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop> searchList = new SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop>();
+								SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficstop.TrafficStop.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficStop.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1532,12 +1525,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							o2.setTrafficStopKey(jsonObject.getString(methodName));
 							Long l = o2.getTrafficStopKey();
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop> searchList = new SearchList<com.opendatapolicing.enus.trafficstop.TrafficStop>();
+								SearchList<TrafficStop> searchList = new SearchList<TrafficStop>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficstop.TrafficStop.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficStop.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1558,12 +1549,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
+								SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficSearch.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1593,12 +1582,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							for(Integer i = 0; i <  addAllTrafficSearchKeysValues.size(); i++) {
 								Long l = Long.parseLong(addAllTrafficSearchKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
+									SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(TrafficSearch.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1630,12 +1617,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 							for(Integer i = 0; i <  setTrafficSearchKeysValues.size(); i++) {
 								Long l = Long.parseLong(setTrafficSearchKeysValues.getString(i));
 								if(l != null) {
-									SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
+									SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
-									searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
-									searchList.addFilterQuery("deleted_indexed_boolean:false");
-									searchList.addFilterQuery("archived_indexed_boolean:false");
+									searchList.setC(TrafficSearch.class);
 									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1683,12 +1668,10 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 						{
 							Long l = Long.parseLong(jsonObject.getString(methodName));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch> searchList = new SearchList<com.opendatapolicing.enus.trafficsearch.TrafficSearch>();
+								SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.trafficsearch.TrafficSearch.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(TrafficSearch.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -2481,32 +2464,14 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 		);
 		if(siteRequest != null) {
 			SiteConfig siteConfig = siteRequest.getSiteConfig_();
-			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-			MailClient mailClient = siteContext.getMailClient();
-			if(mailClient != null) {
-				MailMessage message = new MailMessage();
-				message.setFrom(siteConfig.getEmailFrom());
-				message.setTo(siteConfig.getEmailAdmin());
-				if(e != null && siteConfig.getEmailFrom() != null)
-					message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-				message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-				WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-				workerExecutor.executeBlocking(
-					blockingCodeHandler -> {
-						mailClient.sendMail(message, result -> {
-							if (result.succeeded()) {
-								LOG.info(result.result().toString());
-							} else {
-								LOG.error("sendMail failed. ", result.cause());
-							}
-						});
-					}, resultHandler -> {
-					}
-				);
-			}
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			DeliveryOptions options = new DeliveryOptions();
+			options.addHeader(MailVerticle.MAIL_HEADER_SUBJECT, String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			siteRequest.getVertx().eventBus().publish(MailVerticle.MAIL_EVENTBUS_ADDRESS, String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		}
 	}
 
@@ -2556,8 +2521,6 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
 									if(siteUser1 == null) {
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("userName", accessToken.getString("preferred_username"));
 										jsonObject.put("userFirstName", accessToken.getString("given_name"));
@@ -2597,8 +2560,6 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 										});
 									} else {
 										Long pkUser = siteUser1.getPk();
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
 										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
@@ -2608,14 +2569,6 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 										jsonObject.put("setUserEmail", accessToken.getString("email"));
 										Boolean define = userTrafficPersonDefine(siteRequest, jsonObject, true);
 										if(define) {
-											SiteUser siteUser;
-											if(siteUser1 == null) {
-												siteUser = new SiteUser();
-												siteUser.setPk(pkUser);
-												siteUser.setSiteRequest_(siteRequest);
-											} else {
-												siteUser = siteUser1;
-											}
 
 											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
 											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
@@ -2627,7 +2580,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 											siteRequest2.setUserKey(pkUser);
 											siteRequest.setUserKey(pkUser);
 											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-											siteUser.setSiteRequest_(siteRequest2);
+											siteUser1.setSiteRequest_(siteRequest2);
 
 											ApiRequest apiRequest = new ApiRequest();
 											apiRequest.setRows(1);
@@ -2636,15 +2589,15 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 											apiRequest.initDeepApiRequest(siteRequest2);
 											siteRequest2.setApiRequest_(apiRequest);
 
-											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
-												siteRequest.setSiteUser(siteUser2);
-												siteRequest.setUserName(siteUser2.getUserName());
-												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-												siteRequest.setUserLastName(siteUser2.getUserLastName());
-												siteRequest.setUserKey(siteUser2.getPk());
-												eventHandler.handle(Future.succeededFuture(siteRequest));
+											userService.patchSiteUserFuture(siteUser1, false).onSuccess(siteUser2 -> {
+											siteRequest.setSiteUser(siteUser2);
+											siteRequest.setUserName(siteUser2.getUserName());
+											siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+											siteRequest.setUserLastName(siteUser2.getUserLastName());
+											siteRequest.setUserKey(siteUser2.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
 											}).onFailure(ex -> {
-												errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
+											errorTrafficPerson(siteRequest, null, Future.failedFuture(ex));
 											});
 										} else {
 											siteRequest.setSiteUser(siteUser1);
@@ -3024,7 +2977,7 @@ public class TrafficPersonEnUSGenApiServiceImpl implements TrafficPersonEnUSGenA
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
+			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
 				searchList.setStore(true);
 				searchList.setQuery("*:*");

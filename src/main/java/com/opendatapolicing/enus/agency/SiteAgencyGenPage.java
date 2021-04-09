@@ -252,6 +252,7 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
+			o.htmObjectTitle("Search");
 		} g("div");
 	}
 
@@ -447,6 +448,9 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 			if(getColumnCreated()) {
 				e("th").f().sx("created").g("th");
 			}
+			if(getColumnObjectTitle()) {
+				e("th").f().sx("").g("th");
+			}
 			} g("tr");
 	}
 
@@ -473,6 +477,16 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 						} g("a");
 					} g("td");
 				}
+				if(getColumnObjectTitle()) {
+					{ e("td").f();
+						{ e("a").a("href", uri).f();
+							e("i").a("class", "far fa-road ").f().g("i");
+							{ e("span").f();
+								sx(o.strObjectTitle());
+							} g("span");
+						} g("a");
+					} g("td");
+				}
 			} g("tr");
 		}
 	}
@@ -490,10 +504,18 @@ public class SiteAgencyGenPage extends SiteAgencyGenPageGen<PageLayout> {
 				e("td").f();
 				g("td");
 			}
+			if(getColumnObjectTitle()) {
+				e("td").f();
+				g("td");
+			}
 		} g("tr");
 	}
 
 	public Boolean getColumnCreated() {
+		return true;
+	}
+
+	public Boolean getColumnObjectTitle() {
 		return true;
 	}
 

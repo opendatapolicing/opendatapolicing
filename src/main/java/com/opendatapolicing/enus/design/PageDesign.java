@@ -49,11 +49,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * PageSuperDesignEmailSearchPage.enUS: ClusterPage
  * ApiUriDesignEmailSearchPage.enUS: /email
  * 
- * ApiMethod.enUS: HomePageSearchPage
- * PageHomePageSearchPage.enUS: DesignDisplayPage
- * PageSuperHomePageSearchPage.enUS: ClusterPage
- * ApiUriHomePageSearchPage.enUS: /
- * 
  * AName.enUS: a page design
  * Color: khaki
  * IconGroup: regular
@@ -161,13 +156,7 @@ public class PageDesign extends PageDesignGen<Cluster> {
 		c.o(pageDesignCompleteName);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarId: true
-	 * DisplayName.enUS: ID
-	 */ 
+	@Override
 	protected void _objectId(Wrap<String> c) {
 		if(objectTitle != null) {
 			c.o(toId(objectTitle));

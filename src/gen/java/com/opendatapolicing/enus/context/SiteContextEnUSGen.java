@@ -51,12 +51,12 @@ public abstract class SiteContextEnUSGen<DEV> extends Object {
 
 /*
 CREATE TABLE PageDesign(
-	pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, pageDesignCompleteName text
+	pageDesignCompleteName text
 	, designHidden boolean
 	, pageContentType text
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
 	);
 CREATE TABLE HtmlPart(
 	htmlLink text
@@ -106,23 +106,23 @@ CREATE TABLE SiteUser(
 	, created timestamp with time zone
 	);
 CREATE TABLE SiteState(
-	pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, stateName text
+	stateName text
 	, stateAbbreviation text
 	, imageLeft integer
 	, imageTop integer
-	);
-CREATE TABLE SiteAgency(
-	pk bigserial primary key
+	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
-	, agencyName text
+	);
+CREATE TABLE SiteAgency(
+	agencyName text
 	, stateKey bigint references SiteState(pk)
 	, imageLeft integer
 	, imageTop integer
 	, imageCoords text
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
 	);
 CREATE TABLE TrafficStop(
 	pk bigserial primary key
@@ -145,21 +145,18 @@ CREATE TABLE TrafficStop(
 	, stopCityId text
 	);
 CREATE TABLE TrafficPerson(
-	pk bigserial primary key
-	, inheritPk bigint
-	, created timestamp with time zone
-	, trafficStopKey bigint references TrafficStop(pk)
+	trafficStopKey bigint references TrafficStop(pk)
 	, personAge integer
 	, personTypeId text
 	, personGenderId text
 	, personEthnicityId text
 	, personRaceId text
-	);
-CREATE TABLE TrafficSearch(
-	pk bigserial primary key
+	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
-	, personKey bigint references TrafficPerson(pk)
+	);
+CREATE TABLE TrafficSearch(
+	personKey bigint references TrafficPerson(pk)
 	, searchTypeNum integer
 	, searchVehicle boolean
 	, searchDriver boolean
@@ -168,12 +165,12 @@ CREATE TABLE TrafficSearch(
 	, searchVehicleSiezed boolean
 	, searchPersonalPropertySiezed boolean
 	, searchOtherPropertySiezed boolean
-	);
-CREATE TABLE TrafficContraband(
-	pk bigserial primary key
+	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
-	, searchKey bigint references TrafficSearch(pk)
+	);
+CREATE TABLE TrafficContraband(
+	searchKey bigint references TrafficSearch(pk)
 	, contrabandOunces decimal
 	, contrabandPounds decimal
 	, contrabandPints decimal
@@ -184,14 +181,17 @@ CREATE TABLE TrafficContraband(
 	, contrabandMoney decimal
 	, contrabandWeapons decimal
 	, contrabandDollarAmount decimal
-	);
-CREATE TABLE SearchBasis(
-	pk bigserial primary key
+	, pk bigserial primary key
 	, inheritPk bigint
 	, created timestamp with time zone
-	, searchKey bigint references TrafficSearch(pk)
+	);
+CREATE TABLE SearchBasis(
+	searchKey bigint references TrafficSearch(pk)
 	, searchBasisId text
 	, searchBasisTitle text
+	, pk bigserial primary key
+	, inheritPk bigint
+	, created timestamp with time zone
 	);
 CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
 	pk bigserial primary key

@@ -20,6 +20,7 @@
 		<build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
 		<exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
 		<vertx.version>4.0.2</vertx.version>
+		<handlebars-maven-plugin.version>4.2.0</handlebars-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -157,6 +158,11 @@
 
 		<dependency>
 			<groupId>io.vertx</groupId>
+			<artifactId>vertx-web-templ-handlebars</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.vertx</groupId>
 			<artifactId>vertx-zookeeper</artifactId>
 		</dependency>
 
@@ -256,7 +262,6 @@
 						<configuration>
 							<sources>
 								<source>src/gen/java</source>
-								<source>src/impl/java</source>
 								<source>target/generated-sources/annotations</source>
 							</sources>
 						</configuration>
@@ -275,6 +280,34 @@
 						<annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>
 					</annotationProcessors>
 				</configuration>
+			</plugin>
+
+			<!-- Handlebars Template Plugin -->
+			<plugin>
+				<groupId>com.github.jknack</groupId>
+				<artifactId>handlebars-maven-plugin</artifactId>
+				<version>${handlebars-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>precompile</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>precompile</goal>
+						</goals>
+						<configuration>
+							<output>${project.build.directory}/classes/webroot/js/modules/helpers.js</output>
+							<prefix>${basedir}/src/main/resources/templates</prefix>
+							<suffix>.hbs</suffix>
+							<handlebarsJsFile>handlebars-v4.7.6.js</handlebarsJsFile>
+							<minimize>false</minimize>
+							<runtime></runtime>
+							<amd>false</amd>
+							<encoding>UTF-8</encoding>
+							<templates>
+							</templates>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

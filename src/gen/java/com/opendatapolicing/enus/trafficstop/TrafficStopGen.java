@@ -2859,7 +2859,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				.a("name", "setPersonKeys")
 				.a("id", classApiMethodMethod, "_personKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficStopPersonKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,trafficPersonCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'trafficStopKey:" + pk + "'}", "], $('#listTrafficStopPersonKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficStopPersonKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'trafficStopKey:" + pk + "'}", "], $('#listTrafficStopPersonKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 

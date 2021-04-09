@@ -564,7 +564,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				.a("name", "setContrabandKeys")
 				.a("id", classApiMethodMethod, "_contrabandKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchContrabandKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,trafficSearchCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchContrabandKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficSearchContrabandKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchContrabandKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 
@@ -761,7 +761,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				.a("name", "setSearchBasisKeys")
 				.a("id", classApiMethodMethod, "_searchBasisKeys")
 				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchSearchBasisKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,searchBasisCompleteName' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchSearchBasisKeys_", classApiMethodMethod, "'), ", pk, "); ");
+				a("oninput", "suggestTrafficSearchSearchBasisKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchSearchBasisKeys_", classApiMethodMethod, "'), ", pk, "); ");
 
 				fg();
 

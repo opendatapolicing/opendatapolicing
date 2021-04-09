@@ -8,9 +8,9 @@ import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchResult;
+import com.opendatapolicing.enus.vertx.MailVerticle;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.ext.mail.MailClient;
-import io.vertx.ext.mail.MailMessage;
+import io.vertx.core.eventbus.DeliveryOptions;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -228,8 +228,6 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(SiteAgency.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("inheritPk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -419,8 +417,6 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(SiteAgency.class);
-				searchList.addFilterQuery("deleted_indexed_boolean:false");
-				searchList.addFilterQuery("archived_indexed_boolean:false");
 				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
 				searchList.initDeepForClass(siteRequest2);
 
@@ -706,7 +702,8 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(siteAgency -> {
+				promise.complete(siteAgency);
 				LOG.info(String.format("putcopySiteAgencyFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -996,7 +993,8 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(siteAgency -> {
+				promise.complete(siteAgency);
 				LOG.info(String.format("postSiteAgencyFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1052,12 +1050,10 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 						{
 							Long l = Long.parseLong(jsonObject.getString(entityVar));
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.state.SiteState> searchList = new SearchList<com.opendatapolicing.enus.state.SiteState>();
+								SearchList<SiteState> searchList = new SearchList<SiteState>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.state.SiteState.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(SiteState.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1253,7 +1249,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 															errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 														}
 													}
-										} else {
+												} else {
 													LOG.error(String.format("patchSiteAgency failed. ", d.cause()));
 													errorSiteAgency(siteRequest, null, d);
 												}
@@ -1384,7 +1380,8 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 					}
 				});
 				return promise2.future();
-			}).onSuccess(a -> {
+			}).onSuccess(siteAgency -> {
+				promise.complete(siteAgency);
 				LOG.info(String.format("patchSiteAgencyFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -1438,12 +1435,10 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 							o2.setStateKey(jsonObject.getString(methodName));
 							Long l = o2.getStateKey();
 							if(l != null && !l.equals(o.getStateKey())) {
-								SearchList<com.opendatapolicing.enus.state.SiteState> searchList = new SearchList<com.opendatapolicing.enus.state.SiteState>();
+								SearchList<SiteState> searchList = new SearchList<SiteState>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.state.SiteState.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(SiteState.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -1467,12 +1462,10 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 							o2.setStateKey(jsonObject.getString(methodName));
 							Long l = o2.getStateKey();
 							if(l != null) {
-								SearchList<com.opendatapolicing.enus.state.SiteState> searchList = new SearchList<com.opendatapolicing.enus.state.SiteState>();
+								SearchList<SiteState> searchList = new SearchList<SiteState>();
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
-								searchList.setC(com.opendatapolicing.enus.state.SiteState.class);
-								searchList.addFilterQuery("deleted_indexed_boolean:false");
-								searchList.addFilterQuery("archived_indexed_boolean:false");
+								searchList.setC(SiteState.class);
 								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
@@ -2242,32 +2235,14 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 		);
 		if(siteRequest != null) {
 			SiteConfig siteConfig = siteRequest.getSiteConfig_();
-			SiteContextEnUS siteContext = siteRequest.getSiteContext_();
-			MailClient mailClient = siteContext.getMailClient();
-			if(mailClient != null) {
-				MailMessage message = new MailMessage();
-				message.setFrom(siteConfig.getEmailFrom());
-				message.setTo(siteConfig.getEmailAdmin());
-				if(e != null && siteConfig.getEmailFrom() != null)
-					message.setText(String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
-				message.setSubject(String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
-				WorkerExecutor workerExecutor = siteContext.getWorkerExecutor();
-				workerExecutor.executeBlocking(
-					blockingCodeHandler -> {
-						mailClient.sendMail(message, result -> {
-							if (result.succeeded()) {
-								LOG.info(result.result().toString());
-							} else {
-								LOG.error("sendMail failed. ", result.cause());
-							}
-						});
-					}, resultHandler -> {
-					}
-				);
-			}
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			DeliveryOptions options = new DeliveryOptions();
+			options.addHeader(MailVerticle.MAIL_HEADER_SUBJECT, String.format(siteConfig.getSiteBaseUrl() + " " + Optional.ofNullable(e).map(Throwable::getMessage).orElse(null)));
+			siteRequest.getVertx().eventBus().publish(MailVerticle.MAIL_EVENTBUS_ADDRESS, String.format("%s\n\n%s", json.encodePrettily(), ExceptionUtils.getStackTrace(e)));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		} else {
-			eventHandler.handle(Future.succeededFuture(responseOperation));
+			if(eventHandler != null)
+				eventHandler.handle(Future.succeededFuture(responseOperation));
 		}
 	}
 
@@ -2317,8 +2292,6 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 									SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(siteContext);
 
 									if(siteUser1 == null) {
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("userName", accessToken.getString("preferred_username"));
 										jsonObject.put("userFirstName", accessToken.getString("given_name"));
@@ -2358,8 +2331,6 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 										});
 									} else {
 										Long pkUser = siteUser1.getPk();
-										JsonObject userVertx = siteRequest.getServiceRequest().getUser();
-
 										JsonObject jsonObject = new JsonObject();
 										jsonObject.put("setUserName", accessToken.getString("preferred_username"));
 										jsonObject.put("setUserFirstName", accessToken.getString("given_name"));
@@ -2369,14 +2340,6 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 										jsonObject.put("setUserEmail", accessToken.getString("email"));
 										Boolean define = userSiteAgencyDefine(siteRequest, jsonObject, true);
 										if(define) {
-											SiteUser siteUser;
-											if(siteUser1 == null) {
-												siteUser = new SiteUser();
-												siteUser.setPk(pkUser);
-												siteUser.setSiteRequest_(siteRequest);
-											} else {
-												siteUser = siteUser1;
-											}
 
 											SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
 											siteRequest2.setSqlConnection(siteRequest.getSqlConnection());
@@ -2388,7 +2351,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 											siteRequest2.setUserKey(pkUser);
 											siteRequest.setUserKey(pkUser);
 											siteRequest2.initDeepSiteRequestEnUS(siteRequest);
-											siteUser.setSiteRequest_(siteRequest2);
+											siteUser1.setSiteRequest_(siteRequest2);
 
 											ApiRequest apiRequest = new ApiRequest();
 											apiRequest.setRows(1);
@@ -2397,15 +2360,15 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 											apiRequest.initDeepApiRequest(siteRequest2);
 											siteRequest2.setApiRequest_(apiRequest);
 
-											userService.patchSiteUserFuture(siteUser, false).onSuccess(siteUser2 -> {
-												siteRequest.setSiteUser(siteUser2);
-												siteRequest.setUserName(siteUser2.getUserName());
-												siteRequest.setUserFirstName(siteUser2.getUserFirstName());
-												siteRequest.setUserLastName(siteUser2.getUserLastName());
-												siteRequest.setUserKey(siteUser2.getPk());
-												eventHandler.handle(Future.succeededFuture(siteRequest));
+											userService.patchSiteUserFuture(siteUser1, false).onSuccess(siteUser2 -> {
+											siteRequest.setSiteUser(siteUser2);
+											siteRequest.setUserName(siteUser2.getUserName());
+											siteRequest.setUserFirstName(siteUser2.getUserFirstName());
+											siteRequest.setUserLastName(siteUser2.getUserLastName());
+											siteRequest.setUserKey(siteUser2.getPk());
+											eventHandler.handle(Future.succeededFuture(siteRequest));
 											}).onFailure(ex -> {
-												errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
+											errorSiteAgency(siteRequest, null, Future.failedFuture(ex));
 											});
 										} else {
 											siteRequest.setSiteUser(siteUser1);
@@ -2785,7 +2748,7 @@ public class SiteAgencyEnUSGenApiServiceImpl implements SiteAgencyEnUSGenApiServ
 			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
-			if(refresh && Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
+			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
 				SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
 				searchList.setStore(true);
 				searchList.setQuery("*:*");

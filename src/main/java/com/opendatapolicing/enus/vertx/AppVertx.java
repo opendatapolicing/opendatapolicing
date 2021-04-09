@@ -33,6 +33,7 @@ import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiService;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiService;
 import com.opendatapolicing.enus.user.SiteUserEnUSGenApiService;
 
+import io.vertx.codegen.annotations.Nullable;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -71,10 +72,12 @@ import io.vertx.ext.web.Session;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.handler.TemplateHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.openapi.RouterBuilder;
 import io.vertx.ext.web.sstore.LocalSessionStore;
+import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
 import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
@@ -101,6 +104,12 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 * For logging information and errors in the application. 
 	 **/
 	private static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
+
+	private Router router;
+
+	private JsonObject config;
+
+	public static final String CONFIG_staticPath = "staticPath";
 
 	/**	
 	 *	The main method for the Vert.x application that runs the Vert.x Runner class
@@ -192,15 +201,19 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	public void  start(Promise<Void> startPromise) throws Exception, Exception {
 
 		try {
-			Future<Void> promiseSteps = configureSiteContext().future().compose(a ->
-				configureData().future().compose(b -> 
-					configureCluster().future().compose(c -> 
-						configureOpenApi().future().compose(d -> 
-							configureHealthChecks().future().compose(e -> 
-								configureSharedWorkerExecutor().future().compose(f -> 
-									configureWebsockets().future().compose(g -> 
-										configureEmail().future().compose(h -> 
-											startServer().future()
+			Future<Void> promiseSteps = configureSiteContext().compose(a ->
+				configureData().compose(b -> 
+					configureCluster().compose(c -> 
+						configureOpenApi().compose(d -> 
+							configureHealthChecks().compose(e -> 
+								configureSharedWorkerExecutor().compose(f -> 
+									configureWebsockets().compose(g -> 
+										configureEmail().compose(h -> 
+											configureApi().compose(i -> 
+												configureUi().compose(j -> 
+													startServer()
+												)
+											)
 										)
 									)
 								)
@@ -217,7 +230,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 	/**	
 	 **/
-	private Promise<Void> configureSiteContext() {
+	private Future<Void> configureSiteContext() {
 		Promise<Void> promise = Promise.promise();
 
 		try {
@@ -234,7 +247,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 			ConfigRetriever configRetriever = ConfigRetriever.create(vertx, retrieverOptions);
 			configRetriever.getConfig(a -> {
-				JsonObject config = a.result();
+				config = a.result();
 
 				siteContextEnUS = new SiteContextEnUS();
 				siteContextEnUS.setVertx(vertx);
@@ -249,7 +262,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			promise.fail(ex);
 		}
 
-		return promise;
+		return promise.future();
 	}
 
 	/**	
@@ -265,7 +278,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Load the database configuration into a shared io.vertx.ext.jdbc.JDBCClient for a scalable, clustered datasource connection pool. 
 	 *	Initialize the database tables if not already created for the first time. 
 	 **/
-	private Promise<Void> configureData() {
+	private Future<Void> configureData() {
 		Promise<Void> promise = Promise.promise();
 		try {
 			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
@@ -295,7 +308,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			promise.fail(ex);
 		}
 
-		return promise;
+		return promise.future();
 	}
 
 	/**	
@@ -306,7 +319,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Configure shared data across the cluster for massive scaling of the application. 
 	 *	Return a promise that configures a shared cluster data. 
 	 **/ 
-	private Promise<Void> configureCluster() {
+	private Future<Void> configureCluster() {
 		Promise<Void> promise = Promise.promise();
 		try {
 			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
@@ -332,7 +345,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			LOG.error(configureClusterDataError, ex);
 			promise.fail(ex);
 		}
-		return promise;
+		return promise.future();
 	}
 
 	/**	
@@ -345,7 +358,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Setup a logout route for logging out completely of the application. 
 	 *	Return a promise that configures the authentication server and OpenAPI. 
 	 **/
-	private Promise<Void> configureOpenApi() {
+	private Future<Void> configureOpenApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
 			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
@@ -455,7 +468,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 							});
 							routerBuilder.operation("logout").handler(c -> {});
 			
-							Router router = routerBuilder.createRouter();
+							router = routerBuilder.createRouter();
 							siteContextEnUS.setRouter(router);
 			
 							LOG.info(configureOpenApiSuccess);
@@ -474,7 +487,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			LOG.error(configureOpenApiError, ex);
 			promise.fail(ex);
 		}
-		return promise;
+		return promise.future();
 	}
 
 	/**
@@ -484,7 +497,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Configure a shared worker executor for running blocking tasks in the background. 
 	 *	Return a promise that configures the shared worker executor. 
 	 **/    
-	private Promise<Void> configureSharedWorkerExecutor() {
+	private Future<Void> configureSharedWorkerExecutor() {
 		Promise<Void> promise = Promise.promise();
 		try {
 			WorkerExecutor workerExecutor = vertx.createSharedWorkerExecutor("WorkerExecutor");
@@ -494,7 +507,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			LOG.error(configureSharedWorkerExecutorError, ex);
 			promise.fail(ex);
 		}
-		return promise;
+		return promise.future();
 	}
 
 	/**	
@@ -510,7 +523,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Configure health checks for the status of the website and it's dependent services. 
 	 *	Return a promise that configures the health checks. 
 	 **/
-	private Promise<Void> configureHealthChecks() {
+	private Future<Void> configureHealthChecks() {
 		Promise<Void> promise = Promise.promise();
 		try {
 			Router siteRouteur = siteContextEnUS.getRouter();
@@ -548,7 +561,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			LOG.error(configureHealthChecksErrorSolr, ex);
 			promise.fail(ex);
 		}
-		return promise;
+		return promise.future();
 	}
 
 	/**	
@@ -557,7 +570,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 * 
 	 *	Configure websockets for realtime messages. 
 	 **/
-	private Promise<Void> configureWebsockets() {
+	private Future<Void> configureWebsockets() {
 		Promise<Void> promise = Promise.promise();
 		try {
 			Router siteRouter = siteContextEnUS.getRouter();
@@ -571,7 +584,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			LOG.error(configureWebsocketsError, ex);
 			promise.fail(ex);
 		}
-		return promise;
+		return promise.future();
 	}
 
 	/**	
@@ -580,7 +593,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 * 
 	 *	Configure sending email. 
 	 **/
-	private Promise<Void> configureEmail() {
+	private Future<Void> configureEmail() {
 		Promise<Void> promise = Promise.promise();
 		try {
 			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
@@ -599,7 +612,72 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			LOG.error(configureEmailError, ex);
 			promise.fail(ex);
 		}
-		return promise;
+		return promise.future();
+	}
+
+	/**
+	 * Val.Fail.enUS:The API was configured properly. 
+	 * Val.Complete.enUS:The API was not configured properly. 
+	 */
+	private Future<Void> configureApi() {
+		Promise<Void> promise = Promise.promise();
+		try {
+			SiteUserEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			PageDesignEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			HtmlPartEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			SiteStateEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			SiteAgencyEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			SearchBasisEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			TrafficContrabandEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			TrafficPersonEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			TrafficSearchEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			TrafficStopEnUSGenApiService.registerService(siteContextEnUS, vertx);
+
+			LOG.info(configureApiComplete);
+			promise.complete();
+		} catch(Exception ex) {
+			LOG.error(configureApiFail);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+
+	/**
+	 * Val.Fail.enUS:The UI was configured properly. 
+	 * Val.Complete.enUS:The UI was not configured properly. 
+	 */
+	private Future<Void> configureUi() {
+		Promise<Void> promise = Promise.promise();
+		try {
+			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
+			TemplateHandler templateHandler = TemplateHandler.create(engine);
+
+			router.get("/").handler(a -> {
+				a.reroute("/template/home-page");
+			});
+
+			router.get("/template/*").handler(templateHandler);
+			router.errorHandler(500,  a -> {
+				Throwable ex = a.failure();
+				LOG.error("Error occured. ", ex);
+				a.json(new JsonObject().put("error", new JsonObject().put("message", ex.getMessage())));
+			});
+
+			StaticHandler staticHandler = StaticHandler.create().setCachingEnabled(false).setFilesReadOnly(false);
+			String staticPath = config.getString(CONFIG_staticPath);
+			if(staticPath != null) {
+				staticHandler.setAllowRootFileSystemAccess(true);
+				staticHandler.setWebRoot(staticPath);
+			}
+			router.route("/static/*").handler(staticHandler);
+
+			LOG.info(configureUiComplete);
+			promise.complete();
+		} catch(Exception ex) {
+			LOG.error(configureUiFail);
+			promise.fail(ex);
+		}
+		return promise.future();
 	}
 
 	/**	
@@ -612,30 +690,12 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Start the Vert.x server. 
 	 *	Démarrer le serveur Vert.x. 
 	 **/
-	private Promise<Void> startServer() {
+	private Future<Void> startServer() {
 		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
 
-		SiteUserEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		PageDesignEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		HtmlPartEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		SiteStateEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		SiteAgencyEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		SearchBasisEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		TrafficContrabandEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		TrafficPersonEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		TrafficSearchEnUSGenApiService.registerService(siteContextEnUS, vertx);
-		TrafficStopEnUSGenApiService.registerService(siteContextEnUS, vertx);
 
 		Router siteRouter = siteContextEnUS.getRouter();
-
-		StaticHandler staticHandler = StaticHandler.create().setCachingEnabled(false).setFilesReadOnly(true);
-		String staticPath = siteConfig.getStaticPath();
-		if(staticPath != null) {
-			staticHandler.setAllowRootFileSystemAccess(true);
-			staticHandler.setWebRoot(staticPath);
-		}
-		siteRouter.route("/static/*").handler(staticHandler);
 
 		SimpleModule module = new SimpleModule();
 		module.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
@@ -665,7 +725,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			}
 		});
 
-		return promise;
+		return promise.future();
 	}
 
 	/**	
