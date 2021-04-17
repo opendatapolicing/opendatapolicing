@@ -1,13 +1,20 @@
 package com.opendatapolicing.enus.state;
 
-import com.opendatapolicing.enus.context.SiteContextEnUS;
+import org.apache.solr.client.solrj.SolrClient;
+
+import io.vertx.core.WorkerExecutor;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
+import io.vertx.ext.auth.oauth2.OAuth2Auth;
+import io.vertx.pgclient.PgPool;
 
 /**
  * Translate: false
  **/
 public class SiteStateEnUSApiServiceImpl extends SiteStateEnUSGenApiServiceImpl {
 
-	public SiteStateEnUSApiServiceImpl(SiteContextEnUS siteContext) {
-		super(siteContext);
+	public SiteStateEnUSApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 }

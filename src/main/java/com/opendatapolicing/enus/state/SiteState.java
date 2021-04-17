@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.state; 
+package com.opendatapolicing.enus.state;                 
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Sort.asc: stateName
  * 
  * Rows: 100
- **/  
+**/    
 public class SiteState extends SiteStateGen<Cluster> {
 
 	/**
@@ -67,7 +67,7 @@ public class SiteState extends SiteStateGen<Cluster> {
 	 * HtmlRow: 3
 	 * HtmlCell: 1
 	 * DisplayName.enUS: name
-	 */ 
+	 */  
 	protected void _stateName(Wrap<String> c) {
 	}
 

@@ -17,6 +17,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -28,7 +29,6 @@ import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.design.PageDesign;
 import org.apache.solr.client.solrj.SolrClient;
@@ -6029,7 +6029,7 @@ public abstract class HtmlPartGen<DEV> extends Cluster {
 		try {
 			SolrInputDocument document = new SolrInputDocument();
 			indexHtmlPart(document);
-			SolrClient clientSolr = siteRequest_.getSiteContext_().getSolrClient();
+			SolrClient clientSolr = siteRequest_.getSolrClient();
 			clientSolr.add(document);
 			clientSolr.commit(false, false, true);
 		} catch(Exception e) {

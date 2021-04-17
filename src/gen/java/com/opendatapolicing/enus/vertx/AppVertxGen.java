@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
@@ -37,6 +38,178 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
  * <br/>
  **/
 public abstract class AppVertxGen<DEV> extends AbstractVerticle {
+
+/*
+CREATE TABLE PageDesign(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, pageDesignCompleteName text
+	, designHidden boolean
+	, pageContentType text
+	);
+CREATE TABLE HtmlPart(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, htmlLink text
+	, htmlElement text
+	, htmlId text
+	, htmlClasses text
+	, htmlStyle text
+	, htmlBefore text
+	, htmlAfter text
+	, htmlText text
+	, htmlVar text
+	, htmlVarSpan text
+	, htmlVarForm text
+	, htmlVarInput text
+	, htmlVarForEach text
+	, htmlVarHtml text
+	, htmlVarBase64Decode text
+	, htmlExclude boolean
+	, pdfExclude boolean
+	, loginLogout boolean
+	, searchUri text
+	, mapTo text
+	, sort1 double precision
+	, sort2 double precision
+	, sort3 double precision
+	, sort4 double precision
+	, sort5 double precision
+	, sort6 double precision
+	, sort7 double precision
+	, sort8 double precision
+	, sort9 double precision
+	, sort10 double precision
+	);
+CREATE TABLE SiteUser(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, userKey bigint
+	, userId text
+	, userName text
+	, userEmail text
+	, userFirstName text
+	, userLastName text
+	, userFullName text
+	);
+CREATE TABLE SiteState(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, stateName text
+	, stateAbbreviation text
+	, imageLeft integer
+	, imageTop integer
+	);
+CREATE TABLE SiteAgency(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, agencyName text
+	, stateKey bigint references SiteState(pk)
+	, imageLeft integer
+	, imageTop integer
+	, imageCoords text
+	);
+CREATE TABLE TrafficStop(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, trafficStopKey bigint
+	, stateAbbreviation text
+	, agencyTitle text
+	, stopDateTime timestamp with time zone
+	, stopYear integer
+	, stopPurposeNum integer
+	, stopActionNum integer
+	, stopDriverArrest boolean
+	, stopPassengerArrest boolean
+	, stopEncounterForce boolean
+	, stopEngageForce boolean
+	, stopOfficerInjury boolean
+	, stopDriverInjury boolean
+	, stopPassengerInjury boolean
+	, stopOfficerId text
+	, stopLocationId text
+	, stopCityId text
+	);
+CREATE TABLE TrafficPerson(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, trafficStopKey bigint references TrafficStop(pk)
+	, personAge integer
+	, personTypeId text
+	, personGenderId text
+	, personEthnicityId text
+	, personRaceId text
+	);
+CREATE TABLE TrafficSearch(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, personKey bigint references TrafficPerson(pk)
+	, searchTypeNum integer
+	, searchVehicle boolean
+	, searchDriver boolean
+	, searchPassenger boolean
+	, searchProperty boolean
+	, searchVehicleSiezed boolean
+	, searchPersonalPropertySiezed boolean
+	, searchOtherPropertySiezed boolean
+	);
+CREATE TABLE TrafficContraband(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, searchKey bigint references TrafficSearch(pk)
+	, contrabandOunces decimal
+	, contrabandPounds decimal
+	, contrabandPints decimal
+	, contrabandGallons decimal
+	, contrabandDosages decimal
+	, contrabandGrams decimal
+	, contrabandKilos decimal
+	, contrabandMoney decimal
+	, contrabandWeapons decimal
+	, contrabandDollarAmount decimal
+	);
+CREATE TABLE SearchBasis(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, searchKey bigint references TrafficSearch(pk)
+	, searchBasisId text
+	, searchBasisTitle text
+	);
+CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references PageDesign(pk)
+	, pk2 bigint references PageDesign(pk)
+	);
+CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references PageDesign(pk)
+	, pk2 bigint references HtmlPart(pk)
+	);
+
+DROP TABLE PageDesign CASCADE;
+DROP TABLE HtmlPart CASCADE;
+DROP TABLE SiteUser CASCADE;
+DROP TABLE SiteState CASCADE;
+DROP TABLE SiteAgency CASCADE;
+DROP TABLE TrafficStop CASCADE;
+DROP TABLE TrafficPerson CASCADE;
+DROP TABLE TrafficSearch CASCADE;
+DROP TABLE TrafficContraband CASCADE;
+DROP TABLE SearchBasis CASCADE;
+DROP TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys CASCADE;
+DROP TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys CASCADE;
+*/
+
 	protected static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
 	public static final String configureDataConnectionError1 = "Could not open the database client connection. ";
 	public static final String configureDataConnectionError = configureDataConnectionError1;
@@ -71,15 +244,15 @@ public abstract class AppVertxGen<DEV> extends AbstractVerticle {
 	public static final String configureHealthChecksErrorVertx1 = "The Vert.x application is not configured properly. ";
 	public static final String configureHealthChecksErrorVertx = configureHealthChecksErrorVertx1;
 
-	public static final String configureWebsocketsError1 = "Could not configure websockets. ";
-	public static final String configureWebsocketsError = configureWebsocketsError1;
-	public static final String configureWebsocketsSuccess1 = "The websockets configured successfully. ";
-	public static final String configureWebsocketsSuccess = configureWebsocketsSuccess1;
+	public static final String configureWebsocketsComplete1 = "Configure websockets succeeded. ";
+	public static final String configureWebsocketsComplete = configureWebsocketsComplete1;
+	public static final String configureWebsocketsFail1 = "Configure websockets failed. ";
+	public static final String configureWebsocketsFail = configureWebsocketsFail1;
 
-	public static final String configureEmailError1 = "Could not configure the email. ";
-	public static final String configureEmailError = configureEmailError1;
-	public static final String configureEmailSuccess1 = "The email was configured successfully. ";
-	public static final String configureEmailSuccess = configureEmailSuccess1;
+	public static final String configureEmailComplete1 = "Configure sending email succeeded. ";
+	public static final String configureEmailComplete = configureEmailComplete1;
+	public static final String configureEmailFail1 = "Configure sending email failed. ";
+	public static final String configureEmailFail = configureEmailFail1;
 
 	public static final String configureApiFail1 = "The API was configured properly. ";
 	public static final String configureApiFail = configureApiFail1;
@@ -321,5 +494,5 @@ public abstract class AppVertxGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsError1, configureWebsocketsSuccess1, configureEmailError1, configureEmailSuccess1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
+	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
 }

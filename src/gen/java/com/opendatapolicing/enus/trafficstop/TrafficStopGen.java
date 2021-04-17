@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.time.ZonedDateTime;
 import org.slf4j.LoggerFactory;
+import com.opendatapolicing.enus.state.SiteState;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.lang.Long;
@@ -20,7 +21,6 @@ import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -44,6 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import org.slf4j.Logger;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -174,6 +175,448 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String htmTrafficStopKey() {
 		return trafficStopKey == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficStopKey());
+	}
+
+	public void inputTrafficStopKey(String classApiMethodMethod) {
+		TrafficStop s = (TrafficStop)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_trafficStopKey");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setTrafficStopKey classTrafficStop inputTrafficStop", pk, "TrafficStopKey w3-input w3-border ");
+					a("name", "setTrafficStopKey");
+				} else {
+					a("class", "valueTrafficStopKey w3-input w3-border classTrafficStop inputTrafficStop", pk, "TrafficStopKey w3-input w3-border ");
+					a("name", "trafficStopKey");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setTrafficStopKey', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_trafficStopKey')); }, function() { addError($('#", classApiMethodMethod, "_trafficStopKey')); }); ");
+				}
+				a("value", strTrafficStopKey())
+			.fg();
+
+		} else {
+			e("span").a("class", "varTrafficStop", pk, "TrafficStopKey ").f().sx(htmTrafficStopKey()).g("span");
+		}
+	}
+
+	public void htmTrafficStopKey(String classApiMethodMethod) {
+		TrafficStop s = (TrafficStop)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopTrafficStopKey").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputTrafficStopKey(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_trafficStopKey')); $('#", classApiMethodMethod, "_trafficStopKey').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setTrafficStopKey', null, function() { addGlow($('#", classApiMethodMethod, "_trafficStopKey')); }, function() { addError($('#", classApiMethodMethod, "_trafficStopKey')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
+	///////////////////////
+	// stateAbbreviation //
+	///////////////////////
+
+	/**	 The entity stateAbbreviation
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String stateAbbreviation;
+	@JsonIgnore
+	public Wrap<String> stateAbbreviationWrap = new Wrap<String>().p(this).c(String.class).var("stateAbbreviation").o(stateAbbreviation);
+
+	/**	<br/> The entity stateAbbreviation
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateAbbreviation">Find the entity stateAbbreviation in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _stateAbbreviation(Wrap<String> w);
+
+	public String getStateAbbreviation() {
+		return stateAbbreviation;
+	}
+	public void setStateAbbreviation(String o) {
+		this.stateAbbreviation = TrafficStop.staticSetStateAbbreviation(siteRequest_, o);
+		this.stateAbbreviationWrap.alreadyInitialized = true;
+	}
+	public static String staticSetStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected TrafficStop stateAbbreviationInit() {
+		if(!stateAbbreviationWrap.alreadyInitialized) {
+			_stateAbbreviation(stateAbbreviationWrap);
+			if(stateAbbreviation == null)
+				setStateAbbreviation(stateAbbreviationWrap.o);
+		}
+		stateAbbreviationWrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	public static String staticSolrStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficStop.staticSolrStrStateAbbreviation(siteRequest_, TrafficStop.staticSolrStateAbbreviation(siteRequest_, TrafficStop.staticSetStateAbbreviation(siteRequest_, o)));
+	}
+
+	public String solrStateAbbreviation() {
+		return TrafficStop.staticSolrStateAbbreviation(siteRequest_, stateAbbreviation);
+	}
+
+	public String strStateAbbreviation() {
+		return stateAbbreviation == null ? "" : stateAbbreviation;
+	}
+
+	public String sqlStateAbbreviation() {
+		return stateAbbreviation;
+	}
+
+	public String jsonStateAbbreviation() {
+		return stateAbbreviation == null ? "" : stateAbbreviation;
+	}
+
+	public String htmTooltipStateAbbreviation() {
+		return null;
+	}
+
+	public String htmStateAbbreviation() {
+		return stateAbbreviation == null ? "" : StringEscapeUtils.escapeHtml4(strStateAbbreviation());
+	}
+
+	public void inputStateAbbreviation(String classApiMethodMethod) {
+		TrafficStop s = (TrafficStop)this;
+		if(
+				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+				) {
+			e("input")
+				.a("type", "text")
+				.a("id", classApiMethodMethod, "_stateAbbreviation");
+				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
+					a("class", "setStateAbbreviation classTrafficStop inputTrafficStop", pk, "StateAbbreviation w3-input w3-border ");
+					a("name", "setStateAbbreviation");
+				} else {
+					a("class", "valueStateAbbreviation w3-input w3-border classTrafficStop inputTrafficStop", pk, "StateAbbreviation w3-input w3-border ");
+					a("name", "stateAbbreviation");
+				}
+				if("Page".equals(classApiMethodMethod)) {
+					a("onclick", "removeGlow($(this)); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStateAbbreviation', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stateAbbreviation')); }, function() { addError($('#", classApiMethodMethod, "_stateAbbreviation')); }); ");
+				}
+				a("value", strStateAbbreviation())
+			.fg();
+
+		} else {
+			e("span").a("class", "varTrafficStop", pk, "StateAbbreviation ").f().sx(htmStateAbbreviation()).g("span");
+		}
+	}
+
+	public void htmStateAbbreviation(String classApiMethodMethod) {
+		TrafficStop s = (TrafficStop)this;
+		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
+			{ e("div").a("class", "w3-padding ").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopStateAbbreviation").f();
+					{ e("div").a("class", "w3-card ").f();
+						{ e("div").a("class", "w3-cell-row w3-padding ").f();
+							{ e("div").a("class", "w3-cell ").f();
+
+								inputStateAbbreviation(classApiMethodMethod);
+							} g("div");
+							if(
+									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
+									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
+									) {
+								if("Page".equals(classApiMethodMethod)) {
+									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
+										{ e("button")
+											.a("tabindex", "-1")
+											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stateAbbreviation')); $('#", classApiMethodMethod, "_stateAbbreviation').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setStateAbbreviation', null, function() { addGlow($('#", classApiMethodMethod, "_stateAbbreviation')); }, function() { addError($('#", classApiMethodMethod, "_stateAbbreviation')); }); ")
+											.f();
+											e("i").a("class", "far fa-eraser ").f().g("i");
+										} g("button");
+									} g("div");
+								}
+							}
+						} g("div");
+					} g("div");
+				} g("div");
+			} g("div");
+		} g("div");
+	}
+
+	/////////////////
+	// stateSearch //
+	/////////////////
+
+	/**	 The entity stateSearch
+	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SiteState>(). 
+	 */
+	@JsonIgnore
+	@JsonInclude(Include.NON_NULL)
+	protected SearchList<SiteState> stateSearch = new SearchList<SiteState>();
+	@JsonIgnore
+	public Wrap<SearchList<SiteState>> stateSearchWrap = new Wrap<SearchList<SiteState>>().p(this).c(SearchList.class).var("stateSearch").o(stateSearch);
+
+	/**	<br/> The entity stateSearch
+	 *  It is constructed before being initialized with the constructor by default SearchList<SiteState>(). 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateSearch">Find the entity stateSearch in Solr</a>
+	 * <br/>
+	 * @param stateSearch is the entity already constructed. 
+	 **/
+	protected abstract void _stateSearch(SearchList<SiteState> l);
+
+	public SearchList<SiteState> getStateSearch() {
+		return stateSearch;
+	}
+
+	public void setStateSearch(SearchList<SiteState> stateSearch) {
+		this.stateSearch = stateSearch;
+		this.stateSearchWrap.alreadyInitialized = true;
+	}
+	public static SearchList<SiteState> staticSetStateSearch(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected TrafficStop stateSearchInit() {
+		if(!stateSearchWrap.alreadyInitialized) {
+			_stateSearch(stateSearch);
+		}
+		stateSearch.initDeepForClass(siteRequest_);
+		stateSearchWrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	////////////
+	// state_ //
+	////////////
+
+	/**	 The entity state_
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected SiteState state_;
+	@JsonIgnore
+	public Wrap<SiteState> state_Wrap = new Wrap<SiteState>().p(this).c(SiteState.class).var("state_").o(state_);
+
+	/**	<br/> The entity state_
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:state_">Find the entity state_ in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _state_(Wrap<SiteState> w);
+
+	public SiteState getState_() {
+		return state_;
+	}
+
+	public void setState_(SiteState state_) {
+		this.state_ = state_;
+		this.state_Wrap.alreadyInitialized = true;
+	}
+	public static SiteState staticSetState_(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected TrafficStop state_Init() {
+		if(!state_Wrap.alreadyInitialized) {
+			_state_(state_Wrap);
+			if(state_ == null)
+				setState_(state_Wrap.o);
+		}
+		state_Wrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	//////////////
+	// stateKey //
+	//////////////
+
+	/**	 The entity stateKey
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long stateKey;
+	@JsonIgnore
+	public Wrap<Long> stateKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("stateKey").o(stateKey);
+
+	/**	<br/> The entity stateKey
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateKey">Find the entity stateKey in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _stateKey(Wrap<Long> w);
+
+	public Long getStateKey() {
+		return stateKey;
+	}
+
+	public void setStateKey(Long stateKey) {
+		this.stateKey = stateKey;
+		this.stateKeyWrap.alreadyInitialized = true;
+	}
+	public void setStateKey(String o) {
+		this.stateKey = TrafficStop.staticSetStateKey(siteRequest_, o);
+		this.stateKeyWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetStateKey(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected TrafficStop stateKeyInit() {
+		if(!stateKeyWrap.alreadyInitialized) {
+			_stateKey(stateKeyWrap);
+			if(stateKey == null)
+				setStateKey(stateKeyWrap.o);
+		}
+		stateKeyWrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	public static Long staticSolrStateKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrStateKey(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqStateKey(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficStop.staticSolrStrStateKey(siteRequest_, TrafficStop.staticSolrStateKey(siteRequest_, TrafficStop.staticSetStateKey(siteRequest_, o)));
+	}
+
+	public Long solrStateKey() {
+		return TrafficStop.staticSolrStateKey(siteRequest_, stateKey);
+	}
+
+	public String strStateKey() {
+		return stateKey == null ? "" : stateKey.toString();
+	}
+
+	public Long sqlStateKey() {
+		return stateKey;
+	}
+
+	public String jsonStateKey() {
+		return stateKey == null ? "" : stateKey.toString();
+	}
+
+	public String htmTooltipStateKey() {
+		return null;
+	}
+
+	public String htmStateKey() {
+		return stateKey == null ? "" : StringEscapeUtils.escapeHtml4(strStateKey());
+	}
+
+	///////////////
+	// stateName //
+	///////////////
+
+	/**	 The entity stateName
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected String stateName;
+	@JsonIgnore
+	public Wrap<String> stateNameWrap = new Wrap<String>().p(this).c(String.class).var("stateName").o(stateName);
+
+	/**	<br/> The entity stateName
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateName">Find the entity stateName in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _stateName(Wrap<String> w);
+
+	public String getStateName() {
+		return stateName;
+	}
+	public void setStateName(String o) {
+		this.stateName = TrafficStop.staticSetStateName(siteRequest_, o);
+		this.stateNameWrap.alreadyInitialized = true;
+	}
+	public static String staticSetStateName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected TrafficStop stateNameInit() {
+		if(!stateNameWrap.alreadyInitialized) {
+			_stateName(stateNameWrap);
+			if(stateName == null)
+				setStateName(stateNameWrap.o);
+		}
+		stateNameWrap.alreadyInitialized(true);
+		return (TrafficStop)this;
+	}
+
+	public static String staticSolrStateName(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrStateName(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqStateName(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficStop.staticSolrStrStateName(siteRequest_, TrafficStop.staticSolrStateName(siteRequest_, TrafficStop.staticSetStateName(siteRequest_, o)));
+	}
+
+	public String solrStateName() {
+		return TrafficStop.staticSolrStateName(siteRequest_, stateName);
+	}
+
+	public String strStateName() {
+		return stateName == null ? "" : stateName;
+	}
+
+	public String sqlStateName() {
+		return stateName;
+	}
+
+	public String jsonStateName() {
+		return stateName == null ? "" : stateName;
+	}
+
+	public String htmTooltipStateName() {
+		return null;
+	}
+
+	public String htmStateName() {
+		return stateName == null ? "" : StringEscapeUtils.escapeHtml4(strStateName());
 	}
 
 	///////////////
@@ -342,83 +785,83 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return (TrafficStop)this;
 	}
 
-	/////////////////////
-	// stopAgencyTitle //
-	/////////////////////
+	/////////////////
+	// agencyTitle //
+	/////////////////
 
-	/**	 The entity stopAgencyTitle
+	/**	 The entity agencyTitle
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonInclude(Include.NON_NULL)
-	protected String stopAgencyTitle;
+	protected String agencyTitle;
 	@JsonIgnore
-	public Wrap<String> stopAgencyTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopAgencyTitle").o(stopAgencyTitle);
+	public Wrap<String> agencyTitleWrap = new Wrap<String>().p(this).c(String.class).var("agencyTitle").o(agencyTitle);
 
-	/**	<br/> The entity stopAgencyTitle
+	/**	<br/> The entity agencyTitle
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopAgencyTitle">Find the entity stopAgencyTitle in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTitle">Find the entity agencyTitle in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _stopAgencyTitle(Wrap<String> w);
+	protected abstract void _agencyTitle(Wrap<String> w);
 
-	public String getStopAgencyTitle() {
-		return stopAgencyTitle;
+	public String getAgencyTitle() {
+		return agencyTitle;
 	}
-	public void setStopAgencyTitle(String o) {
-		this.stopAgencyTitle = TrafficStop.staticSetStopAgencyTitle(siteRequest_, o);
-		this.stopAgencyTitleWrap.alreadyInitialized = true;
+	public void setAgencyTitle(String o) {
+		this.agencyTitle = TrafficStop.staticSetAgencyTitle(siteRequest_, o);
+		this.agencyTitleWrap.alreadyInitialized = true;
 	}
-	public static String staticSetStopAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSetAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected TrafficStop stopAgencyTitleInit() {
-		if(!stopAgencyTitleWrap.alreadyInitialized) {
-			_stopAgencyTitle(stopAgencyTitleWrap);
-			if(stopAgencyTitle == null)
-				setStopAgencyTitle(stopAgencyTitleWrap.o);
+	protected TrafficStop agencyTitleInit() {
+		if(!agencyTitleWrap.alreadyInitialized) {
+			_agencyTitle(agencyTitleWrap);
+			if(agencyTitle == null)
+				setAgencyTitle(agencyTitleWrap.o);
 		}
-		stopAgencyTitleWrap.alreadyInitialized(true);
+		agencyTitleWrap.alreadyInitialized(true);
 		return (TrafficStop)this;
 	}
 
-	public static String staticSolrStopAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrStopAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrStrAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqStopAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficStop.staticSolrStrStopAgencyTitle(siteRequest_, TrafficStop.staticSolrStopAgencyTitle(siteRequest_, TrafficStop.staticSetStopAgencyTitle(siteRequest_, o)));
+	public static String staticSolrFqAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficStop.staticSolrStrAgencyTitle(siteRequest_, TrafficStop.staticSolrAgencyTitle(siteRequest_, TrafficStop.staticSetAgencyTitle(siteRequest_, o)));
 	}
 
-	public String solrStopAgencyTitle() {
-		return TrafficStop.staticSolrStopAgencyTitle(siteRequest_, stopAgencyTitle);
+	public String solrAgencyTitle() {
+		return TrafficStop.staticSolrAgencyTitle(siteRequest_, agencyTitle);
 	}
 
-	public String strStopAgencyTitle() {
-		return stopAgencyTitle == null ? "" : stopAgencyTitle;
+	public String strAgencyTitle() {
+		return agencyTitle == null ? "" : agencyTitle;
 	}
 
-	public String sqlStopAgencyTitle() {
-		return stopAgencyTitle;
+	public String sqlAgencyTitle() {
+		return agencyTitle;
 	}
 
-	public String jsonStopAgencyTitle() {
-		return stopAgencyTitle == null ? "" : stopAgencyTitle;
+	public String jsonAgencyTitle() {
+		return agencyTitle == null ? "" : agencyTitle;
 	}
 
-	public String htmTooltipStopAgencyTitle() {
+	public String htmTooltipAgencyTitle() {
 		return null;
 	}
 
-	public String htmStopAgencyTitle() {
-		return stopAgencyTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopAgencyTitle());
+	public String htmAgencyTitle() {
+		return agencyTitle == null ? "" : StringEscapeUtils.escapeHtml4(strAgencyTitle());
 	}
 
-	public void inputStopAgencyTitle(String classApiMethodMethod) {
+	public void inputAgencyTitle(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
 		if(
 				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
@@ -427,39 +870,39 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			e("input")
 				.a("type", "text")
 				.a("placeholder", "agency title")
-				.a("id", classApiMethodMethod, "_stopAgencyTitle");
+				.a("id", classApiMethodMethod, "_agencyTitle");
 				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setStopAgencyTitle classTrafficStop inputTrafficStop", pk, "StopAgencyTitle w3-input w3-border ");
-					a("name", "setStopAgencyTitle");
+					a("class", "setAgencyTitle classTrafficStop inputTrafficStop", pk, "AgencyTitle w3-input w3-border ");
+					a("name", "setAgencyTitle");
 				} else {
-					a("class", "valueStopAgencyTitle w3-input w3-border classTrafficStop inputTrafficStop", pk, "StopAgencyTitle w3-input w3-border ");
-					a("name", "stopAgencyTitle");
+					a("class", "valueAgencyTitle w3-input w3-border classTrafficStop inputTrafficStop", pk, "AgencyTitle w3-input w3-border ");
+					a("name", "agencyTitle");
 				}
 				if("Page".equals(classApiMethodMethod)) {
 					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setStopAgencyTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopAgencyTitle')); }); ");
+					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setAgencyTitle', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_agencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_agencyTitle')); }); ");
 				}
-				a("value", strStopAgencyTitle())
+				a("value", strAgencyTitle())
 			.fg();
 
 		} else {
-			e("span").a("class", "varTrafficStop", pk, "StopAgencyTitle ").f().sx(htmStopAgencyTitle()).g("span");
+			e("span").a("class", "varTrafficStop", pk, "AgencyTitle ").f().sx(htmAgencyTitle()).g("span");
 		}
 	}
 
-	public void htmStopAgencyTitle(String classApiMethodMethod) {
+	public void htmAgencyTitle(String classApiMethodMethod) {
 		TrafficStop s = (TrafficStop)this;
 		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
 			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopStopAgencyTitle").f();
+				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopAgencyTitle").f();
 					{ e("div").a("class", "w3-card ").f();
 						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_stopAgencyTitle").a("class", "").f().sx("agency title").g("label");
+							e("label").a("for", classApiMethodMethod, "_agencyTitle").a("class", "").f().sx("agency title").g("label");
 						} g("div");
 						{ e("div").a("class", "w3-cell-row w3-padding ").f();
 							{ e("div").a("class", "w3-cell ").f();
 
-								inputStopAgencyTitle(classApiMethodMethod);
+								inputAgencyTitle(classApiMethodMethod);
 							} g("div");
 							if(
 									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
@@ -470,7 +913,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 										{ e("button")
 											.a("tabindex", "-1")
 											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); $('#", classApiMethodMethod, "_stopAgencyTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setStopAgencyTitle', null, function() { addGlow($('#", classApiMethodMethod, "_stopAgencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_stopAgencyTitle')); }); ")
+										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_agencyTitle')); $('#", classApiMethodMethod, "_agencyTitle').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setAgencyTitle', null, function() { addGlow($('#", classApiMethodMethod, "_agencyTitle')); }, function() { addError($('#", classApiMethodMethod, "_agencyTitle')); }); ")
 											.f();
 											e("i").a("class", "far fa-eraser ").f().g("i");
 										} g("button");
@@ -523,10 +966,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetStopDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone()))).truncatedTo(ChronoUnit.MILLIS);
+		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)))).truncatedTo(ChronoUnit.MILLIS);
 	}
 	public void setStopDateTime(Date o) {
-		this.stopDateTime = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())).truncatedTo(ChronoUnit.MILLIS);
+		this.stopDateTime = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	protected TrafficStop stopDateTimeInit() {
@@ -2324,7 +2767,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopOfficerIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetStopOfficerId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+		return StringUtils.trim(o);
 	}
 	protected TrafficStop stopOfficerIdInit() {
 		if(!stopOfficerIdWrap.alreadyInitialized) {
@@ -2466,7 +2909,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopLocationIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetStopLocationId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+		return StringUtils.trim(o);
 	}
 	protected TrafficStop stopLocationIdInit() {
 		if(!stopLocationIdWrap.alreadyInitialized) {
@@ -2608,7 +3051,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopCityIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetStopCityId(SiteRequestEnUS siteRequest_, String o) {
-		return o;
+		return StringUtils.trim(o);
 	}
 	protected TrafficStop stopCityIdInit() {
 		if(!stopCityIdWrap.alreadyInitialized) {
@@ -3217,10 +3660,15 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public void initTrafficStop() {
 		trafficStopKeyInit();
+		stateAbbreviationInit();
+		stateSearchInit();
+		state_Init();
+		stateKeyInit();
+		stateNameInit();
 		agencyKeyInit();
 		agencySearchInit();
 		agency_Init();
-		stopAgencyTitleInit();
+		agencyTitleInit();
 		stopDateTimeInit();
 		stopYearInit();
 		stopPurposeNumInit();
@@ -3254,6 +3702,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public void siteRequestTrafficStop(SiteRequestEnUS siteRequest_) {
 			super.siteRequestCluster(siteRequest_);
+		if(stateSearch != null)
+			stateSearch.setSiteRequest_(siteRequest_);
 		if(agencySearch != null)
 			agencySearch.setSiteRequest_(siteRequest_);
 		if(personSearch != null)
@@ -3292,14 +3742,24 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		switch(var) {
 			case "trafficStopKey":
 				return oTrafficStop.trafficStopKey;
+			case "stateAbbreviation":
+				return oTrafficStop.stateAbbreviation;
+			case "stateSearch":
+				return oTrafficStop.stateSearch;
+			case "state_":
+				return oTrafficStop.state_;
+			case "stateKey":
+				return oTrafficStop.stateKey;
+			case "stateName":
+				return oTrafficStop.stateName;
 			case "agencyKey":
 				return oTrafficStop.agencyKey;
 			case "agencySearch":
 				return oTrafficStop.agencySearch;
 			case "agency_":
 				return oTrafficStop.agency_;
-			case "stopAgencyTitle":
-				return oTrafficStop.stopAgencyTitle;
+			case "agencyTitle":
+				return oTrafficStop.agencyTitle;
 			case "stopDateTime":
 				return oTrafficStop.stopDateTime;
 			case "stopYear":
@@ -3388,10 +3848,16 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "trafficStopKey":
 			return TrafficStop.staticSetTrafficStopKey(siteRequest_, o);
+		case "stateAbbreviation":
+			return TrafficStop.staticSetStateAbbreviation(siteRequest_, o);
+		case "stateKey":
+			return TrafficStop.staticSetStateKey(siteRequest_, o);
+		case "stateName":
+			return TrafficStop.staticSetStateName(siteRequest_, o);
 		case "agencyKey":
 			return TrafficStop.staticSetAgencyKey(siteRequest_, o);
-		case "stopAgencyTitle":
-			return TrafficStop.staticSetStopAgencyTitle(siteRequest_, o);
+		case "agencyTitle":
+			return TrafficStop.staticSetAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
 			return TrafficStop.staticSetStopDateTime(siteRequest_, o);
 		case "stopYear":
@@ -3446,10 +3912,16 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "trafficStopKey":
 			return TrafficStop.staticSolrTrafficStopKey(siteRequest_, (Long)o);
+		case "stateAbbreviation":
+			return TrafficStop.staticSolrStateAbbreviation(siteRequest_, (String)o);
+		case "stateKey":
+			return TrafficStop.staticSolrStateKey(siteRequest_, (Long)o);
+		case "stateName":
+			return TrafficStop.staticSolrStateName(siteRequest_, (String)o);
 		case "agencyKey":
 			return TrafficStop.staticSolrAgencyKey(siteRequest_, (Long)o);
-		case "stopAgencyTitle":
-			return TrafficStop.staticSolrStopAgencyTitle(siteRequest_, (String)o);
+		case "agencyTitle":
+			return TrafficStop.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
 			return TrafficStop.staticSolrStopDateTime(siteRequest_, (ZonedDateTime)o);
 		case "stopYear":
@@ -3504,10 +3976,16 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "trafficStopKey":
 			return TrafficStop.staticSolrStrTrafficStopKey(siteRequest_, (Long)o);
+		case "stateAbbreviation":
+			return TrafficStop.staticSolrStrStateAbbreviation(siteRequest_, (String)o);
+		case "stateKey":
+			return TrafficStop.staticSolrStrStateKey(siteRequest_, (Long)o);
+		case "stateName":
+			return TrafficStop.staticSolrStrStateName(siteRequest_, (String)o);
 		case "agencyKey":
 			return TrafficStop.staticSolrStrAgencyKey(siteRequest_, (Long)o);
-		case "stopAgencyTitle":
-			return TrafficStop.staticSolrStrStopAgencyTitle(siteRequest_, (String)o);
+		case "agencyTitle":
+			return TrafficStop.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
 			return TrafficStop.staticSolrStrStopDateTime(siteRequest_, (Date)o);
 		case "stopYear":
@@ -3562,10 +4040,16 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "trafficStopKey":
 			return TrafficStop.staticSolrFqTrafficStopKey(siteRequest_, o);
+		case "stateAbbreviation":
+			return TrafficStop.staticSolrFqStateAbbreviation(siteRequest_, o);
+		case "stateKey":
+			return TrafficStop.staticSolrFqStateKey(siteRequest_, o);
+		case "stateName":
+			return TrafficStop.staticSolrFqStateName(siteRequest_, o);
 		case "agencyKey":
 			return TrafficStop.staticSolrFqAgencyKey(siteRequest_, o);
-		case "stopAgencyTitle":
-			return TrafficStop.staticSolrFqStopAgencyTitle(siteRequest_, o);
+		case "agencyTitle":
+			return TrafficStop.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
 			return TrafficStop.staticSolrFqStopDateTime(siteRequest_, o);
 		case "stopYear":
@@ -3630,10 +4114,20 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficStop(String var, String val) {
 		switch(var.toLowerCase()) {
-			case "stopagencytitle":
+			case "trafficstopkey":
 				if(val != null)
-					setStopAgencyTitle(val);
-				saves.add("stopAgencyTitle");
+					setTrafficStopKey(val);
+				saves.add("trafficStopKey");
+				return val;
+			case "stateabbreviation":
+				if(val != null)
+					setStateAbbreviation(val);
+				saves.add("stateAbbreviation");
+				return val;
+			case "agencytitle":
+				if(val != null)
+					setAgencyTitle(val);
+				saves.add("agencyTitle");
 				return val;
 			case "stopdatetime":
 				if(val != null)
@@ -3727,16 +4221,26 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficStop(String var, Object val) {
 		switch(var.toLowerCase()) {
-			case "stopagencytitle":
+			case "trafficstopkey":
+				if(val instanceof Long)
+					setTrafficStopKey((Long)val);
+				saves.add("trafficStopKey");
+				return val;
+			case "stateabbreviation":
 				if(val instanceof String)
-					setStopAgencyTitle((String)val);
-				saves.add("stopAgencyTitle");
+					setStateAbbreviation((String)val);
+				saves.add("stateAbbreviation");
+				return val;
+			case "agencytitle":
+				if(val instanceof String)
+					setAgencyTitle((String)val);
+				saves.add("agencyTitle");
 				return val;
 			case "stopdatetime":
 				if(val instanceof ZonedDateTime)
 					setStopDateTime((ZonedDateTime)val);
 				else if(val instanceof OffsetDateTime)
-					setStopDateTime(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+					setStopDateTime(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
 				saves.add("stopDateTime");
 				return val;
 			case "stopyear":
@@ -3827,16 +4331,34 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 					oTrafficStop.setTrafficStopKey(trafficStopKey);
 			}
 
+			if(saves.contains("stateAbbreviation")) {
+				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+				if(stateAbbreviation != null)
+					oTrafficStop.setStateAbbreviation(stateAbbreviation);
+			}
+
+			if(saves.contains("stateKey")) {
+				Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
+				if(stateKey != null)
+					oTrafficStop.setStateKey(stateKey);
+			}
+
+			if(saves.contains("stateName")) {
+				String stateName = (String)solrDocument.get("stateName_stored_string");
+				if(stateName != null)
+					oTrafficStop.setStateName(stateName);
+			}
+
 			if(saves.contains("agencyKey")) {
 				Long agencyKey = (Long)solrDocument.get("agencyKey_stored_long");
 				if(agencyKey != null)
 					oTrafficStop.setAgencyKey(agencyKey);
 			}
 
-			if(saves.contains("stopAgencyTitle")) {
-				String stopAgencyTitle = (String)solrDocument.get("stopAgencyTitle_stored_string");
-				if(stopAgencyTitle != null)
-					oTrafficStop.setStopAgencyTitle(stopAgencyTitle);
+			if(saves.contains("agencyTitle")) {
+				String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
+				if(agencyTitle != null)
+					oTrafficStop.setAgencyTitle(agencyTitle);
 			}
 
 			if(saves.contains("stopDateTime")) {
@@ -3979,7 +4501,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		try {
 			SolrInputDocument document = new SolrInputDocument();
 			indexTrafficStop(document);
-			SolrClient clientSolr = siteRequest_.getSiteContext_().getSolrClient();
+			SolrClient clientSolr = siteRequest_.getSolrClient();
 			clientSolr.add(document);
 			clientSolr.commit(false, false, true);
 		} catch(Exception e) {
@@ -3992,13 +4514,25 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			document.addField("trafficStopKey_indexed_long", trafficStopKey);
 			document.addField("trafficStopKey_stored_long", trafficStopKey);
 		}
+		if(stateAbbreviation != null) {
+			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
+			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
+		}
+		if(stateKey != null) {
+			document.addField("stateKey_indexed_long", stateKey);
+			document.addField("stateKey_stored_long", stateKey);
+		}
+		if(stateName != null) {
+			document.addField("stateName_indexed_string", stateName);
+			document.addField("stateName_stored_string", stateName);
+		}
 		if(agencyKey != null) {
 			document.addField("agencyKey_indexed_long", agencyKey);
 			document.addField("agencyKey_stored_long", agencyKey);
 		}
-		if(stopAgencyTitle != null) {
-			document.addField("stopAgencyTitle_indexed_string", stopAgencyTitle);
-			document.addField("stopAgencyTitle_stored_string", stopAgencyTitle);
+		if(agencyTitle != null) {
+			document.addField("agencyTitle_indexed_string", agencyTitle);
+			document.addField("agencyTitle_stored_string", agencyTitle);
 		}
 		if(stopDateTime != null) {
 			document.addField("stopDateTime_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
@@ -4096,10 +4630,16 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		switch(entityVar) {
 			case "trafficStopKey":
 				return "trafficStopKey_indexed_long";
+			case "stateAbbreviation":
+				return "stateAbbreviation_indexed_string";
+			case "stateKey":
+				return "stateKey_indexed_long";
+			case "stateName":
+				return "stateName_indexed_string";
 			case "agencyKey":
 				return "agencyKey_indexed_long";
-			case "stopAgencyTitle":
-				return "stopAgencyTitle_indexed_string";
+			case "agencyTitle":
+				return "agencyTitle_indexed_string";
 			case "stopDateTime":
 				return "stopDateTime_indexed_date";
 			case "stopYear":
@@ -4171,13 +4711,25 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		if(trafficStopKey != null)
 			oTrafficStop.setTrafficStopKey(trafficStopKey);
 
+		String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+		if(stateAbbreviation != null)
+			oTrafficStop.setStateAbbreviation(stateAbbreviation);
+
+		Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
+		if(stateKey != null)
+			oTrafficStop.setStateKey(stateKey);
+
+		String stateName = (String)solrDocument.get("stateName_stored_string");
+		if(stateName != null)
+			oTrafficStop.setStateName(stateName);
+
 		Long agencyKey = (Long)solrDocument.get("agencyKey_stored_long");
 		if(agencyKey != null)
 			oTrafficStop.setAgencyKey(agencyKey);
 
-		String stopAgencyTitle = (String)solrDocument.get("stopAgencyTitle_stored_string");
-		if(stopAgencyTitle != null)
-			oTrafficStop.setStopAgencyTitle(stopAgencyTitle);
+		String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
+		if(agencyTitle != null)
+			oTrafficStop.setAgencyTitle(agencyTitle);
 
 		Date stopDateTime = (Date)solrDocument.get("stopDateTime_stored_date");
 		if(stopDateTime != null)
@@ -4269,10 +4821,16 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			TrafficStop original = (TrafficStop)o;
 			if(!Objects.equals(trafficStopKey, original.getTrafficStopKey()))
 				apiRequest.addVars("trafficStopKey");
+			if(!Objects.equals(stateAbbreviation, original.getStateAbbreviation()))
+				apiRequest.addVars("stateAbbreviation");
+			if(!Objects.equals(stateKey, original.getStateKey()))
+				apiRequest.addVars("stateKey");
+			if(!Objects.equals(stateName, original.getStateName()))
+				apiRequest.addVars("stateName");
 			if(!Objects.equals(agencyKey, original.getAgencyKey()))
 				apiRequest.addVars("agencyKey");
-			if(!Objects.equals(stopAgencyTitle, original.getStopAgencyTitle()))
-				apiRequest.addVars("stopAgencyTitle");
+			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
+				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
 				apiRequest.addVars("stopDateTime");
 			if(!Objects.equals(stopYear, original.getStopYear()))
@@ -4320,7 +4878,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), trafficStopKey, agencyKey, stopAgencyTitle, stopDateTime, stopYear, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personKeys, personRaceTitles, trafficSearchRaceTitles);
+		return Objects.hash(super.hashCode(), trafficStopKey, stateAbbreviation, stateKey, stateName, agencyKey, agencyTitle, stopDateTime, stopYear, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personKeys, personRaceTitles, trafficSearchRaceTitles);
 	}
 
 	////////////
@@ -4335,8 +4893,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		TrafficStop that = (TrafficStop)o;
 		return super.equals(o)
 				&& Objects.equals( trafficStopKey, that.trafficStopKey )
+				&& Objects.equals( stateAbbreviation, that.stateAbbreviation )
+				&& Objects.equals( stateKey, that.stateKey )
+				&& Objects.equals( stateName, that.stateName )
 				&& Objects.equals( agencyKey, that.agencyKey )
-				&& Objects.equals( stopAgencyTitle, that.stopAgencyTitle )
+				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
 				&& Objects.equals( stopYear, that.stopYear )
 				&& Objects.equals( stopPurposeNum, that.stopPurposeNum )
@@ -4367,8 +4928,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		sb.append(super.toString() + "\n");
 		sb.append("TrafficStop { ");
 		sb.append( "trafficStopKey: " ).append(trafficStopKey);
+		sb.append( ", stateAbbreviation: \"" ).append(stateAbbreviation).append( "\"" );
+		sb.append( ", stateKey: " ).append(stateKey);
+		sb.append( ", stateName: \"" ).append(stateName).append( "\"" );
 		sb.append( ", agencyKey: " ).append(agencyKey);
-		sb.append( ", stopAgencyTitle: \"" ).append(stopAgencyTitle).append( "\"" );
+		sb.append( ", agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);
 		sb.append( ", stopYear: " ).append(stopYear);
 		sb.append( ", stopPurposeNum: " ).append(stopPurposeNum);

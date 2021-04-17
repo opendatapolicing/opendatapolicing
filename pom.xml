@@ -295,8 +295,8 @@
 							<goal>precompile</goal>
 						</goals>
 						<configuration>
-							<output>${project.build.directory}/classes/webroot/js/modules/helpers.js</output>
-							<prefix>${basedir}/src/main/resources/templates</prefix>
+							<output>/usr/local/src/opendatapolicing-static/js/helpers.js</output>
+							<prefix>/usr/local/src/opendatapolicing-static/template</prefix>
 							<suffix>.hbs</suffix>
 							<handlebarsJsFile>handlebars-v4.7.6.js</handlebarsJsFile>
 							<minimize>false</minimize>

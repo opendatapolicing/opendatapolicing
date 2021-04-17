@@ -8,8 +8,9 @@ import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 
-import com.opendatapolicing.enus.context.SiteContextEnUS;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.wrap.Wrap;
 
@@ -42,12 +43,11 @@ public class AppOpenApi3 extends AppOpenApi3Gen<AppSwagger2> {
 				}
 
 				AppOpenApi3 api = new AppOpenApi3();
-				SiteContextEnUS siteContext = api.getSiteContext();
-				siteContext.getSiteConfig().setConfig(config);
-				siteContext.initDeepSiteContextEnUS(null);
+				HttpSolrClient solrClientComputate = new HttpSolrClient.Builder(config.getString(ConfigKeys.SOLR_URL_COMPUTATE)).build();
 				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
-				siteRequest.setSiteContext_(siteContext);
-				siteRequest.setSiteConfig_(siteContext.getSiteConfig());
+				siteRequest.setConfig(config);
+				api.setSolrClientComputate(solrClientComputate);
+				api.setConfig(config);
 				siteRequest.initDeepSiteRequestEnUS();
 				api.initDeepAppOpenApi3(siteRequest);
 				api.writeOpenApi();

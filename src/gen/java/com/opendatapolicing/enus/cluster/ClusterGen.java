@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import java.util.Objects;
 import java.util.List;
 import java.time.OffsetDateTime;
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import org.slf4j.Logger;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -245,11 +245,10 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity inheritPk
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
-	protected Long inheritPk;
+	protected String inheritPk;
 	@JsonIgnore
-	public Wrap<Long> inheritPkWrap = new Wrap<Long>().p(this).c(Long.class).var("inheritPk").o(inheritPk);
+	public Wrap<String> inheritPkWrap = new Wrap<String>().p(this).c(String.class).var("inheritPk").o(inheritPk);
 
 	/**	<br/> The entity inheritPk
 	 *  is defined as null before being initialized. 
@@ -257,24 +256,17 @@ public abstract class ClusterGen<DEV> extends Object {
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _inheritPk(Wrap<Long> c);
+	protected abstract void _inheritPk(Wrap<String> c);
 
-	public Long getInheritPk() {
+	public String getInheritPk() {
 		return inheritPk;
-	}
-
-	public void setInheritPk(Long inheritPk) {
-		this.inheritPk = inheritPk;
-		this.inheritPkWrap.alreadyInitialized = true;
 	}
 	public void setInheritPk(String o) {
 		this.inheritPk = Cluster.staticSetInheritPk(siteRequest_, o);
 		this.inheritPkWrap.alreadyInitialized = true;
 	}
-	public static Long staticSetInheritPk(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
+	public static String staticSetInheritPk(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
 	protected Cluster inheritPkInit() {
 		if(!inheritPkWrap.alreadyInitialized) {
@@ -286,11 +278,11 @@ public abstract class ClusterGen<DEV> extends Object {
 		return (Cluster)this;
 	}
 
-	public static Long staticSolrInheritPk(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrInheritPk(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrInheritPk(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStrInheritPk(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
@@ -298,20 +290,20 @@ public abstract class ClusterGen<DEV> extends Object {
 		return Cluster.staticSolrStrInheritPk(siteRequest_, Cluster.staticSolrInheritPk(siteRequest_, Cluster.staticSetInheritPk(siteRequest_, o)));
 	}
 
-	public Long solrInheritPk() {
+	public String solrInheritPk() {
 		return Cluster.staticSolrInheritPk(siteRequest_, inheritPk);
 	}
 
 	public String strInheritPk() {
-		return inheritPk == null ? "" : inheritPk.toString();
+		return inheritPk == null ? "" : inheritPk;
 	}
 
-	public Long sqlInheritPk() {
+	public String sqlInheritPk() {
 		return inheritPk;
 	}
 
 	public String jsonInheritPk() {
-		return inheritPk == null ? "" : inheritPk.toString();
+		return inheritPk == null ? "" : inheritPk;
 	}
 
 	public String htmTooltipInheritPk() {
@@ -499,10 +491,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone()))).truncatedTo(ChronoUnit.MILLIS);
+		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)))).truncatedTo(ChronoUnit.MILLIS);
 	}
 	public void setCreated(Date o) {
-		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())).truncatedTo(ChronoUnit.MILLIS);
+		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.createdWrap.alreadyInitialized = true;
 	}
 	protected Cluster createdInit() {
@@ -615,10 +607,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		this.modifiedWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetModified(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone()))).truncatedTo(ChronoUnit.MILLIS);
+		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)))).truncatedTo(ChronoUnit.MILLIS);
 	}
 	public void setModified(Date o) {
-		this.modified = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())).truncatedTo(ChronoUnit.MILLIS);
+		this.modified = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.modifiedWrap.alreadyInitialized = true;
 	}
 	protected Cluster modifiedInit() {
@@ -1390,7 +1382,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		case "pk":
 			return Cluster.staticSolrPk(siteRequest_, (Long)o);
 		case "inheritPk":
-			return Cluster.staticSolrInheritPk(siteRequest_, (Long)o);
+			return Cluster.staticSolrInheritPk(siteRequest_, (String)o);
 		case "id":
 			return Cluster.staticSolrId(siteRequest_, (String)o);
 		case "created":
@@ -1426,7 +1418,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		case "pk":
 			return Cluster.staticSolrStrPk(siteRequest_, (Long)o);
 		case "inheritPk":
-			return Cluster.staticSolrStrInheritPk(siteRequest_, (Long)o);
+			return Cluster.staticSolrStrInheritPk(siteRequest_, (String)o);
 		case "id":
 			return Cluster.staticSolrStrId(siteRequest_, (String)o);
 		case "created":
@@ -1540,15 +1532,15 @@ public abstract class ClusterGen<DEV> extends Object {
 	public Object defineCluster(String var, Object val) {
 		switch(var.toLowerCase()) {
 			case "inheritpk":
-				if(val instanceof Long)
-					setInheritPk((Long)val);
+				if(val instanceof String)
+					setInheritPk((String)val);
 				saves.add("inheritPk");
 				return val;
 			case "created":
 				if(val instanceof ZonedDateTime)
 					setCreated((ZonedDateTime)val);
 				else if(val instanceof OffsetDateTime)
-					setCreated(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+					setCreated(((OffsetDateTime)val).atZoneSameInstant(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
 				saves.add("created");
 				return val;
 			default:
@@ -1594,7 +1586,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		try {
 			SolrInputDocument document = new SolrInputDocument();
 			indexCluster(document);
-			SolrClient clientSolr = siteRequest_.getSiteContext_().getSolrClient();
+			SolrClient clientSolr = siteRequest_.getSolrClient();
 			clientSolr.add(document);
 			clientSolr.commit(false, false, true);
 		} catch(Exception e) {
@@ -1608,8 +1600,8 @@ public abstract class ClusterGen<DEV> extends Object {
 			document.addField("pk_stored_long", pk);
 		}
 		if(inheritPk != null) {
-			document.addField("inheritPk_indexed_long", inheritPk);
-			document.addField("inheritPk_stored_long", inheritPk);
+			document.addField("inheritPk_indexed_string", inheritPk);
+			document.addField("inheritPk_stored_string", inheritPk);
 		}
 		if(id != null) {
 			document.addField("id", id);
@@ -1662,7 +1654,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			case "pk":
 				return "pk_indexed_long";
 			case "inheritPk":
-				return "inheritPk_indexed_long";
+				return "inheritPk_indexed_string";
 			case "id":
 				return "id_indexed_string";
 			case "created":
@@ -1714,7 +1706,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		if(pk != null)
 			oCluster.setPk(pk);
 
-		Long inheritPk = (Long)solrDocument.get("inheritPk_stored_long");
+		String inheritPk = (String)solrDocument.get("inheritPk_stored_string");
 		if(inheritPk != null)
 			oCluster.setInheritPk(inheritPk);
 
@@ -1827,7 +1819,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Cluster { ");
 		sb.append( "pk: " ).append(pk);
-		sb.append( ", inheritPk: " ).append(inheritPk);
+		sb.append( ", inheritPk: \"" ).append(inheritPk).append( "\"" );
 		sb.append( ", id: \"" ).append(id).append( "\"" );
 		sb.append( ", created: " ).append(created);
 		sb.append( ", modified: " ).append(modified);

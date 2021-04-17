@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -23,8 +25,8 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.opendatapolicing.enus.request.api.ApiRequest;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import java.io.File;
+import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -32,7 +34,6 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
-import com.opendatapolicing.enus.config.SiteConfig;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -43,6 +44,47 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
  **/
 public abstract class AppSwagger2Gen<DEV> extends Object {
 	protected static final Logger LOG = LoggerFactory.getLogger(AppSwagger2.class);
+
+	/////////////////////////
+	// solrClientComputate //
+	/////////////////////////
+
+	/**	 The entity solrClientComputate
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected SolrClient solrClientComputate;
+	@JsonIgnore
+	public Wrap<SolrClient> solrClientComputateWrap = new Wrap<SolrClient>().p(this).c(SolrClient.class).var("solrClientComputate").o(solrClientComputate);
+
+	/**	<br/> The entity solrClientComputate
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrClientComputate">Find the entity solrClientComputate in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _solrClientComputate(Wrap<SolrClient> w);
+
+	public SolrClient getSolrClientComputate() {
+		return solrClientComputate;
+	}
+
+	public void setSolrClientComputate(SolrClient solrClientComputate) {
+		this.solrClientComputate = solrClientComputate;
+		this.solrClientComputateWrap.alreadyInitialized = true;
+	}
+	public static SolrClient staticSetSolrClientComputate(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected AppSwagger2 solrClientComputateInit() {
+		if(!solrClientComputateWrap.alreadyInitialized) {
+			_solrClientComputate(solrClientComputateWrap);
+			if(solrClientComputate == null)
+				setSolrClientComputate(solrClientComputateWrap.o);
+		}
+		solrClientComputateWrap.alreadyInitialized(true);
+		return (AppSwagger2)this;
+	}
 
 	//////////////////
 	// siteRequest_ //
@@ -85,86 +127,44 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		return (AppSwagger2)this;
 	}
 
-	/////////////////
-	// siteContext //
-	/////////////////
+	////////////
+	// config //
+	////////////
 
-	/**	 The entity siteContext
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SiteContextEnUS(). 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected SiteContextEnUS siteContext = new SiteContextEnUS();
-	@JsonIgnore
-	public Wrap<SiteContextEnUS> siteContextWrap = new Wrap<SiteContextEnUS>().p(this).c(SiteContextEnUS.class).var("siteContext").o(siteContext);
-
-	/**	<br/> The entity siteContext
-	 *  It is constructed before being initialized with the constructor by default SiteContextEnUS(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteContext">Find the entity siteContext in Solr</a>
-	 * <br/>
-	 * @param siteContext is the entity already constructed. 
-	 **/
-	protected abstract void _siteContext(SiteContextEnUS o);
-
-	public SiteContextEnUS getSiteContext() {
-		return siteContext;
-	}
-
-	public void setSiteContext(SiteContextEnUS siteContext) {
-		this.siteContext = siteContext;
-		this.siteContextWrap.alreadyInitialized = true;
-	}
-	public static SiteContextEnUS staticSetSiteContext(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected AppSwagger2 siteContextInit() {
-		if(!siteContextWrap.alreadyInitialized) {
-			_siteContext(siteContext);
-		}
-		siteContext.initDeepForClass(siteRequest_);
-		siteContextWrap.alreadyInitialized(true);
-		return (AppSwagger2)this;
-	}
-
-	////////////////
-	// siteConfig //
-	////////////////
-
-	/**	 The entity siteConfig
+	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonInclude(Include.NON_NULL)
-	protected SiteConfig siteConfig;
+	protected JsonObject config;
 	@JsonIgnore
-	public Wrap<SiteConfig> siteConfigWrap = new Wrap<SiteConfig>().p(this).c(SiteConfig.class).var("siteConfig").o(siteConfig);
+	public Wrap<JsonObject> configWrap = new Wrap<JsonObject>().p(this).c(JsonObject.class).var("config").o(config);
 
-	/**	<br/> The entity siteConfig
+	/**	<br/> The entity config
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteConfig">Find the entity siteConfig in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:config">Find the entity config in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _siteConfig(Wrap<SiteConfig> c);
+	protected abstract void _config(Wrap<JsonObject> c);
 
-	public SiteConfig getSiteConfig() {
-		return siteConfig;
+	public JsonObject getConfig() {
+		return config;
 	}
 
-	public void setSiteConfig(SiteConfig siteConfig) {
-		this.siteConfig = siteConfig;
-		this.siteConfigWrap.alreadyInitialized = true;
+	public void setConfig(JsonObject config) {
+		this.config = config;
+		this.configWrap.alreadyInitialized = true;
 	}
-	public static SiteConfig staticSetSiteConfig(SiteRequestEnUS siteRequest_, String o) {
+	public static JsonObject staticSetConfig(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected AppSwagger2 siteConfigInit() {
-		if(!siteConfigWrap.alreadyInitialized) {
-			_siteConfig(siteConfigWrap);
-			if(siteConfig == null)
-				setSiteConfig(siteConfigWrap.o);
+	protected AppSwagger2 configInit() {
+		if(!configWrap.alreadyInitialized) {
+			_config(configWrap);
+			if(config == null)
+				setConfig(configWrap.o);
 		}
-		if(siteConfig != null)
-			siteConfig.initDeepForClass(siteRequest_);
-		siteConfigWrap.alreadyInitialized(true);
+		configWrap.alreadyInitialized(true);
 		return (AppSwagger2)this;
 	}
 
@@ -961,9 +961,9 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	}
 
 	public void initAppSwagger2() {
+		solrClientComputateInit();
 		siteRequest_Init();
-		siteContextInit();
-		siteConfigInit();
+		configInit();
 		appPathInit();
 		appNameInit();
 		languageNameInit();
@@ -1026,12 +1026,12 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	public Object obtainAppSwagger2(String var) {
 		AppSwagger2 oAppSwagger2 = (AppSwagger2)this;
 		switch(var) {
+			case "solrClientComputate":
+				return oAppSwagger2.solrClientComputate;
 			case "siteRequest_":
 				return oAppSwagger2.siteRequest_;
-			case "siteContext":
-				return oAppSwagger2.siteContext;
-			case "siteConfig":
-				return oAppSwagger2.siteConfig;
+			case "config":
+				return oAppSwagger2.config;
 			case "appPath":
 				return oAppSwagger2.appPath;
 			case "appName":

@@ -1,9 +1,7 @@
 package com.opendatapolicing.enus.trafficperson;
 
 import com.opendatapolicing.enus.page.PageLayout;
-import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import java.io.IOException;
 import io.vertx.core.http.HttpServerRequest;

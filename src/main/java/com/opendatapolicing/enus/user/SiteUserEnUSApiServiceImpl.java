@@ -1,22 +1,27 @@
 package com.opendatapolicing.enus.user;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.SolrClient;
 
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
+import io.vertx.core.WorkerExecutor;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
+import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.pgclient.PgPool;
 
 /**
  * Translate: false
  **/
 public class SiteUserEnUSApiServiceImpl extends SiteUserEnUSGenApiServiceImpl {
 
-	public SiteUserEnUSApiServiceImpl(SiteContextEnUS siteContext) {
-		super(siteContext);
+	public SiteUserEnUSApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	@Override

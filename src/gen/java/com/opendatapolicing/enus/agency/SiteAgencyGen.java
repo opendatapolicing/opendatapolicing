@@ -18,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -29,7 +30,6 @@ import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
@@ -1863,7 +1863,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		try {
 			SolrInputDocument document = new SolrInputDocument();
 			indexSiteAgency(document);
-			SolrClient clientSolr = siteRequest_.getSiteContext_().getSolrClient();
+			SolrClient clientSolr = siteRequest_.getSolrClient();
 			clientSolr.add(document);
 			clientSolr.commit(false, false, true);
 		} catch(Exception e) {

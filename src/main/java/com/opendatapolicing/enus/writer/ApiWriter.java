@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -13,11 +14,12 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
-import com.opendatapolicing.enus.config.SiteConfig;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.vertx.AppSwagger2;
 import com.opendatapolicing.enus.wrap.Wrap;
+
+import io.vertx.core.json.JsonObject;
 
 public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWriter> {
 
@@ -69,12 +71,10 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 	protected void _wSchemas(Wrap<AllWriter> c) {
 	}
 
-	protected void _siteContext(Wrap<SiteContextEnUS> c) {
-		c.o(siteRequest_.getSiteContext_());
+	protected void _config(Wrap<JsonObject> c) {
 	}
 
-	protected void _siteConfig(Wrap<SiteConfig> c) {
-		c.o(siteRequest_.getSiteConfig_());
+	protected void _solrClientComputate(Wrap<SolrClient> c) {
 	}
 
 	protected void _wRequestHeaders(Wrap<AllWriter> c) {
@@ -341,7 +341,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				SolrQuery searchEntities = new SolrQuery();
 				searchEntities.setQuery("*:*");
 				searchEntities.setRows(1000000);
-				searchEntities.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(siteConfig.getAppPath()));
+				searchEntities.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(config.getString(ConfigKeys.APP_PATH)));
 
 				if(StringUtils.isBlank(entityCanonicalNameGeneric))
 					searchEntities.addFilterQuery("classeNomCanonique_enUS_indexed_string:" + ClientUtils.escapeQueryChars(entityCanonicalName));
@@ -351,7 +351,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				searchEntities.addFilterQuery("entiteMotsCles_indexed_strings:" + ClientUtils.escapeQueryChars("apiModelEntity"));
 				searchEntities.addFilterQuery("partEstEntite_indexed_boolean:true");
 				searchEntities.addSort("partNumero_indexed_int", ORDER.asc);
-				QueryResponse searchEntitiesReponse = siteContext.getSolrClientComputate().query(searchEntities);
+				QueryResponse searchEntitiesReponse = solrClientComputate.query(searchEntities);
 				SolrDocumentList searchEntitiesResults = searchEntitiesReponse.getResults();
 				Integer searchEntitiesLines = searchEntities.getRows();
 
@@ -583,6 +583,7 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 					|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isTrue(classPublicRead) && StringUtils.equalsAny(classApiMethodMethod, "POST", "PUT", "PATCH", "DELETE")
 					) {
 				wPaths.tl(3, "security:");
+//				wPaths.tl(4, "- basicAuth: []");
 				wPaths.tl(4, "- openIdConnect:");
 				wPaths.tl(5, "- DefaultAuthScope");
 			}

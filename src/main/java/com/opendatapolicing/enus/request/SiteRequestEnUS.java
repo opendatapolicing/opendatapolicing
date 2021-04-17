@@ -11,21 +11,19 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
-import com.opendatapolicing.enus.config.SiteConfig;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.writer.AllWriter;
 
 import io.vertx.core.MultiMap;
-import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
@@ -37,32 +35,22 @@ import io.vertx.sqlclient.SqlConnection;
  */        
 public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Serializable {
 
-	/**	
-	 *	The site context with global site information. 
-	 **/
-	protected void _siteContext_(Wrap<SiteContextEnUS> c) {
-	}
-
 	private static final Pattern PATTERN_SESSION = Pattern.compile("vertx-web.session=(\\w+)");
 
 	/**	
 	 *	The site configuration. 
 	 **/
-	protected void _siteConfig_(Wrap<SiteConfig> c) {
-		SiteConfig o = siteContext_.getSiteConfig();
-		c.o(o);
+	protected void _config(Wrap<JsonObject> c) {
 	}
 
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) { 
 		c.o(this);
 	}
 
-	protected void _apiRequest_(Wrap<ApiRequest> c) { 
+	protected void _solrClient(Wrap<SolrClient> c) { 
 	}
 
-	protected void _vertx(Wrap<Vertx> c) {
-		if(siteContext_ != null)
-			c.o(siteContext_.getVertx());
+	protected void _apiRequest_(Wrap<ApiRequest> c) { 
 	}
 
 	protected void _jsonObject(Wrap<JsonObject> c) {
@@ -77,7 +65,7 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	protected void _queryResponse(Wrap<QueryResponse> c) {
 		if(solrQuery != null) {
 			try {
-				QueryResponse o = siteContext_.getSolrClient().query(solrQuery);
+				QueryResponse o = solrClient.query(solrQuery);
 				c.o(o);
 			} catch (SolrServerException | IOException e) {
 				ExceptionUtils.rethrow(e);
@@ -176,9 +164,8 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	}
 
 	protected void _userResource(Wrap<JsonObject> c) {
-		JsonObject o = Optional.ofNullable(jsonPrincipal).map(p -> p.getJsonObject("resource_access")).map(o1 -> o1.getJsonObject(
-				Optional.ofNullable(siteRequest_).map(r -> r.getSiteConfig_()).map(c1 -> c1.getAuthResource()).orElse("")
-				)).orElse(new JsonObject());
+		String authResource = config.getString("authResource");
+		JsonObject o = Optional.ofNullable(jsonPrincipal).map(p -> p.getJsonObject("resource_access")).map(o1 -> o1.getJsonObject(authResource)).orElse(new JsonObject());
 		c.o(o);
 	}
 
@@ -231,15 +218,13 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 
 	public SiteRequestEnUS copy() {
 		SiteRequestEnUS o = new SiteRequestEnUS();
-		o.setSiteContext_(siteContext_);
-		o.setJsonObject(jsonObject);
-		o.setSolrQuery(solrQuery);
-		o.setServiceRequest(serviceRequest);
-		o.setUserKey(userKey);
-		o.setSolrDocument(solrDocument);
-		o.setPageAdmin(pageAdmin);
-		o.setRequestHeaders(requestHeaders);
-		o.setRequestVars(requestVars);
+		o.setConfig(config); // for site configuration info
+		o.setSolrClient(solrClient); // for performing searches
+		o.setServiceRequest(serviceRequest);  // for info about the original request
+		o.setUser(user); // The user principal
+		o.setUserKey(userKey); // The user primary key
+		o.setUserId(userId); // The user identifier in the authentication system
+		o.setApiRequest_(apiRequest_); // The current API request information
 		return o;
 	}
 }

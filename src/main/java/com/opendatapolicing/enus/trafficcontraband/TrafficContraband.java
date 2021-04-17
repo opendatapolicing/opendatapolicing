@@ -96,9 +96,9 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: agency title
 	 */ 
-	protected void _stopAgencyTitle(Wrap<String> w) {
+	protected void _agencyTitle(Wrap<String> w) {
 		if(trafficSearch_ != null)
-			w.o(trafficSearch_.getStopAgencyTitle());
+			w.o(trafficSearch_.getAgencyTitle());
 	}
 
 	/**    

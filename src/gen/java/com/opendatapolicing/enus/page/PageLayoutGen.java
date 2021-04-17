@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import java.time.ZoneOffset;
 import java.math.RoundingMode;
@@ -2002,7 +2003,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o == null ? null : LocalDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME).truncatedTo(ChronoUnit.MILLIS);
 	}
 	public void setPageCreated(Date o) {
-		this.pageCreated = o == null ? null : LocalDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())).truncatedTo(ChronoUnit.MILLIS);
+		this.pageCreated = o == null ? null : LocalDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.pageCreatedWrap.alreadyInitialized = true;
 	}
 	protected PageLayout pageCreatedInit() {
@@ -2016,7 +2017,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 
 	public static Date staticSolrPageCreated(SiteRequestEnUS siteRequest_, LocalDateTime o) {
-		return o == null ? null : Date.from(o.atZone(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())).toInstant().atZone(ZoneId.of("Z")).toInstant());
+		return o == null ? null : Date.from(o.atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).toInstant().atZone(ZoneId.of("Z")).toInstant());
 	}
 
 	public static String staticSolrStrPageCreated(SiteRequestEnUS siteRequest_, Date o) {
@@ -2085,7 +2086,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 		return o == null ? null : LocalDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME).truncatedTo(ChronoUnit.MILLIS);
 	}
 	public void setPageModified(Date o) {
-		this.pageModified = o == null ? null : LocalDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())).truncatedTo(ChronoUnit.MILLIS);
+		this.pageModified = o == null ? null : LocalDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.pageModifiedWrap.alreadyInitialized = true;
 	}
 	protected PageLayout pageModifiedInit() {
@@ -2099,7 +2100,7 @@ public abstract class PageLayoutGen<DEV> extends Object {
 	}
 
 	public static Date staticSolrPageModified(SiteRequestEnUS siteRequest_, LocalDateTime o) {
-		return o == null ? null : Date.from(o.atZone(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())).toInstant().atZone(ZoneId.of("Z")).toInstant());
+		return o == null ? null : Date.from(o.atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).toInstant().atZone(ZoneId.of("Z")).toInstant());
 	}
 
 	public static String staticSolrStrPageModified(SiteRequestEnUS siteRequest_, Date o) {

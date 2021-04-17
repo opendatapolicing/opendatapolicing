@@ -97,9 +97,9 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Stored: true
 	 * DisplayName.enUS: agency title
 	 */ 
-	protected void _stopAgencyTitle(Wrap<String> w) {
+	protected void _agencyTitle(Wrap<String> w) {
 		if(trafficStop_ != null)
-			w.o(trafficStop_.getStopAgencyTitle());
+			w.o(trafficStop_.getAgencyTitle());
 	}
 
 	/**    

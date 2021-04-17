@@ -1,9 +1,7 @@
 package com.opendatapolicing.enus.trafficstop;
 
 import com.opendatapolicing.enus.page.PageLayout;
-import com.opendatapolicing.enus.config.SiteConfig;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import java.io.IOException;
 import io.vertx.core.http.HttpServerRequest;
@@ -143,7 +141,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmModified("Page");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("Page");
+			o.htmAgencyTitle("Page");
 			o.htmStopDateTime("Page");
 			o.htmStopPurposeTitle("Page");
 			o.htmStopActionTitle("Page");
@@ -174,7 +172,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmModified("POST");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("POST");
+			o.htmAgencyTitle("POST");
 			o.htmStopDateTime("POST");
 			o.htmStopPurposeTitle("POST");
 			o.htmStopActionTitle("POST");
@@ -227,7 +225,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmCreated("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("PUTCopy");
+			o.htmAgencyTitle("PUTCopy");
 			o.htmStopDateTime("PUTCopy");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -254,7 +252,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmCreated("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("PATCH");
+			o.htmAgencyTitle("PATCH");
 			o.htmStopDateTime("PATCH");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
@@ -283,7 +281,7 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 			o.htmModified("Search");
 		} g("div");
 		{ e("div").a("class", "w3-cell-row ").f();
-			o.htmStopAgencyTitle("Search");
+			o.htmAgencyTitle("Search");
 			o.htmStopDateTime("Search");
 			o.htmStopPurposeTitle("Search");
 			o.htmStopActionTitle("Search");
@@ -308,6 +306,8 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
 			o.htmObjectTitle("Search");
+			o.htmTrafficStopKey("Search");
+			o.htmStateAbbreviation("Search");
 			o.htmStopYear("Search");
 			o.htmStopPurposeNum("Search");
 			o.htmStopActionNum("Search");

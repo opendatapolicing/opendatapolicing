@@ -1,52 +1,51 @@
 package com.opendatapolicing.enus.request;
 
 import java.util.Arrays;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.LoggerFactory;
 import io.vertx.core.MultiMap;
-import org.apache.commons.lang3.StringUtils;
-import java.lang.Long;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import java.util.Map;
-import io.vertx.core.json.JsonObject;
-import java.math.RoundingMode;
-import com.opendatapolicing.enus.wrap.Wrap;
-import java.math.MathContext;
-import com.opendatapolicing.enus.writer.AllWriter;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.opendatapolicing.enus.request.api.ApiRequest;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
-import io.vertx.ext.web.api.service.ServiceRequest;
-import java.util.Objects;
-import java.util.List;
-import io.vertx.ext.auth.User;
-import org.apache.solr.client.solrj.SolrQuery;
-import java.util.Optional;
-import com.opendatapolicing.enus.cluster.Cluster;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
 import java.util.Stack;
 import java.util.ArrayList;
 import io.vertx.sqlclient.SqlConnection;
 import org.apache.commons.collections.CollectionUtils;
+import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.opendatapolicing.enus.user.SiteUser;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
+import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
+import java.math.RoundingMode;
+import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import java.math.MathContext;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import io.vertx.core.Vertx;
+import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.opendatapolicing.enus.request.api.ApiRequest;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import org.apache.solr.client.solrj.SolrClient;
+import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
+import java.util.List;
+import io.vertx.ext.auth.User;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
+import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Object;
-import com.opendatapolicing.enus.config.SiteConfig;
+import com.opendatapolicing.enus.cluster.Cluster;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
@@ -57,85 +56,44 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteRequestEnUS.class);
 
-	//////////////////
-	// siteContext_ //
-	//////////////////
+	////////////
+	// config //
+	////////////
 
-	/**	 The entity siteContext_
+	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonInclude(Include.NON_NULL)
-	protected SiteContextEnUS siteContext_;
+	protected JsonObject config;
 	@JsonIgnore
-	public Wrap<SiteContextEnUS> siteContext_Wrap = new Wrap<SiteContextEnUS>().p(this).c(SiteContextEnUS.class).var("siteContext_").o(siteContext_);
+	public Wrap<JsonObject> configWrap = new Wrap<JsonObject>().p(this).c(JsonObject.class).var("config").o(config);
 
-	/**	<br/> The entity siteContext_
+	/**	<br/> The entity config
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteContext_">Find the entity siteContext_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:config">Find the entity config in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _siteContext_(Wrap<SiteContextEnUS> c);
+	protected abstract void _config(Wrap<JsonObject> c);
 
-	public SiteContextEnUS getSiteContext_() {
-		return siteContext_;
+	public JsonObject getConfig() {
+		return config;
 	}
 
-	public void setSiteContext_(SiteContextEnUS siteContext_) {
-		this.siteContext_ = siteContext_;
-		this.siteContext_Wrap.alreadyInitialized = true;
+	public void setConfig(JsonObject config) {
+		this.config = config;
+		this.configWrap.alreadyInitialized = true;
 	}
-	public static SiteContextEnUS staticSetSiteContext_(SiteRequestEnUS siteRequest_, String o) {
+	public static JsonObject staticSetConfig(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SiteRequestEnUS siteContext_Init() {
-		if(!siteContext_Wrap.alreadyInitialized) {
-			_siteContext_(siteContext_Wrap);
-			if(siteContext_ == null)
-				setSiteContext_(siteContext_Wrap.o);
+	protected SiteRequestEnUS configInit() {
+		if(!configWrap.alreadyInitialized) {
+			_config(configWrap);
+			if(config == null)
+				setConfig(configWrap.o);
 		}
-		siteContext_Wrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
-	/////////////////
-	// siteConfig_ //
-	/////////////////
-
-	/**	 The entity siteConfig_
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected SiteConfig siteConfig_;
-	@JsonIgnore
-	public Wrap<SiteConfig> siteConfig_Wrap = new Wrap<SiteConfig>().p(this).c(SiteConfig.class).var("siteConfig_").o(siteConfig_);
-
-	/**	<br/> The entity siteConfig_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteConfig_">Find the entity siteConfig_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _siteConfig_(Wrap<SiteConfig> c);
-
-	public SiteConfig getSiteConfig_() {
-		return siteConfig_;
-	}
-
-	public void setSiteConfig_(SiteConfig siteConfig_) {
-		this.siteConfig_ = siteConfig_;
-		this.siteConfig_Wrap.alreadyInitialized = true;
-	}
-	public static SiteConfig staticSetSiteConfig_(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteRequestEnUS siteConfig_Init() {
-		if(!siteConfig_Wrap.alreadyInitialized) {
-			_siteConfig_(siteConfig_Wrap);
-			if(siteConfig_ == null)
-				setSiteConfig_(siteConfig_Wrap.o);
-		}
-		siteConfig_Wrap.alreadyInitialized(true);
+		configWrap.alreadyInitialized(true);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -180,6 +138,47 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return (SiteRequestEnUS)this;
 	}
 
+	////////////////
+	// solrClient //
+	////////////////
+
+	/**	 The entity solrClient
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonInclude(Include.NON_NULL)
+	protected SolrClient solrClient;
+	@JsonIgnore
+	public Wrap<SolrClient> solrClientWrap = new Wrap<SolrClient>().p(this).c(SolrClient.class).var("solrClient").o(solrClient);
+
+	/**	<br/> The entity solrClient
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrClient">Find the entity solrClient in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _solrClient(Wrap<SolrClient> c);
+
+	public SolrClient getSolrClient() {
+		return solrClient;
+	}
+
+	public void setSolrClient(SolrClient solrClient) {
+		this.solrClient = solrClient;
+		this.solrClientWrap.alreadyInitialized = true;
+	}
+	public static SolrClient staticSetSolrClient(SiteRequestEnUS siteRequest_, String o) {
+		return null;
+	}
+	protected SiteRequestEnUS solrClientInit() {
+		if(!solrClientWrap.alreadyInitialized) {
+			_solrClient(solrClientWrap);
+			if(solrClient == null)
+				setSolrClient(solrClientWrap.o);
+		}
+		solrClientWrap.alreadyInitialized(true);
+		return (SiteRequestEnUS)this;
+	}
+
 	/////////////////
 	// apiRequest_ //
 	/////////////////
@@ -218,47 +217,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				setApiRequest_(apiRequest_Wrap.o);
 		}
 		apiRequest_Wrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
-	///////////
-	// vertx //
-	///////////
-
-	/**	 The entity vertx
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected Vertx vertx;
-	@JsonIgnore
-	public Wrap<Vertx> vertxWrap = new Wrap<Vertx>().p(this).c(Vertx.class).var("vertx").o(vertx);
-
-	/**	<br/> The entity vertx
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:vertx">Find the entity vertx in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _vertx(Wrap<Vertx> c);
-
-	public Vertx getVertx() {
-		return vertx;
-	}
-
-	public void setVertx(Vertx vertx) {
-		this.vertx = vertx;
-		this.vertxWrap.alreadyInitialized = true;
-	}
-	public static Vertx staticSetVertx(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteRequestEnUS vertxInit() {
-		if(!vertxWrap.alreadyInitialized) {
-			_vertx(vertxWrap);
-			if(vertx == null)
-				setVertx(vertxWrap.o);
-		}
-		vertxWrap.alreadyInitialized(true);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1980,11 +1938,10 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	}
 
 	public void initSiteRequestEnUS() {
-		siteContext_Init();
-		siteConfig_Init();
+		configInit();
 		siteRequest_Init();
+		solrClientInit();
 		apiRequest_Init();
-		vertxInit();
 		jsonObjectInit();
 		solrQueryInit();
 		serviceRequestInit();
@@ -2060,16 +2017,14 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	public Object obtainSiteRequestEnUS(String var) {
 		SiteRequestEnUS oSiteRequestEnUS = (SiteRequestEnUS)this;
 		switch(var) {
-			case "siteContext_":
-				return oSiteRequestEnUS.siteContext_;
-			case "siteConfig_":
-				return oSiteRequestEnUS.siteConfig_;
+			case "config":
+				return oSiteRequestEnUS.config;
 			case "siteRequest_":
 				return oSiteRequestEnUS.siteRequest_;
+			case "solrClient":
+				return oSiteRequestEnUS.solrClient;
 			case "apiRequest_":
 				return oSiteRequestEnUS.apiRequest_;
-			case "vertx":
-				return oSiteRequestEnUS.vertx;
 			case "jsonObject":
 				return oSiteRequestEnUS.jsonObject;
 			case "solrQuery":

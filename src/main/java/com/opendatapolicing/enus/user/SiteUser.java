@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.user;        
+package com.opendatapolicing.enus.user;     
 
 import java.util.List;
 

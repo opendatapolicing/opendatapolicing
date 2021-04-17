@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.vertx; 
+package com.opendatapolicing.enus.vertx;    
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -10,22 +10,26 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
-import com.opendatapolicing.enus.config.SiteConfig;
-import com.opendatapolicing.enus.context.SiteContextEnUS;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.design.PageDesignEnUSGenApiService;
 import com.opendatapolicing.enus.html.part.HtmlPartEnUSGenApiService;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
+import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
+import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.state.SiteStateEnUSGenApiService;
 import com.opendatapolicing.enus.trafficcontraband.TrafficContrabandEnUSGenApiService;
 import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiService;
@@ -33,7 +37,6 @@ import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiService;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiService;
 import com.opendatapolicing.enus.user.SiteUserEnUSGenApiService;
 
-import io.vertx.codegen.annotations.Nullable;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -85,8 +88,10 @@ import io.vertx.sqlclient.PoolOptions;
 
 /**	
  *	A Java class to start the Vert.x application as a main method. 
+ * Keyword: classSimpleNameVerticle
  **/
 public class AppVertx extends AppVertxGen<AbstractVerticle> {
+	private static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
 
 	public final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -95,19 +100,17 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 **/
 	private PgPool pgPool;
 
-	/**
-	 * A site context object for storing information about the entire site in English. 
-	 **/
-	SiteContextEnUS siteContextEnUS;
+	private SolrClient solrClient;
 
-	/**
-	 * For logging information and errors in the application. 
-	 **/
-	private static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
+	private JsonObject config;
 
 	private Router router;
 
-	private JsonObject config;
+	WorkerExecutor workerExecutor;
+
+	OAuth2Auth oauth2AuthenticationProvider;
+
+	AuthorizationProvider authorizationProvider;
 
 	public static final String CONFIG_staticPath = "staticPath";
 
@@ -119,7 +122,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	}
 
 	public static void  run() {
-		Class<?> c = AppVertx.class;
 		JsonObject zkConfig = new JsonObject();
 		String zookeeperHostName = System.getenv("zookeeperHostName");
 		Integer zookeeperPort = Integer.parseInt(System.getenv("zookeeperPort"));
@@ -175,20 +177,24 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		DeploymentOptions deploymentOptions = new DeploymentOptions();
 		deploymentOptions.setInstances(siteInstances);
 
-		String verticleID = c.getName();
+		DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
+		mailVerticleDeploymentOptions.setWorker(true);
+
+		DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
+		mailVerticleDeploymentOptions.setWorker(true);
 
 		Consumer<Vertx> runner = vertx -> {
-			vertx.deployVerticle(verticleID, deploymentOptions);
+			vertx.deployVerticle(AppVertx.class.getName(), deploymentOptions);
+			vertx.deployVerticle(new MailVerticle(), mailVerticleDeploymentOptions);
+			vertx.deployVerticle(new WorkerVerticle(), workerVerticleDeploymentOptions);
 		};
-		Vertx.clusteredVertx(optionsVertx, res -> {
-			if (res.succeeded()) {
-				Vertx vertx = res.result();
-				EventBus eventBus = vertx.eventBus();
-				LOG.info("We now have a clustered event bus: {}", eventBus);
-				runner.accept(vertx);
-			} else {
-				res.cause().printStackTrace();
-			}
+		Vertx.clusteredVertx(optionsVertx).onSuccess(vertx -> {
+			EventBus eventBus = vertx.eventBus();
+			LOG.info("We now have a clustered event bus: {}", eventBus);
+			runner.accept(vertx);
+		}).onFailure(ex -> {
+			LOG.error("Creating clustered Vertx failed. ", ex);
+			ExceptionUtils.rethrow(ex);
 		});
 	}
 
@@ -241,7 +247,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			String configPath = System.getenv("configPath");
 			if(StringUtils.isNotBlank(configPath)) {
 				ConfigStoreOptions configIni = new ConfigStoreOptions().setType("file").setFormat("properties")
-						.setConfig(new JsonObject().put("path", configPath).put("raw-data", true));
+						.setConfig(new JsonObject().put("path", configPath));
 				retrieverOptions.addStore(configIni);
 			}
 
@@ -249,10 +255,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			configRetriever.getConfig(a -> {
 				config = a.result();
 
-				siteContextEnUS = new SiteContextEnUS();
-				siteContextEnUS.setVertx(vertx);
-				siteContextEnUS.getSiteConfig().setConfig(config);
-				siteContextEnUS.initDeepSiteContextEnUS();
+				solrClient = new HttpSolrClient.Builder(config.getString(ConfigKeys.SOLR_URL)).build();
 
 				LOG.info("The site context was configured successfully. ");
 				promise.complete();
@@ -281,25 +284,21 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureData() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
-
 			PgConnectOptions pgOptions = new PgConnectOptions();
-			pgOptions.setPort(siteConfig.getJdbcPort());
-			pgOptions.setHost(siteConfig.getJdbcHost());
-			pgOptions.setDatabase(siteConfig.getJdbcDatabase());
-			pgOptions.setUser(siteConfig.getJdbcUsername());
-			pgOptions.setPassword(siteConfig.getJdbcPassword());
-			pgOptions.setIdleTimeout(siteConfig.getJdbcMaxIdleTime());
+			pgOptions.setPort(config.getInteger(ConfigKeys.JDBC_PORT));
+			pgOptions.setHost(config.getString(ConfigKeys.JDBC_HOST));
+			pgOptions.setDatabase(config.getString(ConfigKeys.JDBC_DATABASE));
+			pgOptions.setUser(config.getString(ConfigKeys.JDBC_USERNAME));
+			pgOptions.setPassword(config.getString(ConfigKeys.JDBC_PASSWORD));
+			pgOptions.setIdleTimeout(config.getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME, 10));
 			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-			pgOptions.setConnectTimeout(siteConfig.getJdbcConnectTimeout());
+			pgOptions.setConnectTimeout(config.getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT, 5));
 
 			PoolOptions poolOptions = new PoolOptions();
-			poolOptions.setMaxSize(siteConfig.getJdbcMaxPoolSize());
-			poolOptions.setMaxWaitQueueSize(siteConfig.getJdbcMaxWaitQueueSize());
+			poolOptions.setMaxSize(config.getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1));
+			poolOptions.setMaxWaitQueueSize(config.getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10));
 
 			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
-
-			siteContextEnUS.setPgPool(pgPool);
 
 			LOG.info(configureDataInitSuccess);
 			promise.complete();
@@ -321,30 +320,24 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 **/ 
 	private Future<Void> configureCluster() {
 		Promise<Void> promise = Promise.promise();
-		try {
-			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
-			SharedData sharedData = vertx.sharedData();
-			sharedData.getClusterWideMap("clusterData", res -> {
-				if (res.succeeded()) {
-					AsyncMap<Object, Object> clusterData = res.result();
-					clusterData.put("siteConfig", siteConfig, resPut -> {
-						if (resPut.succeeded()) {
-							LOG.info(configureClusterDataSuccess);
-							promise.complete();
-						} else {
-							LOG.error(configureClusterDataError, res.cause());
-							promise.fail(res.cause());
-						}
-					});
-				} else {
-					LOG.error(configureClusterDataError, res.cause());
-					promise.fail(res.cause());
-				}
-			});
-		} catch (Exception ex) {
-			LOG.error(configureClusterDataError, ex);
-			promise.fail(ex);
-		}
+		SharedData sharedData = vertx.sharedData();
+		sharedData.getClusterWideMap("clusterData", res -> {
+			if (res.succeeded()) {
+				AsyncMap<Object, Object> clusterData = res.result();
+				clusterData.put("config", config, resPut -> {
+					if (resPut.succeeded()) {
+						LOG.info(configureClusterDataSuccess);
+						promise.complete();
+					} else {
+						LOG.error(configureClusterDataError, res.cause());
+						promise.fail(res.cause());
+					}
+				});
+			} else {
+				LOG.error(configureClusterDataError, res.cause());
+				promise.fail(res.cause());
+			}
+		});
 		return promise.future();
 	}
 
@@ -361,13 +354,13 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureOpenApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
-			String siteUrlBase = siteConfig.getSiteBaseUrl();
+			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
 
 			OAuth2Options oauth2ClientOptions = new OAuth2Options();
-			oauth2ClientOptions.setSite(siteConfig.getAuthUrl() + "/realms/" + siteConfig.getAuthRealm());
-			oauth2ClientOptions.setClientID(siteConfig.getAuthResource());
-			oauth2ClientOptions.setClientSecret(siteConfig.getAuthSecret());
+			oauth2ClientOptions.setSite(config.getString(ConfigKeys.AUTH_URL) + "/realms/" + config.getString(ConfigKeys.AUTH_REALM));
+			oauth2ClientOptions.setTenant(config.getString(ConfigKeys.AUTH_REALM));
+			oauth2ClientOptions.setClientID(config.getString(ConfigKeys.AUTH_RESOURCE));
+			oauth2ClientOptions.setClientSecret(config.getString(ConfigKeys.AUTH_SECRET));
 			oauth2ClientOptions.setFlow(OAuth2FlowType.AUTH_CODE);
 			JsonObject extraParams = new JsonObject();
 			extraParams.put("scope", "DefaultAuthScope");
@@ -375,13 +368,11 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 			OpenIDConnectAuth.discover(vertx, oauth2ClientOptions, a -> {
 				if(a.succeeded()) {
-					OAuth2Auth oauth2AuthenticationProvider = a.result();
-					siteContextEnUS.setOauth2AuthenticationProvider(oauth2AuthenticationProvider);
+					oauth2AuthenticationProvider = a.result();
 
-					AuthorizationProvider authorizationProvider = KeycloakAuthorization.create();
-					siteContextEnUS.setAuthorizationProvider(authorizationProvider);
+					authorizationProvider = KeycloakAuthorization.create();
 
-					OAuth2AuthHandler oauth2AuthHandler = OAuth2AuthHandler.create(vertx, oauth2AuthenticationProvider, siteUrlBase + "/callback");
+					OAuth2AuthHandler oauth2AuthHandler = OAuth2AuthHandler.create(vertx, oauth2AuthenticationProvider, siteBaseUrl + "/callback");
 					{
 						Router tempRouter = Router.router(vertx);
 						oauth2AuthHandler.setupCallback(tempRouter.get("/callback"));
@@ -390,7 +381,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			//		ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
 					LocalSessionStore sessionStore = LocalSessionStore.create(vertx, "opendatapolicing-sessions");
 					SessionHandler sessionHandler = SessionHandler.create(sessionStore);
-					String siteBaseUrl = siteConfig.getSiteBaseUrl();
 					if(StringUtils.startsWith(siteBaseUrl, "https://"))
 						sessionHandler.setCookieSecureFlag(true);
 			
@@ -398,7 +388,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 						if (b.succeeded()) {
 							RouterBuilder routerBuilder = b.result();
 							routerBuilder.mountServicesFromExtensions();
-							siteContextEnUS.setRouterBuilder(routerBuilder);
 			
 							Function<RoutingContext, JsonObject> extraPayloadMapper = routingContext -> new JsonObject().put("uri", routingContext.request().uri()).put("method", routingContext.request().method().name());
 							routerBuilder.serviceExtraPayloadMapper(extraPayloadMapper);
@@ -419,7 +408,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			
 								final JsonObject config = new JsonObject().put("code", code);
 			
-								config.put("redirect_uri", siteUrlBase + "/callback");
+								config.put("redirect_uri", siteBaseUrl + "/callback");
 			
 								oauth2AuthenticationProvider.authenticate(config, res -> {
 									if (res.failed()) {
@@ -469,7 +458,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 							routerBuilder.operation("logout").handler(c -> {});
 			
 							router = routerBuilder.createRouter();
-							siteContextEnUS.setRouter(router);
 			
 							LOG.info(configureOpenApiSuccess);
 							promise.complete();
@@ -490,18 +478,18 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		return promise.future();
 	}
 
-	/**
+	/**	
+	 * 
 	 * Val.Error.enUS:Could not configure the shared worker executor. 
 	 * Val.Success.enUS:The shared worker executor was configured successfully. 
 	 * 
 	 *	Configure a shared worker executor for running blocking tasks in the background. 
 	 *	Return a promise that configures the shared worker executor. 
-	 **/    
+	 **/
 	private Future<Void> configureSharedWorkerExecutor() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			WorkerExecutor workerExecutor = vertx.createSharedWorkerExecutor("WorkerExecutor");
-			siteContextEnUS.setWorkerExecutor(workerExecutor);
+			workerExecutor = vertx.createSharedWorkerExecutor("WorkerExecutor");
 			promise.complete();
 		} catch (Exception ex) {
 			LOG.error(configureSharedWorkerExecutorError, ex);
@@ -511,26 +499,20 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	}
 
 	/**	
-	 * 
 	 * Val.ErrorDatabase.enUS:The database is not configured properly. 
-	 * 
 	 * Val.EmptySolr.enUS:The Solr search engine is empty. 
-	 * 
 	 * Val.ErrorSolr.enUS:The Solr search engine is not configured properly. 
-	 * 
 	 * Val.ErrorVertx.enUS:The Vert.x application is not configured properly. 
-	 * 
 	 *	Configure health checks for the status of the website and it's dependent services. 
 	 *	Return a promise that configures the health checks. 
 	 **/
 	private Future<Void> configureHealthChecks() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			Router siteRouteur = siteContextEnUS.getRouter();
 			HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
 
 			healthCheckHandler.register("database", 2000, a -> {
-				siteContextEnUS.getPgPool().preparedQuery("select current_timestamp").execute(selectCAsync -> {
+				pgPool.preparedQuery("select current_timestamp").execute(selectCAsync -> {
 					if(selectCAsync.succeeded()) {
 						a.complete(Status.OK());
 					} else {
@@ -543,7 +525,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 				SolrQuery query = new SolrQuery();
 				query.setQuery("*:*");
 				try {
-					QueryResponse r = siteContextEnUS.getSolrClient().query(query);
+					QueryResponse r = solrClient.query(query);
 					if(r.getResults().size() > 0)
 						a.complete(Status.OK());
 					else {
@@ -555,7 +537,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 					promise.fail(a.future().cause());
 				}
 			});
-			siteRouteur.get("/health").handler(healthCheckHandler);
+			router.get("/health").handler(healthCheckHandler);
 			promise.complete();
 		} catch (Exception ex) {
 			LOG.error(configureHealthChecksErrorSolr, ex);
@@ -565,51 +547,52 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	}
 
 	/**	
-	 * Val.Error.enUS:Could not configure websockets. 
-	 * Val.Success.enUS:The websockets configured successfully. 
-	 * 
-	 *	Configure websockets for realtime messages. 
+	 * Configure websockets for realtime messages. 
+	 * Val.Complete.enUS:Configure websockets succeeded. 
+	 * Val.Fail.enUS:Configure websockets failed. 
 	 **/
 	private Future<Void> configureWebsockets() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			Router siteRouter = siteContextEnUS.getRouter();
 			SockJSBridgeOptions options = new SockJSBridgeOptions()
 					.addOutboundPermitted(new PermittedOptions().setAddressRegex("websocket.*"));
 			SockJSHandler sockJsHandler = SockJSHandler.create(vertx);
 			sockJsHandler.bridge(options);
-			siteRouter.route("/eventbus/*").handler(sockJsHandler);
+			router.route("/eventbus/*").handler(sockJsHandler);
+			LOG.info(configureWebsocketsComplete);
 			promise.complete();
 		} catch (Exception ex) {
-			LOG.error(configureWebsocketsError, ex);
+			LOG.error(configureWebsocketsFail, ex);
 			promise.fail(ex);
 		}
 		return promise.future();
 	}
 
 	/**	
-	 * Val.Error.enUS:Could not configure the email. 
-	 * Val.Success.enUS:The email was configured successfully. 
-	 * 
-	 *	Configure sending email. 
+	 * Configure sending email. 
+	 * Val.Complete.enUS:Configure sending email succeeded. 
+	 * Val.Fail.enUS:Configure sending email failed. 
 	 **/
 	private Future<Void> configureEmail() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
-			MailConfig config = new MailConfig();
-			if(StringUtils.isNotBlank(siteConfig.getEmailHost())) {
-				config.setHostname(siteConfig.getEmailHost());
-				config.setPort(siteConfig.getEmailPort());
-				config.setSsl(siteConfig.getEmailSsl());
-				config.setUsername(siteConfig.getEmailUsername());
-				config.setPassword(siteConfig.getEmailPassword());
-				MailClient mailClient = MailClient.createShared(vertx, config);
-				siteContextEnUS.setMailClient(mailClient);
+			String emailHost = config.getString(ConfigKeys.EMAIL_HOST);
+			if(StringUtils.isNotBlank(emailHost)) {
+				MailConfig mailConfig = new MailConfig();
+				mailConfig.setHostname(emailHost);
+				mailConfig.setPort(config.getInteger(ConfigKeys.EMAIL_PORT));
+				mailConfig.setSsl(config.getBoolean(ConfigKeys.EMAIL_SSL));
+				mailConfig.setUsername(config.getString(ConfigKeys.EMAIL_USERNAME));
+				mailConfig.setPassword(config.getString(ConfigKeys.EMAIL_PASSWORD));
+				MailClient.createShared(vertx, mailConfig);
+				LOG.info(configureEmailComplete);
+				promise.complete();
+			} else {
+				LOG.info(configureEmailComplete);
+				promise.complete();
 			}
-			promise.complete();
 		} catch (Exception ex) {
-			LOG.error(configureEmailError, ex);
+			LOG.error(configureEmailFail, ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -622,21 +605,21 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteUserEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			PageDesignEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			HtmlPartEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			SiteStateEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			SiteAgencyEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			SearchBasisEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			TrafficContrabandEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			TrafficPersonEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			TrafficSearchEnUSGenApiService.registerService(siteContextEnUS, vertx);
-			TrafficStopEnUSGenApiService.registerService(siteContextEnUS, vertx);
+			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			PageDesignEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			HtmlPartEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteStateEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteAgencyEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SearchBasisEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficContrabandEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficPersonEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficSearchEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficStopEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 
 			LOG.info(configureApiComplete);
 			promise.complete();
 		} catch(Exception ex) {
-			LOG.error(configureApiFail);
+			LOG.error(configureApiFail, ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -649,11 +632,23 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureUi() {
 		Promise<Void> promise = Promise.promise();
 		try {
+			String staticPath = config.getString(ConfigKeys.STATIC_PATH);
+			String staticBaseUrl = config.getString(ConfigKeys.STATIC_BASE_URL);
 			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
-			TemplateHandler templateHandler = TemplateHandler.create(engine);
+			TemplateHandler templateHandler = TemplateHandler.create(engine, staticPath + "/template", "text/html");
 
 			router.get("/").handler(a -> {
 				a.reroute("/template/home-page");
+			});
+
+			router.get("/api").handler(a -> {
+				a.reroute("/template/openapi");
+			});
+
+			router.get("/template/*").handler(ctx -> {
+				ctx.put(ConfigKeys.STATIC_BASE_URL, staticBaseUrl);
+				ctx.put(ConfigKeys.SITE_BASE_URL, staticBaseUrl);
+				ctx.next();
 			});
 
 			router.get("/template/*").handler(templateHandler);
@@ -664,7 +659,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			});
 
 			StaticHandler staticHandler = StaticHandler.create().setCachingEnabled(false).setFilesReadOnly(false);
-			String staticPath = config.getString(CONFIG_staticPath);
 			if(staticPath != null) {
 				staticHandler.setAllowRootFileSystemAccess(true);
 				staticHandler.setWebRoot(staticPath);
@@ -691,39 +685,41 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 *	Démarrer le serveur Vert.x. 
 	 **/
 	private Future<Void> startServer() {
-		SiteConfig siteConfig = siteContextEnUS.getSiteConfig();
 		Promise<Void> promise = Promise.promise();
 
-
-		Router siteRouter = siteContextEnUS.getRouter();
-
-		SimpleModule module = new SimpleModule();
-		module.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
-		module.addSerializer(LocalDate.class, new LocalDateSerializer());
-		module.addSerializer(LocalTime.class, new LocalTimeSerializer());
-		DatabindCodec.mapper().registerModule(module);
-
-		String siteHostName = siteConfig.getSiteHostName();
-		String siteBaseUrl = siteConfig.getSiteBaseUrl();
-		Integer sitePort = siteConfig.getSitePort();
-		HttpServerOptions options = new HttpServerOptions();
-		if(siteConfig.getSslPassthrough() != null && siteConfig.getSslPassthrough()) {
-			options.setKeyStoreOptions(new JksOptions().setPath(siteConfig.getSslJksPath()).setPassword(siteConfig.getSslJksPassword()));
-			options.setSsl(true);
-			LOG.info(String.format(startServerSsl, siteConfig.getSslJksPath()));
-		}
-		options.setPort(sitePort);
-
-		LOG.info(String.format(startServerBeforeServer, siteBaseUrl));
-		vertx.createHttpServer(options).requestHandler(siteRouter).listen(ar -> {
-			if (ar.succeeded()) {
-				LOG.info(String.format(startServerSuccessServer, siteBaseUrl));
-				promise.complete();
-			} else {
-				LOG.error(startServerErrorServer, ar.cause());
-				promise.fail(ar.cause());
+		try {
+			SimpleModule module = new SimpleModule();
+			module.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
+			module.addSerializer(LocalDate.class, new LocalDateSerializer());
+			module.addSerializer(LocalTime.class, new LocalTimeSerializer());
+			DatabindCodec.mapper().registerModule(module);
+	
+			Boolean sslPassthrough = config.getBoolean(ConfigKeys.SSL_PASSTHROUGH, false);
+			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
+			Integer sitePort = config.getInteger(ConfigKeys.SITE_PORT);
+			String sslJksPath = config.getString(ConfigKeys.SSL_JKS_PATH);
+			HttpServerOptions options = new HttpServerOptions();
+			if(sslPassthrough) {
+				options.setKeyStoreOptions(new JksOptions().setPath(sslJksPath).setPassword(config.getString(ConfigKeys.SSL_JKS_PASSWORD)));
+				options.setSsl(true);
+				LOG.info(String.format(startServerSsl, sslJksPath));
 			}
-		});
+			options.setPort(sitePort);
+	
+			LOG.info(String.format(startServerBeforeServer, siteBaseUrl));
+			vertx.createHttpServer(options).requestHandler(router).listen(ar -> {
+				if (ar.succeeded()) {
+					LOG.info(String.format(startServerSuccessServer, siteBaseUrl));
+					promise.complete();
+				} else {
+					LOG.error(startServerErrorServer, ar.cause());
+					promise.fail(ar.cause());
+				}
+			});
+		} catch (Exception ex) {
+			LOG.error(startServerErrorServer, ex);
+			promise.fail(ex);
+		}
 
 		return promise.future();
 	}
@@ -746,7 +742,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 **/
 	private Promise<Void> closeData() {
 		Promise<Void> promise = Promise.promise();
-		PgPool pgPool = siteContextEnUS.getPgPool();
 
 		if(pgPool != null) {
 			pgPool.close();

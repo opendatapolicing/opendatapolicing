@@ -28,7 +28,7 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.solr.common.SolrDocument;
 
 import com.opendatapolicing.enus.agency.SiteAgencyGenPage;
-import com.opendatapolicing.enus.config.SiteConfig;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.design.PageDesignGenPage;
 import com.opendatapolicing.enus.html.part.HtmlPart;
 import com.opendatapolicing.enus.html.part.HtmlPartGenPage;
@@ -88,11 +88,11 @@ public class PageLayout extends PageLayoutGen<Object> {
 	}
 
 	protected void _siteBaseUrl(Wrap<String> c) {
-		c.o(siteRequest_.getSiteConfig_().getSiteBaseUrl());
+		c.o(siteRequest_.getConfig().getString(ConfigKeys.SITE_BASE_URL));
 	}
 
 	protected void _staticBaseUrl(Wrap<String> c) {
-		c.o(siteRequest_.getSiteConfig_().getStaticBaseUrl()); 
+		c.o(siteRequest_.getConfig().getString(ConfigKeys.STATIC_BASE_URL)); 
 	}
 
 	protected void _map(Map<String, Object> m) {
@@ -166,7 +166,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 	}
 
 	protected void _pageImageUrl(Wrap<String> c) {
-		c.o(StringUtils.defaultIfBlank((String)pageSolrDocument.get(c.var + "_stored_string"), "https://" + siteRequest_.getSiteConfig_().getSiteHostName() + pageImageUri));
+		c.o(StringUtils.defaultIfBlank((String)pageSolrDocument.get(c.var + "_stored_string"), "https://" + siteRequest_.getConfig().getString(ConfigKeys.SITE_HOST_NAME) + pageImageUri));
 	}
 
 	protected void _pageVideoId(Wrap<String> c) {
@@ -235,8 +235,8 @@ public class PageLayout extends PageLayoutGen<Object> {
 
 	protected void _pageLogoutUri(Wrap<String> c) {
 		try {
-			SiteConfig siteConfig = siteRequest_.getSiteConfig_();
-			String o = siteConfig.getAuthUrl() + "/realms/" + siteConfig.getAuthRealm() + "/protocol/openid-connect/logout?redirect_uri=" + URLEncoder.encode(siteConfig.getSiteBaseUrl() + "/logout", "UTF-8");
+			JsonObject config = siteRequest_.getConfig();
+			String o = config.getString(ConfigKeys.AUTH_URL) + "/realms/" + config.getString(ConfigKeys.AUTH_REALM) + "/protocol/openid-connect/logout?redirect_uri=" + URLEncoder.encode(config.getString(ConfigKeys.SITE_BASE_URL) + "/logout", "UTF-8");
 			c.o(o);
 		} catch (UnsupportedEncodingException e) {
 			ExceptionUtils.rethrow(e);
@@ -251,7 +251,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 		e("meta").a("property", "og:title").a("content", pageTitle).fg();
 		e("meta").a("property", "og:description").a("content", pageDescription).fg();
 		e("meta").a("property", "og:url").a("content", pageUrl).fg();
-		e("meta").a("property", "og:site_name").a("content", siteRequest_.getSiteConfig_().getDomainName()).fg();
+		e("meta").a("property", "og:site_name").a("content", siteRequest_.getConfig().getString(ConfigKeys.DOMAIN_NAME)).fg();
 		e("meta").a("property", "og:image").a("content", pageImageUrl).fg();
 		e("meta").a("property", "og:image:width").a("content", pageImageWidth).fg();
 		e("meta").a("property", "og:image:height").a("content", pageImageHeight).fg();
@@ -960,7 +960,7 @@ public class PageLayout extends PageLayoutGen<Object> {
 							if("application/pdf".equals(pageContentType)) {
 								Object o = obtainForClass(htmlVarInput);
 								if(o instanceof Boolean) {
-									e("img").a("class", "").a("style", "width: 1em; height: 1em; position: relative; top: 3px; ").a("src", siteRequest_.getSiteConfig_().getStaticBaseUrl(), ((Boolean)o) ? "/png/check-square-o.png" : "/png/square-o.png").fg();
+									e("img").a("class", "").a("style", "width: 1em; height: 1em; position: relative; top: 3px; ").a("src", siteRequest_.getConfig().getString(ConfigKeys.STATIC_BASE_URL), ((Boolean)o) ? "/png/check-square-o.png" : "/png/square-o.png").fg();
 								}
 								else if (o instanceof String && o.toString().startsWith("data:image")) {
 									e("img").a("class", "").a("style", "height: 100px; ").a("src", o.toString()).fg();
@@ -1024,15 +1024,11 @@ public class PageLayout extends PageLayoutGen<Object> {
 						m.appendTail(sb);
 						searchUri = sb.toString();
 
-						SiteRequestEnUS siteRequest2 = new SiteRequestEnUS();
-						siteRequest2.setVertx(siteRequest_.getVertx());
-						siteRequest2.setSiteContext_(siteRequest_.getSiteContext_());
-						siteRequest2.setSiteConfig_(siteRequest_.getSiteConfig_());
-						siteRequest2.setUserId(siteRequest_.getUserId());
+						SiteRequestEnUS siteRequest2 = siteRequest_.copy();
 						siteRequest2.initDeepSiteRequestEnUS(siteRequest2);
 
 						if(searchUri.startsWith("/api/traffic-stop?")) {
-							TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(siteRequest_.getSiteContext_());
+							TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(null, siteRequest_.getConfig(), null, null, siteRequest_.getSolrClient(), null, null);
 							ServiceRequest serviceRequest = new ServiceRequest();
 							siteRequest2.setServiceRequest(serviceRequest);
 							JsonObject params = new JsonObject();

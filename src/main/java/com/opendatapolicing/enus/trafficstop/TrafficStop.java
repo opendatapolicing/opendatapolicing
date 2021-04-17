@@ -9,6 +9,7 @@ import org.apache.solr.client.solrj.response.FacetField.Count;
 import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -58,11 +59,69 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 * Description.enUS: The primary key of the traffic stop in the database. 
 	 */           
 	protected void _trafficStopKey(Wrap<Long> c) {
 		c.o(pk);
 	}
+
+	////////////////
+	// SiteState //
+	////////////////
+
+
+	/**    
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */
+	protected void _stateAbbreviation(Wrap<String> w) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Ignore: true
+	 */ 
+	protected void _stateSearch(SearchList<SiteState> l) {
+		if(stateAbbreviation != null) {
+			l.setQuery("*:*");
+			l.addFilterQuery("stateAbbreviation_indexed_string:" + stateAbbreviation);
+			l.setC(SiteState.class);
+			l.setStore(true);
+		}
+	}
+
+	protected void _state_(Wrap<SiteState> w) {
+		if(stateSearch.size() > 0)
+			w.o(stateSearch.get(0));
+	}
+
+	/**  
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * DisplayName.enUS: state
+	 */       
+	protected void _stateKey(Wrap<Long> w) {
+		if(state_ != null)
+			w.o(state_.getPk());
+	}
+
+	/**    
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 */
+	protected void _stateName(Wrap<String> w) {
+		if(state_ != null)
+			w.o(state_.getStateName());
+	}
+
+	////////////////
+	// SiteAgency //
+	////////////////
 
 	/**  
 	 * {@inheritDoc}
@@ -101,8 +160,12 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * HtmlCell: 1
 	 * DisplayName.enUS: agency title
 	 */
-	protected void _stopAgencyTitle(Wrap<String> w) {
+	protected void _agencyTitle(Wrap<String> w) {
 	}
+
+	////////////
+	// Fields //
+	////////////
 
 	/**    
 	 * {@inheritDoc}
@@ -296,6 +359,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * HtmlRow: 6
 	 * HtmlCell: 4
 	 * DisplayName.enUS: officer ID
+	 * SetTrim: true
 	 */ 
 	protected void _stopOfficerId(Wrap<String> w) {
 	}
@@ -308,6 +372,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * HtmlRow: 7
 	 * HtmlCell: 1
 	 * DisplayName.enUS: location ID
+	 * SetTrim: true
 	 */ 
 	protected void _stopLocationId(Wrap<String> w) {
 	}
@@ -320,6 +385,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * HtmlRow: 7
 	 * HtmlCell: 2
 	 * DisplayName.enUS: city ID
+	 * SetTrim: true
 	 */ 
 	protected void _stopCityId(Wrap<String> w) {
 	}

@@ -3,14 +3,12 @@ package com.opendatapolicing.enus.cluster;
 import java.text.Normalizer;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
+import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.page.PageLayout;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -59,7 +57,7 @@ public class Cluster extends ClusterGen<Object> {
 	 * InheritPrimaryKey: true
 	 * Define: true
 	 */
-	protected void _inheritPk(Wrap<Long> c) {}
+	protected void _inheritPk(Wrap<String> c) {}
 
 	/**
 	 * {@inheritDoc}
@@ -95,7 +93,7 @@ public class Cluster extends ClusterGen<Object> {
 	 * DisplayName.enUS: modified
 	 */ 
 	protected void _modified(Wrap<ZonedDateTime> c) {
-		c.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getSiteConfig_().getSiteZone())));
+		c.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
 	}
 
 	/**

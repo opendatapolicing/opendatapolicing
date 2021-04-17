@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.vertx;
+package com.opendatapolicing.enus.vertx; 
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import io.vertx.ext.mail.MailMessage;
 
 /**
  * Keyword: classSimpleNameMailVerticle
- */
+ */ 
 public class MailVerticle extends AbstractVerticle {
 	private static final Logger LOG = LoggerFactory.getLogger(MailVerticle.class);
 
