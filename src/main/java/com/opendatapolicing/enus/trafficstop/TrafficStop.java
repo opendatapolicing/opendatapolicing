@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficstop;     
+package com.opendatapolicing.enus.trafficstop;      
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -59,7 +59,6 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
 	 * Description.enUS: The primary key of the traffic stop in the database. 
 	 */           
 	protected void _trafficStopKey(Wrap<Long> c) {

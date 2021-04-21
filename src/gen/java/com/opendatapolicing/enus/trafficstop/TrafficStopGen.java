@@ -177,68 +177,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return trafficStopKey == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficStopKey());
 	}
 
-	public void inputTrafficStopKey(String classApiMethodMethod) {
-		TrafficStop s = (TrafficStop)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("id", classApiMethodMethod, "_trafficStopKey");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setTrafficStopKey classTrafficStop inputTrafficStop", pk, "TrafficStopKey w3-input w3-border ");
-					a("name", "setTrafficStopKey");
-				} else {
-					a("class", "valueTrafficStopKey w3-input w3-border classTrafficStop inputTrafficStop", pk, "TrafficStopKey w3-input w3-border ");
-					a("name", "trafficStopKey");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setTrafficStopKey', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_trafficStopKey')); }, function() { addError($('#", classApiMethodMethod, "_trafficStopKey')); }); ");
-				}
-				a("value", strTrafficStopKey())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficStop", pk, "TrafficStopKey ").f().sx(htmTrafficStopKey()).g("span");
-		}
-	}
-
-	public void htmTrafficStopKey(String classApiMethodMethod) {
-		TrafficStop s = (TrafficStop)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficStopTrafficStopKey").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputTrafficStopKey(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_trafficStopKey')); $('#", classApiMethodMethod, "_trafficStopKey').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficStopForm :input[name=pk]').val() }], 'setTrafficStopKey', null, function() { addGlow($('#", classApiMethodMethod, "_trafficStopKey')); }, function() { addError($('#", classApiMethodMethod, "_trafficStopKey')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	///////////////////////
 	// stateAbbreviation //
 	///////////////////////
@@ -4114,11 +4052,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficStop(String var, String val) {
 		switch(var.toLowerCase()) {
-			case "trafficstopkey":
-				if(val != null)
-					setTrafficStopKey(val);
-				saves.add("trafficStopKey");
-				return val;
 			case "stateabbreviation":
 				if(val != null)
 					setStateAbbreviation(val);
@@ -4221,11 +4154,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficStop(String var, Object val) {
 		switch(var.toLowerCase()) {
-			case "trafficstopkey":
-				if(val instanceof Long)
-					setTrafficStopKey((Long)val);
-				saves.add("trafficStopKey");
-				return val;
 			case "stateabbreviation":
 				if(val instanceof String)
 					setStateAbbreviation((String)val);

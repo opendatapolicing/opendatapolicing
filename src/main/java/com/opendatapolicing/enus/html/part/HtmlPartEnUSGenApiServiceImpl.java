@@ -298,7 +298,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
 								searchList.setC(PageDesign.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null) {
@@ -770,7 +770,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(HtmlPart.class);
-				searchList.addFilterQuery("inheritPk_indexed_string:" + json.getString("pk"));
+				searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(json.getString("pk")));
 				searchList.initDeepForClass(siteRequest2);
 
 				if(searchList.size() == 1) {
@@ -940,7 +940,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				searchList.setStore(true);
 				searchList.setQuery("*:*");
 				searchList.setC(HtmlPart.class);
-				searchList.addFilterQuery("pk_indexed_long:" + json.getString("pk"));
+				searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(json.getString("pk")));
 				searchList.initDeepForClass(siteRequest2);
 
 				if(searchList.size() == 1) {
@@ -1884,7 +1884,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
 								searchList.setC(PageDesign.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && !o.getPageDesignKeys().contains(l2)) {
@@ -1917,7 +1917,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
 									searchList.setC(PageDesign.class);
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null && !o.getPageDesignKeys().contains(l2)) {
@@ -1952,7 +1952,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 									searchList.setQuery("*:*");
 									searchList.setStore(true);
 									searchList.setC(PageDesign.class);
-									searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+									searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
 									searchList.initDeepSearchList(siteRequest);
 									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 									if(l2 != null)
@@ -2003,7 +2003,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								searchList.setQuery("*:*");
 								searchList.setStore(true);
 								searchList.setC(PageDesign.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk" : "pk") + "_indexed_long:" + l);
+								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
 								searchList.initDeepSearchList(siteRequest);
 								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
 								if(l2 != null && o.getPageDesignKeys().contains(l2)) {

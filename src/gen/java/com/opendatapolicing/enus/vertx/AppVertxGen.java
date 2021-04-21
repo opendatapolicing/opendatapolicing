@@ -118,7 +118,6 @@ CREATE TABLE TrafficStop(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
-	, trafficStopKey bigint
 	, stateAbbreviation text
 	, agencyTitle text
 	, stopDateTime timestamp with time zone

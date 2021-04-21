@@ -306,7 +306,6 @@ public class TrafficStopGenPage extends TrafficStopGenPageGen<PageLayout> {
 		{ e("div").a("class", "w3-cell-row ").f();
 			o.htmInheritPk("Search");
 			o.htmObjectTitle("Search");
-			o.htmTrafficStopKey("Search");
 			o.htmStateAbbreviation("Search");
 			o.htmStopYear("Search");
 			o.htmStopPurposeNum("Search");
