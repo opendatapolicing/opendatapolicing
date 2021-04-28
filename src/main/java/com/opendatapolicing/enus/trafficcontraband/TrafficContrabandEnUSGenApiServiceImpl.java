@@ -9,7 +9,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -103,15 +105,15 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficContrabandEnUSGenApiServiceImpl.class);
 
-	public TrafficContrabandEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public TrafficContrabandEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
 
 	@Override
 	public void putimportTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putimportTrafficContraband started. "));
+		LOG.debug(String.format("putimportTrafficContraband started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -155,7 +157,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 													listPUTImportTrafficContraband(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTImportTrafficContraband(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putimportTrafficContraband succeeded. "));
+																LOG.debug(String.format("putimportTrafficContraband succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putimportTrafficContraband failed. ", f.cause()));
@@ -231,15 +233,44 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 				if(searchList.size() == 1) {
 					TrafficContraband o = searchList.getList().stream().findFirst().orElse(null);
+					TrafficContraband o2 = new TrafficContraband();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchTrafficContrabandFuture(o, true).onFailure(ex -> {
@@ -283,7 +314,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 	@Override
 	public void putmergeTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putmergeTrafficContraband started. "));
+		LOG.debug(String.format("putmergeTrafficContraband started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -327,7 +358,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 													listPUTMergeTrafficContraband(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTMergeTrafficContraband(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putmergeTrafficContraband succeeded. "));
+																LOG.debug(String.format("putmergeTrafficContraband succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putmergeTrafficContraband failed. ", f.cause()));
@@ -401,15 +432,44 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 				if(searchList.size() == 1) {
 					TrafficContraband o = searchList.getList().stream().findFirst().orElse(null);
+					TrafficContraband o2 = new TrafficContraband();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchTrafficContrabandFuture(o, false).onFailure(ex -> {
@@ -468,7 +528,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 	@Override
 	public void putcopyTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putcopyTrafficContraband started. "));
+		LOG.debug(String.format("putcopyTrafficContraband started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -514,7 +574,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 															if(e.succeeded()) {
 																putcopyTrafficContrabandResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOG.info(String.format("putcopyTrafficContraband succeeded. "));
+																		LOG.debug(String.format("putcopyTrafficContraband succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
 																		LOG.error(String.format("putcopyTrafficContraband failed. ", f.cause()));
@@ -626,13 +686,11 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 									if(c.succeeded()) {
 										attributeTrafficContraband(trafficContraband, d -> {
 											if(d.succeeded()) {
-												indexTrafficContraband(trafficContraband, e -> {
-													if(e.succeeded()) {
-														promise1.complete(trafficContraband);
-													} else {
-														LOG.error(String.format("putcopyTrafficContrabandFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexTrafficContraband(trafficContraband).onSuccess(e -> {
+													promise1.complete(trafficContraband);
+												}).onFailure(ex -> {
+													LOG.error(String.format("putcopyTrafficContrabandFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("putcopyTrafficContrabandFuture failed. ", d.cause()));
@@ -670,7 +728,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							trafficContraband.apiRequestTrafficContraband();
 							eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficContraband);
+						promise2.complete(trafficContraband);
 					} else {
 						LOG.error(String.format("putcopyTrafficContrabandFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -679,7 +737,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				return promise2.future();
 			}).onSuccess(trafficContraband -> {
 				promise.complete(trafficContraband);
-				LOG.info(String.format("putcopyTrafficContrabandFuture succeeded. "));
+				LOG.debug(String.format("putcopyTrafficContrabandFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -886,7 +944,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 	@Override
 	public void postTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postTrafficContraband started. "));
+		LOG.debug(String.format("postTrafficContraband started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -923,7 +981,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							postTrafficContrabandResponse(trafficContraband, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postTrafficContraband succeeded. "));
+									LOG.debug(String.format("postTrafficContraband succeeded. "));
 								} else {
 									LOG.error(String.format("postTrafficContraband failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -971,13 +1029,11 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 									if(c.succeeded()) {
 										attributeTrafficContraband(trafficContraband, d -> {
 											if(d.succeeded()) {
-												indexTrafficContraband(trafficContraband, e -> {
-													if(e.succeeded()) {
-														promise1.complete(trafficContraband);
-													} else {
-														LOG.error(String.format("postTrafficContrabandFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexTrafficContraband(trafficContraband).onSuccess(e -> {
+													promise1.complete(trafficContraband);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postTrafficContrabandFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postTrafficContrabandFuture failed. ", d.cause()));
@@ -1015,7 +1071,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							trafficContraband.apiRequestTrafficContraband();
 							eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficContraband);
+						promise2.complete(trafficContraband);
 					} else {
 						LOG.error(String.format("postTrafficContrabandFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1024,7 +1080,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				return promise2.future();
 			}).onSuccess(trafficContraband -> {
 				promise.complete(trafficContraband);
-				LOG.info(String.format("postTrafficContrabandFuture succeeded. "));
+				LOG.debug(String.format("postTrafficContrabandFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1246,7 +1302,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 	@Override
 	public void patchTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchTrafficContraband started. "));
+		LOG.debug(String.format("patchTrafficContraband started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1314,7 +1370,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 																if(e.succeeded()) {
 																	patchTrafficContrabandResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchTrafficContraband succeeded. "));
+																			LOG.debug(String.format("patchTrafficContraband succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchTrafficContraband failed. ", f.cause()));
@@ -1383,17 +1439,20 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listTrafficContraband.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listTrafficContraband.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHTrafficContraband(apiRequest, listTrafficContraband, dt, eventHandler);
 				} else {
 					response200PATCHTrafficContraband(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHTrafficContraband failed. ", a.cause()));
-				error(listTrafficContraband.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHTrafficContraband failed. ", ex));
+				error(listTrafficContraband.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHTrafficContraband failed. ", ex));
+			error(listTrafficContraband.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -1417,13 +1476,11 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							if(c.succeeded()) {
 								attributeTrafficContraband(trafficContraband, d -> {
 									if(d.succeeded()) {
-										indexTrafficContraband(trafficContraband, e -> {
-											if(e.succeeded()) {
-												promise1.complete(trafficContraband);
-											} else {
-												LOG.error(String.format("patchTrafficContrabandFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexTrafficContraband(trafficContraband).onSuccess(e -> {
+											promise1.complete(trafficContraband);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchTrafficContrabandFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchTrafficContrabandFuture failed. ", d.cause()));
@@ -1455,7 +1512,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							trafficContraband.apiRequestTrafficContraband();
 							eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficContraband);
+						promise2.complete(trafficContraband);
 					} else {
 						LOG.error(String.format("patchTrafficContrabandFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1464,7 +1521,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				return promise2.future();
 			}).onSuccess(trafficContraband -> {
 				promise.complete(trafficContraband);
-				LOG.info(String.format("patchTrafficContrabandFuture succeeded. "));
+				LOG.debug(String.format("patchTrafficContrabandFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1713,7 +1770,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								getTrafficContrabandResponse(listTrafficContraband, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("getTrafficContraband succeeded. "));
+										LOG.debug(String.format("getTrafficContraband succeeded. "));
 									} else {
 										LOG.error(String.format("getTrafficContraband failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1792,7 +1849,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								searchTrafficContrabandResponse(listTrafficContraband, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchTrafficContraband succeeded. "));
+										LOG.debug(String.format("searchTrafficContraband succeeded. "));
 									} else {
 										LOG.error(String.format("searchTrafficContraband failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1893,14 +1950,12 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2009,7 +2064,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								adminsearchTrafficContrabandResponse(listTrafficContraband, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("adminsearchTrafficContraband succeeded. "));
+										LOG.debug(String.format("adminsearchTrafficContraband succeeded. "));
 									} else {
 										LOG.error(String.format("adminsearchTrafficContraband failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2110,14 +2165,12 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2231,7 +2284,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								searchpageTrafficContrabandResponse(listTrafficContraband, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpageTrafficContraband succeeded. "));
+										LOG.debug(String.format("searchpageTrafficContraband succeeded. "));
 									} else {
 										LOG.error(String.format("searchpageTrafficContraband failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2647,19 +2700,25 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		}
 	}
 
-	public void indexTrafficContraband(TrafficContraband o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexTrafficContraband(TrafficContraband o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexTrafficContraband failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexTrafficContraband(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexTrafficContraband failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexTrafficContraband failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshTrafficContraband(TrafficContraband o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -2695,7 +2754,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						TrafficSearch o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -2719,7 +2778,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						TrafficContrabandEnUSApiServiceImpl service = new TrafficContrabandEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						TrafficContrabandEnUSApiServiceImpl service = new TrafficContrabandEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(TrafficContraband o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());

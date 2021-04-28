@@ -27,9 +27,7 @@ import com.opendatapolicing.enus.html.part.HtmlPartEnUSGenApiService;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
-import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
-import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.state.SiteStateEnUSGenApiService;
 import com.opendatapolicing.enus.trafficcontraband.TrafficContrabandEnUSGenApiService;
 import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiService;
@@ -72,6 +70,7 @@ import io.vertx.ext.mail.MailConfig;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.handler.StaticHandler;
@@ -101,6 +100,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private PgPool pgPool;
 
 	private SolrClient solrClient;
+	private WebClient webClient;
 
 	private JsonObject config;
 
@@ -255,7 +255,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			configRetriever.getConfig(a -> {
 				config = a.result();
 
-				solrClient = new HttpSolrClient.Builder(config.getString(ConfigKeys.SOLR_URL)).build();
+//				solrClient = new HttpSolrClient.Builder(config.getString(ConfigKeys.SOLR_URL)).build();
+				webClient = WebClient.create(vertx);
 
 				LOG.info("The site context was configured successfully. ");
 				promise.complete();
@@ -521,22 +522,22 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 					}
 				});
 			});
-			healthCheckHandler.register("solr", 2000, a -> {
-				SolrQuery query = new SolrQuery();
-				query.setQuery("*:*");
-				try {
-					QueryResponse r = solrClient.query(query);
-					if(r.getResults().size() > 0)
-						a.complete(Status.OK());
-					else {
-						LOG.error(configureHealthChecksEmptySolr, a.future().cause());
-						promise.fail(a.future().cause());
-					}
-				} catch (SolrServerException | IOException e) {
-					LOG.error(configureHealthChecksErrorSolr, a.future().cause());
-					promise.fail(a.future().cause());
-				}
-			});
+//			healthCheckHandler.register("solr", 2000, a -> {
+//				SolrQuery query = new SolrQuery();
+//				query.setQuery("*:*");
+//				try {
+//					QueryResponse r = solrClient.query(query);
+//					if(r.getResults().size() > 0)
+//						a.complete(Status.OK());
+//					else {
+//						LOG.error(configureHealthChecksEmptySolr, a.future().cause());
+//						promise.fail(a.future().cause());
+//					}
+//				} catch (SolrServerException | IOException e) {
+//					LOG.error(configureHealthChecksErrorSolr, a.future().cause());
+//					promise.fail(a.future().cause());
+//				}
+//			});
 			router.get("/health").handler(healthCheckHandler);
 			promise.complete();
 		} catch (Exception ex) {
@@ -614,7 +615,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			TrafficContrabandEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 			TrafficPersonEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 			TrafficSearchEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficStopEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficStopEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 
 			LOG.info(configureApiComplete);
 			promise.complete();
@@ -643,6 +644,10 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 			router.get("/api").handler(a -> {
 				a.reroute("/template/openapi");
+			});
+
+			router.get("/report").handler(a -> {
+				a.reroute("/template/traffic-stop-report");
 			});
 
 			router.get("/template/*").handler(ctx -> {

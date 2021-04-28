@@ -20,6 +20,7 @@ import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -45,6 +46,7 @@ import java.lang.Boolean;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import org.slf4j.Logger;
+import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -4184,38 +4186,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		}
 
 		super.populateCluster(solrDocument);
-	}
-
-
-	@Override public void indexForClass() {
-		indexTrafficPerson();
-	}
-
-	@Override public void indexForClass(SolrInputDocument document) {
-		indexTrafficPerson(document);
-	}
-
-	public void indexTrafficPerson(SolrClient clientSolr) {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexTrafficPerson(document);
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
-	public void indexTrafficPerson() {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexTrafficPerson(document);
-			SolrClient clientSolr = siteRequest_.getSolrClient();
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
 	}
 
 	public void indexTrafficPerson(SolrInputDocument document) {

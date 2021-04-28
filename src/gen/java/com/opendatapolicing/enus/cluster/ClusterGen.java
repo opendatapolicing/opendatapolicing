@@ -16,6 +16,7 @@ import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -39,6 +40,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import org.slf4j.Logger;
+import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -1213,36 +1215,55 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	protected boolean alreadyInitializedCluster = false;
 
-	public Cluster initDeepCluster(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepCluster(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedCluster) {
 			alreadyInitializedCluster = true;
-			initDeepCluster();
+			return promiseDeepCluster();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (Cluster)this;
 	}
 
-	public void initDeepCluster() {
-		initCluster();
+	public Future<Void> promiseDeepCluster() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseCluster(promise2);
+		promise2.future().onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initCluster() {
-		siteRequest_Init();
-		pkInit();
-		inheritPkInit();
-		idInit();
-		createdInit();
-		modifiedInit();
-		classCanonicalNameInit();
-		classSimpleNameInit();
-		classCanonicalNamesInit();
-		savesInit();
-		objectTitleInit();
-		objectIdInit();
+	public Future<Void> promiseCluster(Promise<Void> promise) {
+		Future.future(a -> {}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			siteRequest_Init();
+			pkInit();
+			inheritPkInit();
+			idInit();
+			createdInit();
+			modifiedInit();
+			classCanonicalNameInit();
+			classSimpleNameInit();
+			classCanonicalNamesInit();
+			savesInit();
+			objectTitleInit();
+			objectIdInit();
+			promise2.complete();
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepCluster(siteRequest_);
+	public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepCluster(siteRequest_);
 	}
 
 	/////////////////
@@ -1559,38 +1580,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		Cluster oCluster = (Cluster)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
-		}
-	}
-
-
-	public void indexForClass() {
-		indexCluster();
-	}
-
-	public void indexForClass(SolrInputDocument document) {
-		indexCluster(document);
-	}
-
-	public void indexCluster(SolrClient clientSolr) {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexCluster(document);
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
-	public void indexCluster() {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexCluster(document);
-			SolrClient clientSolr = siteRequest_.getSolrClient();
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
 		}
 	}
 

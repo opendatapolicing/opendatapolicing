@@ -204,6 +204,11 @@
 
 		<dependency>
 			<groupId>io.vertx</groupId>
+			<artifactId>vertx-web-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.vertx</groupId>
 			<artifactId>vertx-mail-client</artifactId>
 		</dependency>
 

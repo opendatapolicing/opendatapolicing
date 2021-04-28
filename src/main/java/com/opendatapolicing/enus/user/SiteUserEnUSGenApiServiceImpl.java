@@ -7,7 +7,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -29,6 +30,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -101,8 +103,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteUserEnUSGenApiServiceImpl.class);
 
-	public SiteUserEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public SiteUserEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// Search //
@@ -122,7 +124,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								searchSiteUserResponse(listSiteUser, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchSiteUser succeeded. "));
+										LOG.debug(String.format("searchSiteUser succeeded. "));
 									} else {
 										LOG.error(String.format("searchSiteUser failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -223,14 +225,12 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -326,7 +326,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void patchSiteUser(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchSiteUser started. "));
+		LOG.debug(String.format("patchSiteUser started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -378,7 +378,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 																if(e.succeeded()) {
 																	patchSiteUserResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchSiteUser succeeded. "));
+																			LOG.debug(String.format("patchSiteUser succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchSiteUser failed. ", f.cause()));
@@ -447,17 +447,20 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listSiteUser.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listSiteUser.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHSiteUser(apiRequest, listSiteUser, dt, eventHandler);
 				} else {
 					response200PATCHSiteUser(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHSiteUser failed. ", a.cause()));
-				error(listSiteUser.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+				error(listSiteUser.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+			error(listSiteUser.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -481,13 +484,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							if(c.succeeded()) {
 								attributeSiteUser(siteUser, d -> {
 									if(d.succeeded()) {
-										indexSiteUser(siteUser, e -> {
-											if(e.succeeded()) {
-												promise1.complete(siteUser);
-											} else {
-												LOG.error(String.format("patchSiteUserFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexSiteUser(siteUser).onSuccess(e -> {
+											promise1.complete(siteUser);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchSiteUserFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchSiteUserFuture failed. ", d.cause()));
@@ -519,7 +520,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							siteUser.apiRequestSiteUser();
 							eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteUser);
+						promise2.complete(siteUser);
 					} else {
 						LOG.error(String.format("patchSiteUserFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -528,7 +529,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				return promise2.future();
 			}).onSuccess(siteUser -> {
 				promise.complete(siteUser);
-				LOG.info(String.format("patchSiteUserFuture succeeded. "));
+				LOG.debug(String.format("patchSiteUserFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -680,7 +681,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void postSiteUser(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postSiteUser started. "));
+		LOG.debug(String.format("postSiteUser started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -701,7 +702,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							postSiteUserResponse(siteUser, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postSiteUser succeeded. "));
+									LOG.debug(String.format("postSiteUser succeeded. "));
 								} else {
 									LOG.error(String.format("postSiteUser failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -749,13 +750,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 									if(c.succeeded()) {
 										attributeSiteUser(siteUser, d -> {
 											if(d.succeeded()) {
-												indexSiteUser(siteUser, e -> {
-													if(e.succeeded()) {
-														promise1.complete(siteUser);
-													} else {
-														LOG.error(String.format("postSiteUserFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexSiteUser(siteUser).onSuccess(e -> {
+													promise1.complete(siteUser);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postSiteUserFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postSiteUserFuture failed. ", d.cause()));
@@ -793,7 +792,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							siteUser.apiRequestSiteUser();
 							eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteUser);
+						promise2.complete(siteUser);
 					} else {
 						LOG.error(String.format("postSiteUserFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -802,7 +801,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				return promise2.future();
 			}).onSuccess(siteUser -> {
 				promise.complete(siteUser);
-				LOG.info(String.format("postSiteUserFuture succeeded. "));
+				LOG.debug(String.format("postSiteUserFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -980,7 +979,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								searchpageSiteUserResponse(listSiteUser, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpageSiteUser succeeded. "));
+										LOG.debug(String.format("searchpageSiteUser succeeded. "));
 									} else {
 										LOG.error(String.format("searchpageSiteUser failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1379,19 +1378,25 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			eventHandler.handle(Future.succeededFuture());
 	}
 
-	public void indexSiteUser(SiteUser o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexSiteUser(SiteUser o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexSiteUser failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexSiteUser(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexSiteUser failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexSiteUser failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshSiteUser(SiteUser o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -1418,7 +1423,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						SiteUserEnUSApiServiceImpl service = new SiteUserEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						SiteUserEnUSApiServiceImpl service = new SiteUserEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(SiteUser o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());

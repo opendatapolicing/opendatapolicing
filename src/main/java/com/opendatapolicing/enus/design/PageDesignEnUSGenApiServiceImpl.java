@@ -13,7 +13,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -107,15 +109,15 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	protected static final Logger LOG = LoggerFactory.getLogger(PageDesignEnUSGenApiServiceImpl.class);
 
-	public PageDesignEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public PageDesignEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
 
 	@Override
 	public void putimportPageDesign(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putimportPageDesign started. "));
+		LOG.debug(String.format("putimportPageDesign started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -159,7 +161,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 													listPUTImportPageDesign(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTImportPageDesign(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putimportPageDesign succeeded. "));
+																LOG.debug(String.format("putimportPageDesign succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putimportPageDesign failed. ", f.cause()));
@@ -235,15 +237,44 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 				if(searchList.size() == 1) {
 					PageDesign o = searchList.getList().stream().findFirst().orElse(null);
+					PageDesign o2 = new PageDesign();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchPageDesignFuture(o, true).onFailure(ex -> {
@@ -287,7 +318,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void putmergePageDesign(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putmergePageDesign started. "));
+		LOG.debug(String.format("putmergePageDesign started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -331,7 +362,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 													listPUTMergePageDesign(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTMergePageDesign(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putmergePageDesign succeeded. "));
+																LOG.debug(String.format("putmergePageDesign succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putmergePageDesign failed. ", f.cause()));
@@ -405,15 +436,44 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 				if(searchList.size() == 1) {
 					PageDesign o = searchList.getList().stream().findFirst().orElse(null);
+					PageDesign o2 = new PageDesign();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchPageDesignFuture(o, false).onFailure(ex -> {
@@ -472,7 +532,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void putcopyPageDesign(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putcopyPageDesign started. "));
+		LOG.debug(String.format("putcopyPageDesign started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -518,7 +578,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 															if(e.succeeded()) {
 																putcopyPageDesignResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOG.info(String.format("putcopyPageDesign succeeded. "));
+																		LOG.debug(String.format("putcopyPageDesign succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
 																		LOG.error(String.format("putcopyPageDesign failed. ", f.cause()));
@@ -630,13 +690,11 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 									if(c.succeeded()) {
 										attributePageDesign(pageDesign, d -> {
 											if(d.succeeded()) {
-												indexPageDesign(pageDesign, e -> {
-													if(e.succeeded()) {
-														promise1.complete(pageDesign);
-													} else {
-														LOG.error(String.format("putcopyPageDesignFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexPageDesign(pageDesign).onSuccess(e -> {
+													promise1.complete(pageDesign);
+												}).onFailure(ex -> {
+													LOG.error(String.format("putcopyPageDesignFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("putcopyPageDesignFuture failed. ", d.cause()));
@@ -674,7 +732,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							pageDesign.apiRequestPageDesign();
 							eventBus.publish("websocketPageDesign", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(pageDesign);
+						promise2.complete(pageDesign);
 					} else {
 						LOG.error(String.format("putcopyPageDesignFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -683,7 +741,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				return promise2.future();
 			}).onSuccess(pageDesign -> {
 				promise.complete(pageDesign);
-				LOG.info(String.format("putcopyPageDesignFuture succeeded. "));
+				LOG.debug(String.format("putcopyPageDesignFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -877,7 +935,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void postPageDesign(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postPageDesign started. "));
+		LOG.debug(String.format("postPageDesign started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -914,7 +972,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							postPageDesignResponse(pageDesign, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postPageDesign succeeded. "));
+									LOG.debug(String.format("postPageDesign succeeded. "));
 								} else {
 									LOG.error(String.format("postPageDesign failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -962,13 +1020,11 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 									if(c.succeeded()) {
 										attributePageDesign(pageDesign, d -> {
 											if(d.succeeded()) {
-												indexPageDesign(pageDesign, e -> {
-													if(e.succeeded()) {
-														promise1.complete(pageDesign);
-													} else {
-														LOG.error(String.format("postPageDesignFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexPageDesign(pageDesign).onSuccess(e -> {
+													promise1.complete(pageDesign);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postPageDesignFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postPageDesignFuture failed. ", d.cause()));
@@ -1006,7 +1062,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							pageDesign.apiRequestPageDesign();
 							eventBus.publish("websocketPageDesign", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(pageDesign);
+						promise2.complete(pageDesign);
 					} else {
 						LOG.error(String.format("postPageDesignFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1015,7 +1071,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				return promise2.future();
 			}).onSuccess(pageDesign -> {
 				promise.complete(pageDesign);
-				LOG.info(String.format("postPageDesignFuture succeeded. "));
+				LOG.debug(String.format("postPageDesignFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1238,7 +1294,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void patchPageDesign(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchPageDesign started. "));
+		LOG.debug(String.format("patchPageDesign started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1306,7 +1362,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 																if(e.succeeded()) {
 																	patchPageDesignResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchPageDesign succeeded. "));
+																			LOG.debug(String.format("patchPageDesign succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchPageDesign failed. ", f.cause()));
@@ -1375,17 +1431,20 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listPageDesign.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listPageDesign.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHPageDesign(apiRequest, listPageDesign, dt, eventHandler);
 				} else {
 					response200PATCHPageDesign(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHPageDesign failed. ", a.cause()));
-				error(listPageDesign.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHPageDesign failed. ", ex));
+				error(listPageDesign.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHPageDesign failed. ", ex));
+			error(listPageDesign.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -1409,13 +1468,11 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							if(c.succeeded()) {
 								attributePageDesign(pageDesign, d -> {
 									if(d.succeeded()) {
-										indexPageDesign(pageDesign, e -> {
-											if(e.succeeded()) {
-												promise1.complete(pageDesign);
-											} else {
-												LOG.error(String.format("patchPageDesignFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexPageDesign(pageDesign).onSuccess(e -> {
+											promise1.complete(pageDesign);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchPageDesignFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchPageDesignFuture failed. ", d.cause()));
@@ -1447,7 +1504,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							pageDesign.apiRequestPageDesign();
 							eventBus.publish("websocketPageDesign", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(pageDesign);
+						promise2.complete(pageDesign);
 					} else {
 						LOG.error(String.format("patchPageDesignFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1456,7 +1513,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				return promise2.future();
 			}).onSuccess(pageDesign -> {
 				promise.complete(pageDesign);
-				LOG.info(String.format("patchPageDesignFuture succeeded. "));
+				LOG.debug(String.format("patchPageDesignFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -2047,7 +2104,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								getPageDesignResponse(listPageDesign, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("getPageDesign succeeded. "));
+										LOG.debug(String.format("getPageDesign succeeded. "));
 									} else {
 										LOG.error(String.format("getPageDesign failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2126,7 +2183,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								searchPageDesignResponse(listPageDesign, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchPageDesign succeeded. "));
+										LOG.debug(String.format("searchPageDesign succeeded. "));
 									} else {
 										LOG.error(String.format("searchPageDesign failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2227,14 +2284,12 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2343,7 +2398,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								adminsearchPageDesignResponse(listPageDesign, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("adminsearchPageDesign succeeded. "));
+										LOG.debug(String.format("adminsearchPageDesign succeeded. "));
 									} else {
 										LOG.error(String.format("adminsearchPageDesign failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2444,14 +2499,12 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2565,7 +2618,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								searchpagePageDesignResponse(listPageDesign, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpagePageDesign succeeded. "));
+										LOG.debug(String.format("searchpagePageDesign succeeded. "));
 									} else {
 										LOG.error(String.format("searchpagePageDesign failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2669,7 +2722,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								designdisplaysearchpagePageDesignResponse(listPageDesign, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("designdisplaysearchpagePageDesign succeeded. "));
+										LOG.debug(String.format("designdisplaysearchpagePageDesign succeeded. "));
 									} else {
 										LOG.error(String.format("designdisplaysearchpagePageDesign failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2773,7 +2826,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								designpdfsearchpagePageDesignResponse(listPageDesign, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("designpdfsearchpagePageDesign succeeded. "));
+										LOG.debug(String.format("designpdfsearchpagePageDesign succeeded. "));
 									} else {
 										LOG.error(String.format("designpdfsearchpagePageDesign failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2874,7 +2927,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								designemailsearchpagePageDesignResponse(listPageDesign, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("designemailsearchpagePageDesign succeeded. "));
+										LOG.debug(String.format("designemailsearchpagePageDesign succeeded. "));
 									} else {
 										LOG.error(String.format("designemailsearchpagePageDesign failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -3290,19 +3343,25 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		}
 	}
 
-	public void indexPageDesign(PageDesign o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexPageDesign(PageDesign o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexPageDesign failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexPageDesign(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexPageDesign failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexPageDesign failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshPageDesign(PageDesign o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -3339,7 +3398,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						PageDesign o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							PageDesignEnUSApiServiceImpl service = new PageDesignEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							PageDesignEnUSApiServiceImpl service = new PageDesignEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3371,7 +3430,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						HtmlPart o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							HtmlPartEnUSApiServiceImpl service = new HtmlPartEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							HtmlPartEnUSApiServiceImpl service = new HtmlPartEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3395,7 +3454,7 @@ public class PageDesignEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						PageDesignEnUSApiServiceImpl service = new PageDesignEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						PageDesignEnUSApiServiceImpl service = new PageDesignEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(PageDesign o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());

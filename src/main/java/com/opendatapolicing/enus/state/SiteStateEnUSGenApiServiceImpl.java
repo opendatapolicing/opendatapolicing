@@ -9,7 +9,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -103,15 +105,15 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteStateEnUSGenApiServiceImpl.class);
 
-	public SiteStateEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public SiteStateEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
 
 	@Override
 	public void putimportSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putimportSiteState started. "));
+		LOG.debug(String.format("putimportSiteState started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -155,7 +157,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 													listPUTImportSiteState(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTImportSiteState(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putimportSiteState succeeded. "));
+																LOG.debug(String.format("putimportSiteState succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putimportSiteState failed. ", f.cause()));
@@ -231,15 +233,44 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 				if(searchList.size() == 1) {
 					SiteState o = searchList.getList().stream().findFirst().orElse(null);
+					SiteState o2 = new SiteState();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchSiteStateFuture(o, true).onFailure(ex -> {
@@ -283,7 +314,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 	@Override
 	public void putmergeSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putmergeSiteState started. "));
+		LOG.debug(String.format("putmergeSiteState started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -327,7 +358,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 													listPUTMergeSiteState(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTMergeSiteState(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putmergeSiteState succeeded. "));
+																LOG.debug(String.format("putmergeSiteState succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putmergeSiteState failed. ", f.cause()));
@@ -401,15 +432,44 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 				if(searchList.size() == 1) {
 					SiteState o = searchList.getList().stream().findFirst().orElse(null);
+					SiteState o2 = new SiteState();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchSiteStateFuture(o, false).onFailure(ex -> {
@@ -468,7 +528,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 	@Override
 	public void putcopySiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putcopySiteState started. "));
+		LOG.debug(String.format("putcopySiteState started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -514,7 +574,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 															if(e.succeeded()) {
 																putcopySiteStateResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOG.info(String.format("putcopySiteState succeeded. "));
+																		LOG.debug(String.format("putcopySiteState succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
 																		LOG.error(String.format("putcopySiteState failed. ", f.cause()));
@@ -626,13 +686,11 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 									if(c.succeeded()) {
 										attributeSiteState(siteState, d -> {
 											if(d.succeeded()) {
-												indexSiteState(siteState, e -> {
-													if(e.succeeded()) {
-														promise1.complete(siteState);
-													} else {
-														LOG.error(String.format("putcopySiteStateFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexSiteState(siteState).onSuccess(e -> {
+													promise1.complete(siteState);
+												}).onFailure(ex -> {
+													LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("putcopySiteStateFuture failed. ", d.cause()));
@@ -670,7 +728,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							siteState.apiRequestSiteState();
 							eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteState);
+						promise2.complete(siteState);
 					} else {
 						LOG.error(String.format("putcopySiteStateFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -679,7 +737,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				return promise2.future();
 			}).onSuccess(siteState -> {
 				promise.complete(siteState);
-				LOG.info(String.format("putcopySiteStateFuture succeeded. "));
+				LOG.debug(String.format("putcopySiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -840,7 +898,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 	@Override
 	public void postSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postSiteState started. "));
+		LOG.debug(String.format("postSiteState started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -877,7 +935,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							postSiteStateResponse(siteState, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postSiteState succeeded. "));
+									LOG.debug(String.format("postSiteState succeeded. "));
 								} else {
 									LOG.error(String.format("postSiteState failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -925,13 +983,11 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 									if(c.succeeded()) {
 										attributeSiteState(siteState, d -> {
 											if(d.succeeded()) {
-												indexSiteState(siteState, e -> {
-													if(e.succeeded()) {
-														promise1.complete(siteState);
-													} else {
-														LOG.error(String.format("postSiteStateFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexSiteState(siteState).onSuccess(e -> {
+													promise1.complete(siteState);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postSiteStateFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postSiteStateFuture failed. ", d.cause()));
@@ -969,7 +1025,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							siteState.apiRequestSiteState();
 							eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteState);
+						promise2.complete(siteState);
 					} else {
 						LOG.error(String.format("postSiteStateFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -978,7 +1034,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				return promise2.future();
 			}).onSuccess(siteState -> {
 				promise.complete(siteState);
-				LOG.info(String.format("postSiteStateFuture succeeded. "));
+				LOG.debug(String.format("postSiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1150,7 +1206,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 	@Override
 	public void patchSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchSiteState started. "));
+		LOG.debug(String.format("patchSiteState started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1218,7 +1274,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 																if(e.succeeded()) {
 																	patchSiteStateResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchSiteState succeeded. "));
+																			LOG.debug(String.format("patchSiteState succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchSiteState failed. ", f.cause()));
@@ -1287,17 +1343,20 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listSiteState.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listSiteState.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHSiteState(apiRequest, listSiteState, dt, eventHandler);
 				} else {
 					response200PATCHSiteState(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHSiteState failed. ", a.cause()));
-				error(listSiteState.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHSiteState failed. ", ex));
+				error(listSiteState.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHSiteState failed. ", ex));
+			error(listSiteState.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -1321,13 +1380,11 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							if(c.succeeded()) {
 								attributeSiteState(siteState, d -> {
 									if(d.succeeded()) {
-										indexSiteState(siteState, e -> {
-											if(e.succeeded()) {
-												promise1.complete(siteState);
-											} else {
-												LOG.error(String.format("patchSiteStateFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexSiteState(siteState).onSuccess(e -> {
+											promise1.complete(siteState);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchSiteStateFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchSiteStateFuture failed. ", d.cause()));
@@ -1359,7 +1416,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							siteState.apiRequestSiteState();
 							eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteState);
+						promise2.complete(siteState);
 					} else {
 						LOG.error(String.format("patchSiteStateFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1368,7 +1425,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				return promise2.future();
 			}).onSuccess(siteState -> {
 				promise.complete(siteState);
-				LOG.info(String.format("patchSiteStateFuture succeeded. "));
+				LOG.debug(String.format("patchSiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1667,7 +1724,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								getSiteStateResponse(listSiteState, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("getSiteState succeeded. "));
+										LOG.debug(String.format("getSiteState succeeded. "));
 									} else {
 										LOG.error(String.format("getSiteState failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1746,7 +1803,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								searchSiteStateResponse(listSiteState, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchSiteState succeeded. "));
+										LOG.debug(String.format("searchSiteState succeeded. "));
 									} else {
 										LOG.error(String.format("searchSiteState failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1847,14 +1904,12 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -1963,7 +2018,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								adminsearchSiteStateResponse(listSiteState, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("adminsearchSiteState succeeded. "));
+										LOG.debug(String.format("adminsearchSiteState succeeded. "));
 									} else {
 										LOG.error(String.format("adminsearchSiteState failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2064,14 +2119,12 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2185,7 +2238,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								searchpageSiteStateResponse(listSiteState, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpageSiteState succeeded. "));
+										LOG.debug(String.format("searchpageSiteState succeeded. "));
 									} else {
 										LOG.error(String.format("searchpageSiteState failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2601,19 +2654,25 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		}
 	}
 
-	public void indexSiteState(SiteState o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexSiteState(SiteState o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexSiteState(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexSiteState failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshSiteState(SiteState o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -2649,7 +2708,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						SiteAgency o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							SiteAgencyEnUSApiServiceImpl service = new SiteAgencyEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							SiteAgencyEnUSApiServiceImpl service = new SiteAgencyEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -2673,7 +2732,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						SiteStateEnUSApiServiceImpl service = new SiteStateEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						SiteStateEnUSApiServiceImpl service = new SiteStateEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(SiteState o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());

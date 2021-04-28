@@ -1,52 +1,54 @@
 package com.opendatapolicing.enus.design;
 
 import java.util.Arrays;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
 import org.slf4j.LoggerFactory;
 import com.opendatapolicing.enus.html.part.HtmlPart;
-import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
-import com.opendatapolicing.enus.config.ConfigKeys;
-import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
-import org.slf4j.Logger;
 import java.math.MathContext;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
-import org.apache.commons.text.StringEscapeUtils;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.design.PageDesign;
-import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
-import io.vertx.core.json.JsonArray;
-import org.apache.solr.common.SolrDocument;
 import java.util.List;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.cluster.Cluster;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import java.util.HashMap;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import org.apache.commons.collections.CollectionUtils;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.lang.Boolean;
+import com.opendatapolicing.enus.config.ConfigKeys;
+import java.lang.String;
+import org.slf4j.Logger;
+import io.vertx.core.Promise;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.commons.text.StringEscapeUtils;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.core.json.JsonArray;
+import org.apache.solr.common.SolrDocument;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.design.PageDesign&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -1469,38 +1471,6 @@ public abstract class PageDesignGen<DEV> extends Cluster {
 		}
 
 		super.populateCluster(solrDocument);
-	}
-
-
-	@Override public void indexForClass() {
-		indexPageDesign();
-	}
-
-	@Override public void indexForClass(SolrInputDocument document) {
-		indexPageDesign(document);
-	}
-
-	public void indexPageDesign(SolrClient clientSolr) {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexPageDesign(document);
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
-	public void indexPageDesign() {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexPageDesign(document);
-			SolrClient clientSolr = siteRequest_.getSolrClient();
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
 	}
 
 	public void indexPageDesign(SolrInputDocument document) {

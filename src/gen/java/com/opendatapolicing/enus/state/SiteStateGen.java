@@ -22,12 +22,14 @@ import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
 import java.math.MathContext;
+import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
@@ -1394,38 +1396,6 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		}
 
 		super.populateCluster(solrDocument);
-	}
-
-
-	@Override public void indexForClass() {
-		indexSiteState();
-	}
-
-	@Override public void indexForClass(SolrInputDocument document) {
-		indexSiteState(document);
-	}
-
-	public void indexSiteState(SolrClient clientSolr) {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexSiteState(document);
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
-	public void indexSiteState() {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexSiteState(document);
-			SolrClient clientSolr = siteRequest_.getSolrClient();
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
 	}
 
 	public void indexSiteState(SolrInputDocument document) {

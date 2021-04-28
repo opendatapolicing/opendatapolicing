@@ -6,21 +6,30 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.util.NamedList;
 
+import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.wrap.Wrap;
+
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.json.JsonObject;
 
 /** 
  * Keyword: classSimpleNameSearchList
@@ -56,55 +65,94 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return list.get(index);
 	}
 
-	public boolean next(String dt) {
-		boolean next = false;
-		Long numFound = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getNumFound()).orElse(0L);
-		if(numFound > 0) {
-			try {
-				setQueryResponse(siteRequest_.getSolrClient().query(solrQuery));
-			} catch (SolrServerException | IOException e) {
-				ExceptionUtils.rethrow(e);
+	public Future<Boolean> next(String dt) {
+		Promise<Boolean> promise = Promise.promise();
+		try {
+			Long numFound = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getNumFound()).orElse(0L);
+			if(numFound > 0) {
+				siteRequest_.getWebClient().get(ConfigKeys.SOLR_URL + "?" + solrQuery.toQueryString()).send().onSuccess(a -> {
+					JsonObject json = a.bodyAsJsonObject();
+					Map<String, Object> map = json.getMap();
+					NamedList<Object> namedList = new NamedList<>(map);
+					QueryResponse r = new QueryResponse(namedList, null);
+					setQueryResponse(r);
+
+					_solrDocumentList(solrDocumentListWrap);
+					setSolrDocumentList(solrDocumentListWrap.o);
+					list.clear();
+					_list(list);
+
+					promise.complete(true);
+				}).onFailure(ex -> {
+					LOG.error(String.format("indexTrafficStop failed. "), ex);
+					promise.fail(ex);
+				});
+			} else {
+				promise.complete(false);
 			}
-			_solrDocumentList(solrDocumentListWrap);
-			setSolrDocumentList(solrDocumentListWrap.o);
-			list.clear();
-			_list(list);
-			next = true;
+		} catch (Exception ex) {
+			promise.fail(ex);
+			LOG.error(String.format("indexTrafficStop failed. "), ex);
 		}
-		return next;
+		return promise.future();
 	}
 
-	public boolean next() {
-		boolean next = false;
-		Long start = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getStart()).orElse(0L);
-		Integer rows = Optional.ofNullable(getRows()).orElse(0);
-		Long numFound = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getNumFound()).orElse(0L);
-		if(rows > 0 && (start + rows) < numFound) {
-			try {
+	public Future<Boolean> next() {
+		Promise<Boolean> promise = Promise.promise();
+		try {
+			Long start = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getStart()).orElse(0L);
+			Integer rows = Optional.ofNullable(getRows()).orElse(0);
+			Long numFound = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getNumFound()).orElse(0L);
+			if(rows > 0 && (start + rows) < numFound) {
 				setStart(start.intValue() + rows);
-				setQueryResponse(siteRequest_.getSolrClient().query(solrQuery));
-			} catch (SolrServerException | IOException e) {
-				ExceptionUtils.rethrow(e);
+				siteRequest_.getWebClient().get(ConfigKeys.SOLR_URL + "?" + solrQuery.toQueryString()).send().onSuccess(a -> {
+					JsonObject json = a.bodyAsJsonObject();
+					Map<String, Object> map = json.getMap();
+					NamedList<Object> namedList = new NamedList<>(map);
+					QueryResponse r = new QueryResponse(namedList, null);
+					setQueryResponse(r);
+					_solrDocumentList(solrDocumentListWrap);
+					setSolrDocumentList(solrDocumentListWrap.o);
+					list.clear();
+					_list(list);
+
+					promise.complete(true);
+				}).onFailure(ex -> {
+					LOG.error(String.format("indexTrafficStop failed. "), ex);
+					promise.fail(ex);
+				});
+			} else {
+				promise.complete(false);
 			}
-			_solrDocumentList(solrDocumentListWrap);
-			setSolrDocumentList(solrDocumentListWrap.o);
-			list.clear();
-			_list(list);
-			next = true;
+		} catch (Exception ex) {
+			promise.fail(ex);
+			LOG.error(String.format("indexTrafficStop failed. "), ex);
 		}
-		return next;
+		return promise.future();
 	}
 
-	protected void _queryResponse(Wrap<QueryResponse> c) {
-		if(this.c != null)
-			solrQuery.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
-		if(solrQuery.getQuery() != null) {
-			try {
-				QueryResponse o = siteRequest_.getSolrClient().query(solrQuery);
-				c.o(o);
-			} catch (SolrServerException | IOException e) {
-				ExceptionUtils.rethrow(e);
+	protected void _queryResponse(Promise<QueryResponse> promise) {                       
+		try {
+			if(this.c != null)
+				solrQuery.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
+			if(solrQuery.getQuery() != null) {
+				siteRequest_.getWebClient().get(ConfigKeys.SOLR_URL + "?" + solrQuery.toQueryString()).send().onSuccess(a -> {
+					JsonObject json = a.bodyAsJsonObject();
+					Map<String, Object> map = json.getMap();
+					NamedList<Object> namedList = new NamedList<>(map);
+					QueryResponse r = new QueryResponse(namedList, null);
+					setQueryResponse(r);
+					promise.complete(r);
+				}).onFailure(ex -> {
+					LOG.error(String.format("indexTrafficStop failed. "), ex);
+					promise.fail(ex);
+				});
+			} else {
+				promise.complete();
 			}
+		} catch (Exception ex) {
+			promise.fail(ex);
+			LOG.error(String.format("indexTrafficStop failed. "), ex);
 		}
 	}
 

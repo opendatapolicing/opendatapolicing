@@ -21,10 +21,12 @@ import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
 import java.math.MathContext;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
@@ -417,9 +419,9 @@ public abstract class SearchListGen<DEV> {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:queryResponse">Find the entity queryResponse in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _queryResponse(Wrap<QueryResponse> c);
+	protected abstract void _queryResponse(Promise<QueryResponse> promise);
 
 	public QueryResponse getQueryResponse() {
 		return queryResponse;
@@ -432,14 +434,23 @@ public abstract class SearchListGen<DEV> {
 	public static QueryResponse staticSetQueryResponse(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SearchList queryResponseInit() {
+	protected Future<QueryResponse> queryResponsePromise() {
+		Promise<QueryResponse> promise = Promise.promise();
 		if(!queryResponseWrap.alreadyInitialized) {
-			_queryResponse(queryResponseWrap);
-			if(queryResponse == null)
-				setQueryResponse(queryResponseWrap.o);
+			Promise<QueryResponse> promise2 = Promise.promise();
+			_queryResponse(promise2);
+			promise2.future().onSuccess(o -> {
+				if(queryResponse == null)
+					setQueryResponse(queryResponseWrap.o);
+				queryResponseWrap.alreadyInitialized(true);
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		queryResponseWrap.alreadyInitialized(true);
-		return (SearchList)this;
+		return promise.future();
 	}
 
 	//////////////////////
@@ -577,34 +588,64 @@ public abstract class SearchListGen<DEV> {
 
 	protected boolean alreadyInitializedSearchList = false;
 
-	public SearchList initDeepSearchList(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSearchList(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSearchList) {
 			alreadyInitializedSearchList = true;
-			initDeepSearchList();
+			return promiseDeepSearchList();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SearchList)this;
 	}
 
-	public void initDeepSearchList() {
-		initSearchList();
+	public Future<Void> promiseDeepSearchList() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSearchList(promise2);
+		promise2.future().onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSearchList() {
-		cInit();
-		siteRequest_Init();
-		storeInit();
-		populateInit();
-		fieldsInit();
-		solrQueryInit();
-		queryResponseInit();
-		solrDocumentListInit();
-		listInit();
-		firstInit();
+	public Future<Void> promiseSearchList(Promise<Void> promise) {
+		Future.future(a -> {}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			cInit();
+			siteRequest_Init();
+			storeInit();
+			populateInit();
+			fieldsInit();
+			solrQueryInit();
+			promise2.complete();
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			queryResponsePromise().onSuccess(queryResponse -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			solrDocumentListInit();
+			listInit();
+			firstInit();
+			promise2.complete();
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSearchList(siteRequest_);
+	public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSearchList(siteRequest_);
 	}
 
 	/////////////////

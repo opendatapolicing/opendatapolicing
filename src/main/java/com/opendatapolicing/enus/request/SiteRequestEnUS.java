@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -28,6 +27,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.sqlclient.SqlConnection;
 
 /**
@@ -47,7 +47,7 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 		c.o(this);
 	}
 
-	protected void _solrClient(Wrap<SolrClient> c) { 
+	protected void _webClient(Wrap<WebClient> c) { 
 	}
 
 	protected void _apiRequest_(Wrap<ApiRequest> c) { 
@@ -60,24 +60,6 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	}
 
 	protected void _serviceRequest(Wrap<ServiceRequest> c) {
-	}
-
-	protected void _queryResponse(Wrap<QueryResponse> c) {
-		if(solrQuery != null) {
-			try {
-				QueryResponse o = solrClient.query(solrQuery);
-				c.o(o);
-			} catch (SolrServerException | IOException e) {
-				ExceptionUtils.rethrow(e);
-			}
-		}
-	}
-
-	protected void _searchResults(Wrap<SolrDocumentList> c) {
-		if(queryResponse != null) {
-			SolrDocumentList o = queryResponse.getResults();
-			c.o(o);
-		}
 	}
 
 	protected void _w(Wrap<AllWriter> c) {
@@ -218,8 +200,9 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 
 	public SiteRequestEnUS copy() {
 		SiteRequestEnUS o = new SiteRequestEnUS();
+		o.setJsonObject(jsonObject); // for copying the original data in the request
 		o.setConfig(config); // for site configuration info
-		o.setSolrClient(solrClient); // for performing searches
+		o.setWebClient(webClient); // for performing searches
 		o.setServiceRequest(serviceRequest);  // for info about the original request
 		o.setUser(user); // The user principal
 		o.setUserKey(userKey); // The user primary key

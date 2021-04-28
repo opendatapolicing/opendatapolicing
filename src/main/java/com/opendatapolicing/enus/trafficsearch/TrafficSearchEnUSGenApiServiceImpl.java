@@ -13,7 +13,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -107,15 +109,15 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficSearchEnUSGenApiServiceImpl.class);
 
-	public TrafficSearchEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public TrafficSearchEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
 
 	@Override
 	public void putimportTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putimportTrafficSearch started. "));
+		LOG.debug(String.format("putimportTrafficSearch started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -159,7 +161,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 													listPUTImportTrafficSearch(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTImportTrafficSearch(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putimportTrafficSearch succeeded. "));
+																LOG.debug(String.format("putimportTrafficSearch succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putimportTrafficSearch failed. ", f.cause()));
@@ -235,15 +237,44 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 				if(searchList.size() == 1) {
 					TrafficSearch o = searchList.getList().stream().findFirst().orElse(null);
+					TrafficSearch o2 = new TrafficSearch();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchTrafficSearchFuture(o, true).onFailure(ex -> {
@@ -287,7 +318,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void putmergeTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putmergeTrafficSearch started. "));
+		LOG.debug(String.format("putmergeTrafficSearch started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -331,7 +362,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 													listPUTMergeTrafficSearch(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTMergeTrafficSearch(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putmergeTrafficSearch succeeded. "));
+																LOG.debug(String.format("putmergeTrafficSearch succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putmergeTrafficSearch failed. ", f.cause()));
@@ -405,15 +436,44 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 				if(searchList.size() == 1) {
 					TrafficSearch o = searchList.getList().stream().findFirst().orElse(null);
+					TrafficSearch o2 = new TrafficSearch();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchTrafficSearchFuture(o, false).onFailure(ex -> {
@@ -472,7 +532,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void putcopyTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putcopyTrafficSearch started. "));
+		LOG.debug(String.format("putcopyTrafficSearch started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -518,7 +578,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 															if(e.succeeded()) {
 																putcopyTrafficSearchResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOG.info(String.format("putcopyTrafficSearch succeeded. "));
+																		LOG.debug(String.format("putcopyTrafficSearch succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
 																		LOG.error(String.format("putcopyTrafficSearch failed. ", f.cause()));
@@ -630,13 +690,11 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 									if(c.succeeded()) {
 										attributeTrafficSearch(trafficSearch, d -> {
 											if(d.succeeded()) {
-												indexTrafficSearch(trafficSearch, e -> {
-													if(e.succeeded()) {
-														promise1.complete(trafficSearch);
-													} else {
-														LOG.error(String.format("putcopyTrafficSearchFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexTrafficSearch(trafficSearch).onSuccess(e -> {
+													promise1.complete(trafficSearch);
+												}).onFailure(ex -> {
+													LOG.error(String.format("putcopyTrafficSearchFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("putcopyTrafficSearchFuture failed. ", d.cause()));
@@ -674,7 +732,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							trafficSearch.apiRequestTrafficSearch();
 							eventBus.publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficSearch);
+						promise2.complete(trafficSearch);
 					} else {
 						LOG.error(String.format("putcopyTrafficSearchFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -683,7 +741,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				return promise2.future();
 			}).onSuccess(trafficSearch -> {
 				promise.complete(trafficSearch);
-				LOG.info(String.format("putcopyTrafficSearchFuture succeeded. "));
+				LOG.debug(String.format("putcopyTrafficSearchFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -914,7 +972,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void postTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postTrafficSearch started. "));
+		LOG.debug(String.format("postTrafficSearch started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -951,7 +1009,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							postTrafficSearchResponse(trafficSearch, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postTrafficSearch succeeded. "));
+									LOG.debug(String.format("postTrafficSearch succeeded. "));
 								} else {
 									LOG.error(String.format("postTrafficSearch failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -999,13 +1057,11 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 									if(c.succeeded()) {
 										attributeTrafficSearch(trafficSearch, d -> {
 											if(d.succeeded()) {
-												indexTrafficSearch(trafficSearch, e -> {
-													if(e.succeeded()) {
-														promise1.complete(trafficSearch);
-													} else {
-														LOG.error(String.format("postTrafficSearchFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexTrafficSearch(trafficSearch).onSuccess(e -> {
+													promise1.complete(trafficSearch);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postTrafficSearchFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postTrafficSearchFuture failed. ", d.cause()));
@@ -1043,7 +1099,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							trafficSearch.apiRequestTrafficSearch();
 							eventBus.publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficSearch);
+						promise2.complete(trafficSearch);
 					} else {
 						LOG.error(String.format("postTrafficSearchFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1052,7 +1108,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				return promise2.future();
 			}).onSuccess(trafficSearch -> {
 				promise.complete(trafficSearch);
-				LOG.info(String.format("postTrafficSearchFuture succeeded. "));
+				LOG.debug(String.format("postTrafficSearchFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1316,7 +1372,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void patchTrafficSearch(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchTrafficSearch started. "));
+		LOG.debug(String.format("patchTrafficSearch started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1384,7 +1440,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 																if(e.succeeded()) {
 																	patchTrafficSearchResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchTrafficSearch succeeded. "));
+																			LOG.debug(String.format("patchTrafficSearch succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchTrafficSearch failed. ", f.cause()));
@@ -1453,17 +1509,20 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listTrafficSearch.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listTrafficSearch.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHTrafficSearch(apiRequest, listTrafficSearch, dt, eventHandler);
 				} else {
 					response200PATCHTrafficSearch(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHTrafficSearch failed. ", a.cause()));
-				error(listTrafficSearch.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHTrafficSearch failed. ", ex));
+				error(listTrafficSearch.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHTrafficSearch failed. ", ex));
+			error(listTrafficSearch.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -1487,13 +1546,11 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							if(c.succeeded()) {
 								attributeTrafficSearch(trafficSearch, d -> {
 									if(d.succeeded()) {
-										indexTrafficSearch(trafficSearch, e -> {
-											if(e.succeeded()) {
-												promise1.complete(trafficSearch);
-											} else {
-												LOG.error(String.format("patchTrafficSearchFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexTrafficSearch(trafficSearch).onSuccess(e -> {
+											promise1.complete(trafficSearch);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchTrafficSearchFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchTrafficSearchFuture failed. ", d.cause()));
@@ -1525,7 +1582,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							trafficSearch.apiRequestTrafficSearch();
 							eventBus.publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficSearch);
+						promise2.complete(trafficSearch);
 					} else {
 						LOG.error(String.format("patchTrafficSearchFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1534,7 +1591,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				return promise2.future();
 			}).onSuccess(trafficSearch -> {
 				promise.complete(trafficSearch);
-				LOG.info(String.format("patchTrafficSearchFuture succeeded. "));
+				LOG.debug(String.format("patchTrafficSearchFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -2067,7 +2124,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								getTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("getTrafficSearch succeeded. "));
+										LOG.debug(String.format("getTrafficSearch succeeded. "));
 									} else {
 										LOG.error(String.format("getTrafficSearch failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2146,7 +2203,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								searchTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchTrafficSearch succeeded. "));
+										LOG.debug(String.format("searchTrafficSearch succeeded. "));
 									} else {
 										LOG.error(String.format("searchTrafficSearch failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2247,14 +2304,12 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2363,7 +2418,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								adminsearchTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("adminsearchTrafficSearch succeeded. "));
+										LOG.debug(String.format("adminsearchTrafficSearch succeeded. "));
 									} else {
 										LOG.error(String.format("adminsearchTrafficSearch failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2464,14 +2519,12 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2585,7 +2638,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								searchpageTrafficSearchResponse(listTrafficSearch, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpageTrafficSearch succeeded. "));
+										LOG.debug(String.format("searchpageTrafficSearch succeeded. "));
 									} else {
 										LOG.error(String.format("searchpageTrafficSearch failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -3001,19 +3054,25 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		}
 	}
 
-	public void indexTrafficSearch(TrafficSearch o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexTrafficSearch(TrafficSearch o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexTrafficSearch failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexTrafficSearch(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexTrafficSearch failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexTrafficSearch failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshTrafficSearch(TrafficSearch o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -3051,7 +3110,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						TrafficPerson o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficPersonEnUSApiServiceImpl service = new TrafficPersonEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							TrafficPersonEnUSApiServiceImpl service = new TrafficPersonEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3083,7 +3142,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						TrafficContraband o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficContrabandEnUSApiServiceImpl service = new TrafficContrabandEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							TrafficContrabandEnUSApiServiceImpl service = new TrafficContrabandEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3115,7 +3174,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						SearchBasis o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							SearchBasisEnUSApiServiceImpl service = new SearchBasisEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							SearchBasisEnUSApiServiceImpl service = new SearchBasisEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3139,7 +3198,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(TrafficSearch o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());

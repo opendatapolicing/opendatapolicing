@@ -1,6 +1,6 @@
 package com.opendatapolicing.enus.trafficcontraband;
 
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.serviceproxy.ServiceBinder;
 import io.vertx.core.AsyncResult;
@@ -24,8 +24,8 @@ import io.vertx.ext.auth.authorization.AuthorizationProvider;
 @WebApiServiceGen
 @ProxyGen
 public interface TrafficContrabandEnUSGenApiService {
-	static void registerService(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider, Vertx vertx) {
-		new ServiceBinder(vertx).setAddress("opendatapolicing-enUS-TrafficContraband").register(TrafficContrabandEnUSGenApiService.class, new TrafficContrabandEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider));
+	static void registerService(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider, Vertx vertx) {
+		new ServiceBinder(vertx).setAddress("opendatapolicing-enUS-TrafficContraband").register(TrafficContrabandEnUSGenApiService.class, new TrafficContrabandEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider));
 	}
 
 	public void putimportTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);

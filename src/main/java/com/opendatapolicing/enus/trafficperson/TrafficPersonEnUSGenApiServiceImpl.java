@@ -11,7 +11,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -33,6 +34,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -105,15 +107,15 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficPersonEnUSGenApiServiceImpl.class);
 
-	public TrafficPersonEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public TrafficPersonEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
 
 	@Override
 	public void putimportTrafficPerson(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putimportTrafficPerson started. "));
+		LOG.debug(String.format("putimportTrafficPerson started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -157,7 +159,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 													listPUTImportTrafficPerson(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTImportTrafficPerson(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putimportTrafficPerson succeeded. "));
+																LOG.debug(String.format("putimportTrafficPerson succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putimportTrafficPerson failed. ", f.cause()));
@@ -233,15 +235,44 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 				if(searchList.size() == 1) {
 					TrafficPerson o = searchList.getList().stream().findFirst().orElse(null);
+					TrafficPerson o2 = new TrafficPerson();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchTrafficPersonFuture(o, true).onFailure(ex -> {
@@ -285,7 +316,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void putmergeTrafficPerson(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putmergeTrafficPerson started. "));
+		LOG.debug(String.format("putmergeTrafficPerson started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -329,7 +360,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 													listPUTMergeTrafficPerson(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTMergeTrafficPerson(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putmergeTrafficPerson succeeded. "));
+																LOG.debug(String.format("putmergeTrafficPerson succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putmergeTrafficPerson failed. ", f.cause()));
@@ -403,15 +434,44 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 				if(searchList.size() == 1) {
 					TrafficPerson o = searchList.getList().stream().findFirst().orElse(null);
+					TrafficPerson o2 = new TrafficPerson();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchTrafficPersonFuture(o, false).onFailure(ex -> {
@@ -470,7 +530,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void putcopyTrafficPerson(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putcopyTrafficPerson started. "));
+		LOG.debug(String.format("putcopyTrafficPerson started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -516,7 +576,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 															if(e.succeeded()) {
 																putcopyTrafficPersonResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOG.info(String.format("putcopyTrafficPerson succeeded. "));
+																		LOG.debug(String.format("putcopyTrafficPerson succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
 																		LOG.error(String.format("putcopyTrafficPerson failed. ", f.cause()));
@@ -628,13 +688,11 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 									if(c.succeeded()) {
 										attributeTrafficPerson(trafficPerson, d -> {
 											if(d.succeeded()) {
-												indexTrafficPerson(trafficPerson, e -> {
-													if(e.succeeded()) {
-														promise1.complete(trafficPerson);
-													} else {
-														LOG.error(String.format("putcopyTrafficPersonFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexTrafficPerson(trafficPerson).onSuccess(e -> {
+													promise1.complete(trafficPerson);
+												}).onFailure(ex -> {
+													LOG.error(String.format("putcopyTrafficPersonFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("putcopyTrafficPersonFuture failed. ", d.cause()));
@@ -672,7 +730,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							trafficPerson.apiRequestTrafficPerson();
 							eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficPerson);
+						promise2.complete(trafficPerson);
 					} else {
 						LOG.error(String.format("putcopyTrafficPersonFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -681,7 +739,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				return promise2.future();
 			}).onSuccess(trafficPerson -> {
 				promise.complete(trafficPerson);
-				LOG.info(String.format("putcopyTrafficPersonFuture succeeded. "));
+				LOG.debug(String.format("putcopyTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -864,7 +922,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void postTrafficPerson(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postTrafficPerson started. "));
+		LOG.debug(String.format("postTrafficPerson started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -901,7 +959,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							postTrafficPersonResponse(trafficPerson, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postTrafficPerson succeeded. "));
+									LOG.debug(String.format("postTrafficPerson succeeded. "));
 								} else {
 									LOG.error(String.format("postTrafficPerson failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -949,13 +1007,11 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 									if(c.succeeded()) {
 										attributeTrafficPerson(trafficPerson, d -> {
 											if(d.succeeded()) {
-												indexTrafficPerson(trafficPerson, e -> {
-													if(e.succeeded()) {
-														promise1.complete(trafficPerson);
-													} else {
-														LOG.error(String.format("postTrafficPersonFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexTrafficPerson(trafficPerson).onSuccess(e -> {
+													promise1.complete(trafficPerson);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postTrafficPersonFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postTrafficPersonFuture failed. ", d.cause()));
@@ -993,7 +1049,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							trafficPerson.apiRequestTrafficPerson();
 							eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficPerson);
+						promise2.complete(trafficPerson);
 					} else {
 						LOG.error(String.format("postTrafficPersonFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1002,7 +1058,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				return promise2.future();
 			}).onSuccess(trafficPerson -> {
 				promise.complete(trafficPerson);
-				LOG.info(String.format("postTrafficPersonFuture succeeded. "));
+				LOG.debug(String.format("postTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1209,7 +1265,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void patchTrafficPerson(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchTrafficPerson started. "));
+		LOG.debug(String.format("patchTrafficPerson started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1277,7 +1333,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 																if(e.succeeded()) {
 																	patchTrafficPersonResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchTrafficPerson succeeded. "));
+																			LOG.debug(String.format("patchTrafficPerson succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchTrafficPerson failed. ", f.cause()));
@@ -1346,17 +1402,20 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listTrafficPerson.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listTrafficPerson.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHTrafficPerson(apiRequest, listTrafficPerson, dt, eventHandler);
 				} else {
 					response200PATCHTrafficPerson(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHTrafficPerson failed. ", a.cause()));
-				error(listTrafficPerson.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHTrafficPerson failed. ", ex));
+				error(listTrafficPerson.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHTrafficPerson failed. ", ex));
+			error(listTrafficPerson.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -1380,13 +1439,11 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							if(c.succeeded()) {
 								attributeTrafficPerson(trafficPerson, d -> {
 									if(d.succeeded()) {
-										indexTrafficPerson(trafficPerson, e -> {
-											if(e.succeeded()) {
-												promise1.complete(trafficPerson);
-											} else {
-												LOG.error(String.format("patchTrafficPersonFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexTrafficPerson(trafficPerson).onSuccess(e -> {
+											promise1.complete(trafficPerson);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchTrafficPersonFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchTrafficPersonFuture failed. ", d.cause()));
@@ -1418,7 +1475,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							trafficPerson.apiRequestTrafficPerson();
 							eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(trafficPerson);
+						promise2.complete(trafficPerson);
 					} else {
 						LOG.error(String.format("patchTrafficPersonFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1427,7 +1484,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				return promise2.future();
 			}).onSuccess(trafficPerson -> {
 				promise.complete(trafficPerson);
-				LOG.info(String.format("patchTrafficPersonFuture succeeded. "));
+				LOG.debug(String.format("patchTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1786,7 +1843,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								getTrafficPersonResponse(listTrafficPerson, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("getTrafficPerson succeeded. "));
+										LOG.debug(String.format("getTrafficPerson succeeded. "));
 									} else {
 										LOG.error(String.format("getTrafficPerson failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1865,7 +1922,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								searchTrafficPersonResponse(listTrafficPerson, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchTrafficPerson succeeded. "));
+										LOG.debug(String.format("searchTrafficPerson succeeded. "));
 									} else {
 										LOG.error(String.format("searchTrafficPerson failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1966,14 +2023,12 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2082,7 +2137,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								adminsearchTrafficPersonResponse(listTrafficPerson, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("adminsearchTrafficPerson succeeded. "));
+										LOG.debug(String.format("adminsearchTrafficPerson succeeded. "));
 									} else {
 										LOG.error(String.format("adminsearchTrafficPerson failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2183,14 +2238,12 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2304,7 +2357,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								searchpageTrafficPersonResponse(listTrafficPerson, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpageTrafficPerson succeeded. "));
+										LOG.debug(String.format("searchpageTrafficPerson succeeded. "));
 									} else {
 										LOG.error(String.format("searchpageTrafficPerson failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2720,19 +2773,25 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		}
 	}
 
-	public void indexTrafficPerson(TrafficPerson o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexTrafficPerson(TrafficPerson o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexTrafficPerson failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexTrafficPerson(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexTrafficPerson failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexTrafficPerson failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshTrafficPerson(TrafficPerson o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -2769,7 +2828,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						TrafficStop o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							TrafficStopEnUSApiServiceImpl service = new TrafficStopEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -2801,7 +2860,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						TrafficSearch o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							TrafficSearchEnUSApiServiceImpl service = new TrafficSearchEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -2825,7 +2884,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						TrafficPersonEnUSApiServiceImpl service = new TrafficPersonEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						TrafficPersonEnUSApiServiceImpl service = new TrafficPersonEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(TrafficPerson o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());

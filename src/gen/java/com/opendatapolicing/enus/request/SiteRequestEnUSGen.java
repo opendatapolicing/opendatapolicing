@@ -2,7 +2,7 @@ package com.opendatapolicing.enus.request;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import org.apache.solr.common.SolrDocumentList;
+import io.vertx.ext.web.client.WebClient;
 import org.slf4j.LoggerFactory;
 import io.vertx.core.MultiMap;
 import java.util.HashMap;
@@ -26,14 +26,14 @@ import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
 import java.math.MathContext;
-import org.apache.solr.client.solrj.response.QueryResponse;
+import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import io.vertx.ext.web.api.service.ServiceRequest;
-import org.apache.solr.client.solrj.SolrClient;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
@@ -138,44 +138,44 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return (SiteRequestEnUS)this;
 	}
 
-	////////////////
-	// solrClient //
-	////////////////
+	///////////////
+	// webClient //
+	///////////////
 
-	/**	 The entity solrClient
+	/**	 The entity webClient
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonInclude(Include.NON_NULL)
-	protected SolrClient solrClient;
+	protected WebClient webClient;
 	@JsonIgnore
-	public Wrap<SolrClient> solrClientWrap = new Wrap<SolrClient>().p(this).c(SolrClient.class).var("solrClient").o(solrClient);
+	public Wrap<WebClient> webClientWrap = new Wrap<WebClient>().p(this).c(WebClient.class).var("webClient").o(webClient);
 
-	/**	<br/> The entity solrClient
+	/**	<br/> The entity webClient
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:solrClient">Find the entity solrClient in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:webClient">Find the entity webClient in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _solrClient(Wrap<SolrClient> c);
+	protected abstract void _webClient(Wrap<WebClient> c);
 
-	public SolrClient getSolrClient() {
-		return solrClient;
+	public WebClient getWebClient() {
+		return webClient;
 	}
 
-	public void setSolrClient(SolrClient solrClient) {
-		this.solrClient = solrClient;
-		this.solrClientWrap.alreadyInitialized = true;
+	public void setWebClient(WebClient webClient) {
+		this.webClient = webClient;
+		this.webClientWrap.alreadyInitialized = true;
 	}
-	public static SolrClient staticSetSolrClient(SiteRequestEnUS siteRequest_, String o) {
+	public static WebClient staticSetWebClient(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected SiteRequestEnUS solrClientInit() {
-		if(!solrClientWrap.alreadyInitialized) {
-			_solrClient(solrClientWrap);
-			if(solrClient == null)
-				setSolrClient(solrClientWrap.o);
+	protected SiteRequestEnUS webClientInit() {
+		if(!webClientWrap.alreadyInitialized) {
+			_webClient(webClientWrap);
+			if(webClient == null)
+				setWebClient(webClientWrap.o);
 		}
-		solrClientWrap.alreadyInitialized(true);
+		webClientWrap.alreadyInitialized(true);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -340,88 +340,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				setServiceRequest(serviceRequestWrap.o);
 		}
 		serviceRequestWrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
-	///////////////////
-	// queryResponse //
-	///////////////////
-
-	/**	 The entity queryResponse
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected QueryResponse queryResponse;
-	@JsonIgnore
-	public Wrap<QueryResponse> queryResponseWrap = new Wrap<QueryResponse>().p(this).c(QueryResponse.class).var("queryResponse").o(queryResponse);
-
-	/**	<br/> The entity queryResponse
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:queryResponse">Find the entity queryResponse in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _queryResponse(Wrap<QueryResponse> c);
-
-	public QueryResponse getQueryResponse() {
-		return queryResponse;
-	}
-
-	public void setQueryResponse(QueryResponse queryResponse) {
-		this.queryResponse = queryResponse;
-		this.queryResponseWrap.alreadyInitialized = true;
-	}
-	public static QueryResponse staticSetQueryResponse(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteRequestEnUS queryResponseInit() {
-		if(!queryResponseWrap.alreadyInitialized) {
-			_queryResponse(queryResponseWrap);
-			if(queryResponse == null)
-				setQueryResponse(queryResponseWrap.o);
-		}
-		queryResponseWrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
-	///////////////////
-	// searchResults //
-	///////////////////
-
-	/**	 The entity searchResults
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonInclude(Include.NON_NULL)
-	protected SolrDocumentList searchResults;
-	@JsonIgnore
-	public Wrap<SolrDocumentList> searchResultsWrap = new Wrap<SolrDocumentList>().p(this).c(SolrDocumentList.class).var("searchResults").o(searchResults);
-
-	/**	<br/> The entity searchResults
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchResults">Find the entity searchResults in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _searchResults(Wrap<SolrDocumentList> c);
-
-	public SolrDocumentList getSearchResults() {
-		return searchResults;
-	}
-
-	public void setSearchResults(SolrDocumentList searchResults) {
-		this.searchResults = searchResults;
-		this.searchResultsWrap.alreadyInitialized = true;
-	}
-	public static SolrDocumentList staticSetSearchResults(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteRequestEnUS searchResultsInit() {
-		if(!searchResultsWrap.alreadyInitialized) {
-			_searchResults(searchResultsWrap);
-			if(searchResults == null)
-				setSearchResults(searchResultsWrap.o);
-		}
-		searchResultsWrap.alreadyInitialized(true);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1940,13 +1858,11 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	public void initSiteRequestEnUS() {
 		configInit();
 		siteRequest_Init();
-		solrClientInit();
+		webClientInit();
 		apiRequest_Init();
 		jsonObjectInit();
 		solrQueryInit();
 		serviceRequestInit();
-		queryResponseInit();
-		searchResultsInit();
 		wInit();
 		userInit();
 		jsonPrincipalInit();
@@ -2021,8 +1937,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.config;
 			case "siteRequest_":
 				return oSiteRequestEnUS.siteRequest_;
-			case "solrClient":
-				return oSiteRequestEnUS.solrClient;
+			case "webClient":
+				return oSiteRequestEnUS.webClient;
 			case "apiRequest_":
 				return oSiteRequestEnUS.apiRequest_;
 			case "jsonObject":
@@ -2031,10 +1947,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.solrQuery;
 			case "serviceRequest":
 				return oSiteRequestEnUS.serviceRequest;
-			case "queryResponse":
-				return oSiteRequestEnUS.queryResponse;
-			case "searchResults":
-				return oSiteRequestEnUS.searchResults;
 			case "w":
 				return oSiteRequestEnUS.w;
 			case "user":

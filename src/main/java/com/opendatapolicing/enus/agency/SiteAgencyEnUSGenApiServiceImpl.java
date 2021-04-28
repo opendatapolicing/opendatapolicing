@@ -9,7 +9,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -103,15 +105,15 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteAgencyEnUSGenApiServiceImpl.class);
 
-	public SiteAgencyEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public SiteAgencyEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
 
 	@Override
 	public void putimportSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putimportSiteAgency started. "));
+		LOG.debug(String.format("putimportSiteAgency started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -155,7 +157,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 													listPUTImportSiteAgency(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTImportSiteAgency(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putimportSiteAgency succeeded. "));
+																LOG.debug(String.format("putimportSiteAgency succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putimportSiteAgency failed. ", f.cause()));
@@ -231,15 +233,44 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 				if(searchList.size() == 1) {
 					SiteAgency o = searchList.getList().stream().findFirst().orElse(null);
+					SiteAgency o2 = new SiteAgency();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchSiteAgencyFuture(o, true).onFailure(ex -> {
@@ -283,7 +314,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void putmergeSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putmergeSiteAgency started. "));
+		LOG.debug(String.format("putmergeSiteAgency started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -327,7 +358,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 													listPUTMergeSiteAgency(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTMergeSiteAgency(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putmergeSiteAgency succeeded. "));
+																LOG.debug(String.format("putmergeSiteAgency succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putmergeSiteAgency failed. ", f.cause()));
@@ -401,15 +432,44 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 				if(searchList.size() == 1) {
 					SiteAgency o = searchList.getList().stream().findFirst().orElse(null);
+					SiteAgency o2 = new SiteAgency();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchSiteAgencyFuture(o, false).onFailure(ex -> {
@@ -468,7 +528,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void putcopySiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putcopySiteAgency started. "));
+		LOG.debug(String.format("putcopySiteAgency started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -514,7 +574,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 															if(e.succeeded()) {
 																putcopySiteAgencyResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOG.info(String.format("putcopySiteAgency succeeded. "));
+																		LOG.debug(String.format("putcopySiteAgency succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
 																		LOG.error(String.format("putcopySiteAgency failed. ", f.cause()));
@@ -626,13 +686,11 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 									if(c.succeeded()) {
 										attributeSiteAgency(siteAgency, d -> {
 											if(d.succeeded()) {
-												indexSiteAgency(siteAgency, e -> {
-													if(e.succeeded()) {
-														promise1.complete(siteAgency);
-													} else {
-														LOG.error(String.format("putcopySiteAgencyFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexSiteAgency(siteAgency).onSuccess(e -> {
+													promise1.complete(siteAgency);
+												}).onFailure(ex -> {
+													LOG.error(String.format("putcopySiteAgencyFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("putcopySiteAgencyFuture failed. ", d.cause()));
@@ -670,7 +728,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							siteAgency.apiRequestSiteAgency();
 							eventBus.publish("websocketSiteAgency", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteAgency);
+						promise2.complete(siteAgency);
 					} else {
 						LOG.error(String.format("putcopySiteAgencyFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -679,7 +737,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				return promise2.future();
 			}).onSuccess(siteAgency -> {
 				promise.complete(siteAgency);
-				LOG.info(String.format("putcopySiteAgencyFuture succeeded. "));
+				LOG.debug(String.format("putcopySiteAgencyFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -832,7 +890,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void postSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postSiteAgency started. "));
+		LOG.debug(String.format("postSiteAgency started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -869,7 +927,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							postSiteAgencyResponse(siteAgency, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postSiteAgency succeeded. "));
+									LOG.debug(String.format("postSiteAgency succeeded. "));
 								} else {
 									LOG.error(String.format("postSiteAgency failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -917,13 +975,11 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 									if(c.succeeded()) {
 										attributeSiteAgency(siteAgency, d -> {
 											if(d.succeeded()) {
-												indexSiteAgency(siteAgency, e -> {
-													if(e.succeeded()) {
-														promise1.complete(siteAgency);
-													} else {
-														LOG.error(String.format("postSiteAgencyFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexSiteAgency(siteAgency).onSuccess(e -> {
+													promise1.complete(siteAgency);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postSiteAgencyFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postSiteAgencyFuture failed. ", d.cause()));
@@ -961,7 +1017,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							siteAgency.apiRequestSiteAgency();
 							eventBus.publish("websocketSiteAgency", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteAgency);
+						promise2.complete(siteAgency);
 					} else {
 						LOG.error(String.format("postSiteAgencyFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -970,7 +1026,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				return promise2.future();
 			}).onSuccess(siteAgency -> {
 				promise.complete(siteAgency);
-				LOG.info(String.format("postSiteAgencyFuture succeeded. "));
+				LOG.debug(String.format("postSiteAgencyFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1138,7 +1194,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void patchSiteAgency(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchSiteAgency started. "));
+		LOG.debug(String.format("patchSiteAgency started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1206,7 +1262,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 																if(e.succeeded()) {
 																	patchSiteAgencyResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchSiteAgency succeeded. "));
+																			LOG.debug(String.format("patchSiteAgency succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchSiteAgency failed. ", f.cause()));
@@ -1275,17 +1331,20 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listSiteAgency.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listSiteAgency.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHSiteAgency(apiRequest, listSiteAgency, dt, eventHandler);
 				} else {
 					response200PATCHSiteAgency(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHSiteAgency failed. ", a.cause()));
-				error(listSiteAgency.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHSiteAgency failed. ", ex));
+				error(listSiteAgency.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHSiteAgency failed. ", ex));
+			error(listSiteAgency.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -1309,13 +1368,11 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							if(c.succeeded()) {
 								attributeSiteAgency(siteAgency, d -> {
 									if(d.succeeded()) {
-										indexSiteAgency(siteAgency, e -> {
-											if(e.succeeded()) {
-												promise1.complete(siteAgency);
-											} else {
-												LOG.error(String.format("patchSiteAgencyFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexSiteAgency(siteAgency).onSuccess(e -> {
+											promise1.complete(siteAgency);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchSiteAgencyFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchSiteAgencyFuture failed. ", d.cause()));
@@ -1347,7 +1404,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							siteAgency.apiRequestSiteAgency();
 							eventBus.publish("websocketSiteAgency", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(siteAgency);
+						promise2.complete(siteAgency);
 					} else {
 						LOG.error(String.format("patchSiteAgencyFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1356,7 +1413,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				return promise2.future();
 			}).onSuccess(siteAgency -> {
 				promise.complete(siteAgency);
-				LOG.info(String.format("patchSiteAgencyFuture succeeded. "));
+				LOG.debug(String.format("patchSiteAgencyFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1557,7 +1614,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								getSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("getSiteAgency succeeded. "));
+										LOG.debug(String.format("getSiteAgency succeeded. "));
 									} else {
 										LOG.error(String.format("getSiteAgency failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1636,7 +1693,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								searchSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchSiteAgency succeeded. "));
+										LOG.debug(String.format("searchSiteAgency succeeded. "));
 									} else {
 										LOG.error(String.format("searchSiteAgency failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1737,14 +1794,12 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -1853,7 +1908,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								adminsearchSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("adminsearchSiteAgency succeeded. "));
+										LOG.debug(String.format("adminsearchSiteAgency succeeded. "));
 									} else {
 										LOG.error(String.format("adminsearchSiteAgency failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -1954,14 +2009,12 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2075,7 +2128,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								searchpageSiteAgencyResponse(listSiteAgency, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpageSiteAgency succeeded. "));
+										LOG.debug(String.format("searchpageSiteAgency succeeded. "));
 									} else {
 										LOG.error(String.format("searchpageSiteAgency failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2491,19 +2544,25 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		}
 	}
 
-	public void indexSiteAgency(SiteAgency o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexSiteAgency(SiteAgency o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexSiteAgency failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexSiteAgency(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexSiteAgency failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexSiteAgency failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshSiteAgency(SiteAgency o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -2539,7 +2598,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						SiteState o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							SiteStateEnUSApiServiceImpl service = new SiteStateEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							SiteStateEnUSApiServiceImpl service = new SiteStateEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -2563,7 +2622,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						SiteAgencyEnUSApiServiceImpl service = new SiteAgencyEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						SiteAgencyEnUSApiServiceImpl service = new SiteAgencyEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(SiteAgency o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());

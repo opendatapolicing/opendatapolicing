@@ -21,6 +21,7 @@ import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -47,6 +48,7 @@ import java.lang.Boolean;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import org.slf4j.Logger;
+import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -320,21 +322,21 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/////////////////
 
 	/**	 The entity stateSearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SiteState>(). 
+	 *	 is defined as null before being initialized. 
 	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteState> stateSearch = new SearchList<SiteState>();
+	protected SearchList<SiteState> stateSearch;
 	@JsonIgnore
 	public Wrap<SearchList<SiteState>> stateSearchWrap = new Wrap<SearchList<SiteState>>().p(this).c(SearchList.class).var("stateSearch").o(stateSearch);
 
 	/**	<br/> The entity stateSearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<SiteState>(). 
+	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateSearch">Find the entity stateSearch in Solr</a>
 	 * <br/>
-	 * @param stateSearch is the entity already constructed. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _stateSearch(SearchList<SiteState> l);
+	protected abstract void _stateSearch(Promise<SearchList<SiteState>> promise);
 
 	public SearchList<SiteState> getStateSearch() {
 		return stateSearch;
@@ -347,13 +349,32 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public static SearchList<SiteState> staticSetStateSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected TrafficStop stateSearchInit() {
+	protected Future<SearchList<SiteState>> stateSearchPromise() {
+		Promise<SearchList<SiteState>> promise = Promise.promise();
 		if(!stateSearchWrap.alreadyInitialized) {
-			_stateSearch(stateSearch);
+			Promise<SearchList<SiteState>> promise2 = Promise.promise();
+			_stateSearch(promise2);
+			promise2.future().onSuccess(o -> {
+				if(o != null && stateSearch == null) {
+					stateSearch.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+						setStateSearch(stateSearchWrap.o);
+						stateSearchWrap.alreadyInitialized(true);
+						promise.complete(o);
+					}).onFailure(ex -> {
+						promise.fail(ex);
+					});
+				} else {
+					stateSearchWrap.alreadyInitialized(true);
+					promise.complete(o);
+				}
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		stateSearch.initDeepForClass(siteRequest_);
-		stateSearchWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
+		return promise.future();
 	}
 
 	////////////
@@ -646,21 +667,21 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	//////////////////
 
 	/**	 The entity agencySearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<SiteAgency>(). 
+	 *	 is defined as null before being initialized. 
 	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteAgency> agencySearch = new SearchList<SiteAgency>();
+	protected SearchList<SiteAgency> agencySearch;
 	@JsonIgnore
 	public Wrap<SearchList<SiteAgency>> agencySearchWrap = new Wrap<SearchList<SiteAgency>>().p(this).c(SearchList.class).var("agencySearch").o(agencySearch);
 
 	/**	<br/> The entity agencySearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<SiteAgency>(). 
+	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencySearch">Find the entity agencySearch in Solr</a>
 	 * <br/>
-	 * @param agencySearch is the entity already constructed. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _agencySearch(SearchList<SiteAgency> l);
+	protected abstract void _agencySearch(Promise<SearchList<SiteAgency>> promise);
 
 	public SearchList<SiteAgency> getAgencySearch() {
 		return agencySearch;
@@ -673,13 +694,32 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public static SearchList<SiteAgency> staticSetAgencySearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected TrafficStop agencySearchInit() {
+	protected Future<SearchList<SiteAgency>> agencySearchPromise() {
+		Promise<SearchList<SiteAgency>> promise = Promise.promise();
 		if(!agencySearchWrap.alreadyInitialized) {
-			_agencySearch(agencySearch);
+			Promise<SearchList<SiteAgency>> promise2 = Promise.promise();
+			_agencySearch(promise2);
+			promise2.future().onSuccess(o -> {
+				if(o != null && agencySearch == null) {
+					agencySearch.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+						setAgencySearch(agencySearchWrap.o);
+						agencySearchWrap.alreadyInitialized(true);
+						promise.complete(o);
+					}).onFailure(ex -> {
+						promise.fail(ex);
+					});
+				} else {
+					agencySearchWrap.alreadyInitialized(true);
+					promise.complete(o);
+				}
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		agencySearch.initDeepForClass(siteRequest_);
-		agencySearchWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
+		return promise.future();
 	}
 
 	/////////////
@@ -3305,21 +3345,21 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	//////////////////
 
 	/**	 The entity personSearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<TrafficPerson>(). 
+	 *	 is defined as null before being initialized. 
 	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<TrafficPerson> personSearch = new SearchList<TrafficPerson>();
+	protected SearchList<TrafficPerson> personSearch;
 	@JsonIgnore
 	public Wrap<SearchList<TrafficPerson>> personSearchWrap = new Wrap<SearchList<TrafficPerson>>().p(this).c(SearchList.class).var("personSearch").o(personSearch);
 
 	/**	<br/> The entity personSearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<TrafficPerson>(). 
+	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:personSearch">Find the entity personSearch in Solr</a>
 	 * <br/>
-	 * @param personSearch is the entity already constructed. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _personSearch(SearchList<TrafficPerson> l);
+	protected abstract void _personSearch(Promise<SearchList<TrafficPerson>> promise);
 
 	public SearchList<TrafficPerson> getPersonSearch() {
 		return personSearch;
@@ -3332,13 +3372,32 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public static SearchList<TrafficPerson> staticSetPersonSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected TrafficStop personSearchInit() {
+	protected Future<SearchList<TrafficPerson>> personSearchPromise() {
+		Promise<SearchList<TrafficPerson>> promise = Promise.promise();
 		if(!personSearchWrap.alreadyInitialized) {
-			_personSearch(personSearch);
+			Promise<SearchList<TrafficPerson>> promise2 = Promise.promise();
+			_personSearch(promise2);
+			promise2.future().onSuccess(o -> {
+				if(o != null && personSearch == null) {
+					personSearch.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+						setPersonSearch(personSearchWrap.o);
+						personSearchWrap.alreadyInitialized(true);
+						promise.complete(o);
+					}).onFailure(ex -> {
+						promise.fail(ex);
+					});
+				} else {
+					personSearchWrap.alreadyInitialized(true);
+					promise.complete(o);
+				}
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		personSearch.initDeepForClass(siteRequest_);
-		personSearchWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
+		return promise.future();
 	}
 
 	//////////////////////
@@ -3443,21 +3502,21 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/////////////////////////
 
 	/**	 The entity trafficSearchSearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<TrafficSearch>(). 
+	 *	 is defined as null before being initialized. 
 	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<TrafficSearch> trafficSearchSearch = new SearchList<TrafficSearch>();
+	protected SearchList<TrafficSearch> trafficSearchSearch;
 	@JsonIgnore
 	public Wrap<SearchList<TrafficSearch>> trafficSearchSearchWrap = new Wrap<SearchList<TrafficSearch>>().p(this).c(SearchList.class).var("trafficSearchSearch").o(trafficSearchSearch);
 
 	/**	<br/> The entity trafficSearchSearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<TrafficSearch>(). 
+	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchSearch">Find the entity trafficSearchSearch in Solr</a>
 	 * <br/>
-	 * @param trafficSearchSearch is the entity already constructed. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _trafficSearchSearch(SearchList<TrafficSearch> l);
+	protected abstract void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise);
 
 	public SearchList<TrafficSearch> getTrafficSearchSearch() {
 		return trafficSearchSearch;
@@ -3470,13 +3529,32 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public static SearchList<TrafficSearch> staticSetTrafficSearchSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected TrafficStop trafficSearchSearchInit() {
+	protected Future<SearchList<TrafficSearch>> trafficSearchSearchPromise() {
+		Promise<SearchList<TrafficSearch>> promise = Promise.promise();
 		if(!trafficSearchSearchWrap.alreadyInitialized) {
-			_trafficSearchSearch(trafficSearchSearch);
+			Promise<SearchList<TrafficSearch>> promise2 = Promise.promise();
+			_trafficSearchSearch(promise2);
+			promise2.future().onSuccess(o -> {
+				if(o != null && trafficSearchSearch == null) {
+					trafficSearchSearch.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+						setTrafficSearchSearch(trafficSearchSearchWrap.o);
+						trafficSearchSearchWrap.alreadyInitialized(true);
+						promise.complete(o);
+					}).onFailure(ex -> {
+						promise.fail(ex);
+					});
+				} else {
+					trafficSearchSearchWrap.alreadyInitialized(true);
+					promise.complete(o);
+				}
+				promise.complete(o);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		trafficSearchSearch.initDeepForClass(siteRequest_);
-		trafficSearchSearchWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
+		return promise.future();
 	}
 
 	/////////////////////////////
@@ -3582,56 +3660,122 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	protected boolean alreadyInitializedTrafficStop = false;
 
-	public TrafficStop initDeepTrafficStop(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepTrafficStop(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedTrafficStop) {
 			alreadyInitializedTrafficStop = true;
-			initDeepTrafficStop();
+			return promiseDeepTrafficStop();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (TrafficStop)this;
 	}
 
-	public void initDeepTrafficStop() {
-		initTrafficStop();
-		super.initDeepCluster(siteRequest_);
+	public Future<Void> promiseDeepTrafficStop() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseTrafficStop(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepCluster(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initTrafficStop() {
-		trafficStopKeyInit();
-		stateAbbreviationInit();
-		stateSearchInit();
-		state_Init();
-		stateKeyInit();
-		stateNameInit();
-		agencyKeyInit();
-		agencySearchInit();
-		agency_Init();
-		agencyTitleInit();
-		stopDateTimeInit();
-		stopYearInit();
-		stopPurposeNumInit();
-		stopPurposeTitleInit();
-		stopActionNumInit();
-		stopActionTitleInit();
-		stopDriverArrestInit();
-		stopPassengerArrestInit();
-		stopEncounterForceInit();
-		stopEngageForceInit();
-		stopOfficerInjuryInit();
-		stopDriverInjuryInit();
-		stopPassengerInjuryInit();
-		stopOfficerIdInit();
-		stopLocationIdInit();
-		stopCityIdInit();
-		personKeysInit();
-		personSearchInit();
-		personRaceTitlesInit();
-		trafficSearchSearchInit();
-		trafficSearchRaceTitlesInit();
+	public Future<Void> promiseTrafficStop(Promise<Void> promise) {
+		Future.future(a -> {}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			trafficStopKeyInit();
+			stateAbbreviationInit();
+			promise2.complete();
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			stateSearchPromise().onSuccess(stateSearch -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			state_Init();
+			stateKeyInit();
+			stateNameInit();
+			agencyKeyInit();
+			promise2.complete();
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			agencySearchPromise().onSuccess(agencySearch -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			agency_Init();
+			agencyTitleInit();
+			stopDateTimeInit();
+			stopYearInit();
+			stopPurposeNumInit();
+			stopPurposeTitleInit();
+			stopActionNumInit();
+			stopActionTitleInit();
+			stopDriverArrestInit();
+			stopPassengerArrestInit();
+			stopEncounterForceInit();
+			stopEngageForceInit();
+			stopOfficerInjuryInit();
+			stopDriverInjuryInit();
+			stopPassengerInjuryInit();
+			stopOfficerIdInit();
+			stopLocationIdInit();
+			stopCityIdInit();
+			personKeysInit();
+			promise2.complete();
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			personSearchPromise().onSuccess(personSearch -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			personRaceTitlesInit();
+			promise2.complete();
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			trafficSearchSearchPromise().onSuccess(trafficSearchSearch -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			trafficSearchRaceTitlesInit();
+			promise2.complete();
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepTrafficStop(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepTrafficStop(siteRequest_);
 	}
 
 	/////////////////
@@ -4403,38 +4547,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		}
 
 		super.populateCluster(solrDocument);
-	}
-
-
-	@Override public void indexForClass() {
-		indexTrafficStop();
-	}
-
-	@Override public void indexForClass(SolrInputDocument document) {
-		indexTrafficStop(document);
-	}
-
-	public void indexTrafficStop(SolrClient clientSolr) {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexTrafficStop(document);
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
-	}
-
-	public void indexTrafficStop() {
-		try {
-			SolrInputDocument document = new SolrInputDocument();
-			indexTrafficStop(document);
-			SolrClient clientSolr = siteRequest_.getSolrClient();
-			clientSolr.add(document);
-			clientSolr.commit(false, false, true);
-		} catch(Exception e) {
-			ExceptionUtils.rethrow(e);
-		}
 	}
 
 	public void indexTrafficStop(SolrInputDocument document) {

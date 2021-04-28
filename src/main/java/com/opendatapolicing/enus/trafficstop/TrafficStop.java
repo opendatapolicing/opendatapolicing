@@ -1,11 +1,16 @@
-package com.opendatapolicing.enus.trafficstop;      
+package com.opendatapolicing.enus.trafficstop;              
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.common.SolrInputDocument;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
@@ -13,6 +18,8 @@ import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
+
+import io.vertx.core.Promise;
 
 /**
  * Model: true
@@ -83,12 +90,14 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */ 
-	protected void _stateSearch(SearchList<SiteState> l) {
+	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {   
 		if(stateAbbreviation != null) {
+			SearchList<SiteState> l = new SearchList<>();
 			l.setQuery("*:*");
 			l.addFilterQuery("stateAbbreviation_indexed_string:" + stateAbbreviation);
 			l.setC(SiteState.class);
 			l.setStore(true);
+			promise.complete(l);
 		}
 	}
 
@@ -135,12 +144,14 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */ 
-	protected void _agencySearch(SearchList<SiteAgency> l) {
+	protected void _agencySearch(Promise<SearchList<SiteAgency>> promise) {
 		if(agencyKey != null) {
+			SearchList<SiteAgency> l = new SearchList<>();
 			l.setQuery("*:*");
 			l.addFilterQuery("pk_indexed_long:" + agencyKey);
 			l.setC(SiteAgency.class);
 			l.setStore(true);
+			promise.complete(l);
 		}
 	}
 
@@ -405,13 +416,15 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */ 
-	protected void _personSearch(SearchList<TrafficPerson> l) {
+	protected void _personSearch(Promise<SearchList<TrafficPerson>> promise) {
+		SearchList<TrafficPerson> l = new SearchList<>();
 		l.setQuery("*:*");
 		l.addFilterQuery("trafficStopKey_indexed_long:" + pk);
 		l.setC(TrafficPerson.class);
 		l.setRows(0);
 		l.addFacetField("personRaceTitle_indexed_string");
 		l.setStore(true);
+		promise.complete(l);
 	}
 
 	/** 
@@ -431,13 +444,15 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */ 
-	protected void _trafficSearchSearch(SearchList<TrafficSearch> l) {
+	protected void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise) { 
+		SearchList<TrafficSearch> l = new SearchList<>();
 		l.setQuery("*:*");
 		l.addFilterQuery("trafficStopKey_indexed_long:" + pk);
 		l.setC(TrafficSearch.class);
 		l.setRows(0);
 		l.addFacetField("personRaceTitle_indexed_string");
 		l.setStore(true);
+		promise.complete(l);
 	}
 
 	/** 
@@ -483,5 +498,15 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 //			b.append(", passenger injured");
 //		c.o(b.toString());
 //	}
+
+	public class Serializer extends JsonSerializer<TrafficStop> {
+	
+		@Override()
+		public void  serialize(TrafficStop o, JsonGenerator generator, SerializerProvider provider) throws IOException, IOException {
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexTrafficStop(document);
+			generator.writeString(document.jsonStr());
+		}
+	}
 }
 

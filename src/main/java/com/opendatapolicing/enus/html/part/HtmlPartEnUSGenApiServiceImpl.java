@@ -9,7 +9,8 @@ import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import org.apache.solr.client.solrj.SolrClient;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
 import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -103,15 +105,15 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	protected static final Logger LOG = LoggerFactory.getLogger(HtmlPartEnUSGenApiServiceImpl.class);
 
-	public HtmlPartEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, SolrClient solrClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+	public HtmlPartEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// POST //
 
 	@Override
 	public void postHtmlPart(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("postHtmlPart started. "));
+		LOG.debug(String.format("postHtmlPart started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -148,7 +150,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							postHtmlPartResponse(htmlPart, d -> {
 								if(d.succeeded()) {
 									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.info(String.format("postHtmlPart succeeded. "));
+									LOG.debug(String.format("postHtmlPart succeeded. "));
 								} else {
 									LOG.error(String.format("postHtmlPart failed. ", d.cause()));
 									error(siteRequest, eventHandler, d);
@@ -196,13 +198,11 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 									if(c.succeeded()) {
 										attributeHtmlPart(htmlPart, d -> {
 											if(d.succeeded()) {
-												indexHtmlPart(htmlPart, e -> {
-													if(e.succeeded()) {
-														promise1.complete(htmlPart);
-													} else {
-														LOG.error(String.format("postHtmlPartFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexHtmlPart(htmlPart).onSuccess(e -> {
+													promise1.complete(htmlPart);
+												}).onFailure(ex -> {
+													LOG.error(String.format("postHtmlPartFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("postHtmlPartFuture failed. ", d.cause()));
@@ -240,7 +240,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							htmlPart.apiRequestHtmlPart();
 							eventBus.publish("websocketHtmlPart", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(htmlPart);
+						promise2.complete(htmlPart);
 					} else {
 						LOG.error(String.format("postHtmlPartFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -249,7 +249,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				return promise2.future();
 			}).onSuccess(htmlPart -> {
 				promise.complete(htmlPart);
-				LOG.info(String.format("postHtmlPartFuture succeeded. "));
+				LOG.debug(String.format("postHtmlPartFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -655,7 +655,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void putimportHtmlPart(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putimportHtmlPart started. "));
+		LOG.debug(String.format("putimportHtmlPart started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -699,7 +699,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 													listPUTImportHtmlPart(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTImportHtmlPart(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putimportHtmlPart succeeded. "));
+																LOG.debug(String.format("putimportHtmlPart succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putimportHtmlPart failed. ", f.cause()));
@@ -775,15 +775,44 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 				if(searchList.size() == 1) {
 					HtmlPart o = searchList.getList().stream().findFirst().orElse(null);
+					HtmlPart o2 = new HtmlPart();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchHtmlPartFuture(o, true).onFailure(ex -> {
@@ -827,7 +856,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void putmergeHtmlPart(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putmergeHtmlPart started. "));
+		LOG.debug(String.format("putmergeHtmlPart started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -871,7 +900,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 													listPUTMergeHtmlPart(apiRequest, siteRequest).onSuccess(e -> {
 														response200PUTMergeHtmlPart(siteRequest, f -> {
 															if(f.succeeded()) {
-																LOG.info(String.format("putmergeHtmlPart succeeded. "));
+																LOG.debug(String.format("putmergeHtmlPart succeeded. "));
 																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 															} else {
 																LOG.error(String.format("putmergeHtmlPart failed. ", f.cause()));
@@ -945,15 +974,44 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 				if(searchList.size() == 1) {
 					HtmlPart o = searchList.getList().stream().findFirst().orElse(null);
+					HtmlPart o2 = new HtmlPart();
 					JsonObject json2 = new JsonObject();
 					for(String f : json.fieldNames()) {
-						json2.put("set" + StringUtils.capitalize(f), json.getValue(f));
-					}
-					if(o != null) {
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+						Object jsonVal = json.getValue(f);
+						if(jsonVal instanceof JsonArray) {
+							JsonArray jsonVals = (JsonArray)jsonVal;
+							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+							if(jsonVals.size() == vals.size()) {
+								Boolean match = true;
+								for(Object val : vals) {
+									if(val != null) {
+										if(!jsonVals.contains(val.toString())) {
+											match = false;
+											break;
+										}
+									} else {
+										match = false;
+										break;
+									}
+								}
+								if(!match) {
+									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+								}
+							} else {
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+							}
 						}
+						else {
+							o2.defineForClass(f, jsonVal);
+							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								json2.put("set" + StringUtils.capitalize(f), jsonVal);
+						}
+					}
+					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+						if(!json.fieldNames().contains(f))
+							json2.putNull("set" + StringUtils.capitalize(f));
+					}
+					if(json2.size() > 0) {
 						siteRequest2.setJsonObject(json2);
 						futures.add(
 							patchHtmlPartFuture(o, false).onFailure(ex -> {
@@ -1012,7 +1070,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void putcopyHtmlPart(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("putcopyHtmlPart started. "));
+		LOG.debug(String.format("putcopyHtmlPart started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1058,7 +1116,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 															if(e.succeeded()) {
 																putcopyHtmlPartResponse(siteRequest, f -> {
 																	if(f.succeeded()) {
-																		LOG.info(String.format("putcopyHtmlPart succeeded. "));
+																		LOG.debug(String.format("putcopyHtmlPart succeeded. "));
 																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																	} else {
 																		LOG.error(String.format("putcopyHtmlPart failed. ", f.cause()));
@@ -1170,13 +1228,11 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 									if(c.succeeded()) {
 										attributeHtmlPart(htmlPart, d -> {
 											if(d.succeeded()) {
-												indexHtmlPart(htmlPart, e -> {
-													if(e.succeeded()) {
-														promise1.complete(htmlPart);
-													} else {
-														LOG.error(String.format("putcopyHtmlPartFuture failed. ", e.cause()));
-														promise1.fail(e.cause());
-													}
+												indexHtmlPart(htmlPart).onSuccess(e -> {
+													promise1.complete(htmlPart);
+												}).onFailure(ex -> {
+													LOG.error(String.format("putcopyHtmlPartFuture failed. ", ex));
+													promise1.fail(ex);
 												});
 											} else {
 												LOG.error(String.format("putcopyHtmlPartFuture failed. ", d.cause()));
@@ -1214,7 +1270,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							htmlPart.apiRequestHtmlPart();
 							eventBus.publish("websocketHtmlPart", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(htmlPart);
+						promise2.complete(htmlPart);
 					} else {
 						LOG.error(String.format("putcopyHtmlPartFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1223,7 +1279,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				return promise2.future();
 			}).onSuccess(htmlPart -> {
 				promise.complete(htmlPart);
-				LOG.info(String.format("putcopyHtmlPartFuture succeeded. "));
+				LOG.debug(String.format("putcopyHtmlPartFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -1618,7 +1674,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void patchHtmlPart(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.info(String.format("patchHtmlPart started. "));
+		LOG.debug(String.format("patchHtmlPart started. "));
 		user(serviceRequest, b -> {
 			if(b.succeeded()) {
 				try {
@@ -1686,7 +1742,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 																if(e.succeeded()) {
 																	patchHtmlPartResponse(siteRequest, f -> {
 																		if(f.succeeded()) {
-																			LOG.info(String.format("patchHtmlPart succeeded. "));
+																			LOG.debug(String.format("patchHtmlPart succeeded. "));
 																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
 																		} else {
 																			LOG.error(String.format("patchHtmlPart failed. ", f.cause()));
@@ -1755,17 +1811,20 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				if(listHtmlPart.next(dt)) {
+		CompositeFuture.all(futures).onSuccess( a -> {
+			listHtmlPart.next(dt).onSuccess(next -> {
+				if(next) {
 					listPATCHHtmlPart(apiRequest, listHtmlPart, dt, eventHandler);
 				} else {
 					response200PATCHHtmlPart(siteRequest, eventHandler);
 				}
-			} else {
-				LOG.error(String.format("listPATCHHtmlPart failed. ", a.cause()));
-				error(listHtmlPart.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPATCHHtmlPart failed. ", ex));
+				error(listHtmlPart.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPATCHHtmlPart failed. ", ex));
+			error(listHtmlPart.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
 		});
 	}
 
@@ -1789,13 +1848,11 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							if(c.succeeded()) {
 								attributeHtmlPart(htmlPart, d -> {
 									if(d.succeeded()) {
-										indexHtmlPart(htmlPart, e -> {
-											if(e.succeeded()) {
-												promise1.complete(htmlPart);
-											} else {
-												LOG.error(String.format("patchHtmlPartFuture failed. ", e.cause()));
-												promise1.fail(e.cause());
-											}
+										indexHtmlPart(htmlPart).onSuccess(e -> {
+											promise1.complete(htmlPart);
+										}).onFailure(ex -> {
+											LOG.error(String.format("patchHtmlPartFuture failed. ", ex));
+											promise1.fail(ex);
 										});
 									} else {
 										LOG.error(String.format("patchHtmlPartFuture failed. ", d.cause()));
@@ -1827,7 +1884,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							htmlPart.apiRequestHtmlPart();
 							eventBus.publish("websocketHtmlPart", JsonObject.mapFrom(apiRequest).toString());
 						}
-						promise.complete(htmlPart);
+						promise2.complete(htmlPart);
 					} else {
 						LOG.error(String.format("patchHtmlPartFuture failed. ", a.cause()));
 						promise2.fail(a.cause());
@@ -1836,7 +1893,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				return promise2.future();
 			}).onSuccess(htmlPart -> {
 				promise.complete(htmlPart);
-				LOG.info(String.format("patchHtmlPartFuture succeeded. "));
+				LOG.debug(String.format("patchHtmlPartFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
 				error(siteRequest, null, promise.future());
@@ -2362,7 +2419,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								getHtmlPartResponse(listHtmlPart, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("getHtmlPart succeeded. "));
+										LOG.debug(String.format("getHtmlPart succeeded. "));
 									} else {
 										LOG.error(String.format("getHtmlPart failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2460,7 +2517,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								searchHtmlPartResponse(listHtmlPart, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchHtmlPart succeeded. "));
+										LOG.debug(String.format("searchHtmlPart succeeded. "));
 									} else {
 										LOG.error(String.format("searchHtmlPart failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -2561,14 +2618,12 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				json.put("facet_fields", facetFieldsJson);
 				for(FacetField facetField : facetFields) {
 					String facetFieldVar = StringUtils.substringBefore(facetField.getName(), "_indexed_");
-					JsonArray facetFieldCountsArray = new JsonArray();
-					facetFieldsJson.put(facetFieldVar, facetFieldCountsArray);
+					JsonObject facetFieldCounts = new JsonObject();
+					facetFieldsJson.put(facetFieldVar, facetFieldCounts);
 					List<FacetField.Count> facetFieldValues = facetField.getValues();
 					for(Integer i = 0; i < facetFieldValues.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						FacetField.Count count = (FacetField.Count)facetFieldValues.get(i);
-						countJson.put(count.getName(), count.getCount());
-						facetFieldCountsArray.add(countJson);
+						facetFieldCounts.put(count.getName(), count.getCount());
 					}
 				}
 			}
@@ -2701,7 +2756,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								searchpageHtmlPartResponse(listHtmlPart, d -> {
 									if(d.succeeded()) {
 										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.info(String.format("searchpageHtmlPart succeeded. "));
+										LOG.debug(String.format("searchpageHtmlPart succeeded. "));
 									} else {
 										LOG.error(String.format("searchpageHtmlPart failed. ", d.cause()));
 										error(siteRequest, eventHandler, d);
@@ -3126,19 +3181,25 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		}
 	}
 
-	public void indexHtmlPart(HtmlPart o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = o.getSiteRequest_();
+	public Future<Void> indexHtmlPart(HtmlPart o) {
+		Promise<Void> promise = Promise.promise();
 		try {
+			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			o.initDeepForClass(siteRequest);
-			o.indexForClass();
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("indexHtmlPart failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			SolrInputDocument document = new SolrInputDocument();
+			o.indexHtmlPart(document);
+			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("indexHtmlPart failed. "), ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("indexHtmlPart failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public void refreshHtmlPart(HtmlPart o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
@@ -3174,7 +3235,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 						PageDesign o2 = searchList2.getList().stream().findFirst().orElse(null);
 
 						if(o2 != null) {
-							PageDesignEnUSApiServiceImpl service = new PageDesignEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+							PageDesignEnUSApiServiceImpl service = new PageDesignEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							ApiRequest apiRequest2 = new ApiRequest();
 							apiRequest2.setRows(1);
@@ -3198,7 +3259,7 @@ public class HtmlPartEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 				CompositeFuture.all(futures).onComplete(a -> {
 					if(a.succeeded()) {
-						HtmlPartEnUSApiServiceImpl service = new HtmlPartEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider);
+						HtmlPartEnUSApiServiceImpl service = new HtmlPartEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 						List<Future> futures2 = new ArrayList<>();
 						for(HtmlPart o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
