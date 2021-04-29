@@ -475,7 +475,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 //	 * VarH2: true
 //	 * VarTitle: true
 //	 */ 
-//	protected void _trafficStopCompleteName(Wrap<String> c) {
+//	protected void _trafficStopCompleteName(Wrap<String> c) {                        
 //		StringBuilder b = new StringBuilder();
 //		b.append(strStopDateTime());
 //		if(stopPurposeTitle != null)

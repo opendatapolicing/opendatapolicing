@@ -57,9 +57,9 @@ public abstract class SearchListGen<DEV> {
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonInclude(Include.NON_NULL)
-	protected Class<DEV> c;
+	protected Class<?> c;
 	@JsonIgnore
-	public Wrap<Class<DEV>> cWrap = new Wrap<Class<DEV>>().p(this).c(Class.class).var("c").o(c);
+	public Wrap<Class<?>> cWrap = new Wrap<Class<?>>().p(this).c(Class.class).var("c").o(c);
 
 	/**	<br/> The entity c
 	 *  is defined as null before being initialized. 
@@ -67,15 +67,18 @@ public abstract class SearchListGen<DEV> {
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _c(Wrap<Class<DEV>> c);
+	protected abstract void _c(Wrap<Class<?>> c);
 
-	public Class<DEV> getC() {
+	public Class<?> getC() {
 		return c;
 	}
 
-	public void setC(Class<DEV> c) {
+	public void setC(Class<?> c) {
 		this.c = c;
 		this.cWrap.alreadyInitialized = true;
+	}
+	public static Class<?> staticSetC(SiteRequestEnUS siteRequest_, String o) {
+		return null;
 	}
 	protected SearchList cInit() {
 		if(!cWrap.alreadyInitialized) {
@@ -440,9 +443,6 @@ public abstract class SearchListGen<DEV> {
 			Promise<QueryResponse> promise2 = Promise.promise();
 			_queryResponse(promise2);
 			promise2.future().onSuccess(o -> {
-				if(queryResponse == null)
-					setQueryResponse(queryResponseWrap.o);
-				queryResponseWrap.alreadyInitialized(true);
 				promise.complete(o);
 			}).onFailure(ex -> {
 				promise.fail(ex);

@@ -1,6 +1,5 @@
 package com.opendatapolicing.enus.search;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
@@ -11,12 +10,9 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
@@ -36,7 +32,7 @@ import io.vertx.core.json.JsonObject;
  */
 public class SearchList<DEV> extends SearchListGen<DEV> {
 
-	protected void _c(Wrap<Class<DEV>> c) {
+	protected void _c(Wrap<Class<?>> c) {
 		
 	}
 
@@ -168,17 +164,17 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			for(SolrDocument solrDocument : solrDocumentList) {
 				try {
 					if(solrDocument != null) {
-						DEV o = c.newInstance();
+						String classCanonicalName = (String)solrDocument.get("classCanonicalName_indexed_string");
+						DEV o = (DEV)Class.forName(classCanonicalName).newInstance();
 						MethodUtils.invokeMethod(o, "setSiteRequest_", siteRequest_);
 						if(populate)
 							MethodUtils.invokeMethod(o, "populateForClass", solrDocument);
 						if(store)
 							MethodUtils.invokeMethod(o, "storeForClass", solrDocument);
-		//				MethodUtils.invokeMethod(o, "initDeepForClass", siteRequest_);
 						l.add(o);
 					}
 				} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-						| InvocationTargetException e) {
+						| InvocationTargetException | ClassNotFoundException e) {
 					ExceptionUtils.rethrow(e);
 				}
 			}

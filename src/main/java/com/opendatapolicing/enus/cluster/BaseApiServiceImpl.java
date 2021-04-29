@@ -1,9 +1,10 @@
 package com.opendatapolicing.enus.cluster;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import io.vertx.core.WorkerExecutor;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -33,6 +35,7 @@ import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.pgclient.PgPool;
+import io.vertx.sqlclient.Tuple;
 
 
 /**
@@ -253,5 +256,124 @@ public class BaseApiServiceImpl {
 		} else {
 			return false;
 		}
+	}
+
+//	public void attributeArrayFuture(Cluster o, List<Future<?>> futures, String entityVar, Boolean inheritPk) {
+	public void attributeArrayFuture(SiteRequestEnUS siteRequest, Class<?> c1, Long pk1, Class<?> c2, String pk2, List<Future<?>> futures, String entityVar, Boolean inheritPk) {
+		ApiRequest apiRequest = siteRequest.getApiRequest_();
+		List<Long> pks = apiRequest.getPks();
+
+		for(String l : Optional.ofNullable(siteRequest.getJsonObject().getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> (String)a).collect(Collectors.toList())) {
+			if(l != null) {
+				SearchList<Cluster> searchList = new SearchList<Cluster>();
+				searchList.setQuery("*:*");
+				searchList.setStore(true);
+				searchList.setC(Cluster.class);
+				searchList.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(c2.getCanonicalName()));
+				searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + ClientUtils.escapeQueryChars(l));
+				searchList.promiseDeepSearchList(siteRequest).onSuccess(s -> {
+					Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+					if(l2 != null) {
+						futures.add(siteRequest.getSqlConnection().preparedQuery(String.format("UPDATE %s SET %s=$1 WHERE pk=$2", c1.getSimpleName(), entityVar)).execute(Tuple.of(pk1, l2)));
+						if(!pks.contains(l2)) {
+							pks.add(l2);
+							apiRequest.getClasses().add(c2.getSimpleName());
+						}
+					}
+				}).onFailure(ex -> {
+					LOG.error("update %s failed. ", entityVar);
+				});
+			}
+		}
+	}
+
+	///////////////
+	// SqlUpdate //
+	///////////////
+
+	public class SqlUpdate {
+		private Class<?> c1;
+		private String entityVar;
+		private Long pk1;
+		private ApiRequest apiRequest;
+		private List<Long> pks;
+		private List<String> classes;
+		private SiteRequestEnUS siteRequest;
+
+		public SqlUpdate(SiteRequestEnUS siteRequest) {
+			this.siteRequest = siteRequest;
+			this.apiRequest = siteRequest.getApiRequest_();
+			this.pks = apiRequest.getPks();
+			this.classes = apiRequest.getClasses();
+		}
+
+		public SqlUpdate update(Class<? extends Cluster> c1, Long pk1) {
+			this.c1 = c1;
+			this.pk1 = pk1;
+			return this;
+		}
+
+		public SqlUpdate set(String entityVar) {
+			this.entityVar = entityVar;
+			return this;
+		}
+
+		public Future<Void> to(Class<? extends Cluster> c2, Long pk2) {
+			Promise<Void> promise = Promise.promise();
+			if(pk2 == null) {
+				promise.complete();
+			} else {
+				if(!pks.contains(pk2)) {
+					pks.add(pk2);
+					classes.add(c2.getSimpleName());
+				}
+				siteRequest.getSqlConnection().preparedQuery(String.format("UPDATE %s SET %s=$1 WHERE pk=$2", c1.getSimpleName(), entityVar)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
+			}
+			return promise.future();
+		}
+	}
+
+	public SqlUpdate sql(SiteRequestEnUS siteRequest) {
+		return new SqlUpdate(siteRequest);
+	}
+
+	/////////////////
+	// SearchQuery //
+	/////////////////
+
+	public class SearchQuery {
+		private SiteRequestEnUS siteRequest;
+
+		public SearchQuery(SiteRequestEnUS siteRequest) {
+			this.siteRequest = siteRequest;
+		}
+
+		public Future<Long> query(Class<? extends Cluster> c, String pk, Boolean inheritPk) {
+			Promise<Long> promise = Promise.promise();
+			if(pk != null) {
+				SearchList<Cluster> searchList = new SearchList<Cluster>();
+				searchList.setQuery("*:*");
+				searchList.setStore(true);
+				searchList.setC(c);
+				searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + pk);
+				searchList.promiseDeepSearchList(siteRequest).onSuccess(s -> {
+					Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
+					promise.complete(l2);
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
+			} else {
+				promise.complete();
+			}
+			return promise.future();
+		}
+	}
+
+	public SearchQuery search(SiteRequestEnUS siteRequest) {
+		return new SearchQuery(siteRequest);
 	}
 }
