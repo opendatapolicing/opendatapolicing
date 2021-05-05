@@ -462,4 +462,7 @@ public abstract class TrafficPersonGenPageGen<DEV> extends PageLayout {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_listTrafficPerson = "listTrafficPerson";
+	public static final String VAR_trafficPerson_ = "trafficPerson_";
 }

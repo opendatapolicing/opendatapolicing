@@ -462,4 +462,7 @@ public abstract class TrafficStopGenPageGen<DEV> extends PageLayout {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_listTrafficStop = "listTrafficStop";
+	public static final String VAR_trafficStop_ = "trafficStop_";
 }

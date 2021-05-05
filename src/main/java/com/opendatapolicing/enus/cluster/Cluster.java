@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.cluster;      
+package com.opendatapolicing.enus.cluster;       
 
 import java.text.Normalizer;
 import java.time.ZoneId;

@@ -730,160 +730,160 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				for(Integer i = 0; i < entityVars.size(); i++) {
 					String entityVar = entityVars.getString(i);
 					switch(entityVar) {
-					case "inheritPk":
+					case TrafficStop.VAR_inheritPk:
 						o2.setInheritPk(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("inheritPk=$" + num);
+						bSql.append(TrafficStop.VAR_inheritPk + "=$" + num);
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case "stateAbbreviation":
+					case TrafficStop.VAR_stateAbbreviation:
 						o2.setStateAbbreviation(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stateAbbreviation=$" + num);
+						bSql.append(TrafficStop.VAR_stateAbbreviation + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStateAbbreviation());
 						break;
-					case "agencyTitle":
+					case TrafficStop.VAR_agencyTitle:
 						o2.setAgencyTitle(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("agencyTitle=$" + num);
+						bSql.append(TrafficStop.VAR_agencyTitle + "=$" + num);
 						num++;
 						bParams.add(o2.sqlAgencyTitle());
 						break;
-					case "stopDateTime":
+					case TrafficStop.VAR_stopDateTime:
 						o2.setStopDateTime(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopDateTime=$" + num);
+						bSql.append(TrafficStop.VAR_stopDateTime + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopDateTime());
 						break;
-					case "stopYear":
+					case TrafficStop.VAR_stopYear:
 						o2.setStopYear(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopYear=$" + num);
+						bSql.append(TrafficStop.VAR_stopYear + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopYear());
 						break;
-					case "stopPurposeNum":
+					case TrafficStop.VAR_stopPurposeNum:
 						o2.setStopPurposeNum(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopPurposeNum=$" + num);
+						bSql.append(TrafficStop.VAR_stopPurposeNum + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopPurposeNum());
 						break;
-					case "stopActionNum":
+					case TrafficStop.VAR_stopActionNum:
 						o2.setStopActionNum(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopActionNum=$" + num);
+						bSql.append(TrafficStop.VAR_stopActionNum + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopActionNum());
 						break;
-					case "stopDriverArrest":
+					case TrafficStop.VAR_stopDriverArrest:
 						o2.setStopDriverArrest(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopDriverArrest=$" + num);
+						bSql.append(TrafficStop.VAR_stopDriverArrest + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopDriverArrest());
 						break;
-					case "stopPassengerArrest":
+					case TrafficStop.VAR_stopPassengerArrest:
 						o2.setStopPassengerArrest(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopPassengerArrest=$" + num);
+						bSql.append(TrafficStop.VAR_stopPassengerArrest + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopPassengerArrest());
 						break;
-					case "stopEncounterForce":
+					case TrafficStop.VAR_stopEncounterForce:
 						o2.setStopEncounterForce(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopEncounterForce=$" + num);
+						bSql.append(TrafficStop.VAR_stopEncounterForce + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopEncounterForce());
 						break;
-					case "stopEngageForce":
+					case TrafficStop.VAR_stopEngageForce:
 						o2.setStopEngageForce(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopEngageForce=$" + num);
+						bSql.append(TrafficStop.VAR_stopEngageForce + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopEngageForce());
 						break;
-					case "stopOfficerInjury":
+					case TrafficStop.VAR_stopOfficerInjury:
 						o2.setStopOfficerInjury(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopOfficerInjury=$" + num);
+						bSql.append(TrafficStop.VAR_stopOfficerInjury + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopOfficerInjury());
 						break;
-					case "stopDriverInjury":
+					case TrafficStop.VAR_stopDriverInjury:
 						o2.setStopDriverInjury(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopDriverInjury=$" + num);
+						bSql.append(TrafficStop.VAR_stopDriverInjury + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopDriverInjury());
 						break;
-					case "stopPassengerInjury":
+					case TrafficStop.VAR_stopPassengerInjury:
 						o2.setStopPassengerInjury(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopPassengerInjury=$" + num);
+						bSql.append(TrafficStop.VAR_stopPassengerInjury + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopPassengerInjury());
 						break;
-					case "stopOfficerId":
+					case TrafficStop.VAR_stopOfficerId:
 						o2.setStopOfficerId(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopOfficerId=$" + num);
+						bSql.append(TrafficStop.VAR_stopOfficerId + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopOfficerId());
 						break;
-					case "stopLocationId":
+					case TrafficStop.VAR_stopLocationId:
 						o2.setStopLocationId(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopLocationId=$" + num);
+						bSql.append(TrafficStop.VAR_stopLocationId + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopLocationId());
 						break;
-					case "stopCityId":
+					case TrafficStop.VAR_stopCityId:
 						o2.setStopCityId(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopCityId=$" + num);
+						bSql.append(TrafficStop.VAR_stopCityId + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopCityId());
 						break;
-					case "personKeys":
+					case TrafficStop.VAR_personKeys:
 						{
 							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 								futures.add(Future.future(a -> {
@@ -1100,166 +1100,180 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			TrafficStop o2 = new TrafficStop();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
 			if(jsonObject != null) {
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
-					case "inheritPk":
+					case TrafficStop.VAR_inheritPk:
 						o2.setInheritPk(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("inheritPk=$" + num);
+						bSql.append(TrafficStop.VAR_inheritPk + "=$" + num);
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case "stateAbbreviation":
+					case TrafficStop.VAR_stateAbbreviation:
 						o2.setStateAbbreviation(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stateAbbreviation=$" + num);
+						bSql.append(TrafficStop.VAR_stateAbbreviation + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStateAbbreviation());
 						break;
-					case "agencyTitle":
+					case TrafficStop.VAR_agencyTitle:
 						o2.setAgencyTitle(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("agencyTitle=$" + num);
+						bSql.append(TrafficStop.VAR_agencyTitle + "=$" + num);
 						num++;
 						bParams.add(o2.sqlAgencyTitle());
 						break;
-					case "stopDateTime":
+					case TrafficStop.VAR_stopDateTime:
 						o2.setStopDateTime(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopDateTime=$" + num);
+						bSql.append(TrafficStop.VAR_stopDateTime + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopDateTime());
 						break;
-					case "stopYear":
+					case TrafficStop.VAR_stopYear:
 						o2.setStopYear(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopYear=$" + num);
+						bSql.append(TrafficStop.VAR_stopYear + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopYear());
 						break;
-					case "stopPurposeNum":
+					case TrafficStop.VAR_stopPurposeNum:
 						o2.setStopPurposeNum(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopPurposeNum=$" + num);
+						bSql.append(TrafficStop.VAR_stopPurposeNum + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopPurposeNum());
 						break;
-					case "stopActionNum":
+					case TrafficStop.VAR_stopActionNum:
 						o2.setStopActionNum(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopActionNum=$" + num);
+						bSql.append(TrafficStop.VAR_stopActionNum + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopActionNum());
 						break;
-					case "stopDriverArrest":
+					case TrafficStop.VAR_stopDriverArrest:
 						o2.setStopDriverArrest(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopDriverArrest=$" + num);
+						bSql.append(TrafficStop.VAR_stopDriverArrest + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopDriverArrest());
 						break;
-					case "stopPassengerArrest":
+					case TrafficStop.VAR_stopPassengerArrest:
 						o2.setStopPassengerArrest(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopPassengerArrest=$" + num);
+						bSql.append(TrafficStop.VAR_stopPassengerArrest + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopPassengerArrest());
 						break;
-					case "stopEncounterForce":
+					case TrafficStop.VAR_stopEncounterForce:
 						o2.setStopEncounterForce(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopEncounterForce=$" + num);
+						bSql.append(TrafficStop.VAR_stopEncounterForce + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopEncounterForce());
 						break;
-					case "stopEngageForce":
+					case TrafficStop.VAR_stopEngageForce:
 						o2.setStopEngageForce(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopEngageForce=$" + num);
+						bSql.append(TrafficStop.VAR_stopEngageForce + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopEngageForce());
 						break;
-					case "stopOfficerInjury":
+					case TrafficStop.VAR_stopOfficerInjury:
 						o2.setStopOfficerInjury(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopOfficerInjury=$" + num);
+						bSql.append(TrafficStop.VAR_stopOfficerInjury + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopOfficerInjury());
 						break;
-					case "stopDriverInjury":
+					case TrafficStop.VAR_stopDriverInjury:
 						o2.setStopDriverInjury(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopDriverInjury=$" + num);
+						bSql.append(TrafficStop.VAR_stopDriverInjury + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopDriverInjury());
 						break;
-					case "stopPassengerInjury":
+					case TrafficStop.VAR_stopPassengerInjury:
 						o2.setStopPassengerInjury(jsonObject.getBoolean(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopPassengerInjury=$" + num);
+						bSql.append(TrafficStop.VAR_stopPassengerInjury + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopPassengerInjury());
 						break;
-					case "stopOfficerId":
+					case TrafficStop.VAR_stopOfficerId:
 						o2.setStopOfficerId(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopOfficerId=$" + num);
+						bSql.append(TrafficStop.VAR_stopOfficerId + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopOfficerId());
 						break;
-					case "stopLocationId":
+					case TrafficStop.VAR_stopLocationId:
 						o2.setStopLocationId(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopLocationId=$" + num);
+						bSql.append(TrafficStop.VAR_stopLocationId + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopLocationId());
 						break;
-					case "stopCityId":
+					case TrafficStop.VAR_stopCityId:
 						o2.setStopCityId(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stopCityId=$" + num);
+						bSql.append(TrafficStop.VAR_stopCityId + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStopCityId());
 						break;
-					case "personKeys":
+					case TrafficStop.VAR_personKeys:
+						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(TrafficPerson.class, val, inheritPk).onSuccess(pk2 -> {
+									sql(siteRequest).update(TrafficPerson.class, pk2).set(TrafficPerson.VAR_trafficStopKey, TrafficStop.class, pk).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
 						break;
 					}
 				}
@@ -1268,7 +1282,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			if(bParams.size() > 0) {
 			bParams.add(pk);
 			num++;
-				futures.add(Future.future(a -> {
+				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
@@ -1280,8 +1294,13 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					});
 				}));
 			}
-			CompositeFuture.all(futures).onSuccess(a -> {
-				promise.complete();
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPOSTTrafficStop failed. ", ex));
+					promise.fail(ex);
+				});
 			}).onFailure(ex -> {
 				LOG.error(String.format("sqlPOSTTrafficStop failed. ", ex));
 				promise.fail(ex);
@@ -1540,182 +1559,153 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			Set<String> methodNames = jsonObject.fieldNames();
 			TrafficStop o2 = new TrafficStop();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
-			for(String methodName : methodNames) {
-				switch(methodName) {
+			for(String entityVar : methodNames) {
+				switch(entityVar) {
 					case "setInheritPk":
-							o2.setInheritPk(jsonObject.getString(methodName));
+							o2.setInheritPk(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("inheritPk=$" + num);
+							bSql.append(TrafficStop.VAR_inheritPk + "=$" + num);
 							num++;
 							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setStateAbbreviation":
-							o2.setStateAbbreviation(jsonObject.getString(methodName));
+							o2.setStateAbbreviation(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stateAbbreviation=$" + num);
+							bSql.append(TrafficStop.VAR_stateAbbreviation + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStateAbbreviation());
 						break;
 					case "setAgencyTitle":
-							o2.setAgencyTitle(jsonObject.getString(methodName));
+							o2.setAgencyTitle(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("agencyTitle=$" + num);
+							bSql.append(TrafficStop.VAR_agencyTitle + "=$" + num);
 							num++;
 							bParams.add(o2.sqlAgencyTitle());
 						break;
 					case "setStopDateTime":
-							o2.setStopDateTime(jsonObject.getString(methodName));
+							o2.setStopDateTime(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopDateTime=$" + num);
+							bSql.append(TrafficStop.VAR_stopDateTime + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopDateTime());
 						break;
 					case "setStopYear":
-							o2.setStopYear(jsonObject.getString(methodName));
+							o2.setStopYear(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopYear=$" + num);
+							bSql.append(TrafficStop.VAR_stopYear + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopYear());
 						break;
 					case "setStopPurposeNum":
-							o2.setStopPurposeNum(jsonObject.getString(methodName));
+							o2.setStopPurposeNum(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopPurposeNum=$" + num);
+							bSql.append(TrafficStop.VAR_stopPurposeNum + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopPurposeNum());
 						break;
 					case "setStopActionNum":
-							o2.setStopActionNum(jsonObject.getString(methodName));
+							o2.setStopActionNum(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopActionNum=$" + num);
+							bSql.append(TrafficStop.VAR_stopActionNum + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopActionNum());
 						break;
 					case "setStopDriverArrest":
-							o2.setStopDriverArrest(jsonObject.getBoolean(methodName));
+							o2.setStopDriverArrest(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopDriverArrest=$" + num);
+							bSql.append(TrafficStop.VAR_stopDriverArrest + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopDriverArrest());
 						break;
 					case "setStopPassengerArrest":
-							o2.setStopPassengerArrest(jsonObject.getBoolean(methodName));
+							o2.setStopPassengerArrest(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopPassengerArrest=$" + num);
+							bSql.append(TrafficStop.VAR_stopPassengerArrest + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopPassengerArrest());
 						break;
 					case "setStopEncounterForce":
-							o2.setStopEncounterForce(jsonObject.getBoolean(methodName));
+							o2.setStopEncounterForce(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopEncounterForce=$" + num);
+							bSql.append(TrafficStop.VAR_stopEncounterForce + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopEncounterForce());
 						break;
 					case "setStopEngageForce":
-							o2.setStopEngageForce(jsonObject.getBoolean(methodName));
+							o2.setStopEngageForce(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopEngageForce=$" + num);
+							bSql.append(TrafficStop.VAR_stopEngageForce + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopEngageForce());
 						break;
 					case "setStopOfficerInjury":
-							o2.setStopOfficerInjury(jsonObject.getBoolean(methodName));
+							o2.setStopOfficerInjury(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopOfficerInjury=$" + num);
+							bSql.append(TrafficStop.VAR_stopOfficerInjury + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopOfficerInjury());
 						break;
 					case "setStopDriverInjury":
-							o2.setStopDriverInjury(jsonObject.getBoolean(methodName));
+							o2.setStopDriverInjury(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopDriverInjury=$" + num);
+							bSql.append(TrafficStop.VAR_stopDriverInjury + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopDriverInjury());
 						break;
 					case "setStopPassengerInjury":
-							o2.setStopPassengerInjury(jsonObject.getBoolean(methodName));
+							o2.setStopPassengerInjury(jsonObject.getBoolean(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopPassengerInjury=$" + num);
+							bSql.append(TrafficStop.VAR_stopPassengerInjury + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopPassengerInjury());
 						break;
 					case "setStopOfficerId":
-							o2.setStopOfficerId(jsonObject.getString(methodName));
+							o2.setStopOfficerId(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopOfficerId=$" + num);
+							bSql.append(TrafficStop.VAR_stopOfficerId + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopOfficerId());
 						break;
 					case "setStopLocationId":
-							o2.setStopLocationId(jsonObject.getString(methodName));
+							o2.setStopLocationId(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopLocationId=$" + num);
+							bSql.append(TrafficStop.VAR_stopLocationId + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopLocationId());
 						break;
 					case "setStopCityId":
-							o2.setStopCityId(jsonObject.getString(methodName));
+							o2.setStopCityId(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stopCityId=$" + num);
+							bSql.append(TrafficStop.VAR_stopCityId + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStopCityId());
 						break;
-					case "addPersonKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(TrafficPerson.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && !o.getPersonKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=$1 WHERE pk=$2")
-												.execute(Tuple.of(pk, l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("TrafficPerson");
-									}
-								}
-							}
-						}
-						break;
-					case "addAllPersonKeys":
-						Optional.ofNullable(jsonObject.getJsonArray(methodName)).orElse(new JsonArray()).forEach(val -> {
-							futures.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficPerson.class, (String)val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficPerson.class, pk2).set("trafficStopKey").to(TrafficStop.class, pk).onSuccess(a -> {
+					case "setPersonKeys":
+						JsonArray setPersonKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+						setPersonKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(TrafficPerson.class, val, inheritPk).onSuccess(pk2 -> {
+									sql(siteRequest).update(TrafficPerson.class, val).set(TrafficPerson.VAR_trafficStopKey, TrafficStop.class, pk).onSuccess(a -> {
 										promise2.complete();
 									}).onFailure(ex -> {
 										promise2.fail(ex);
@@ -1725,99 +1715,22 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								});
 							}));
 						});
-						break;
-					case "setPersonKeys":
-						JsonArray setPersonKeysValues = jsonObject.getJsonArray(methodName);
-						JsonArray setPersonKeysValues2 = new JsonArray();
-						if(setPersonKeysValues != null) {
-							for(Integer i = 0; i <  setPersonKeysValues.size(); i++) {
-								Long l = Long.parseLong(setPersonKeysValues.getString(i));
-								if(l != null) {
-									SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(TrafficPerson.class);
-									searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null)
-										setPersonKeysValues2.add(l2);
-									if(l2 != null && !o.getPersonKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=$1 WHERE pk=$2")
-												.execute(Tuple.of(pk, l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("TrafficPerson");
-										}
-									}
-								}
-							}
-						}
-						if(o.getPersonKeys() != null) {
-							for(Long l :  o.getPersonKeys()) {
-								if(l != null && (setPersonKeysValues2 == null || !setPersonKeysValues2.contains(l))) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=null WHERE pk=$1")
-												.execute(Tuple.of(l)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
-										});
-									}));
-								}
-							}
-						}
-						break;
-					case "removePersonKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(TrafficPerson.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && o.getPersonKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE TrafficPerson SET trafficStopKey=null WHERE pk=$1")
-												.execute(Tuple.of(l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value TrafficStop.personKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("TrafficPerson");
-									}
-								}
-							}
-						}
-						break;
+						Optional.ofNullable(o.getPersonKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setPersonKeysValues.contains(oVal.toString())).forEach(pk2 -> {
+							futures2.add(Future.future(promise2 -> {
+								sql(siteRequest).update(TrafficPerson.class, pk2).setToNull(TrafficPerson.VAR_trafficStopKey, TrafficStop.class, pk2).onSuccess(a -> {
+									promise2.complete();
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
 				}
 			}
 			bSql.append(" WHERE pk=$" + num);
 			if(bParams.size() > 0) {
 				bParams.add(pk);
 				num++;
-				futures.add(Future.future(a -> {
+				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
@@ -1829,6 +1742,20 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					});
 				}));
 			}
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
+					TrafficStop o3 = new TrafficStop();
+					o3.setSiteRequest_(o.getSiteRequest_());
+					o3.setPk(pk);
+					promise.complete(o3);
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPATCHTrafficStop failed. ", ex));
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPATCHTrafficStop failed. ", ex));
+				promise.fail(ex);
+			});
 			CompositeFuture.all(futures).onSuccess(a -> {
 				TrafficStop o3 = new TrafficStop();
 				o3.setSiteRequest_(o.getSiteRequest_());
@@ -2378,6 +2305,37 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		}
 		return promise.future();
 	}
+	public static final String VAR_trafficStopKey = "trafficStopKey";
+	public static final String VAR_stateAbbreviation = "stateAbbreviation";
+	public static final String VAR_stateSearch = "stateSearch";
+	public static final String VAR_state_ = "state_";
+	public static final String VAR_stateKey = "stateKey";
+	public static final String VAR_stateName = "stateName";
+	public static final String VAR_agencyKey = "agencyKey";
+	public static final String VAR_agencySearch = "agencySearch";
+	public static final String VAR_agency_ = "agency_";
+	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_stopDateTime = "stopDateTime";
+	public static final String VAR_stopYear = "stopYear";
+	public static final String VAR_stopPurposeNum = "stopPurposeNum";
+	public static final String VAR_stopPurposeTitle = "stopPurposeTitle";
+	public static final String VAR_stopActionNum = "stopActionNum";
+	public static final String VAR_stopActionTitle = "stopActionTitle";
+	public static final String VAR_stopDriverArrest = "stopDriverArrest";
+	public static final String VAR_stopPassengerArrest = "stopPassengerArrest";
+	public static final String VAR_stopEncounterForce = "stopEncounterForce";
+	public static final String VAR_stopEngageForce = "stopEngageForce";
+	public static final String VAR_stopOfficerInjury = "stopOfficerInjury";
+	public static final String VAR_stopDriverInjury = "stopDriverInjury";
+	public static final String VAR_stopPassengerInjury = "stopPassengerInjury";
+	public static final String VAR_stopOfficerId = "stopOfficerId";
+	public static final String VAR_stopLocationId = "stopLocationId";
+	public static final String VAR_stopCityId = "stopCityId";
+	public static final String VAR_personKeys = "personKeys";
+	public static final String VAR_personSearch = "personSearch";
+	public static final String VAR_personRaceTitles = "personRaceTitles";
+	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
+	public static final String VAR_trafficSearchRaceTitles = "trafficSearchRaceTitles";
 
 	// General //
 

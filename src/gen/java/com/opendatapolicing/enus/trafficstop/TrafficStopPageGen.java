@@ -368,4 +368,5 @@ public abstract class TrafficStopPageGen<DEV> extends TrafficStopGenPage {
 		sb.append(" }");
 		return sb.toString();
 	}
+
 }

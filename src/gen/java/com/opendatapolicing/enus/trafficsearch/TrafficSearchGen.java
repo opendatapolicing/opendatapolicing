@@ -4471,70 +4471,92 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 	protected boolean alreadyInitializedTrafficSearch = false;
 
-	public TrafficSearch initDeepTrafficSearch(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepTrafficSearch(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedTrafficSearch) {
 			alreadyInitializedTrafficSearch = true;
-			initDeepTrafficSearch();
+			return promiseDeepTrafficSearch();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (TrafficSearch)this;
 	}
 
-	public void initDeepTrafficSearch() {
-		initTrafficSearch();
-		super.initDeepCluster(siteRequest_);
+	public Future<Void> promiseDeepTrafficSearch() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseTrafficSearch(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepCluster(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initTrafficSearch() {
-		trafficSearchKeyInit();
-		personKeyInit();
-		trafficPersonSearchInit();
-		trafficPerson_Init();
-		contrabandKeysInit();
-		searchBasisKeysInit();
-		agencyTitleInit();
-		stopDateTimeInit();
-		stopPurposeNumInit();
-		stopPurposeTitleInit();
-		stopActionNumInit();
-		stopActionTitleInit();
-		stopDriverArrestInit();
-		stopPassengerArrestInit();
-		stopEncounterForceInit();
-		stopEngageForceInit();
-		stopOfficerInjuryInit();
-		stopDriverInjuryInit();
-		stopPassengerInjuryInit();
-		stopOfficerIdInit();
-		stopLocationIdInit();
-		stopCityIdInit();
-		personAgeInit();
-		personTypeIdInit();
-		personTypeTitleInit();
-		personTypeDriverInit();
-		personTypePassengerInit();
-		personGenderIdInit();
-		personGenderTitleInit();
-		personGenderFemaleInit();
-		personGenderMaleInit();
-		personEthnicityIdInit();
-		personEthnicityTitleInit();
-		personRaceIdInit();
-		personRaceTitleInit();
-		trafficStopKeyInit();
-		searchTypeNumInit();
-		searchTypeTitleInit();
-		searchVehicleInit();
-		searchDriverInit();
-		searchPassengerInit();
-		searchPropertyInit();
-		searchVehicleSiezedInit();
-		searchPersonalPropertySiezedInit();
-		searchOtherPropertySiezedInit();
+	public Future<Void> promiseTrafficSearch(Promise<Void> promise) {
+		Future.future(a -> {}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			trafficSearchKeyInit();
+			personKeyInit();
+			trafficPersonSearchInit();
+			trafficPerson_Init();
+			contrabandKeysInit();
+			searchBasisKeysInit();
+			agencyTitleInit();
+			stopDateTimeInit();
+			stopPurposeNumInit();
+			stopPurposeTitleInit();
+			stopActionNumInit();
+			stopActionTitleInit();
+			stopDriverArrestInit();
+			stopPassengerArrestInit();
+			stopEncounterForceInit();
+			stopEngageForceInit();
+			stopOfficerInjuryInit();
+			stopDriverInjuryInit();
+			stopPassengerInjuryInit();
+			stopOfficerIdInit();
+			stopLocationIdInit();
+			stopCityIdInit();
+			personAgeInit();
+			personTypeIdInit();
+			personTypeTitleInit();
+			personTypeDriverInit();
+			personTypePassengerInit();
+			personGenderIdInit();
+			personGenderTitleInit();
+			personGenderFemaleInit();
+			personGenderMaleInit();
+			personEthnicityIdInit();
+			personEthnicityTitleInit();
+			personRaceIdInit();
+			personRaceTitleInit();
+			trafficStopKeyInit();
+			searchTypeNumInit();
+			searchTypeTitleInit();
+			searchVehicleInit();
+			searchDriverInit();
+			searchPassengerInit();
+			searchPropertyInit();
+			searchVehicleSiezedInit();
+			searchPersonalPropertySiezedInit();
+			searchOtherPropertySiezedInit();
+			promise2.complete();
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepTrafficSearch(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepTrafficSearch(siteRequest_);
 	}
 
 	/////////////////
@@ -6211,4 +6233,50 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_trafficSearchKey = "trafficSearchKey";
+	public static final String VAR_personKey = "personKey";
+	public static final String VAR_trafficPersonSearch = "trafficPersonSearch";
+	public static final String VAR_trafficPerson_ = "trafficPerson_";
+	public static final String VAR_contrabandKeys = "contrabandKeys";
+	public static final String VAR_searchBasisKeys = "searchBasisKeys";
+	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_stopDateTime = "stopDateTime";
+	public static final String VAR_stopPurposeNum = "stopPurposeNum";
+	public static final String VAR_stopPurposeTitle = "stopPurposeTitle";
+	public static final String VAR_stopActionNum = "stopActionNum";
+	public static final String VAR_stopActionTitle = "stopActionTitle";
+	public static final String VAR_stopDriverArrest = "stopDriverArrest";
+	public static final String VAR_stopPassengerArrest = "stopPassengerArrest";
+	public static final String VAR_stopEncounterForce = "stopEncounterForce";
+	public static final String VAR_stopEngageForce = "stopEngageForce";
+	public static final String VAR_stopOfficerInjury = "stopOfficerInjury";
+	public static final String VAR_stopDriverInjury = "stopDriverInjury";
+	public static final String VAR_stopPassengerInjury = "stopPassengerInjury";
+	public static final String VAR_stopOfficerId = "stopOfficerId";
+	public static final String VAR_stopLocationId = "stopLocationId";
+	public static final String VAR_stopCityId = "stopCityId";
+	public static final String VAR_personAge = "personAge";
+	public static final String VAR_personTypeId = "personTypeId";
+	public static final String VAR_personTypeTitle = "personTypeTitle";
+	public static final String VAR_personTypeDriver = "personTypeDriver";
+	public static final String VAR_personTypePassenger = "personTypePassenger";
+	public static final String VAR_personGenderId = "personGenderId";
+	public static final String VAR_personGenderTitle = "personGenderTitle";
+	public static final String VAR_personGenderFemale = "personGenderFemale";
+	public static final String VAR_personGenderMale = "personGenderMale";
+	public static final String VAR_personEthnicityId = "personEthnicityId";
+	public static final String VAR_personEthnicityTitle = "personEthnicityTitle";
+	public static final String VAR_personRaceId = "personRaceId";
+	public static final String VAR_personRaceTitle = "personRaceTitle";
+	public static final String VAR_trafficStopKey = "trafficStopKey";
+	public static final String VAR_searchTypeNum = "searchTypeNum";
+	public static final String VAR_searchTypeTitle = "searchTypeTitle";
+	public static final String VAR_searchVehicle = "searchVehicle";
+	public static final String VAR_searchDriver = "searchDriver";
+	public static final String VAR_searchPassenger = "searchPassenger";
+	public static final String VAR_searchProperty = "searchProperty";
+	public static final String VAR_searchVehicleSiezed = "searchVehicleSiezed";
+	public static final String VAR_searchPersonalPropertySiezed = "searchPersonalPropertySiezed";
+	public static final String VAR_searchOtherPropertySiezed = "searchOtherPropertySiezed";
 }

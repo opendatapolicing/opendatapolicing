@@ -3362,59 +3362,81 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 
 	protected boolean alreadyInitializedTrafficPerson = false;
 
-	public TrafficPerson initDeepTrafficPerson(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepTrafficPerson(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedTrafficPerson) {
 			alreadyInitializedTrafficPerson = true;
-			initDeepTrafficPerson();
+			return promiseDeepTrafficPerson();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (TrafficPerson)this;
 	}
 
-	public void initDeepTrafficPerson() {
-		initTrafficPerson();
-		super.initDeepCluster(siteRequest_);
+	public Future<Void> promiseDeepTrafficPerson() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseTrafficPerson(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepCluster(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initTrafficPerson() {
-		personKeyInit();
-		trafficStopKeyInit();
-		trafficStopSearchInit();
-		trafficStop_Init();
-		agencyTitleInit();
-		stopDateTimeInit();
-		stopPurposeNumInit();
-		stopPurposeTitleInit();
-		stopActionNumInit();
-		stopActionTitleInit();
-		stopDriverArrestInit();
-		stopPassengerArrestInit();
-		stopEncounterForceInit();
-		stopEngageForceInit();
-		stopOfficerInjuryInit();
-		stopDriverInjuryInit();
-		stopPassengerInjuryInit();
-		stopOfficerIdInit();
-		stopLocationIdInit();
-		stopCityIdInit();
-		trafficSearchKeysInit();
-		personAgeInit();
-		personTypeIdInit();
-		personTypeTitleInit();
-		personTypeDriverInit();
-		personTypePassengerInit();
-		personGenderIdInit();
-		personGenderTitleInit();
-		personGenderFemaleInit();
-		personGenderMaleInit();
-		personEthnicityIdInit();
-		personEthnicityTitleInit();
-		personRaceIdInit();
-		personRaceTitleInit();
+	public Future<Void> promiseTrafficPerson(Promise<Void> promise) {
+		Future.future(a -> {}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			personKeyInit();
+			trafficStopKeyInit();
+			trafficStopSearchInit();
+			trafficStop_Init();
+			agencyTitleInit();
+			stopDateTimeInit();
+			stopPurposeNumInit();
+			stopPurposeTitleInit();
+			stopActionNumInit();
+			stopActionTitleInit();
+			stopDriverArrestInit();
+			stopPassengerArrestInit();
+			stopEncounterForceInit();
+			stopEngageForceInit();
+			stopOfficerInjuryInit();
+			stopDriverInjuryInit();
+			stopPassengerInjuryInit();
+			stopOfficerIdInit();
+			stopLocationIdInit();
+			stopCityIdInit();
+			trafficSearchKeysInit();
+			personAgeInit();
+			personTypeIdInit();
+			personTypeTitleInit();
+			personTypeDriverInit();
+			personTypePassengerInit();
+			personGenderIdInit();
+			personGenderTitleInit();
+			personGenderFemaleInit();
+			personGenderMaleInit();
+			personEthnicityIdInit();
+			personEthnicityTitleInit();
+			personRaceIdInit();
+			personRaceTitleInit();
+			promise2.complete();
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepTrafficPerson(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepTrafficPerson(siteRequest_);
 	}
 
 	/////////////////
@@ -4724,4 +4746,39 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_personKey = "personKey";
+	public static final String VAR_trafficStopKey = "trafficStopKey";
+	public static final String VAR_trafficStopSearch = "trafficStopSearch";
+	public static final String VAR_trafficStop_ = "trafficStop_";
+	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_stopDateTime = "stopDateTime";
+	public static final String VAR_stopPurposeNum = "stopPurposeNum";
+	public static final String VAR_stopPurposeTitle = "stopPurposeTitle";
+	public static final String VAR_stopActionNum = "stopActionNum";
+	public static final String VAR_stopActionTitle = "stopActionTitle";
+	public static final String VAR_stopDriverArrest = "stopDriverArrest";
+	public static final String VAR_stopPassengerArrest = "stopPassengerArrest";
+	public static final String VAR_stopEncounterForce = "stopEncounterForce";
+	public static final String VAR_stopEngageForce = "stopEngageForce";
+	public static final String VAR_stopOfficerInjury = "stopOfficerInjury";
+	public static final String VAR_stopDriverInjury = "stopDriverInjury";
+	public static final String VAR_stopPassengerInjury = "stopPassengerInjury";
+	public static final String VAR_stopOfficerId = "stopOfficerId";
+	public static final String VAR_stopLocationId = "stopLocationId";
+	public static final String VAR_stopCityId = "stopCityId";
+	public static final String VAR_trafficSearchKeys = "trafficSearchKeys";
+	public static final String VAR_personAge = "personAge";
+	public static final String VAR_personTypeId = "personTypeId";
+	public static final String VAR_personTypeTitle = "personTypeTitle";
+	public static final String VAR_personTypeDriver = "personTypeDriver";
+	public static final String VAR_personTypePassenger = "personTypePassenger";
+	public static final String VAR_personGenderId = "personGenderId";
+	public static final String VAR_personGenderTitle = "personGenderTitle";
+	public static final String VAR_personGenderFemale = "personGenderFemale";
+	public static final String VAR_personGenderMale = "personGenderMale";
+	public static final String VAR_personEthnicityId = "personEthnicityId";
+	public static final String VAR_personEthnicityTitle = "personEthnicityTitle";
+	public static final String VAR_personRaceId = "personRaceId";
+	public static final String VAR_personRaceTitle = "personRaceTitle";
 }

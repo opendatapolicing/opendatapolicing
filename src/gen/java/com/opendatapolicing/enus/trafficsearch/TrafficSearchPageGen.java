@@ -368,4 +368,5 @@ public abstract class TrafficSearchPageGen<DEV> extends TrafficSearchGenPage {
 		sb.append(" }");
 		return sb.toString();
 	}
+
 }

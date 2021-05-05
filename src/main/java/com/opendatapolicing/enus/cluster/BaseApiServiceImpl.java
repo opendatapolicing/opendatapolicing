@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.slf4j.Logger;
@@ -293,7 +294,6 @@ public class BaseApiServiceImpl {
 
 	public class SqlUpdate {
 		private Class<?> c1;
-		private String entityVar;
 		private Long pk1;
 		private ApiRequest apiRequest;
 		private List<Long> pks;
@@ -313,12 +313,7 @@ public class BaseApiServiceImpl {
 			return this;
 		}
 
-		public SqlUpdate set(String entityVar) {
-			this.entityVar = entityVar;
-			return this;
-		}
-
-		public Future<Void> to(Class<? extends Cluster> c2, Long pk2) {
+		public Future<Void> set(String entityVar1, Class<? extends Cluster> c2, Long pk2) {
 			Promise<Void> promise = Promise.promise();
 			if(pk2 == null) {
 				promise.complete();
@@ -327,7 +322,43 @@ public class BaseApiServiceImpl {
 					pks.add(pk2);
 					classes.add(c2.getSimpleName());
 				}
-				siteRequest.getSqlConnection().preparedQuery(String.format("UPDATE %s SET %s=$1 WHERE pk=$2", c1.getSimpleName(), entityVar)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
+				siteRequest.getSqlConnection().preparedQuery(String.format("UPDATE %s SET %s=$1 WHERE pk=$2", c1.getSimpleName(), entityVar1)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
+			}
+			return promise.future();
+		}
+
+		public Future<Void> setToNull(String entityVar1, Class<? extends Cluster> c2, Long pk2) {
+			Promise<Void> promise = Promise.promise();
+			if(pk2 == null) {
+				promise.complete();
+			} else {
+				if(!pks.contains(pk2)) {
+					pks.add(pk2);
+					classes.add(c2.getSimpleName());
+				}
+				siteRequest.getSqlConnection().preparedQuery(String.format("UPDATE %s SET %s=$1 WHERE pk=null", c1.getSimpleName(), entityVar1)).execute(Tuple.of(pk1)).onSuccess(a -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
+			}
+			return promise.future();
+		}
+
+		public Future<Void> to(Class<? extends Cluster> c2, Long pk2, String entityVar2) {
+			Promise<Void> promise = Promise.promise();
+			if(pk2 == null) {
+				promise.complete();
+			} else {
+				if(!pks.contains(pk2)) {
+					pks.add(pk2);
+					classes.add(c2.getSimpleName());
+				}
+				siteRequest.getSqlConnection().preparedQuery(String.format("INSERT INTO %s%s_%s%s(pk1, pk2) VALUES($1, $2)", c1.getSimpleName(), StringUtils.capitalize(entityVar1), c2.getSimpleName(), StringUtils.capitalize(entityVar2), entityVar2)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
 					promise.complete();
 				}).onFailure(ex -> {
 					promise.fail(ex);

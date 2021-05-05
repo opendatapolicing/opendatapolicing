@@ -4995,4 +4995,36 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_trafficStopKey = "trafficStopKey";
+	public static final String VAR_stateAbbreviation = "stateAbbreviation";
+	public static final String VAR_stateSearch = "stateSearch";
+	public static final String VAR_state_ = "state_";
+	public static final String VAR_stateKey = "stateKey";
+	public static final String VAR_stateName = "stateName";
+	public static final String VAR_agencyKey = "agencyKey";
+	public static final String VAR_agencySearch = "agencySearch";
+	public static final String VAR_agency_ = "agency_";
+	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_stopDateTime = "stopDateTime";
+	public static final String VAR_stopYear = "stopYear";
+	public static final String VAR_stopPurposeNum = "stopPurposeNum";
+	public static final String VAR_stopPurposeTitle = "stopPurposeTitle";
+	public static final String VAR_stopActionNum = "stopActionNum";
+	public static final String VAR_stopActionTitle = "stopActionTitle";
+	public static final String VAR_stopDriverArrest = "stopDriverArrest";
+	public static final String VAR_stopPassengerArrest = "stopPassengerArrest";
+	public static final String VAR_stopEncounterForce = "stopEncounterForce";
+	public static final String VAR_stopEngageForce = "stopEngageForce";
+	public static final String VAR_stopOfficerInjury = "stopOfficerInjury";
+	public static final String VAR_stopDriverInjury = "stopDriverInjury";
+	public static final String VAR_stopPassengerInjury = "stopPassengerInjury";
+	public static final String VAR_stopOfficerId = "stopOfficerId";
+	public static final String VAR_stopLocationId = "stopLocationId";
+	public static final String VAR_stopCityId = "stopCityId";
+	public static final String VAR_personKeys = "personKeys";
+	public static final String VAR_personSearch = "personSearch";
+	public static final String VAR_personRaceTitles = "personRaceTitles";
+	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
+	public static final String VAR_trafficSearchRaceTitles = "trafficSearchRaceTitles";
 }

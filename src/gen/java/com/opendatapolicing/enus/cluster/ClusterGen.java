@@ -1821,4 +1821,17 @@ public abstract class ClusterGen<DEV> extends Object {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_pk = "pk";
+	public static final String VAR_inheritPk = "inheritPk";
+	public static final String VAR_id = "id";
+	public static final String VAR_created = "created";
+	public static final String VAR_modified = "modified";
+	public static final String VAR_classCanonicalName = "classCanonicalName";
+	public static final String VAR_classSimpleName = "classSimpleName";
+	public static final String VAR_classCanonicalNames = "classCanonicalNames";
+	public static final String VAR_saves = "saves";
+	public static final String VAR_objectTitle = "objectTitle";
+	public static final String VAR_objectId = "objectId";
 }
