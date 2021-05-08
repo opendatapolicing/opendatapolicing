@@ -58,7 +58,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -84,6 +84,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -99,7 +100,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected String tabStr;
 	@JsonIgnore
-	public Wrap<String> tabStrWrap = new Wrap<String>().p(this).c(String.class).var("tabStr").o(tabStr);
+	public Wrap<String> tabStrWrap = new Wrap<String>().var("tabStr").o(tabStr);
 
 	/**	<br/> The entity tabStr
 	 *  is defined as null before being initialized. 
@@ -124,6 +125,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_tabStr(tabStrWrap);
 			if(tabStr == null)
 				setTabStr(tabStrWrap.o);
+			tabStrWrap.o(null);
 		}
 		tabStrWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -167,7 +169,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected File file;
 	@JsonIgnore
-	public Wrap<File> fileWrap = new Wrap<File>().p(this).c(File.class).var("file").o(file);
+	public Wrap<File> fileWrap = new Wrap<File>().var("file").o(file);
 
 	/**	<br/> The entity file
 	 *  is defined as null before being initialized. 
@@ -193,6 +195,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_file(fileWrap);
 			if(file == null)
 				setFile(fileWrap.o);
+			fileWrap.o(null);
 		}
 		fileWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -208,7 +211,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected StringWriter stringWriter;
 	@JsonIgnore
-	public Wrap<StringWriter> stringWriterWrap = new Wrap<StringWriter>().p(this).c(StringWriter.class).var("stringWriter").o(stringWriter);
+	public Wrap<StringWriter> stringWriterWrap = new Wrap<StringWriter>().var("stringWriter").o(stringWriter);
 
 	/**	<br/> The entity stringWriter
 	 *  is defined as null before being initialized. 
@@ -234,6 +237,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_stringWriter(stringWriterWrap);
 			if(stringWriter == null)
 				setStringWriter(stringWriterWrap.o);
+			stringWriterWrap.o(null);
 		}
 		stringWriterWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -249,7 +253,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected Buffer buffer;
 	@JsonIgnore
-	public Wrap<Buffer> bufferWrap = new Wrap<Buffer>().p(this).c(Buffer.class).var("buffer").o(buffer);
+	public Wrap<Buffer> bufferWrap = new Wrap<Buffer>().var("buffer").o(buffer);
 
 	/**	<br/> The entity buffer
 	 *  is defined as null before being initialized. 
@@ -275,6 +279,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_buffer(bufferWrap);
 			if(buffer == null)
 				setBuffer(bufferWrap.o);
+			bufferWrap.o(null);
 		}
 		bufferWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -290,7 +295,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected PrintWriter printWriter;
 	@JsonIgnore
-	public Wrap<PrintWriter> printWriterWrap = new Wrap<PrintWriter>().p(this).c(PrintWriter.class).var("printWriter").o(printWriter);
+	public Wrap<PrintWriter> printWriterWrap = new Wrap<PrintWriter>().var("printWriter").o(printWriter);
 
 	/**	<br/> The entity printWriter
 	 *  is defined as null before being initialized. 
@@ -316,6 +321,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_printWriter(printWriterWrap);
 			if(printWriter == null)
 				setPrintWriter(printWriterWrap.o);
+			printWriterWrap.o(null);
 		}
 		printWriterWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -331,7 +337,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean empty;
 	@JsonIgnore
-	public Wrap<Boolean> emptyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("empty").o(empty);
+	public Wrap<Boolean> emptyWrap = new Wrap<Boolean>().var("empty").o(empty);
 
 	/**	<br/> The entity empty
 	 *  is defined as null before being initialized. 
@@ -361,6 +367,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 			_empty(emptyWrap);
 			if(empty == null)
 				setEmpty(emptyWrap.o);
+			emptyWrap.o(null);
 		}
 		emptyWrap.alreadyInitialized(true);
 		return (AllWriter)this;
@@ -414,13 +421,13 @@ public abstract class AllWriterGen<DEV> extends Object {
 	}
 
 	public void initAllWriter() {
-		siteRequest_Init();
-		tabStrInit();
-		fileInit();
-		stringWriterInit();
-		bufferInit();
-		printWriterInit();
-		emptyInit();
+				siteRequest_Init();
+				tabStrInit();
+				fileInit();
+				stringWriterInit();
+				bufferInit();
+				printWriterInit();
+				emptyInit();
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -669,4 +676,12 @@ public abstract class AllWriterGen<DEV> extends Object {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_tabStr = "tabStr";
+	public static final String VAR_file = "file";
+	public static final String VAR_stringWriter = "stringWriter";
+	public static final String VAR_buffer = "buffer";
+	public static final String VAR_printWriter = "printWriter";
+	public static final String VAR_empty = "empty";
 }

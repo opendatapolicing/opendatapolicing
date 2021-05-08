@@ -53,7 +53,7 @@ public abstract class AllWritersGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -79,6 +79,7 @@ public abstract class AllWritersGen<DEV> extends Object {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (AllWriters)this;
@@ -94,7 +95,7 @@ public abstract class AllWritersGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected List<AllWriter> writers = new ArrayList<AllWriter>();
 	@JsonIgnore
-	public Wrap<List<AllWriter>> writersWrap = new Wrap<List<AllWriter>>().p(this).c(List.class).var("writers").o(writers);
+	public Wrap<List<AllWriter>> writersWrap = new Wrap<List<AllWriter>>().var("writers").o(writers);
 
 	/**	<br/> The entity writers
 	 *  It is constructed before being initialized with the constructor by default List<AllWriter>(). 
@@ -154,8 +155,8 @@ public abstract class AllWritersGen<DEV> extends Object {
 	}
 
 	public void initAllWriters() {
-		siteRequest_Init();
-		writersInit();
+				siteRequest_Init();
+				writersInit();
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -378,4 +379,7 @@ public abstract class AllWritersGen<DEV> extends Object {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_writers = "writers";
 }

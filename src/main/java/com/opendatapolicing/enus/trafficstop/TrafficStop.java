@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficstop;                          
+package com.opendatapolicing.enus.trafficstop;                                      
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -44,11 +44,6 @@ import io.vertx.core.Promise;
  * ApiUriAdminSearch.enUS: /api/admin/traffic-stop
  * RoleUtilisateurAdminSearch.enUS: true
  * 
- * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: TrafficStopPage
- * PageSuperSearchPage.enUS: ClusterPage
- * ApiUriSearchPage.enUS: /traffic-stop
- * 
  * AName.enUS: a traffic stop
  * Color: pale-green
  * IconGroup: regular
@@ -59,7 +54,7 @@ import io.vertx.core.Promise;
  * PublicRead: true
  * 
  * Map.hackathonMission: to create a new Java class TrafficStop to define the TrafficStop Java class that collects stop, search, and use-of-force police data publicly available to ensure transparency
- **/        
+ **/           
 public class TrafficStop extends TrafficStopGen<Cluster> {
 
 	/**
@@ -91,14 +86,14 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {   
+		SearchList<SiteState> l = new SearchList<>();
 		if(stateAbbreviation != null) {
-			SearchList<SiteState> l = new SearchList<>();
 			l.setQuery("*:*");
 			l.addFilterQuery("stateAbbreviation_indexed_string:" + stateAbbreviation);
 			l.setC(SiteState.class);
 			l.setStore(true);
-			promise.complete(l);
 		}
+		promise.complete(l);
 	}
 
 	protected void _state_(Wrap<SiteState> w) {
@@ -145,14 +140,14 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _agencySearch(Promise<SearchList<SiteAgency>> promise) {
+		SearchList<SiteAgency> l = new SearchList<>();
 		if(agencyKey != null) {
-			SearchList<SiteAgency> l = new SearchList<>();
 			l.setQuery("*:*");
 			l.addFilterQuery("pk_indexed_long:" + agencyKey);
 			l.setC(SiteAgency.class);
 			l.setStore(true);
-			promise.complete(l);
 		}
+		promise.complete(l);
 	}
 
 	protected void _agency_(Wrap<SiteAgency> c) {

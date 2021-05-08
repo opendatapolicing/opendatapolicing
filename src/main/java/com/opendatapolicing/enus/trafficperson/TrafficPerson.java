@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficperson;                              
+package com.opendatapolicing.enus.trafficperson;                                                   
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -7,6 +7,8 @@ import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficstop.TrafficStop;
 import com.opendatapolicing.enus.wrap.Wrap;
+
+import io.vertx.core.Promise;
 
 /**
  * Model: true
@@ -30,11 +32,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiMethod.enUS: AdminSearch
  * ApiUriAdminSearch.enUS: /api/admin/person
  * RoleUtilisateurAdminSearch.enUS: true
- * 
- * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: TrafficPersonPage
- * PageSuperSearchPage.enUS: ClusterPage
- * ApiUriSearchPage.enUS: /person
  * 
  * AName.enUS: a person
  * NamePlural.enUS: people
@@ -76,12 +73,14 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */ 
-	protected void _trafficStopSearch(SearchList<TrafficStop> l) {
+	protected void _trafficStopSearch(Promise<SearchList<TrafficStop>> promise) {
 		if(trafficStopKey != null) {
+			SearchList<TrafficStop> l = new SearchList<>();
 			l.setQuery("*:*");
 			l.addFilterQuery("pk_indexed_long:" + trafficStopKey);
 			l.setC(TrafficStop.class);
 			l.setStore(true);
+			promise.complete(l);
 		}
 	}
 

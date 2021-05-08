@@ -1,17 +1,17 @@
-package com.opendatapolicing.enus.agency;     
+package com.opendatapolicing.enus.agency;         
 
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.wrap.Wrap;
 
+import io.vertx.core.Promise;
+
 /**
  * Model: true
  * Api: true
- * Page: true
  * Indexed: true
  * Saved: true
  * Map.Integer.sqlSort: 6
@@ -30,11 +30,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiMethod.enUS: AdminSearch
  * ApiUriAdminSearch.enUS: /api/admin/agency
  * RoleUtilisateurAdminSearch.enUS: true
- * 
- * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: SiteAgencyPage
- * PageSuperSearchPage.enUS: ClusterPage
- * ApiUriSearchPage.enUS: /agency
  * 
  * AName.enUS: a agency
  * Color: pale-yellow
@@ -80,11 +75,13 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */
-	protected void _stateSearch(SearchList<SiteState> l) {
+	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {
+		SearchList<SiteState> l = new SearchList<>();
 		l.setQuery("*:*");
 		l.addFilterQuery("agencyKeys_indexed_longs:" + pk);
 		l.setC(SiteState.class);
 		l.setStore(true);
+		promise.complete(l);
 	}
 
 	protected void _state_(Wrap<SiteState> c) {

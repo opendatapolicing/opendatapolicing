@@ -59,7 +59,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected Class<?> c;
 	@JsonIgnore
-	public Wrap<Class<?>> cWrap = new Wrap<Class<?>>().p(this).c(Class.class).var("c").o(c);
+	public Wrap<Class<?>> cWrap = new Wrap<Class<?>>().var("c").o(c);
 
 	/**	<br/> The entity c
 	 *  is defined as null before being initialized. 
@@ -85,6 +85,7 @@ public abstract class SearchListGen<DEV> {
 			_c(cWrap);
 			if(c == null)
 				setC(cWrap.o);
+			cWrap.o(null);
 		}
 		cWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -101,7 +102,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -127,6 +128,7 @@ public abstract class SearchListGen<DEV> {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -142,7 +144,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean store;
 	@JsonIgnore
-	public Wrap<Boolean> storeWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("store").o(store);
+	public Wrap<Boolean> storeWrap = new Wrap<Boolean>().var("store").o(store);
 
 	/**	<br/> The entity store
 	 *  is defined as null before being initialized. 
@@ -172,6 +174,7 @@ public abstract class SearchListGen<DEV> {
 			_store(storeWrap);
 			if(store == null)
 				setStore(storeWrap.o);
+			storeWrap.o(null);
 		}
 		storeWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -215,7 +218,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean populate;
 	@JsonIgnore
-	public Wrap<Boolean> populateWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("populate").o(populate);
+	public Wrap<Boolean> populateWrap = new Wrap<Boolean>().var("populate").o(populate);
 
 	/**	<br/> The entity populate
 	 *  is defined as null before being initialized. 
@@ -245,6 +248,7 @@ public abstract class SearchListGen<DEV> {
 			_populate(populateWrap);
 			if(populate == null)
 				setPopulate(populateWrap.o);
+			populateWrap.o(null);
 		}
 		populateWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -288,7 +292,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> fields = new ArrayList<String>();
 	@JsonIgnore
-	public Wrap<List<String>> fieldsWrap = new Wrap<List<String>>().p(this).c(List.class).var("fields").o(fields);
+	public Wrap<List<String>> fieldsWrap = new Wrap<List<String>>().var("fields").o(fields);
 
 	/**	<br/> The entity fields
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -377,7 +381,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected SolrQuery solrQuery = new SolrQuery();
 	@JsonIgnore
-	public Wrap<SolrQuery> solrQueryWrap = new Wrap<SolrQuery>().p(this).c(SolrQuery.class).var("solrQuery").o(solrQuery);
+	public Wrap<SolrQuery> solrQueryWrap = new Wrap<SolrQuery>().var("solrQuery").o(solrQuery);
 
 	/**	<br/> The entity solrQuery
 	 *  It is constructed before being initialized with the constructor by default SolrQuery(). 
@@ -416,7 +420,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected QueryResponse queryResponse;
 	@JsonIgnore
-	public Wrap<QueryResponse> queryResponseWrap = new Wrap<QueryResponse>().p(this).c(QueryResponse.class).var("queryResponse").o(queryResponse);
+	public Wrap<QueryResponse> queryResponseWrap = new Wrap<QueryResponse>().var("queryResponse").o(queryResponse);
 
 	/**	<br/> The entity queryResponse
 	 *  is defined as null before being initialized. 
@@ -463,7 +467,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocumentList solrDocumentList;
 	@JsonIgnore
-	public Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().p(this).c(SolrDocumentList.class).var("solrDocumentList").o(solrDocumentList);
+	public Wrap<SolrDocumentList> solrDocumentListWrap = new Wrap<SolrDocumentList>().var("solrDocumentList").o(solrDocumentList);
 
 	/**	<br/> The entity solrDocumentList
 	 *  is defined as null before being initialized. 
@@ -489,6 +493,7 @@ public abstract class SearchListGen<DEV> {
 			_solrDocumentList(solrDocumentListWrap);
 			if(solrDocumentList == null)
 				setSolrDocumentList(solrDocumentListWrap.o);
+			solrDocumentListWrap.o(null);
 		}
 		solrDocumentListWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -504,7 +509,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected List<DEV> list = new ArrayList<DEV>();
 	@JsonIgnore
-	public Wrap<List<DEV>> listWrap = new Wrap<List<DEV>>().p(this).c(List.class).var("list").o(list);
+	public Wrap<List<DEV>> listWrap = new Wrap<List<DEV>>().var("list").o(list);
 
 	/**	<br/> The entity list
 	 *  It is constructed before being initialized with the constructor by default List<DEV>(). 
@@ -551,7 +556,7 @@ public abstract class SearchListGen<DEV> {
 	@JsonInclude(Include.NON_NULL)
 	protected Object first;
 	@JsonIgnore
-	public Wrap<Object> firstWrap = new Wrap<Object>().p(this).c(Object.class).var("first").o(first);
+	public Wrap<Object> firstWrap = new Wrap<Object>().var("first").o(first);
 
 	/**	<br/> The entity first
 	 *  is defined as null before being initialized. 
@@ -577,6 +582,7 @@ public abstract class SearchListGen<DEV> {
 			_first(firstWrap);
 			if(first == null)
 				setFirst(firstWrap.o);
+			firstWrap.o(null);
 		}
 		firstWrap.alreadyInitialized(true);
 		return (SearchList)this;
@@ -611,15 +617,19 @@ public abstract class SearchListGen<DEV> {
 	}
 
 	public Future<Void> promiseSearchList(Promise<Void> promise) {
-		Future.future(a -> {}).compose(a -> {
+		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
-			cInit();
-			siteRequest_Init();
-			storeInit();
-			populateInit();
-			fieldsInit();
-			solrQueryInit();
-			promise2.complete();
+			try {
+				cInit();
+				siteRequest_Init();
+				storeInit();
+				populateInit();
+				fieldsInit();
+				solrQueryInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
 			return promise2.future();
 		}).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
@@ -631,10 +641,14 @@ public abstract class SearchListGen<DEV> {
 			return promise2.future();
 		}).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
-			solrDocumentListInit();
-			listInit();
-			firstInit();
-			promise2.complete();
+			try {
+				solrDocumentListInit();
+				listInit();
+				firstInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
 			return promise2.future();
 		}).onSuccess(a -> {
 			promise.complete();
@@ -904,4 +918,15 @@ public abstract class SearchListGen<DEV> {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_c = "c";
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_store = "store";
+	public static final String VAR_populate = "populate";
+	public static final String VAR_fields = "fields";
+	public static final String VAR_solrQuery = "solrQuery";
+	public static final String VAR_queryResponse = "queryResponse";
+	public static final String VAR_solrDocumentList = "solrDocumentList";
+	public static final String VAR_list = "list";
+	public static final String VAR_first = "first";
 }

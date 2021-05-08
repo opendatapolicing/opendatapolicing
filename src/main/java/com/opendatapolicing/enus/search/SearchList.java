@@ -1,12 +1,17 @@
-package com.opendatapolicing.enus.search;
+package com.opendatapolicing.enus.search;  
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -17,7 +22,9 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.CursorMarkParams;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
@@ -66,7 +73,11 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		try {
 			Long numFound = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getNumFound()).orElse(0L);
 			if(numFound > 0) {
-				siteRequest_.getWebClient().get(ConfigKeys.SOLR_URL + "?" + solrQuery.toQueryString()).send().onSuccess(a -> {
+				String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
+				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
+				String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
+				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
+				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
 					JsonObject json = a.bodyAsJsonObject();
 					Map<String, Object> map = json.getMap();
 					NamedList<Object> namedList = new NamedList<>(map);
@@ -101,7 +112,11 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			Long numFound = Optional.ofNullable(getSolrDocumentList()).map(l -> l.getNumFound()).orElse(0L);
 			if(rows > 0 && (start + rows) < numFound) {
 				setStart(start.intValue() + rows);
-				siteRequest_.getWebClient().get(ConfigKeys.SOLR_URL + "?" + solrQuery.toQueryString()).send().onSuccess(a -> {
+				String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
+				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
+				String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
+				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
+				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
 					JsonObject json = a.bodyAsJsonObject();
 					Map<String, Object> map = json.getMap();
 					NamedList<Object> namedList = new NamedList<>(map);
@@ -127,20 +142,28 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 		return promise.future();
 	}
 
-	protected void _queryResponse(Promise<QueryResponse> promise) {                       
+	protected void _queryResponse(Promise<QueryResponse> promise) {        
 		try {
 			if(this.c != null)
 				solrQuery.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
 			if(solrQuery.getQuery() != null) {
-				siteRequest_.getWebClient().get(ConfigKeys.SOLR_URL + "?" + solrQuery.toQueryString()).send().onSuccess(a -> {
-					JsonObject json = a.bodyAsJsonObject();
-					Map<String, Object> map = json.getMap();
-					NamedList<Object> namedList = new NamedList<>(map);
-					QueryResponse r = new QueryResponse(namedList, null);
-					setQueryResponse(r);
-					promise.complete(r);
+				String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
+				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
+				String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
+				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString() + "&suggest=true&terms=true&terms.fl=stopPurposeTitle_indexed_string");
+				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
+					try {
+						JsonObject json = a.bodyAsJsonObject();
+						Map<String, Object> map = json.getMap();
+						QueryResponse r = generateSolrQueryResponse(map);
+						setQueryResponse(r);
+						promise.complete(r);
+					} catch(Exception ex) {
+						LOG.error("Could not read response from Solr. ", ex);
+						promise.fail(ex);
+					}
 				}).onFailure(ex -> {
-					LOG.error(String.format("indexTrafficStop failed. "), ex);
+					LOG.error(String.format("indexTrafficStop failed. "), new RuntimeException(ex));
 					promise.fail(ex);
 				});
 			} else {
@@ -150,6 +173,102 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			promise.fail(ex);
 			LOG.error(String.format("indexTrafficStop failed. "), ex);
 		}
+	}
+
+	public QueryResponse generateSolrQueryResponse(Map<String, Object> map) {
+		NamedList<Object> l = new NamedList<>();
+		SolrDocumentList response = new SolrDocumentList();
+		ArrayList<NamedList<Object>> clusters = new ArrayList<>();
+		Map<String, NamedList<Object>> suggestInfo = new HashMap<>();
+		NamedList<NamedList<Object>> terms = new NamedList<NamedList<Object>>();
+		NamedList<SolrDocumentList> moreLikeThis = new NamedList<SolrDocumentList>();
+
+		// clusters //
+		clusters.addAll(Optional.ofNullable((List<Map<String, Object>>)map.get("clusters")).orElse(Arrays.asList()).stream().map(m -> new NamedList<Object>(m)).collect(Collectors.toList()));
+
+		// suggest //
+		Optional.ofNullable((Map<String, Map<String, Object>>)map.get("suggest")).orElse(new HashMap<String, Map<String, Object>>()).forEach((key, value) -> {
+			suggestInfo.put(key, new NamedList<Object>(value));
+		});
+
+		// terms //
+		Optional.ofNullable((Map<String, List<Object>>)map.get("terms")).orElse(new HashMap<String, List<Object>>()).forEach((key, list) -> {
+			NamedList<Object> namedList1 = new NamedList<>();
+
+			for(Integer i = 0; i < list.size(); i+=2) {
+				NamedList<Object> namedList2 = new NamedList<>();
+				namedList1.add((String)list.get(i), list.get(i + 1));
+			}
+			terms.add(key, namedList1);
+		});
+
+		// response //
+		Optional.ofNullable((LinkedHashMap<String, Object>)map.get("response")).ifPresent(m -> {
+			response.setStart(((Integer)m.get("start")).longValue());
+			response.setNumFound(((Integer)m.get("numFound")).longValue());
+			response.setMaxScore((Float)m.get("maxScore"));
+			((ArrayList<LinkedHashMap<String, Object>>)m.get("docs")).stream().forEach(doc -> {
+				response.add(new SolrDocument(doc));
+			});
+		});
+
+		// facet_counts //
+		NamedList<Object> facetCounts = new NamedList<Object>();
+		Map<String, ? extends Object> facetCountsJson = (Map<String, Object>)map.get("facet_counts");
+		if(facetCountsJson != null) {
+			Optional.ofNullable(facetCountsJson.get("facet_fields")).ifPresent(facetFieldsJson -> {
+				NamedList<Object> facetFields = new NamedList<Object>();
+				((Map<String, List<Map<String, Object>>>)facetFieldsJson).forEach((key1, value1) -> {
+					NamedList<Object> namedList1 = new NamedList<>();
+					for(Integer i = 0; i < list.size(); i+=2) {
+						namedList1.add((String)list.get(i), list.get(i + 1));
+					}
+					facetFields.add(key1, namedList1);
+				});
+				facetCounts.add("facet_fields", facetFields);
+			});
+			Optional.ofNullable((Map<String, List<Object>>)map.get("terms")).orElse(new HashMap<String, List<Object>>()).forEach((key, list) -> {
+			});
+			Optional.ofNullable(facetCountsJson.get("facet_queries")).ifPresent(facet_queries -> {
+				facetCounts.add("facet_queries", new NamedList<Object>((Map<String, ? extends Object>)facet_queries));
+			});
+			Optional.ofNullable(facetCountsJson.get("facet_ranges")).ifPresent(facet_ranges -> {
+				facetCounts.add("facet_ranges", new NamedList<Object>((Map<String, ? extends Object>)facet_ranges));
+			});
+			Optional.ofNullable(facetCountsJson.get("facet_pivot")).ifPresent(facet_pivot -> {
+				facetCounts.add("facet_pivot", new NamedList<Object>((Map<String, ? extends Object>)facet_pivot));
+			});
+			Optional.ofNullable(facetCountsJson.get("facet_intervals")).ifPresent(facet_intervals -> {
+				facetCounts.add("facet_intervals", new NamedList<Object>((Map<String, ? extends Object>)facet_intervals));
+			});
+		}
+
+		// facets //
+		NamedList<Object> facets = new SimpleOrderedMap<Object>();
+		Optional.ofNullable(((Map<String, ? extends Object>)map.get("facets"))).orElse(new HashMap<>()).forEach((key, value) -> {
+			facets.add(key, value);
+		});
+
+		// Look for known things
+		l.add("responseHeader", new NamedList<Object>(((Map<String, ? extends Object>)map.get("responseHeader"))));
+		l.add("response", response);
+		l.add("sort_values", new NamedList<Object>(((Map<String, ? extends Object>)map.get("sort_values"))));
+		l.add("facet_counts", facetCounts);
+		l.add("debug", new NamedList<Object>(((Map<String, ? extends Object>)map.get("debug"))));
+		l.add("grouped", new NamedList<Object>(((Map<String, ? extends Object>)map.get("grouped"))));
+		l.add("expanded", new NamedList<Object>(((Map<String, ? extends Object>)map.get("expanded"))));
+		l.add("highlighting", new NamedList<Object>(((Map<String, ? extends Object>)map.get("highlighting"))));
+		l.add("spellcheck", new NamedList<Object>(((Map<String, ? extends Object>)map.get("spellcheck"))));
+		l.add("clusters", clusters);
+		l.add("facets", facets);
+		l.add("suggest", suggestInfo);
+		l.add("stats", new NamedList<Object>(((Map<String, ? extends Object>)map.get("stats"))));
+		l.add("terms", terms);
+		l.add("moreLikeThis", moreLikeThis);
+		l.add(CursorMarkParams.CURSOR_MARK_NEXT, (String)map.get(CursorMarkParams.CURSOR_MARK_NEXT));
+
+		QueryResponse r = new QueryResponse(l, null);
+		return r;
 	}
 
 	protected void _solrDocumentList(Wrap<SolrDocumentList> c) {
@@ -164,7 +283,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			for(SolrDocument solrDocument : solrDocumentList) {
 				try {
 					if(solrDocument != null) {
-						String classCanonicalName = (String)solrDocument.get("classCanonicalName_indexed_string");
+						String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
 						DEV o = (DEV)Class.forName(classCanonicalName).newInstance();
 						MethodUtils.invokeMethod(o, "setSiteRequest_", siteRequest_);
 						if(populate)

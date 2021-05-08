@@ -25,11 +25,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiMethod: PATCH
  * ApiMethod: POST
  * 
- * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: SiteUserPage
- * SuperPageSearchPage.enUS: ClusterPage
- * ApiUriSearchPage.enUS: /user
- * 
  * Keyword: classSimpleNameSiteUser
  * Role.frFR: SiteAdmin
  * Role.enUS: SiteAdmin

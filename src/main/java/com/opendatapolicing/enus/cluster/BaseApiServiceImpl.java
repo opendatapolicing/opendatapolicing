@@ -164,7 +164,6 @@ public class BaseApiServiceImpl {
 									siteRequest2.setApiRequest_(apiRequest);
 
 									userService.postSiteUserFuture(siteRequest2, false).onSuccess(siteUser -> {
-										siteRequest.setSiteUser(siteUser);
 										siteRequest.setUserName(accessToken.getString("preferred_username"));
 										siteRequest.setUserFirstName(accessToken.getString("given_name"));
 										siteRequest.setUserLastName(accessToken.getString("family_name"));
@@ -199,7 +198,6 @@ public class BaseApiServiceImpl {
 										siteRequest2.setApiRequest_(apiRequest);
 
 										userService.patchSiteUserFuture(siteUser1, false).onSuccess(siteUser2 -> {
-											siteRequest.setSiteUser(siteUser2);
 											siteRequest.setUserName(siteUser2.getUserName());
 											siteRequest.setUserFirstName(siteUser2.getUserFirstName());
 											siteRequest.setUserLastName(siteUser2.getUserLastName());
@@ -209,7 +207,6 @@ public class BaseApiServiceImpl {
 											promise.fail(ex);
 										});
 									} else {
-										siteRequest.setSiteUser(siteUser1);
 										siteRequest.setUserName(siteUser1.getUserName());
 										siteRequest.setUserFirstName(siteUser1.getUserFirstName());
 										siteRequest.setUserLastName(siteUser1.getUserLastName());
@@ -294,6 +291,9 @@ public class BaseApiServiceImpl {
 
 	public class SqlUpdate {
 		private Class<?> c1;
+		private Class<?> c2;
+		private String entityVar1;
+		private String entityVar2;
 		private Long pk1;
 		private ApiRequest apiRequest;
 		private List<Long> pks;
@@ -310,6 +310,22 @@ public class BaseApiServiceImpl {
 		public SqlUpdate update(Class<? extends Cluster> c1, Long pk1) {
 			this.c1 = c1;
 			this.pk1 = pk1;
+			return this;
+		}
+
+		public SqlUpdate insertInto(Class<? extends Cluster> c1, String entityVar1, Class<? extends Cluster> c2, String entityVar2) {
+			this.c1 = c1;
+			this.entityVar1 = entityVar1;
+			this.c2 = c2;
+			this.entityVar2 = entityVar2;
+			return this;
+		}
+
+		public SqlUpdate deleteFrom(Class<? extends Cluster> c1, String entityVar1, Class<? extends Cluster> c2, String entityVar2) {
+			this.c1 = c1;
+			this.entityVar1 = entityVar1;
+			this.c2 = c2;
+			this.entityVar2 = entityVar2;
 			return this;
 		}
 
@@ -349,7 +365,7 @@ public class BaseApiServiceImpl {
 			return promise.future();
 		}
 
-		public Future<Void> to(Class<? extends Cluster> c2, Long pk2, String entityVar2) {
+		public Future<Void> values(Long pk1, Long pk2) {
 			Promise<Void> promise = Promise.promise();
 			if(pk2 == null) {
 				promise.complete();
@@ -366,6 +382,42 @@ public class BaseApiServiceImpl {
 			}
 			return promise.future();
 		}
+
+		public Future<Void> where(Long pk1, Long pk2) {
+			Promise<Void> promise = Promise.promise();
+			if(pk2 == null) {
+				promise.complete();
+			} else {
+				if(!pks.contains(pk2)) {
+					pks.add(pk2);
+					classes.add(c2.getSimpleName());
+				}
+				siteRequest.getSqlConnection().preparedQuery(String.format("DELETE FROM %s%s_%s%s WHERE pk1=$1 AND pk2=$2", c1.getSimpleName(), StringUtils.capitalize(entityVar1), c2.getSimpleName(), StringUtils.capitalize(entityVar2), entityVar2)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					promise.fail(ex);
+				});
+			}
+			return promise.future();
+		}
+
+//		public Future<Void> to(Class<? extends Cluster> c2, Long pk2, String entityVar2) {
+//			Promise<Void> promise = Promise.promise();
+//			if(pk2 == null) {
+//				promise.complete();
+//			} else {
+//				if(!pks.contains(pk2)) {
+//					pks.add(pk2);
+//					classes.add(c2.getSimpleName());
+//				}
+//				siteRequest.getSqlConnection().preparedQuery(String.format("INSERT INTO %s%s_%s%s(pk1, pk2) VALUES($1, $2)", c1.getSimpleName(), StringUtils.capitalize(entityVar1), c2.getSimpleName(), StringUtils.capitalize(entityVar2), entityVar2)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
+//					promise.complete();
+//				}).onFailure(ex -> {
+//					promise.fail(ex);
+//				});
+//			}
+//			return promise.future();
+//		}
 	}
 
 	public SqlUpdate sql(SiteRequestEnUS siteRequest) {

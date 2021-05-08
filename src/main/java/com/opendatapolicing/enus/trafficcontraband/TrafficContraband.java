@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficcontraband;   
+package com.opendatapolicing.enus.trafficcontraband;    
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -7,6 +7,8 @@ import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
+
+import io.vertx.core.Promise;
 
 /**
  * Model: true
@@ -30,11 +32,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiMethod.enUS: AdminSearch
  * ApiUriAdminSearch.enUS: /api/admin/contraband
  * RoleUtilisateurAdminSearch.enUS: true
- * 
- * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: ContrabandPage
- * PageSuperSearchPage.enUS: ClusterPage
- * ApiUriSearchPage.enUS: /contraband
  * 
  * AName.enUS: a contraband
  * Color: pale-green
@@ -75,12 +72,14 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */ 
-	protected void _trafficSearchSearch(SearchList<TrafficSearch> l) {
+	protected void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise) {
 		if(searchKey != null) {
+			SearchList<TrafficSearch> l = new SearchList<>();
 			l.setQuery("*:*");
 			l.addFilterQuery("pk_indexed_long:" + searchKey);
 			l.setC(TrafficSearch.class);
 			l.setStore(true);
+			promise.complete(l);
 		}
 	}
 

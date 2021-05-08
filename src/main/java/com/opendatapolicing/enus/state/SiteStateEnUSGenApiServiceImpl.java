@@ -114,94 +114,78 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	@Override
 	public void putimportSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		LOG.debug(String.format("putimportSiteState started. "));
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setJsonObject(body);
-					siteRequest.setRequestUri("/api/state/import");
-					siteRequest.setRequestMethod("PUTImport");
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri("/api/state/import");
+				siteRequest.setRequestMethod("PUTImport");
 
-					List<String> roles = Arrays.asList("SiteAdmin");
-					if(
-							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-							) {
-						eventHandler.handle(Future.succeededFuture(
-							new ServiceResponse(401, "UNAUTHORIZED", 
-								Buffer.buffer().appendString(
-									new JsonObject()
-										.put("errorCode", "401")
-										.put("errorMessage", "roles required: " + String.join(", ", roles))
-										.encodePrettily()
-									), MultiMap.caseInsensitiveMultiMap()
-							)
-						));
-					} else {
-						response200PUTImportSiteState(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											ApiRequest apiRequest = new ApiRequest();
-											JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-											apiRequest.setRows(jsonArray.size());
-											apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
-											apiRequest.setNumPATCH(0L);
-											apiRequest.initDeepApiRequest(siteRequest);
-											siteRequest.setApiRequest_(apiRequest);
-											eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-											varsSiteState(siteRequest, d -> {
-												if(d.succeeded()) {
-													listPUTImportSiteState(apiRequest, siteRequest).onSuccess(e -> {
-														response200PUTImportSiteState(siteRequest, f -> {
-															if(f.succeeded()) {
-																LOG.debug(String.format("putimportSiteState succeeded. "));
-																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-															} else {
-																LOG.error(String.format("putimportSiteState failed. ", f.cause()));
-																error(siteRequest, null, f);
-															}
-														});
-													}).onFailure(ex -> {
-														LOG.error(String.format("putimportSiteState failed. ", ex));
-														error(siteRequest, null, Future.failedFuture(ex));
-													});
-												} else {
-													LOG.error(String.format("putimportSiteState failed. ", d.cause()));
-													error(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
-											LOG.error(String.format("putimportSiteState failed. ", ex));
-											error(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
-							} else {
-								LOG.error(String.format("putimportSiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
+				List<String> roles = Arrays.asList("SiteAdmin");
+				if(
+						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+						) {
+					eventHandler.handle(Future.succeededFuture(
+						new ServiceResponse(401, "UNAUTHORIZED", 
+							Buffer.buffer().appendString(
+								new JsonObject()
+									.put("errorCode", "401")
+									.put("errorMessage", "roles required: " + String.join(", ", roles))
+									.encodePrettily()
+								), MultiMap.caseInsensitiveMultiMap()
+						)
+					));
+				} else {
+					response200PUTImportSiteState(siteRequest).onSuccess(response -> {
+						eventHandler.handle(Future.succeededFuture(response));
+						workerExecutor.executeBlocking(blockingCodeHandler -> {
+							try {
+								ApiRequest apiRequest = new ApiRequest();
+								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
+								apiRequest.setRows(jsonArray.size());
+								apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
+								apiRequest.setNumPATCH(0L);
+								apiRequest.initDeepApiRequest(siteRequest);
+								siteRequest.setApiRequest_(apiRequest);
+								eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
+								varsSiteState(siteRequest).onSuccess(d -> {
+									listPUTImportSiteState(apiRequest, siteRequest).onSuccess(e -> {
+										LOG.debug(String.format("putimportSiteState succeeded. "));
+										blockingCodeHandler.complete();
+									}).onFailure(ex -> {
+										LOG.error(String.format("putimportSiteState failed. ", ex));
+										blockingCodeHandler.fail(ex);
+									});
+								}).onFailure(ex -> {
+									LOG.error(String.format("putimportSiteState failed. ", ex));
+									blockingCodeHandler.fail(ex);
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("putimportSiteState failed. ", ex));
+								blockingCodeHandler.fail(ex);
 							}
+						}, resultHandler -> {
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("putimportSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("putimportSiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("putimportSiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putimportSiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("putimportSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("putimportSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("putimportSiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
@@ -214,77 +198,90 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		try {
 			jsonArray.forEach(obj -> {
 				JsonObject json = (JsonObject)obj;
+				futures.add(Future.future(promise2 -> {
+					try {
+						json.put("inheritPk", json.getValue("pk"));
+						json.put("created", json.getValue("created"));
 
-				json.put("inheritPk", json.getValue("pk"));
+						SiteRequestEnUS siteRequest2 = siteRequest.copy();
+						siteRequest2.setJsonObject(json);
+						siteRequest2.setApiRequest_(apiRequest);
+						siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
-				json.put("created", json.getValue("created"));
-
-				SiteRequestEnUS siteRequest2 = siteRequest.copy();
-				siteRequest2.setJsonObject(json);
-				siteRequest2.setApiRequest_(apiRequest);
-				siteRequest2.setRequestVars(siteRequest.getRequestVars());
-
-				SearchList<SiteState> searchList = new SearchList<SiteState>();
-				searchList.setStore(true);
-				searchList.setQuery("*:*");
-				searchList.setC(SiteState.class);
-				searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(json.getString("pk")));
-				searchList.initDeepForClass(siteRequest2);
-
-				if(searchList.size() == 1) {
-					SiteState o = searchList.getList().stream().findFirst().orElse(null);
-					SiteState o2 = new SiteState();
-					JsonObject json2 = new JsonObject();
-					for(String f : json.fieldNames()) {
-						Object jsonVal = json.getValue(f);
-						if(jsonVal instanceof JsonArray) {
-							JsonArray jsonVals = (JsonArray)jsonVal;
-							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-							if(jsonVals.size() == vals.size()) {
-								Boolean match = true;
-								for(Object val : vals) {
-									if(val != null) {
-										if(!jsonVals.contains(val.toString())) {
-											match = false;
-											break;
+						SearchList<SiteState> searchList = new SearchList<SiteState>();
+						searchList.setStore(true);
+						searchList.setQuery("*:*");
+						searchList.setC(SiteState.class);
+						searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(json.getString("pk")));
+						searchList.promiseDeepForClass(siteRequest2).onSuccess(a -> {
+							try {
+								if(searchList.size() == 1) {
+									SiteState o = searchList.getList().stream().findFirst().orElse(null);
+									SiteState o2 = new SiteState();
+									JsonObject json2 = new JsonObject();
+									for(String f : json.fieldNames()) {
+										Object jsonVal = json.getValue(f);
+										if(jsonVal instanceof JsonArray) {
+											JsonArray jsonVals = (JsonArray)jsonVal;
+											Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+											if(jsonVals.size() == vals.size()) {
+												Boolean match = true;
+												for(Object val : vals) {
+													if(val != null) {
+														if(!jsonVals.contains(val.toString())) {
+															match = false;
+															break;
+														}
+													} else {
+														match = false;
+														break;
+													}
+												}
+												if(!match) {
+													json2.put("set" + StringUtils.capitalize(f), jsonVal);
+												}
+											} else {
+												json2.put("set" + StringUtils.capitalize(f), jsonVal);
+											}
+										} else {
+											o2.defineForClass(f, jsonVal);
+											if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+												json2.put("set" + StringUtils.capitalize(f), jsonVal);
 										}
-									} else {
-										match = false;
-										break;
 									}
+									for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+										if(!json.fieldNames().contains(f))
+											json2.putNull("set" + StringUtils.capitalize(f));
+									}
+									if(json2.size() > 0) {
+										siteRequest2.setJsonObject(json2);
+										patchSiteStateFuture(o, true).onSuccess(b -> {
+											promise2.complete();
+										}).onFailure(ex -> {
+											LOG.error(String.format("listPUTImportSiteState failed. ", ex));
+										});
+									}
+								} else {
+									postSiteStateFuture(siteRequest2, true).onSuccess(b -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										LOG.error(String.format("listPUTImportSiteState failed. ", ex));
+										promise2.fail(ex);
+									});
 								}
-								if(!match) {
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
-								}
-							} else {
-								json2.put("set" + StringUtils.capitalize(f), jsonVal);
-							}
-						}
-						else {
-							o2.defineForClass(f, jsonVal);
-							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-								json2.put("set" + StringUtils.capitalize(f), jsonVal);
-						}
-					}
-					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-						if(!json.fieldNames().contains(f))
-							json2.putNull("set" + StringUtils.capitalize(f));
-					}
-					if(json2.size() > 0) {
-						siteRequest2.setJsonObject(json2);
-						futures.add(
-							patchSiteStateFuture(o, true).onFailure(ex -> {
+							} catch(Exception ex) {
 								LOG.error(String.format("listPUTImportSiteState failed. ", ex));
-							})
-						);
-					}
-				} else {
-					futures.add(
-						postSiteStateFuture(siteRequest2, true).onFailure(ex -> {
+								promise2.fail(ex);
+							}
+						}).onFailure(ex -> {
 							LOG.error(String.format("listPUTImportSiteState failed. ", ex));
-						})
-					);
-				}
+							promise2.fail(ex);
+						});
+					} catch(Exception ex) {
+						LOG.error(String.format("listPUTImportSiteState failed. ", ex));
+						promise2.fail(ex);
+					}
+				}));
 			});
 			CompositeFuture.all(futures).onSuccess(a -> {
 				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
@@ -300,14 +297,16 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		return promise.future();
 	}
 
-	public void response200PUTImportSiteState(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<ServiceResponse> response200PUTImportSiteState(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200PUTImportSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PUTImportSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// PUTMerge //
@@ -315,94 +314,78 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	@Override
 	public void putmergeSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		LOG.debug(String.format("putmergeSiteState started. "));
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setJsonObject(body);
-					siteRequest.setRequestUri("/api/state/merge");
-					siteRequest.setRequestMethod("PUTMerge");
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri("/api/state/merge");
+				siteRequest.setRequestMethod("PUTMerge");
 
-					List<String> roles = Arrays.asList("SiteAdmin");
-					if(
-							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-							) {
-						eventHandler.handle(Future.succeededFuture(
-							new ServiceResponse(401, "UNAUTHORIZED", 
-								Buffer.buffer().appendString(
-									new JsonObject()
-										.put("errorCode", "401")
-										.put("errorMessage", "roles required: " + String.join(", ", roles))
-										.encodePrettily()
-									), MultiMap.caseInsensitiveMultiMap()
-							)
-						));
-					} else {
-						response200PUTMergeSiteState(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											ApiRequest apiRequest = new ApiRequest();
-											JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-											apiRequest.setRows(jsonArray.size());
-											apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
-											apiRequest.setNumPATCH(0L);
-											apiRequest.initDeepApiRequest(siteRequest);
-											siteRequest.setApiRequest_(apiRequest);
-											eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-											varsSiteState(siteRequest, d -> {
-												if(d.succeeded()) {
-													listPUTMergeSiteState(apiRequest, siteRequest).onSuccess(e -> {
-														response200PUTMergeSiteState(siteRequest, f -> {
-															if(f.succeeded()) {
-																LOG.debug(String.format("putmergeSiteState succeeded. "));
-																blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-															} else {
-																LOG.error(String.format("putmergeSiteState failed. ", f.cause()));
-																error(siteRequest, null, f);
-															}
-														});
-													}).onFailure(ex -> {
-														LOG.error(String.format("putmergeSiteState failed. ", ex));
-														error(siteRequest, null, Future.failedFuture(ex));
-													});
-												} else {
-													LOG.error(String.format("putmergeSiteState failed. ", d.cause()));
-													error(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
-											LOG.error(String.format("putmergeSiteState failed. ", ex));
-											error(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
-							} else {
-								LOG.error(String.format("putmergeSiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
+				List<String> roles = Arrays.asList("SiteAdmin");
+				if(
+						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+						) {
+					eventHandler.handle(Future.succeededFuture(
+						new ServiceResponse(401, "UNAUTHORIZED", 
+							Buffer.buffer().appendString(
+								new JsonObject()
+									.put("errorCode", "401")
+									.put("errorMessage", "roles required: " + String.join(", ", roles))
+									.encodePrettily()
+								), MultiMap.caseInsensitiveMultiMap()
+						)
+					));
+				} else {
+					response200PUTMergeSiteState(siteRequest).onSuccess(response -> {
+						eventHandler.handle(Future.succeededFuture(response));
+						workerExecutor.executeBlocking(blockingCodeHandler -> {
+							try {
+								ApiRequest apiRequest = new ApiRequest();
+								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
+								apiRequest.setRows(jsonArray.size());
+								apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
+								apiRequest.setNumPATCH(0L);
+								apiRequest.initDeepApiRequest(siteRequest);
+								siteRequest.setApiRequest_(apiRequest);
+								eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
+								varsSiteState(siteRequest).onSuccess(d -> {
+									listPUTMergeSiteState(apiRequest, siteRequest).onSuccess(e -> {
+										LOG.debug(String.format("putmergeSiteState succeeded. "));
+										blockingCodeHandler.complete();
+									}).onFailure(ex -> {
+										LOG.error(String.format("putmergeSiteState failed. ", ex));
+										blockingCodeHandler.fail(ex);
+									});
+								}).onFailure(ex -> {
+									LOG.error(String.format("putmergeSiteState failed. ", ex));
+									blockingCodeHandler.fail(ex);
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("putmergeSiteState failed. ", ex));
+								blockingCodeHandler.fail(ex);
 							}
+						}, resultHandler -> {
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("putmergeSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("putmergeSiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("putmergeSiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putmergeSiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("putmergeSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("putmergeSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("putmergeSiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
@@ -415,75 +398,89 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		try {
 			jsonArray.forEach(obj -> {
 				JsonObject json = (JsonObject)obj;
+				futures.add(Future.future(promise2 -> {
+					try {
+						json.put("inheritPk", json.getValue("pk"));
 
-				json.put("inheritPk", json.getValue("pk"));
+						SiteRequestEnUS siteRequest2 = siteRequest.copy();
+						siteRequest2.setJsonObject(json);
+						siteRequest2.setApiRequest_(apiRequest);
+						siteRequest2.setRequestVars(siteRequest.getRequestVars());
 
-				SiteRequestEnUS siteRequest2 = siteRequest.copy();
-				siteRequest2.setJsonObject(json);
-				siteRequest2.setApiRequest_(apiRequest);
-				siteRequest2.setRequestVars(siteRequest.getRequestVars());
-
-				SearchList<SiteState> searchList = new SearchList<SiteState>();
-				searchList.setStore(true);
-				searchList.setQuery("*:*");
-				searchList.setC(SiteState.class);
-				searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(json.getString("pk")));
-				searchList.initDeepForClass(siteRequest2);
-
-				if(searchList.size() == 1) {
-					SiteState o = searchList.getList().stream().findFirst().orElse(null);
-					SiteState o2 = new SiteState();
-					JsonObject json2 = new JsonObject();
-					for(String f : json.fieldNames()) {
-						Object jsonVal = json.getValue(f);
-						if(jsonVal instanceof JsonArray) {
-							JsonArray jsonVals = (JsonArray)jsonVal;
-							Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-							if(jsonVals.size() == vals.size()) {
-								Boolean match = true;
-								for(Object val : vals) {
-									if(val != null) {
-										if(!jsonVals.contains(val.toString())) {
-											match = false;
-											break;
+						SearchList<SiteState> searchList = new SearchList<SiteState>();
+						searchList.setStore(true);
+						searchList.setQuery("*:*");
+						searchList.setC(SiteState.class);
+						searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(json.getString("pk")));
+						searchList.promiseDeepForClass(siteRequest2).onSuccess(a -> {
+							try {
+								if(searchList.size() == 1) {
+									SiteState o = searchList.getList().stream().findFirst().orElse(null);
+									SiteState o2 = new SiteState();
+									JsonObject json2 = new JsonObject();
+									for(String f : json.fieldNames()) {
+										Object jsonVal = json.getValue(f);
+										if(jsonVal instanceof JsonArray) {
+											JsonArray jsonVals = (JsonArray)jsonVal;
+											Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+											if(jsonVals.size() == vals.size()) {
+												Boolean match = true;
+												for(Object val : vals) {
+													if(val != null) {
+														if(!jsonVals.contains(val.toString())) {
+															match = false;
+															break;
+														}
+													} else {
+														match = false;
+														break;
+													}
+												}
+												if(!match) {
+													json2.put("set" + StringUtils.capitalize(f), jsonVal);
+												}
+											} else {
+												json2.put("set" + StringUtils.capitalize(f), jsonVal);
+											}
+										} else {
+											o2.defineForClass(f, jsonVal);
+											if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+												json2.put("set" + StringUtils.capitalize(f), jsonVal);
 										}
-									} else {
-										match = false;
-										break;
 									}
+									for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+										if(!json.fieldNames().contains(f))
+											json2.putNull("set" + StringUtils.capitalize(f));
+									}
+									if(json2.size() > 0) {
+										siteRequest2.setJsonObject(json2);
+										patchSiteStateFuture(o, false).onSuccess(b -> {
+											promise2.complete();
+										}).onFailure(ex -> {
+											LOG.error(String.format("listPUTMergeSiteState failed. ", ex));
+										});
+									}
+								} else {
+									postSiteStateFuture(siteRequest2, false).onSuccess(b -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										LOG.error(String.format("listPUTMergeSiteState failed. ", ex));
+										promise2.fail(ex);
+									});
 								}
-								if(!match) {
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
-								}
-							} else {
-								json2.put("set" + StringUtils.capitalize(f), jsonVal);
-							}
-						}
-						else {
-							o2.defineForClass(f, jsonVal);
-							if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-								json2.put("set" + StringUtils.capitalize(f), jsonVal);
-						}
-					}
-					for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-						if(!json.fieldNames().contains(f))
-							json2.putNull("set" + StringUtils.capitalize(f));
-					}
-					if(json2.size() > 0) {
-						siteRequest2.setJsonObject(json2);
-						futures.add(
-							patchSiteStateFuture(o, false).onFailure(ex -> {
+							} catch(Exception ex) {
 								LOG.error(String.format("listPUTMergeSiteState failed. ", ex));
-							})
-						);
-					}
-				} else {
-					futures.add(
-						postSiteStateFuture(siteRequest2, false).onFailure(ex -> {
+								promise2.fail(ex);
+							}
+						}).onFailure(ex -> {
 							LOG.error(String.format("listPUTMergeSiteState failed. ", ex));
-						})
-					);
-				}
+							promise2.fail(ex);
+						});
+					} catch(Exception ex) {
+						LOG.error(String.format("listPUTMergeSiteState failed. ", ex));
+						promise2.fail(ex);
+					}
+				}));
 			});
 			CompositeFuture.all(futures).onSuccess(a -> {
 				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
@@ -499,29 +496,16 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		return promise.future();
 	}
 
-	public void putmergeSiteStateResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			response200PUTMergeSiteState(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("putmergeSiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putmergeSiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200PUTMergeSiteState(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<ServiceResponse> response200PUTMergeSiteState(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200PUTMergeSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PUTMergeSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// PUTCopy //
@@ -529,107 +513,89 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	@Override
 	public void putcopySiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		LOG.debug(String.format("putcopySiteState started. "));
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setJsonObject(body);
-					siteRequest.setRequestUri("/api/state/copy");
-					siteRequest.setRequestMethod("PUTCopy");
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri("/api/state/copy");
+				siteRequest.setRequestMethod("PUTCopy");
 
-					List<String> roles = Arrays.asList("SiteAdmin");
-					if(
-							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-							) {
-						eventHandler.handle(Future.succeededFuture(
-							new ServiceResponse(401, "UNAUTHORIZED", 
-								Buffer.buffer().appendString(
-									new JsonObject()
-										.put("errorCode", "401")
-										.put("errorMessage", "roles required: " + String.join(", ", roles))
-										.encodePrettily()
-									), MultiMap.caseInsensitiveMultiMap()
-							)
-						));
-					} else {
-						putcopySiteStateResponse(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											aSearchSiteState(siteRequest, false, true, true, "/api/state/copy", "PUTCopy", d -> {
-												if(d.succeeded()) {
-													SearchList<SiteState> listSiteState = d.result();
-													ApiRequest apiRequest = new ApiRequest();
-													apiRequest.setRows(listSiteState.getRows());
-													apiRequest.setNumFound(listSiteState.getQueryResponse().getResults().getNumFound());
-													apiRequest.setNumPATCH(0L);
-													apiRequest.initDeepApiRequest(siteRequest);
-													siteRequest.setApiRequest_(apiRequest);
-													eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-													try {
-														listPUTCopySiteState(apiRequest, listSiteState, e -> {
-															if(e.succeeded()) {
-																putcopySiteStateResponse(siteRequest, f -> {
-																	if(f.succeeded()) {
-																		LOG.debug(String.format("putcopySiteState succeeded. "));
-																		blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																	} else {
-																		LOG.error(String.format("putcopySiteState failed. ", f.cause()));
-																		error(siteRequest, null, f);
-																	}
-																});
-															} else {
-																LOG.error(String.format("putcopySiteState failed. ", e.cause()));
-																error(siteRequest, null, e);
-															}
-														});
-													} catch(Exception ex) {
-														LOG.error(String.format("putcopySiteState failed. ", ex));
-														error(siteRequest, null, Future.failedFuture(ex));
-													}
-												} else {
-													LOG.error(String.format("putcopySiteState failed. ", d.cause()));
-													error(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
+				List<String> roles = Arrays.asList("SiteAdmin");
+				if(
+						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+						) {
+					eventHandler.handle(Future.succeededFuture(
+						new ServiceResponse(401, "UNAUTHORIZED", 
+							Buffer.buffer().appendString(
+								new JsonObject()
+									.put("errorCode", "401")
+									.put("errorMessage", "roles required: " + String.join(", ", roles))
+									.encodePrettily()
+								), MultiMap.caseInsensitiveMultiMap()
+						)
+					));
+				} else {
+					response200PUTCopySiteState(siteRequest).onSuccess(response -> {
+						eventHandler.handle(Future.succeededFuture(response));
+						workerExecutor.executeBlocking(blockingCodeHandler -> {
+							try {
+								searchSiteStateList(siteRequest, false, true, true, "/api/state/copy", "PUTCopy").onSuccess(listSiteState -> {
+									ApiRequest apiRequest = new ApiRequest();
+									apiRequest.setRows(listSiteState.getRows());
+									apiRequest.setNumFound(listSiteState.getQueryResponse().getResults().getNumFound());
+									apiRequest.setNumPATCH(0L);
+									apiRequest.initDeepApiRequest(siteRequest);
+									siteRequest.setApiRequest_(apiRequest);
+									eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
+									listPUTCopySiteState(apiRequest, listSiteState).onSuccess(e -> {
+										response200PUTCopySiteState(siteRequest).onSuccess(f -> {
+											LOG.debug(String.format("putcopySiteState succeeded. "));
+											blockingCodeHandler.complete();
+										}).onFailure(ex -> {
 											LOG.error(String.format("putcopySiteState failed. ", ex));
-											error(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
-									}
-								);
-							} else {
-								LOG.error(String.format("putcopySiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
+											blockingCodeHandler.fail(ex);
+										});
+									}).onFailure(ex -> {
+										LOG.error(String.format("putcopySiteState failed. ", ex));
+										blockingCodeHandler.fail(ex);
+									});
+								}).onFailure(ex -> {
+									LOG.error(String.format("putcopySiteState failed. ", ex));
+									blockingCodeHandler.fail(ex);
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("putcopySiteState failed. ", ex));
+								blockingCodeHandler.fail(ex);
 							}
+						}, resultHandler -> {
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("putcopySiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("putcopySiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("putcopySiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putcopySiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("putcopySiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("putcopySiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("putcopySiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
 
 
-	public void listPUTCopySiteState(ApiRequest apiRequest, SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> listPUTCopySiteState(ApiRequest apiRequest, SearchList<SiteState> listSiteState) {
+		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
 		listSiteState.getList().forEach(o -> {
@@ -639,23 +605,27 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			futures.add(
 				putcopySiteStateFuture(siteRequest2, JsonObject.mapFrom(o)).onFailure(ex -> {
 					LOG.error(String.format("listPUTCopySiteState failed. ", ex));
-					error(siteRequest, eventHandler, Future.failedFuture(ex));
+					error(siteRequest, null, ex);
 				})
 			);
 		});
-		CompositeFuture.all(futures).onComplete( a -> {
-			if(a.succeeded()) {
-				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteState.size());
-				if(listSiteState.next()) {
-					listPUTCopySiteState(apiRequest, listSiteState, eventHandler);
+		CompositeFuture.all(futures).onSuccess(a -> {
+			apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteState.size());
+			listSiteState.next().onSuccess(next -> {
+				if(next) {
+					listPUTCopySiteState(apiRequest, listSiteState);
 				} else {
-					response200PUTCopySiteState(siteRequest, eventHandler);
+					promise.complete();
 				}
-			} else {
-				LOG.error(String.format("listPUTCopySiteState failed. ", a.cause()));
-				error(listSiteState.getSiteRequest_(), eventHandler, a);
-			}
+			}).onFailure(ex -> {
+				LOG.error(String.format("listPUTCopySiteState failed. ", ex));
+				error(listSiteState.getSiteRequest_(), null, ex);
+			});
+		}).onFailure(ex -> {
+			LOG.error(String.format("listPUTCopySiteState failed. ", ex));
+			error(listSiteState.getSiteRequest_(), null, ex);
 		});
+		return promise.future();
 	}
 
 	public Future<SiteState> putcopySiteStateFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject) {
@@ -677,62 +647,51 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			pgPool.withTransaction(sqlConnection -> {
 				Promise<SiteState> promise1 = Promise.promise();
 				siteRequest.setSqlConnection(sqlConnection);
-				createSiteState(siteRequest, a -> {
-					if(a.succeeded()) {
-						SiteState siteState = a.result();
-						sqlPUTCopySiteState(siteState, jsonObject, b -> {
-							if(b.succeeded()) {
-								defineSiteState(siteState, c -> {
-									if(c.succeeded()) {
-										attributeSiteState(siteState, d -> {
-											if(d.succeeded()) {
-												indexSiteState(siteState).onSuccess(e -> {
-													promise1.complete(siteState);
-												}).onFailure(ex -> {
-													LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
-													promise1.fail(ex);
-												});
-											} else {
-												LOG.error(String.format("putcopySiteStateFuture failed. ", d.cause()));
-												promise1.fail(d.cause());
-											}
-										});
-									} else {
-										LOG.error(String.format("putcopySiteStateFuture failed. ", c.cause()));
-										promise1.fail(c.cause());
-									}
+				createSiteState(siteRequest).onSuccess(siteState -> {
+					sqlPUTCopySiteState(siteState, jsonObject).onSuccess(b -> {
+						defineSiteState(siteState).onSuccess(c -> {
+							attributeSiteState(siteState).onSuccess(d -> {
+								indexSiteState(siteState).onSuccess(e -> {
+									promise1.complete(siteState);
+								}).onFailure(ex -> {
+									LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
+									promise1.fail(ex);
 								});
-							} else {
-								LOG.error(String.format("putcopySiteStateFuture failed. ", b.cause()));
-								promise1.fail(b.cause());
-							}
+							}).onFailure(ex -> {
+								LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
+								promise1.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
+							promise1.fail(ex);
 						});
-					} else {
-						LOG.error(String.format("putcopySiteStateFuture failed. ", a.cause()));
-						promise1.fail(a.cause());
-					}
+					}).onFailure(ex -> {
+						LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
+						promise1.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
+					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, Future.failedFuture(ex));
+				error(siteRequest, null, ex);
 			}).compose(siteState -> {
 				Promise<SiteState> promise2 = Promise.promise();
-				refreshSiteState(siteState, a -> {
-					if(a.succeeded()) {
-						ApiRequest apiRequest = siteRequest.getApiRequest_();
-						if(apiRequest != null) {
-							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-							siteState.apiRequestSiteState();
-							eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-						}
-						promise2.complete(siteState);
-					} else {
-						LOG.error(String.format("putcopySiteStateFuture failed. ", a.cause()));
-						promise2.fail(a.cause());
+				refreshSiteState(siteState).onSuccess(a -> {
+					ApiRequest apiRequest = siteRequest.getApiRequest_();
+					if(apiRequest != null) {
+						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+						siteState.apiRequestSiteState();
+						eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
 					}
+					promise2.complete(siteState);
+				}).onFailure(ex -> {
+					LOG.error(String.format("putcopySiteStateFuture failed. ", ex));
+					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(siteState -> {
@@ -740,17 +699,18 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				LOG.debug(String.format("putcopySiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, promise.future());
+				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("putcopySiteStateFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, promise.future());
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPUTCopySiteState(SiteState o, JsonObject jsonObject, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> sqlPUTCopySiteState(SiteState o, JsonObject jsonObject) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -770,52 +730,52 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				for(Integer i = 0; i < entityVars.size(); i++) {
 					String entityVar = entityVars.getString(i);
 					switch(entityVar) {
-					case "inheritPk":
+					case SiteState.VAR_inheritPk:
 						o2.setInheritPk(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("inheritPk=$" + num);
+						bSql.append(SiteState.VAR_inheritPk + "=$" + num);
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case "stateName":
+					case SiteState.VAR_stateName:
 						o2.setStateName(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stateName=$" + num);
+						bSql.append(SiteState.VAR_stateName + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStateName());
 						break;
-					case "stateAbbreviation":
+					case SiteState.VAR_stateAbbreviation:
 						o2.setStateAbbreviation(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stateAbbreviation=$" + num);
+						bSql.append(SiteState.VAR_stateAbbreviation + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStateAbbreviation());
 						break;
-					case "imageLeft":
+					case SiteState.VAR_imageLeft:
 						o2.setImageLeft(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("imageLeft=$" + num);
+						bSql.append(SiteState.VAR_imageLeft + "=$" + num);
 						num++;
 						bParams.add(o2.sqlImageLeft());
 						break;
-					case "imageTop":
+					case SiteState.VAR_imageTop:
 						o2.setImageTop(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("imageTop=$" + num);
+						bSql.append(SiteState.VAR_imageTop + "=$" + num);
 						num++;
 						bParams.add(o2.sqlImageTop());
 						break;
-					case "agencyKeys":
+					case SiteState.VAR_agencyKeys:
 						{
 							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
 								futures.add(Future.future(a -> {
@@ -855,43 +815,29 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					});
 				}));
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture());
-				} else {
-					LOG.error(String.format("sqlPUTCopySiteState failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOG.error(String.format("sqlPUTCopySiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void putcopySiteStateResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			response200PUTCopySiteState(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("putcopySiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
+			CompositeFuture.all(futures).onSuccess(a -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPUTCopySiteState failed. ", ex));
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOG.error(String.format("putcopySiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPUTCopySiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
-	public void response200PUTCopySiteState(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+
+	public Future<ServiceResponse> response200PUTCopySiteState(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200PUTCopySiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PUTCopySiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// POST //
@@ -899,69 +845,64 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	@Override
 	public void postSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		LOG.debug(String.format("postSiteState started. "));
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setJsonObject(body);
-					siteRequest.setRequestUri("/api/state");
-					siteRequest.setRequestMethod("POST");
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri("/api/state");
+				siteRequest.setRequestMethod("POST");
 
-					List<String> roles = Arrays.asList("SiteAdmin");
-					if(
-							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-							) {
-						eventHandler.handle(Future.succeededFuture(
-							new ServiceResponse(401, "UNAUTHORIZED", 
-								Buffer.buffer().appendString(
-									new JsonObject()
-										.put("errorCode", "401")
-										.put("errorMessage", "roles required: " + String.join(", ", roles))
-										.encodePrettily()
-									), MultiMap.caseInsensitiveMultiMap()
-							)
-						));
-					} else {
-						ApiRequest apiRequest = new ApiRequest();
-						apiRequest.setRows(1);
-						apiRequest.setNumFound(1L);
-						apiRequest.setNumPATCH(0L);
-						apiRequest.initDeepApiRequest(siteRequest);
-						siteRequest.setApiRequest_(apiRequest);
-						eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-						postSiteStateFuture(siteRequest, false).onSuccess(siteState -> {
-							apiRequest.setPk(siteState.getPk());
-							postSiteStateResponse(siteState, d -> {
-								if(d.succeeded()) {
-									eventHandler.handle(Future.succeededFuture(d.result()));
-									LOG.debug(String.format("postSiteState succeeded. "));
-								} else {
-									LOG.error(String.format("postSiteState failed. ", d.cause()));
-									error(siteRequest, eventHandler, d);
-								}
-							});
+				List<String> roles = Arrays.asList("SiteAdmin");
+				if(
+						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+						) {
+					eventHandler.handle(Future.succeededFuture(
+						new ServiceResponse(401, "UNAUTHORIZED", 
+							Buffer.buffer().appendString(
+								new JsonObject()
+									.put("errorCode", "401")
+									.put("errorMessage", "roles required: " + String.join(", ", roles))
+									.encodePrettily()
+								), MultiMap.caseInsensitiveMultiMap()
+						)
+					));
+				} else {
+					ApiRequest apiRequest = new ApiRequest();
+					apiRequest.setRows(1);
+					apiRequest.setNumFound(1L);
+					apiRequest.setNumPATCH(0L);
+					apiRequest.initDeepApiRequest(siteRequest);
+					siteRequest.setApiRequest_(apiRequest);
+					eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
+					postSiteStateFuture(siteRequest, false).onSuccess(siteState -> {
+						apiRequest.setPk(siteState.getPk());
+						response200POSTSiteState(siteState).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("postSiteState succeeded. "));
 						}).onFailure(ex -> {
-							LOG.error(String.format("postSiteState failed. ", Future.failedFuture(ex)));
-							error(siteRequest, eventHandler, Future.failedFuture(ex));
+							LOG.error(String.format("postSiteState failed. ", ex));
+							error(siteRequest, eventHandler, ex);
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("postSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("postSiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("postSiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postSiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("postSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("postSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("postSiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
@@ -974,62 +915,51 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			pgPool.withTransaction(sqlConnection -> {
 				Promise<SiteState> promise1 = Promise.promise();
 				siteRequest.setSqlConnection(sqlConnection);
-				createSiteState(siteRequest, a -> {
-					if(a.succeeded()) {
-						SiteState siteState = a.result();
-						sqlPOSTSiteState(siteState, inheritPk, b -> {
-							if(b.succeeded()) {
-								defineSiteState(siteState, c -> {
-									if(c.succeeded()) {
-										attributeSiteState(siteState, d -> {
-											if(d.succeeded()) {
-												indexSiteState(siteState).onSuccess(e -> {
-													promise1.complete(siteState);
-												}).onFailure(ex -> {
-													LOG.error(String.format("postSiteStateFuture failed. ", ex));
-													promise1.fail(ex);
-												});
-											} else {
-												LOG.error(String.format("postSiteStateFuture failed. ", d.cause()));
-												promise1.fail(d.cause());
-											}
-										});
-									} else {
-										LOG.error(String.format("postSiteStateFuture failed. ", c.cause()));
-										promise1.fail(c.cause());
-									}
+				createSiteState(siteRequest).onSuccess(siteState -> {
+					sqlPOSTSiteState(siteState, inheritPk).onSuccess(b -> {
+						defineSiteState(siteState).onSuccess(c -> {
+							attributeSiteState(siteState).onSuccess(d -> {
+								indexSiteState(siteState).onSuccess(e -> {
+									promise1.complete(siteState);
+								}).onFailure(ex -> {
+									LOG.error(String.format("postSiteStateFuture failed. ", ex));
+									promise1.fail(ex);
 								});
-							} else {
-								LOG.error(String.format("postSiteStateFuture failed. ", b.cause()));
-								promise1.fail(b.cause());
-							}
+							}).onFailure(ex -> {
+								LOG.error(String.format("postSiteStateFuture failed. ", ex));
+								promise1.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("postSiteStateFuture failed. ", ex));
+							promise1.fail(ex);
 						});
-					} else {
-						LOG.error(String.format("postSiteStateFuture failed. ", a.cause()));
-						promise1.fail(a.cause());
-					}
+					}).onFailure(ex -> {
+						LOG.error(String.format("postSiteStateFuture failed. ", ex));
+						promise1.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format("postSiteStateFuture failed. ", ex));
+					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, Future.failedFuture(ex));
+				error(siteRequest, null, ex);
 			}).compose(siteState -> {
 				Promise<SiteState> promise2 = Promise.promise();
-				refreshSiteState(siteState, a -> {
-					if(a.succeeded()) {
-						ApiRequest apiRequest = siteRequest.getApiRequest_();
-						if(apiRequest != null) {
-							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-							siteState.apiRequestSiteState();
-							eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-						}
-						promise2.complete(siteState);
-					} else {
-						LOG.error(String.format("postSiteStateFuture failed. ", a.cause()));
-						promise2.fail(a.cause());
+				refreshSiteState(siteState).onSuccess(a -> {
+					ApiRequest apiRequest = siteRequest.getApiRequest_();
+					if(apiRequest != null) {
+						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+						siteState.apiRequestSiteState();
+						eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
 					}
+					promise2.complete(siteState);
+				}).onFailure(ex -> {
+					LOG.error(String.format("postSiteStateFuture failed. ", ex));
+					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(siteState -> {
@@ -1037,17 +967,18 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				LOG.debug(String.format("postSiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, promise.future());
+				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postSiteStateFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, promise.future());
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPOSTSiteState(SiteState o, Boolean inheritPk, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> sqlPOSTSiteState(SiteState o, Boolean inheritPk) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -1061,86 +992,72 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			JsonObject jsonObject = siteRequest.getJsonObject();
 			SiteState o2 = new SiteState();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
 			if(jsonObject != null) {
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
-					case "inheritPk":
+					case SiteState.VAR_inheritPk:
 						o2.setInheritPk(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("inheritPk=$" + num);
+						bSql.append(SiteState.VAR_inheritPk + "=$" + num);
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case "stateName":
+					case SiteState.VAR_stateName:
 						o2.setStateName(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stateName=$" + num);
+						bSql.append(SiteState.VAR_stateName + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStateName());
 						break;
-					case "stateAbbreviation":
+					case SiteState.VAR_stateAbbreviation:
 						o2.setStateAbbreviation(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("stateAbbreviation=$" + num);
+						bSql.append(SiteState.VAR_stateAbbreviation + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStateAbbreviation());
 						break;
-					case "imageLeft":
+					case SiteState.VAR_imageLeft:
 						o2.setImageLeft(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("imageLeft=$" + num);
+						bSql.append(SiteState.VAR_imageLeft + "=$" + num);
 						num++;
 						bParams.add(o2.sqlImageLeft());
 						break;
-					case "imageTop":
+					case SiteState.VAR_imageTop:
 						o2.setImageTop(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
 							bSql.append(", ");
 						}
-						bSql.append("imageTop=$" + num);
+						bSql.append(SiteState.VAR_imageTop + "=$" + num);
 						num++;
 						bParams.add(o2.sqlImageTop());
 						break;
-					case "agencyKeys":
-						for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-							if(l != null) {
-								SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(SiteAgency.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE SiteAgency SET stateKey=$1 WHERE pk=$2")
-												.execute(Tuple.of(pk, l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteState.agencyKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteAgency");
-									}
-								}
-							}
-						}
+					case SiteState.VAR_agencyKeys:
+						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
 						break;
 					}
 				}
@@ -1149,7 +1066,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			if(bParams.size() > 0) {
 			bParams.add(pk);
 			num++;
-				futures.add(Future.future(a -> {
+				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
@@ -1161,45 +1078,35 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					});
 				}));
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture());
-				} else {
-					LOG.error(String.format("sqlPOSTSiteState failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOG.error(String.format("sqlPOSTSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void postSiteStateResponse(SiteState siteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = siteState.getSiteRequest_();
-		try {
-			response200POSTSiteState(siteState, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("postSiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPOSTSiteState failed. ", ex));
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPOSTSiteState failed. ", ex));
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOG.error(String.format("postSiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPOSTSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
-	public void response200POSTSiteState(SiteState o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+
+	public Future<ServiceResponse> response200POSTSiteState(SiteState o) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			JsonObject json = JsonObject.mapFrom(o);
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200POSTSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200POSTSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// PATCH //
@@ -1207,130 +1114,106 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	@Override
 	public void patchSiteState(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		LOG.debug(String.format("patchSiteState started. "));
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setJsonObject(body);
-					siteRequest.setRequestUri("/api/state");
-					siteRequest.setRequestMethod("PATCH");
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setJsonObject(body);
+				siteRequest.setRequestUri("/api/state");
+				siteRequest.setRequestMethod("PATCH");
 
-					List<String> roles = Arrays.asList("SiteAdmin");
-					if(
-							!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-							&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-							) {
-						eventHandler.handle(Future.succeededFuture(
-							new ServiceResponse(401, "UNAUTHORIZED", 
-								Buffer.buffer().appendString(
-									new JsonObject()
-										.put("errorCode", "401")
-										.put("errorMessage", "roles required: " + String.join(", ", roles))
-										.encodePrettily()
-									), MultiMap.caseInsensitiveMultiMap()
-							)
-						));
-					} else {
-						patchSiteStateResponse(siteRequest, c -> {
-							if(c.succeeded()) {
-								eventHandler.handle(Future.succeededFuture(c.result()));
-								workerExecutor.executeBlocking(
-									blockingCodeHandler -> {
-										try {
-											aSearchSiteState(siteRequest, false, true, true, "/api/state", "PATCH", d -> {
-												if(d.succeeded()) {
-													SearchList<SiteState> listSiteState = d.result();
+				List<String> roles = Arrays.asList("SiteAdmin");
+				if(
+						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+						) {
+					eventHandler.handle(Future.succeededFuture(
+						new ServiceResponse(401, "UNAUTHORIZED", 
+							Buffer.buffer().appendString(
+								new JsonObject()
+									.put("errorCode", "401")
+									.put("errorMessage", "roles required: " + String.join(", ", roles))
+									.encodePrettily()
+								), MultiMap.caseInsensitiveMultiMap()
+						)
+					));
+				} else {
+					response200PATCHSiteState(siteRequest).onSuccess(response -> {
+						eventHandler.handle(Future.succeededFuture(response));
+						workerExecutor.executeBlocking(blockingCodeHandler -> {
+							searchSiteStateList(siteRequest, false, true, true, "/api/state", "PATCH").onSuccess(listSiteState -> {
+								try {
+									List<String> roles2 = Arrays.asList("SiteAdmin");
+									if(listSiteState.getQueryResponse().getResults().getNumFound() > 1
+											&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+											) {
+										String message = String.format("roles required: " + String.join(", ", roles2));
+										LOG.error(message);
+										blockingCodeHandler.fail(message);
+									} else {
 
-													List<String> roles2 = Arrays.asList("SiteAdmin");
-													if(listSiteState.getQueryResponse().getResults().getNumFound() > 1
-															&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-															&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-															) {
-														String message = String.format("roles required: " + String.join(", ", roles2));
-														LOG.error(message);
-														error(siteRequest, eventHandler, Future.failedFuture(message));
-													} else {
+										ApiRequest apiRequest = new ApiRequest();
+										apiRequest.setRows(listSiteState.getRows());
+										apiRequest.setNumFound(listSiteState.getQueryResponse().getResults().getNumFound());
+										apiRequest.setNumPATCH(0L);
+										apiRequest.initDeepApiRequest(siteRequest);
+										siteRequest.setApiRequest_(apiRequest);
+										eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
+										SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteState.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
+										Date date = null;
+										if(facets != null)
+										date = (Date)facets.get("max_modified");
+										String dt;
+										if(date == null)
+											dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
+										else
+											dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
+										listSiteState.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
 
-														ApiRequest apiRequest = new ApiRequest();
-														apiRequest.setRows(listSiteState.getRows());
-														apiRequest.setNumFound(listSiteState.getQueryResponse().getResults().getNumFound());
-														apiRequest.setNumPATCH(0L);
-														apiRequest.initDeepApiRequest(siteRequest);
-														siteRequest.setApiRequest_(apiRequest);
-														eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-														SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteState.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
-														Date date = null;
-														if(facets != null)
-														date = (Date)facets.get("max_modified");
-														String dt;
-														if(date == null)
-															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
-														else
-															dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
-														listSiteState.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
-
-														try {
-															listPATCHSiteState(apiRequest, listSiteState, dt, e -> {
-																if(e.succeeded()) {
-																	patchSiteStateResponse(siteRequest, f -> {
-																		if(f.succeeded()) {
-																			LOG.debug(String.format("patchSiteState succeeded. "));
-																			blockingCodeHandler.handle(Future.succeededFuture(f.result()));
-																		} else {
-																			LOG.error(String.format("patchSiteState failed. ", f.cause()));
-																			error(siteRequest, null, f);
-																		}
-																	});
-																} else {
-																	LOG.error(String.format("patchSiteState failed. ", e.cause()));
-																	error(siteRequest, null, e);
-																}
-															});
-														} catch(Exception ex) {
-															LOG.error(String.format("patchSiteState failed. ", ex));
-															error(siteRequest, null, Future.failedFuture(ex));
-														}
-													}
-												} else {
-													LOG.error(String.format("patchSiteState failed. ", d.cause()));
-													error(siteRequest, null, d);
-												}
-											});
-										} catch(Exception ex) {
+										listPATCHSiteState(apiRequest, listSiteState, dt).onSuccess(e -> {
+											LOG.debug(String.format("patchSiteState succeeded. "));
+											blockingCodeHandler.complete();
+										}).onFailure(ex -> {
 											LOG.error(String.format("patchSiteState failed. ", ex));
-											error(siteRequest, null, Future.failedFuture(ex));
-										}
-									}, resultHandler -> {
+											blockingCodeHandler.fail(ex);
+										});
 									}
-								);
-							} else {
-								LOG.error(String.format("patchSiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
-							}
+								} catch(Exception ex) {
+									LOG.error(String.format("patchSiteState failed. ", ex));
+									blockingCodeHandler.fail(ex);
+								}
+							}).onFailure(ex -> {
+								LOG.error(String.format("patchSiteState failed. ", ex));
+								blockingCodeHandler.fail(ex);
+							});
+						}, resultHandler -> {
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("patchSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("patchSiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("patchSiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("patchSiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("patchSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("patchSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("patchSiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
 
 
-	public void listPATCHSiteState(ApiRequest apiRequest, SearchList<SiteState> listSiteState, String dt, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> listPATCHSiteState(ApiRequest apiRequest, SearchList<SiteState> listSiteState, String dt) {
+		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
 		listSiteState.getList().forEach(o -> {
@@ -1339,25 +1222,26 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			o.setSiteRequest_(siteRequest2);
 			futures.add(
 				patchSiteStateFuture(o, false).onFailure(ex -> {
-					error(siteRequest2, eventHandler, Future.failedFuture(ex));
+					error(siteRequest2, null, ex);
 				})
 			);
 		});
 		CompositeFuture.all(futures).onSuccess( a -> {
 			listSiteState.next(dt).onSuccess(next -> {
 				if(next) {
-					listPATCHSiteState(apiRequest, listSiteState, dt, eventHandler);
+					listPATCHSiteState(apiRequest, listSiteState, dt);
 				} else {
-					response200PATCHSiteState(siteRequest, eventHandler);
+					promise.complete();
 				}
 			}).onFailure(ex -> {
 				LOG.error(String.format("listPATCHSiteState failed. ", ex));
-				error(listSiteState.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+				error(listSiteState.getSiteRequest_(), null, ex);
 			});
 		}).onFailure(ex -> {
 			LOG.error(String.format("listPATCHSiteState failed. ", ex));
-			error(listSiteState.getSiteRequest_(), eventHandler, Future.failedFuture(ex));
+			error(listSiteState.getSiteRequest_(), null, ex);
 		});
+		return promise.future();
 	}
 
 	public Future<SiteState> patchSiteStateFuture(SiteState o, Boolean inheritPk) {
@@ -1373,54 +1257,45 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			pgPool.withTransaction(sqlConnection -> {
 				Promise<SiteState> promise1 = Promise.promise();
 				siteRequest.setSqlConnection(sqlConnection);
-				sqlPATCHSiteState(o, inheritPk, a -> {
-					if(a.succeeded()) {
-						SiteState siteState = a.result();
-						defineSiteState(siteState, c -> {
-							if(c.succeeded()) {
-								attributeSiteState(siteState, d -> {
-									if(d.succeeded()) {
-										indexSiteState(siteState).onSuccess(e -> {
-											promise1.complete(siteState);
-										}).onFailure(ex -> {
-											LOG.error(String.format("patchSiteStateFuture failed. ", ex));
-											promise1.fail(ex);
-										});
-									} else {
-										LOG.error(String.format("patchSiteStateFuture failed. ", d.cause()));
-										promise1.fail(d.cause());
-									}
-								});
-							} else {
-								LOG.error(String.format("patchSiteStateFuture failed. ", c.cause()));
-								promise1.fail(c.cause());
-							}
+				sqlPATCHSiteState(o, inheritPk).onSuccess(siteState -> {
+					defineSiteState(siteState).onSuccess(c -> {
+						attributeSiteState(siteState).onSuccess(d -> {
+							indexSiteState(siteState).onSuccess(e -> {
+								promise1.complete(siteState);
+							}).onFailure(ex -> {
+								LOG.error(String.format("patchSiteStateFuture failed. "), ex);
+								promise1.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format("patchSiteStateFuture failed. "), ex);
+							promise1.fail(ex);
 						});
-					} else {
-						LOG.error(String.format("patchSiteStateFuture failed. ", a.cause()));
-								promise1.fail(a.cause());
-					}
+					}).onFailure(ex -> {
+						LOG.error(String.format("patchSiteStateFuture failed. "), ex);
+						promise1.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteStateFuture failed. "), ex);
+					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, Future.failedFuture(ex));
+				error(siteRequest, null, ex);
 			}).compose(siteState -> {
 				Promise<SiteState> promise2 = Promise.promise();
-				refreshSiteState(siteState, a -> {
-					if(a.succeeded()) {
-						if(apiRequest != null) {
-							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-							siteState.apiRequestSiteState();
-							eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
-						}
-						promise2.complete(siteState);
-					} else {
-						LOG.error(String.format("patchSiteStateFuture failed. ", a.cause()));
-						promise2.fail(a.cause());
+				refreshSiteState(siteState).onSuccess(a -> {
+					if(apiRequest != null) {
+						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+						siteState.apiRequestSiteState();
+						eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
 					}
+					promise2.complete(siteState);
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchSiteStateFuture failed. ", ex));
+					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(siteState -> {
@@ -1428,17 +1303,18 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				LOG.debug(String.format("patchSiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, promise.future());
+				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchSiteStateFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, promise.future());
+			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
 
-	public void sqlPATCHSiteState(SiteState o, Boolean inheritPk, Handler<AsyncResult<SiteState>> eventHandler) {
+	public Future<SiteState> sqlPATCHSiteState(SiteState o, Boolean inheritPk) {
+		Promise<SiteState> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -1453,207 +1329,121 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			Set<String> methodNames = jsonObject.fieldNames();
 			SiteState o2 = new SiteState();
 			o2.setSiteRequest_(siteRequest);
-			List<Future> futures = new ArrayList<>();
+			List<Future> futures1 = new ArrayList<>();
+			List<Future> futures2 = new ArrayList<>();
 
-			for(String methodName : methodNames) {
-				switch(methodName) {
+			for(String entityVar : methodNames) {
+				switch(entityVar) {
 					case "setInheritPk":
-							o2.setInheritPk(jsonObject.getString(methodName));
+							o2.setInheritPk(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("inheritPk=$" + num);
+							bSql.append(SiteState.VAR_inheritPk + "=$" + num);
 							num++;
 							bParams.add(o2.sqlInheritPk());
 						break;
 					case "setStateName":
-							o2.setStateName(jsonObject.getString(methodName));
+							o2.setStateName(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stateName=$" + num);
+							bSql.append(SiteState.VAR_stateName + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStateName());
 						break;
 					case "setStateAbbreviation":
-							o2.setStateAbbreviation(jsonObject.getString(methodName));
+							o2.setStateAbbreviation(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("stateAbbreviation=$" + num);
+							bSql.append(SiteState.VAR_stateAbbreviation + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStateAbbreviation());
 						break;
 					case "setImageLeft":
-							o2.setImageLeft(jsonObject.getString(methodName));
+							o2.setImageLeft(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("imageLeft=$" + num);
+							bSql.append(SiteState.VAR_imageLeft + "=$" + num);
 							num++;
 							bParams.add(o2.sqlImageLeft());
 						break;
 					case "setImageTop":
-							o2.setImageTop(jsonObject.getString(methodName));
+							o2.setImageTop(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
 								bSql.append(", ");
-							bSql.append("imageTop=$" + num);
+							bSql.append(SiteState.VAR_imageTop + "=$" + num);
 							num++;
 							bParams.add(o2.sqlImageTop());
 						break;
-					case "addAgencyKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(SiteAgency.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && !o.getAgencyKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE SiteAgency SET stateKey=$1 WHERE pk=$2")
-												.execute(Tuple.of(pk, l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteState.agencyKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteAgency");
-									}
-								}
-							}
-						}
-						break;
-					case "addAllAgencyKeys":
-						JsonArray addAllAgencyKeysValues = jsonObject.getJsonArray(methodName);
-						if(addAllAgencyKeysValues != null) {
-							for(Integer i = 0; i <  addAllAgencyKeysValues.size(); i++) {
-								Long l = Long.parseLong(addAllAgencyKeysValues.getString(i));
-								if(l != null) {
-									SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(SiteAgency.class);
-									searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null && !o.getAgencyKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE SiteAgency SET stateKey=$1 WHERE pk=$2")
-												.execute(Tuple.of(pk, l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteState.agencyKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SiteAgency");
-										}
-									}
-								}
-							}
-						}
-						break;
 					case "setAgencyKeys":
-						JsonArray setAgencyKeysValues = jsonObject.getJsonArray(methodName);
-						JsonArray setAgencyKeysValues2 = new JsonArray();
-						if(setAgencyKeysValues != null) {
-							for(Integer i = 0; i <  setAgencyKeysValues.size(); i++) {
-								Long l = Long.parseLong(setAgencyKeysValues.getString(i));
-								if(l != null) {
-									SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
-									searchList.setQuery("*:*");
-									searchList.setStore(true);
-									searchList.setC(SiteAgency.class);
-									searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-									searchList.initDeepSearchList(siteRequest);
-									Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-									if(l2 != null)
-										setAgencyKeysValues2.add(l2);
-									if(l2 != null && !o.getAgencyKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE SiteAgency SET stateKey=$1 WHERE pk=$2")
-												.execute(Tuple.of(pk, l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteState.agencyKeys failed", b.cause())));
-										});
-									}));
-										if(!pks.contains(l2)) {
-											pks.add(l2);
-											classes.add("SiteAgency");
-										}
-									}
-								}
-							}
-						}
-						if(o.getAgencyKeys() != null) {
-							for(Long l :  o.getAgencyKeys()) {
-								if(l != null && (setAgencyKeysValues2 == null || !setAgencyKeysValues2.contains(l))) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE SiteAgency SET stateKey=null WHERE pk=$1")
-												.execute(Tuple.of(l)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteState.agencyKeys failed", b.cause())));
-										});
-									}));
-								}
-							}
-						}
-						break;
+						JsonArray setAgencyKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+						setAgencyKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+						Optional.ofNullable(o.getAgencyKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setAgencyKeysValues.contains(oVal.toString())).forEach(pk2 -> {
+							futures2.add(Future.future(promise2 -> {
+								sql(siteRequest).update(SiteAgency.class, pk2).setToNull(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
+									promise2.complete();
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+					case "addAllAgencyKeys":
+						JsonArray addAllAgencyKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+						addAllAgencyKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
+					case "addAgencyKeys":
+						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+							futures2.add(Future.future(promise2 -> {
+								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
+										promise2.complete();
+									}).onFailure(ex -> {
+										promise2.fail(ex);
+									});
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
 					case "removeAgencyKeys":
-						{
-							Long l = Long.parseLong(jsonObject.getString(methodName));
-							if(l != null) {
-								SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
-								searchList.setQuery("*:*");
-								searchList.setStore(true);
-								searchList.setC(SiteAgency.class);
-								searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + l);
-								searchList.initDeepSearchList(siteRequest);
-								Long l2 = Optional.ofNullable(searchList.getList().stream().findFirst().orElse(null)).map(a -> a.getPk()).orElse(null);
-								if(l2 != null && o.getAgencyKeys().contains(l2)) {
-									futures.add(Future.future(a -> {
-										sqlConnection.preparedQuery("UPDATE SiteAgency SET stateKey=null WHERE pk=$1")
-												.execute(Tuple.of(l2)
-												, b
-										-> {
-											if(b.succeeded())
-												a.handle(Future.succeededFuture());
-											else
-												a.handle(Future.failedFuture(new Exception("value SiteState.agencyKeys failed", b.cause())));
-										});
-									}));
-									if(!pks.contains(l2)) {
-										pks.add(l2);
-										classes.add("SiteAgency");
-									}
-								}
-							}
-						}
-						break;
+						Optional.ofNullable(jsonObject.getLong(entityVar)).ifPresent(pk2 -> {
+							futures2.add(Future.future(promise2 -> {
+								sql(siteRequest).update(SiteAgency.class, pk2).setToNull(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
+									promise2.complete();
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
+						});
 				}
 			}
 			bSql.append(" WHERE pk=$" + num);
 			if(bParams.size() > 0) {
 				bParams.add(pk);
 				num++;
-				futures.add(Future.future(a -> {
+				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
 							, b
@@ -1665,194 +1455,140 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					});
 				}));
 			}
-			CompositeFuture.all(futures).onComplete( a -> {
-				if(a.succeeded()) {
+			CompositeFuture.all(futures1).onSuccess(a -> {
+				CompositeFuture.all(futures2).onSuccess(b -> {
 					SiteState o3 = new SiteState();
 					o3.setSiteRequest_(o.getSiteRequest_());
 					o3.setPk(pk);
-					eventHandler.handle(Future.succeededFuture(o3));
-				} else {
-					LOG.error(String.format("sqlPATCHSiteState failed. ", a.cause()));
-					eventHandler.handle(Future.failedFuture(a.cause()));
-				}
-			});
-		} catch(Exception e) {
-			LOG.error(String.format("sqlPATCHSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
-
-	public void patchSiteStateResponse(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			response200PATCHSiteState(siteRequest, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("patchSiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
+					promise.complete(o3);
+				}).onFailure(ex -> {
+					LOG.error(String.format("sqlPATCHSiteState failed. ", ex));
+					promise.fail(ex);
+				});
+			}).onFailure(ex -> {
+				LOG.error(String.format("sqlPATCHSiteState failed. ", ex));
+				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOG.error(String.format("patchSiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
+			LOG.error(String.format("sqlPATCHSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
-	public void response200PATCHSiteState(SiteRequestEnUS siteRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+
+	public Future<ServiceResponse> response200PATCHSiteState(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			JsonObject json = new JsonObject();
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200PATCHSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200PATCHSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// GET //
 
 	@Override
 	public void getSiteState(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setRequestUri("/api/state/{id}");
-					siteRequest.setRequestMethod("GET");
-					{
-						aSearchSiteState(siteRequest, false, true, false, "/api/state/{id}", "GET", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteState> listSiteState = c.result();
-								getSiteStateResponse(listSiteState, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.debug(String.format("getSiteState succeeded. "));
-									} else {
-										LOG.error(String.format("getSiteState failed. ", d.cause()));
-										error(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("getSiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
-							}
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri("/api/state/{id}");
+				siteRequest.setRequestMethod("GET");
+				{
+					searchSiteStateList(siteRequest, false, true, false, "/api/state/{id}", "GET").onSuccess(listSiteState -> {
+						response200GETSiteState(listSiteState).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("getSiteState succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("getSiteState failed. ", ex));
+							error(siteRequest, eventHandler, ex);
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("getSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("getSiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("getSiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("getSiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("getSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("getSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("getSiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
 
 
-	public void getSiteStateResponse(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
-		try {
-			response200GETSiteState(listSiteState, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("getSiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("getSiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200GETSiteState(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<ServiceResponse> response200GETSiteState(SearchList<SiteState> listSiteState) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
 			SolrDocumentList solrDocuments = listSiteState.getSolrDocumentList();
 
 			JsonObject json = JsonObject.mapFrom(listSiteState.getList().stream().findFirst().orElse(null));
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200GETSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200GETSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	// Search //
 
 	@Override
 	public void searchSiteState(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setRequestUri("/api/state");
-					siteRequest.setRequestMethod("Search");
-					{
-						aSearchSiteState(siteRequest, false, true, false, "/api/state", "Search", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteState> listSiteState = c.result();
-								searchSiteStateResponse(listSiteState, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.debug(String.format("searchSiteState succeeded. "));
-									} else {
-										LOG.error(String.format("searchSiteState failed. ", d.cause()));
-										error(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("searchSiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
-							}
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri("/api/state");
+				siteRequest.setRequestMethod("Search");
+				{
+					searchSiteStateList(siteRequest, false, true, false, "/api/state", "Search").onSuccess(listSiteState -> {
+						response200SearchSiteState(listSiteState).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("searchSiteState succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("searchSiteState failed. ", ex));
+							error(siteRequest, eventHandler, ex);
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("searchSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("searchSiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("searchSiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("searchSiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("searchSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("searchSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("searchSiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
 
 
-	public void searchSiteStateResponse(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
-		try {
-			response200SearchSiteState(listSiteState, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("searchSiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("searchSiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200SearchSiteState(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<ServiceResponse> response200SearchSiteState(SearchList<SiteState> listSiteState) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
 			QueryResponse responseSearch = listSiteState.getQueryResponse();
@@ -1957,11 +1693,12 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200SearchSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200SearchSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 	public void responsePivotSearchSiteState(List<PivotField> pivotFields, JsonArray pivotArray) {
 		for(PivotField pivotField : pivotFields) {
@@ -2005,69 +1742,46 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 	@Override
 	public void adminsearchSiteState(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setRequestUri("/api/admin/state");
-					siteRequest.setRequestMethod("AdminSearch");
-					{
-						aSearchSiteState(siteRequest, false, true, false, "/api/admin/state", "AdminSearch", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteState> listSiteState = c.result();
-								adminsearchSiteStateResponse(listSiteState, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.debug(String.format("adminsearchSiteState succeeded. "));
-									} else {
-										LOG.error(String.format("adminsearchSiteState failed. ", d.cause()));
-										error(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("adminsearchSiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
-							}
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				siteRequest.setRequestUri("/api/admin/state");
+				siteRequest.setRequestMethod("AdminSearch");
+				{
+					searchSiteStateList(siteRequest, false, true, false, "/api/admin/state", "AdminSearch").onSuccess(listSiteState -> {
+						response200AdminSearchSiteState(listSiteState).onSuccess(response -> {
+							eventHandler.handle(Future.succeededFuture(response));
+							LOG.debug(String.format("adminsearchSiteState succeeded. "));
+						}).onFailure(ex -> {
+							LOG.error(String.format("adminsearchSiteState failed. ", ex));
+							error(siteRequest, eventHandler, ex);
 						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("adminsearchSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
+					}).onFailure(ex -> {
+						LOG.error(String.format("adminsearchSiteState failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
+				}
+			} catch(Exception ex) {
+				LOG.error(String.format("adminsearchSiteState failed. ", ex));
+				error(null, eventHandler, ex);
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("adminsearchSiteState failed. ", ex2));
+					error(null, eventHandler, ex2);
 				}
 			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("adminsearchSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("adminsearchSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
+				LOG.error(String.format("adminsearchSiteState failed. ", ex));
+				error(null, eventHandler, ex);
 			}
 		});
 	}
 
 
-	public void adminsearchSiteStateResponse(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
-		try {
-			response200AdminSearchSiteState(listSiteState, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("adminsearchSiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("adminsearchSiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200AdminSearchSiteState(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<ServiceResponse> response200AdminSearchSiteState(SearchList<SiteState> listSiteState) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
 			QueryResponse responseSearch = listSiteState.getQueryResponse();
@@ -2172,11 +1886,12 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			if(exceptionSearch != null) {
 				json.put("exceptionSearch", exceptionSearch.getMessage());
 			}
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily()))));
-		} catch(Exception e) {
-			LOG.error(String.format("response200AdminSearchSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
+		} catch(Exception ex) {
+			LOG.error(String.format("response200AdminSearchSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 	public void responsePivotAdminSearchSiteState(List<PivotField> pivotFields, JsonArray pivotArray) {
 		for(PivotField pivotField : pivotFields) {
@@ -2215,114 +1930,18 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			}
 		}
 	}
-
-	// SearchPage //
-
-	@Override
-	public void searchpageSiteStateId(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		searchpageSiteState(serviceRequest, eventHandler);
-	}
-
-	@Override
-	public void searchpageSiteState(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		user(serviceRequest, b -> {
-			if(b.succeeded()) {
-				try {
-					SiteRequestEnUS siteRequest = b.result();
-					siteRequest.setRequestUri("/state");
-					siteRequest.setRequestMethod("SearchPage");
-					{
-						aSearchSiteState(siteRequest, false, true, false, "/state", "SearchPage", c -> {
-							if(c.succeeded()) {
-								SearchList<SiteState> listSiteState = c.result();
-								searchpageSiteStateResponse(listSiteState, d -> {
-									if(d.succeeded()) {
-										eventHandler.handle(Future.succeededFuture(d.result()));
-										LOG.debug(String.format("searchpageSiteState succeeded. "));
-									} else {
-										LOG.error(String.format("searchpageSiteState failed. ", d.cause()));
-										error(siteRequest, eventHandler, d);
-									}
-								});
-							} else {
-								LOG.error(String.format("searchpageSiteState failed. ", c.cause()));
-								error(siteRequest, eventHandler, c);
-							}
-						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("searchpageSiteState failed. ", ex));
-					error(null, eventHandler, Future.failedFuture(ex));
-				}
-			} else {
-				if("Inactive Token".equals(b.cause().getMessage())) {
-					try {
-						eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-					} catch(Exception ex) {
-						LOG.error(String.format("searchpageSiteState failed. ", ex));
-						error(null, eventHandler, b);
-					}
-				} else {
-					LOG.error(String.format("searchpageSiteState failed. ", b.cause()));
-					error(null, eventHandler, b);
-				}
-			}
-		});
-	}
-
-
-	public void searchpageSiteStatePageInit(SiteStatePage page, SearchList<SiteState> listSiteState) {
-	}
-	public void searchpageSiteStateResponse(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
-		try {
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(siteRequest, buffer);
-			siteRequest.setW(w);
-			response200SearchPageSiteState(listSiteState, a -> {
-				if(a.succeeded()) {
-					eventHandler.handle(Future.succeededFuture(a.result()));
-				} else {
-					LOG.error(String.format("searchpageSiteStateResponse failed. ", a.cause()));
-					error(siteRequest, eventHandler, a);
-				}
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("searchpageSiteStateResponse failed. ", ex));
-			error(siteRequest, null, Future.failedFuture(ex));
-		}
-	}
-	public void response200SearchPageSiteState(SearchList<SiteState> listSiteState, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = listSiteState.getSiteRequest_();
-			Buffer buffer = Buffer.buffer();
-			AllWriter w = AllWriter.create(listSiteState.getSiteRequest_(), buffer);
-			SiteStatePage page = new SiteStatePage();
-			SolrDocument pageSolrDocument = new SolrDocument();
-			MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
-			siteRequest.setRequestHeaders(requestHeaders);
-
-			pageSolrDocument.setField("pageUri_frFR_stored_string", "/state");
-			page.setPageSolrDocument(pageSolrDocument);
-			page.setW(w);
-			if(listSiteState.size() == 1)
-				siteRequest.setRequestPk(listSiteState.get(0).getPk());
-			siteRequest.setW(w);
-			page.setListSiteState(listSiteState);
-			page.setSiteRequest_(siteRequest);
-			searchpageSiteStatePageInit(page, listSiteState);
-			page.initDeepSiteStatePage(siteRequest);
-			page.html();
-			eventHandler.handle(Future.succeededFuture(new ServiceResponse(200, "OK", buffer, requestHeaders)));
-		} catch(Exception e) {
-			LOG.error(String.format("response200SearchPageSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
+	public static final String VAR_stateKey = "stateKey";
+	public static final String VAR_stateName = "stateName";
+	public static final String VAR_stateAbbreviation = "stateAbbreviation";
+	public static final String VAR_imageLeft = "imageLeft";
+	public static final String VAR_imageTop = "imageTop";
+	public static final String VAR_agencyKeys = "agencyKeys";
+	public static final String VAR_stateCompleteName = "stateCompleteName";
 
 	// General //
 
-	public void createSiteState(SiteRequestEnUS siteRequest, Handler<AsyncResult<SiteState>> eventHandler) {
+	public Future<SiteState> createSiteState(SiteRequestEnUS siteRequest) {
+		Promise<SiteState> promise = Promise.promise();
 		try {
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
@@ -2331,34 +1950,31 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 			sqlConnection.preparedQuery("INSERT INTO SiteState(created) VALUES($1) RETURNING pk")
 					.collecting(Collectors.toList())
-					.execute(Tuple.of(created.toOffsetDateTime())
-					, createAsync
-			-> {
-				if(createAsync.succeeded()) {
-					Row createLine = createAsync.result().value().stream().findFirst().orElseGet(() -> null);
-					Long pk = createLine.getLong(0);
-					SiteState o = new SiteState();
-					o.setPk(pk);
-					o.setSiteRequest_(siteRequest);
-					eventHandler.handle(Future.succeededFuture(o));
-				} else {
-					LOG.error(String.format("createSiteState failed. ", createAsync.cause()));
-					eventHandler.handle(Future.failedFuture(createAsync.cause()));
-				}
+					.execute(Tuple.of(created.toOffsetDateTime())).onSuccess(result -> {
+				Row createLine = result.value().stream().findFirst().orElseGet(() -> null);
+				Long pk = createLine.getLong(0);
+				SiteState o = new SiteState();
+				o.setPk(pk);
+				o.setSiteRequest_(siteRequest);
+				promise.complete(o);
+			}).onFailure(ex -> {
+				LOG.error("createSiteState failed. ", ex);
+				promise.fail(ex);
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("createSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("createSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void aSearchSiteStateQ(String uri, String apiMethod, SearchList<SiteState> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteStateQ(String uri, String apiMethod, SearchList<SiteState> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		searchList.setQuery(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : ClientUtils.escapeQueryChars(valueIndexed)));
 		if(!"*".equals(entityVar)) {
 		}
 	}
 
-	public String aSearchSiteStateFq(String uri, String apiMethod, SearchList<SiteState> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public String searchSiteStateFq(String uri, String apiMethod, SearchList<SiteState> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		if(StringUtils.startsWith(valueIndexed, "[")) {
@@ -2373,28 +1989,29 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		}
 	}
 
-	public void aSearchSiteStateSort(String uri, String apiMethod, SearchList<SiteState> searchList, String entityVar, String valueIndexed, String varIndexed) {
+	public void searchSiteStateSort(String uri, String apiMethod, SearchList<SiteState> searchList, String entityVar, String valueIndexed, String varIndexed) {
 		if(varIndexed == null)
 			throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
 		searchList.addSort(varIndexed, ORDER.valueOf(valueIndexed));
 	}
 
-	public void aSearchSiteStateRows(String uri, String apiMethod, SearchList<SiteState> searchList, Integer valueRows) {
+	public void searchSiteStateRows(String uri, String apiMethod, SearchList<SiteState> searchList, Integer valueRows) {
 			searchList.setRows(apiMethod != null && apiMethod.contains("Search") ? valueRows : 10);
 	}
 
-	public void aSearchSiteStateStart(String uri, String apiMethod, SearchList<SiteState> searchList, Integer valueStart) {
+	public void searchSiteStateStart(String uri, String apiMethod, SearchList<SiteState> searchList, Integer valueStart) {
 		searchList.setStart(valueStart);
 	}
 
-	public void aSearchSiteStateVar(String uri, String apiMethod, SearchList<SiteState> searchList, String var, String value) {
+	public void searchSiteStateVar(String uri, String apiMethod, SearchList<SiteState> searchList, String var, String value) {
 		searchList.getSiteRequest_().getRequestVars().put(var, value);
 	}
 
-	public void aSearchSiteStateUri(String uri, String apiMethod, SearchList<SiteState> searchList) {
+	public void searchSiteStateUri(String uri, String apiMethod, SearchList<SiteState> searchList) {
 	}
 
-	public void varsSiteState(SiteRequestEnUS siteRequest, Handler<AsyncResult<SearchList<ServiceResponse>>> eventHandler) {
+	public Future<ServiceResponse> varsSiteState(SiteRequestEnUS siteRequest) {
+		Promise<ServiceResponse> promise = Promise.promise();
 		try {
 			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
@@ -2415,172 +2032,175 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								break;
 						}
 					}
-				} catch(Exception e) {
-					LOG.error(String.format("aSearchSiteState failed. "), e);
-					eventHandler.handle(Future.failedFuture(e));
+				} catch(Exception ex) {
+					LOG.error(String.format("searchSiteState failed. "), ex);
+					promise.fail(ex);
 				}
 			});
-			eventHandler.handle(Future.succeededFuture());
-		} catch(Exception e) {
-			LOG.error(String.format("aSearchSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+			promise.complete();
+		} catch(Exception ex) {
+			LOG.error(String.format("searchSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void aSearchSiteState(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, Handler<AsyncResult<SearchList<SiteState>>> eventHandler) {
+	public Future<SearchList<SiteState>> searchSiteStateList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
+		Promise<SearchList<SiteState>> promise = Promise.promise();
 		try {
-			SearchList<SiteState> searchList = aSearchSiteStateList(siteRequest, populate, store, modify, uri, apiMethod);
-			eventHandler.handle(Future.succeededFuture(searchList));
-		} catch(Exception e) {
-			LOG.error(String.format("aSearchSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
-		}
-	}
+			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+			String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
+			String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
+			SearchList<SiteState> searchList = new SearchList<SiteState>();
+			searchList.setPopulate(populate);
+			searchList.setStore(store);
+			searchList.setQuery("*:*");
+			searchList.setC(SiteState.class);
+			searchList.setSiteRequest_(siteRequest);
+			if(entityList != null)
+				searchList.addFields(entityList);
+			searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
-	public SearchList<SiteState> aSearchSiteStateList(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod) {
-		ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-		String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
-		String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-		SearchList<SiteState> searchList = new SearchList<SiteState>();
-		searchList.setPopulate(populate);
-		searchList.setStore(store);
-		searchList.setQuery("*:*");
-		searchList.setC(SiteState.class);
-		searchList.setSiteRequest_(siteRequest);
-		if(entityList != null)
-			searchList.addFields(entityList);
-		searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
-
-		String id = serviceRequest.getParams().getJsonObject("path").getString("id");
-		if(id != null && NumberUtils.isCreatable(id)) {
-			searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
-		} else if(id != null) {
-			searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
-		}
-
-		serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
-			String entityVar = null;
-			String valueIndexed = null;
-			String varIndexed = null;
-			String valueSort = null;
-			Integer valueStart = null;
-			Integer valueRows = null;
-			String paramName = paramRequest.getKey();
-			Object paramValuesObject = paramRequest.getValue();
-			JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
-
-			try {
-				if(paramValuesObject != null && "facet.pivot".equals(paramName)) {
-					Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
-					boolean foundFacetPivot = mFacetPivot.find();
-					if(foundFacetPivot) {
-						String solrLocalParams = mFacetPivot.group(1);
-						String[] entityVars = mFacetPivot.group(2).trim().split(",");
-						String[] varsIndexed = new String[entityVars.length];
-						for(Integer i = 0; i < entityVars.length; i++) {
-							entityVar = entityVars[i];
-							varsIndexed[i] = SiteState.varIndexedSiteState(entityVar);
-						}
-						searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
-					}
-				} else if(paramValuesObject != null) {
-					for(Object paramObject : paramObjects) {
-						switch(paramName) {
-							case "q":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								varIndexed = "*".equals(entityVar) ? entityVar : SiteState.varSearchSiteState(entityVar);
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
-								aSearchSiteStateQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "fq":
-								Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);
-								boolean foundFq = mFq.find();
-								if(foundFq) {
-									StringBuffer sb = new StringBuffer();
-									while(foundFq) {
-										entityVar = mFq.group(1).trim();
-										valueIndexed = mFq.group(2).trim();
-										varIndexed = SiteState.varIndexedSiteState(entityVar);
-										String entityFq = aSearchSiteStateFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-										mFq.appendReplacement(sb, entityFq);
-										foundFq = mFq.find();
-									}
-									mFq.appendTail(sb);
-									searchList.addFilterQuery(sb.toString());
-								}
-								break;
-							case "sort":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
-								valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-								varIndexed = SiteState.varIndexedSiteState(entityVar);
-								aSearchSiteStateSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
-								break;
-							case "start":
-								valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-								aSearchSiteStateStart(uri, apiMethod, searchList, valueStart);
-								break;
-							case "rows":
-								valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
-								aSearchSiteStateRows(uri, apiMethod, searchList, valueRows);
-								break;
-							case "facet":
-								searchList.add("facet", ((Boolean)paramObject).toString());
-								break;
-							case "facet.range.start":
-								String startMathStr = (String)paramObject;
-								Date start = DateMathParser.parseMath(null, startMathStr);
-								searchList.add("facet.range.start", start.toInstant().toString());
-								break;
-							case "facet.range.end":
-								String endMathStr = (String)paramObject;
-								Date end = DateMathParser.parseMath(null, endMathStr);
-								searchList.add("facet.range.end", end.toInstant().toString());
-								break;
-							case "facet.range.gap":
-								String gap = (String)paramObject;
-								searchList.add("facet.range.gap", gap);
-								break;
-							case "facet.range":
-								Matcher mFacetRange = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
-								boolean foundFacetRange = mFacetRange.find();
-								if(foundFacetRange) {
-									String solrLocalParams = mFacetRange.group(1);
-									entityVar = mFacetRange.group(2).trim();
-									varIndexed = SiteState.varIndexedSiteState(entityVar);
-									searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
-								}
-								break;
-							case "facet.field":
-								entityVar = (String)paramObject;
-								varIndexed = SiteState.varIndexedSiteState(entityVar);
-								if(varIndexed != null)
-									searchList.addFacetField(varIndexed);
-								break;
-							case "var":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								aSearchSiteStateVar(uri, apiMethod, searchList, entityVar, valueIndexed);
-								break;
-						}
-					}
-					aSearchSiteStateUri(uri, apiMethod, searchList);
-				}
-			} catch(Exception e) {
-				ExceptionUtils.rethrow(e);
+			String id = serviceRequest.getParams().getJsonObject("path").getString("id");
+			if(id != null && NumberUtils.isCreatable(id)) {
+				searchList.addFilterQuery("(pk_indexed_long:" + ClientUtils.escapeQueryChars(id) + " OR objectId_indexed_string:" + ClientUtils.escapeQueryChars(id) + ")");
+			} else if(id != null) {
+				searchList.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(id));
 			}
-		});
-		if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
-			searchList.addSort("stateName_indexed_string", ORDER.asc);
+
+			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+				String entityVar = null;
+				String valueIndexed = null;
+				String varIndexed = null;
+				String valueSort = null;
+				Integer valueStart = null;
+				Integer valueRows = null;
+				String paramName = paramRequest.getKey();
+				Object paramValuesObject = paramRequest.getValue();
+				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
+
+				try {
+					if(paramValuesObject != null && "facet.pivot".equals(paramName)) {
+						Matcher mFacetPivot = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher(StringUtils.join(paramObjects.getList().toArray(), ","));
+						boolean foundFacetPivot = mFacetPivot.find();
+						if(foundFacetPivot) {
+							String solrLocalParams = mFacetPivot.group(1);
+							String[] entityVars = mFacetPivot.group(2).trim().split(",");
+							String[] varsIndexed = new String[entityVars.length];
+							for(Integer i = 0; i < entityVars.length; i++) {
+								entityVar = entityVars[i];
+								varsIndexed[i] = SiteState.varIndexedSiteState(entityVar);
+							}
+							searchList.add("facet.pivot", (solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
+						}
+					} else if(paramValuesObject != null) {
+						for(Object paramObject : paramObjects) {
+							switch(paramName) {
+								case "q":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+									varIndexed = "*".equals(entityVar) ? entityVar : SiteState.varSearchSiteState(entityVar);
+									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+									valueIndexed = StringUtils.isEmpty(valueIndexed) ? "*" : valueIndexed;
+									searchSiteStateQ(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									break;
+								case "fq":
+									Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher((String)paramObject);
+									boolean foundFq = mFq.find();
+									if(foundFq) {
+										StringBuffer sb = new StringBuffer();
+										while(foundFq) {
+											entityVar = mFq.group(1).trim();
+											valueIndexed = mFq.group(2).trim();
+											varIndexed = SiteState.varIndexedSiteState(entityVar);
+											String entityFq = searchSiteStateFq(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+											mFq.appendReplacement(sb, entityFq);
+											foundFq = mFq.find();
+										}
+										mFq.appendTail(sb);
+										searchList.addFilterQuery(sb.toString());
+									}
+									break;
+								case "sort":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
+									valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
+									varIndexed = SiteState.varIndexedSiteState(entityVar);
+									searchSiteStateSort(uri, apiMethod, searchList, entityVar, valueIndexed, varIndexed);
+									break;
+								case "start":
+									valueStart = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+									searchSiteStateStart(uri, apiMethod, searchList, valueStart);
+									break;
+								case "rows":
+									valueRows = paramObject instanceof Integer ? (Integer)paramObject : Integer.parseInt(paramObject.toString());
+									searchSiteStateRows(uri, apiMethod, searchList, valueRows);
+									break;
+								case "facet":
+									searchList.add("facet", ((Boolean)paramObject).toString());
+									break;
+								case "facet.range.start":
+									String startMathStr = (String)paramObject;
+									Date start = DateMathParser.parseMath(null, startMathStr);
+									searchList.add("facet.range.start", start.toInstant().toString());
+									break;
+								case "facet.range.end":
+									String endMathStr = (String)paramObject;
+									Date end = DateMathParser.parseMath(null, endMathStr);
+									searchList.add("facet.range.end", end.toInstant().toString());
+									break;
+								case "facet.range.gap":
+									String gap = (String)paramObject;
+									searchList.add("facet.range.gap", gap);
+									break;
+								case "facet.range":
+									Matcher mFacetRange = Pattern.compile("(?:(\\{![^\\}]+\\}))?(.*)").matcher((String)paramObject);
+									boolean foundFacetRange = mFacetRange.find();
+									if(foundFacetRange) {
+										String solrLocalParams = mFacetRange.group(1);
+										entityVar = mFacetRange.group(2).trim();
+										varIndexed = SiteState.varIndexedSiteState(entityVar);
+										searchList.add("facet.range", (solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
+									}
+									break;
+								case "facet.field":
+									entityVar = (String)paramObject;
+									varIndexed = SiteState.varIndexedSiteState(entityVar);
+									if(varIndexed != null)
+										searchList.addFacetField(varIndexed);
+									break;
+								case "var":
+									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+									searchSiteStateVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+									break;
+							}
+						}
+						searchSiteStateUri(uri, apiMethod, searchList);
+					}
+				} catch(Exception e) {
+					ExceptionUtils.rethrow(e);
+				}
+			});
+			if("*:*".equals(searchList.getQuery()) && searchList.getSorts().size() == 0) {
+				searchList.addSort("stateName_indexed_string", ORDER.asc);
+			}
+			searchSiteState2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
+			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+				promise.complete(searchList);
+			}).onFailure(ex -> {
+				LOG.error(String.format("searchSiteState failed. ", ex));
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error(String.format("searchSiteState failed. ", ex));
+			promise.fail(ex);
 		}
-		aSearchSiteState2(siteRequest, populate, store, modify, uri, apiMethod, searchList);
-		searchList.initDeepForClass(siteRequest);
-		return searchList;
+		return promise.future();
 	}
-	public void aSearchSiteState2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteState> searchList) {
+	public void searchSiteState2(SiteRequestEnUS siteRequest, Boolean populate, Boolean store, Boolean modify, String uri, String apiMethod, SearchList<SiteState> searchList) {
 	}
 
-	public void defineSiteState(SiteState o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> defineSiteState(SiteState o) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
@@ -2588,40 +2208,39 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			sqlConnection.preparedQuery("SELECT * FROM SiteState WHERE pk=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
-					, defineAsync
-			-> {
-				if(defineAsync.succeeded()) {
-					try {
-						for(Row definition : defineAsync.result().value()) {
-							for(Integer i = 0; i < definition.size(); i++) {
-								String columnName = definition.getColumnName(i);
-								Object columnValue = definition.getValue(i);
-								if(!"pk".equals(columnName)) {
-									try {
-										o.defineForClass(columnName, columnValue);
-									} catch(Exception e) {
-										LOG.error(String.format("defineSiteState failed. "), e);
-									}
+					).onSuccess(result -> {
+				try {
+					for(Row definition : result.value()) {
+						for(Integer i = 0; i < definition.size(); i++) {
+							String columnName = definition.getColumnName(i);
+							Object columnValue = definition.getValue(i);
+							if(!"pk".equals(columnName)) {
+								try {
+									o.defineForClass(columnName, columnValue);
+								} catch(Exception e) {
+									LOG.error(String.format("defineSiteState failed. "), e);
 								}
 							}
 						}
-						eventHandler.handle(Future.succeededFuture());
-					} catch(Exception e) {
-						LOG.error(String.format("defineSiteState failed. "), e);
-						eventHandler.handle(Future.failedFuture(e));
 					}
-				} else {
-					LOG.error(String.format("defineSiteState failed. ", defineAsync.cause()));
-					eventHandler.handle(Future.failedFuture(defineAsync.cause()));
+					promise.complete();
+				} catch(Exception ex) {
+					LOG.error(String.format("defineSiteState failed. "), ex);
+					promise.fail(ex);
 				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("defineSiteState failed. ", ex));
+				promise.fail(ex);
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("defineSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("defineSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
-	public void attributeSiteState(SiteState o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> attributeSiteState(SiteState o) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
@@ -2629,29 +2248,27 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			sqlConnection.preparedQuery("SELECT pk as pk2, 'agencyKeys' from SiteAgency where stateKey=$1")
 					.collecting(Collectors.toList())
 					.execute(Tuple.of(pk)
-					, attributeAsync
-			-> {
+					).onSuccess(result -> {
 				try {
-					if(attributeAsync.succeeded()) {
-						if(attributeAsync.result() != null) {
-							for(Row definition : attributeAsync.result().value()) {
-								o.attributeForClass(definition.getString(1), definition.getLong(0));
-							}
+					if(result != null) {
+						for(Row definition : result.value()) {
+							o.attributeForClass(definition.getString(1), definition.getLong(0));
 						}
-						eventHandler.handle(Future.succeededFuture());
-					} else {
-						LOG.error(String.format("attributeSiteState failed. ", attributeAsync.cause()));
-						eventHandler.handle(Future.failedFuture(attributeAsync.cause()));
 					}
-				} catch(Exception e) {
-					LOG.error(String.format("attributeSiteState failed. "), e);
-					eventHandler.handle(Future.failedFuture(e));
+					promise.complete();
+				} catch(Exception ex) {
+					LOG.error(String.format("attributeSiteState failed. "), ex);
+					promise.fail(ex);
 				}
+			}).onFailure(ex -> {
+				LOG.error(String.format("attributeSiteState failed. ", ex));
+				promise.fail(ex);
 			});
-		} catch(Exception e) {
-			LOG.error(String.format("attributeSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("attributeSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 
 	public Future<Void> indexSiteState(SiteState o) {
@@ -2659,11 +2276,19 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		try {
 			SiteRequestEnUS siteRequest = o.getSiteRequest_();
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			o.initDeepForClass(siteRequest);
-			SolrInputDocument document = new SolrInputDocument();
-			o.indexSiteState(document);
-			webClient.post(ConfigKeys.SOLR_URL + "/update?commitWithin=10000&overwrite=true&wt=json").sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(a -> {
-				promise.complete();
+			o.promiseDeepForClass(siteRequest).onSuccess(a -> {
+				SolrInputDocument document = new SolrInputDocument();
+				o.indexSiteState(document);
+				String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
+				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
+				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
+				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?commitWithin=10000&overwrite=true&wt=json");
+				webClient.post(solrPort, solrHostName, solrRequestUri).sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("indexSiteState failed. "), ex);
+					promise.fail(ex);
+				});
 			}).onFailure(ex -> {
 				LOG.error(String.format("indexSiteState failed. "), ex);
 				promise.fail(ex);
@@ -2675,7 +2300,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		return promise.future();
 	}
 
-	public void refreshSiteState(SiteState o, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> refreshSiteState(SiteState o) {
+		Promise<Void> promise = Promise.promise();
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -2690,80 +2316,70 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
 				searchList.add("json.facet", "{agencyKeys:{terms:{field:agencyKeys_indexed_longs, limit:1000}}}");
 				searchList.setRows(1000);
-				searchList.initDeepSearchList(siteRequest);
-				List<Future> futures = new ArrayList<>();
+				searchList.promiseDeepSearchList(siteRequest).onSuccess(a -> {
+					List<Future> futures = new ArrayList<>();
 
-				for(int i=0; i < pks.size(); i++) {
-					Long pk2 = pks.get(i);
-					String classSimpleName2 = classes.get(i);
+					for(int i=0; i < pks.size(); i++) {
+						Long pk2 = pks.get(i);
+						String classSimpleName2 = classes.get(i);
 
-					if("SiteAgency".equals(classSimpleName2) && pk2 != null) {
-						SearchList<SiteAgency> searchList2 = new SearchList<SiteAgency>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(SiteAgency.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						searchList2.initDeepSearchList(siteRequest);
-						SiteAgency o2 = searchList2.getList().stream().findFirst().orElse(null);
-
-						if(o2 != null) {
-							SiteAgencyEnUSApiServiceImpl service = new SiteAgencyEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
-							ApiRequest apiRequest2 = new ApiRequest();
-							apiRequest2.setRows(1);
-							apiRequest2.setNumFound(1l);
-							apiRequest2.setNumPATCH(0L);
-							apiRequest2.initDeepApiRequest(siteRequest2);
-							siteRequest2.setApiRequest_(apiRequest2);
-							eventBus.publish("websocketSiteAgency", JsonObject.mapFrom(apiRequest2).toString());
-
-							o2.setPk(pk2);
-							o2.setSiteRequest_(siteRequest2);
-							futures.add(
-								service.patchSiteAgencyFuture(o2, false).onFailure(ex -> {
-									LOG.error(String.format("SiteAgency %s failed. ", pk2), ex);
-									eventHandler.handle(Future.failedFuture(ex));
-								})
-							);
+						if("SiteAgency".equals(classSimpleName2) && pk2 != null) {
+							SearchList<SiteAgency> searchList2 = new SearchList<SiteAgency>();
+							searchList2.setStore(true);
+							searchList2.setQuery("*:*");
+							searchList2.setC(SiteAgency.class);
+							searchList2.addFilterQuery("pk_indexed_long:" + pk2);
+							searchList2.setRows(1);
+							futures.add(Future.future(promise2 -> {
+								searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+									SiteAgency o2 = searchList2.getList().stream().findFirst().orElse(null);
+									if(o2 != null) {
+										eventBus.request("opendatapolicing-enUS-SiteAgency", new JsonObject(), new DeliveryOptions().addHeader("action", "patchSiteAgency")).onSuccess(c -> {
+											promise2.complete();
+										}).onFailure(ex -> {
+											promise2.fail(ex);
+										});
+									}
+								}).onFailure(ex -> {
+									promise2.fail(ex);
+								});
+							}));
 						}
 					}
-				}
 
-				CompositeFuture.all(futures).onComplete(a -> {
-					if(a.succeeded()) {
-						SiteStateEnUSApiServiceImpl service = new SiteStateEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+					CompositeFuture.all(futures).onSuccess(b -> {
 						List<Future> futures2 = new ArrayList<>();
 						for(SiteState o2 : searchList.getList()) {
 							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
 							o2.setSiteRequest_(siteRequest2);
 							futures2.add(
-								service.patchSiteStateFuture(o2, false).onFailure(ex -> {
+								patchSiteStateFuture(o2, false).onFailure(ex -> {
 									LOG.error(String.format("SiteState %s failed. ", o2.getPk()), ex);
-									eventHandler.handle(Future.failedFuture(ex));
 								})
 							);
 						}
 
-						CompositeFuture.all(futures2).onComplete(b -> {
-							if(b.succeeded()) {
-								eventHandler.handle(Future.succeededFuture());
-							} else {
-								LOG.error("Refresh relations failed. ", b.cause());
-								error(siteRequest, eventHandler, b);
-							}
+						CompositeFuture.all(futures2).onSuccess(c -> {
+							promise.complete();
+						}).onFailure(ex -> {
+							LOG.error("Refresh relations failed. ", ex);
+							promise.fail(ex);
 						});
-					} else {
-						LOG.error("Refresh relations failed. ", a.cause());
-						error(siteRequest, eventHandler, a);
-					}
+					}).onFailure(ex -> {
+						LOG.error("Refresh relations failed. ", ex);
+						promise.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error("Refresh relations failed. ", ex);
+					promise.fail(ex);
 				});
 			} else {
-				eventHandler.handle(Future.succeededFuture());
+				promise.complete();
 			}
-		} catch(Exception e) {
-			LOG.error(String.format("refreshSiteState failed. "), e);
-			eventHandler.handle(Future.failedFuture(e));
+		} catch(Exception ex) {
+			LOG.error(String.format("refreshSiteState failed. "), ex);
+			promise.fail(ex);
 		}
+		return promise.future();
 	}
 }

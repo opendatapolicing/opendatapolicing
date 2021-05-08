@@ -158,16 +158,16 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 		});
 	}
 
-	protected void _siteUser(Wrap<SiteUser> c) { 
-		if(userId != null) {
-			SiteUser o = new SiteUser();
-			o.setUserName(userName);
-			o.setUserFirstName(userFirstName);
-			o.setUserLastName(userLastName);
-			o.setUserId(userId);
-			c.o(o);
-		}
-	}
+//	protected void _siteUser_(Wrap<SiteUser> c) { 
+//		if(userId != null) {
+//			SiteUser o = new SiteUser();
+//			o.setUserName(userName);
+//			o.setUserFirstName(userFirstName);
+//			o.setUserLastName(userLastName);
+//			o.setUserId(userId);
+//			c.o(o);
+//		}
+//	}
 
 	protected void _xmlStack(Stack<String> o) {}
 

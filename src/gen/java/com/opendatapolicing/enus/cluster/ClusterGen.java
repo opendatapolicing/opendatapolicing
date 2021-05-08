@@ -65,28 +65,6 @@ public abstract class ClusterGen<DEV> extends Object {
 	public static final List<String> ROLES = Arrays.asList("SiteService");
 	public static final List<String> ROLE_READS = Arrays.asList("User");
 
-	public static final String Cluster_AName = "a cluster";
-	public static final String Cluster_This = "this ";
-	public static final String Cluster_ThisName = "this cluster";
-	public static final String Cluster_A = "a ";
-	public static final String Cluster_TheName = "the cluster";
-	public static final String Cluster_NameSingular = "cluster";
-	public static final String Cluster_NamePlural = "clusters";
-	public static final String Cluster_NameActual = "current cluster";
-	public static final String Cluster_AllName = "all the clusters";
-	public static final String Cluster_SearchAllNameBy = "search clusters by ";
-	public static final String Cluster_Title = "clusters";
-	public static final String Cluster_ThePluralName = "the clusters";
-	public static final String Cluster_NoNameFound = "no cluster found";
-	public static final String Cluster_NameVar = "cluster";
-	public static final String Cluster_OfName = "of cluster";
-	public static final String Cluster_ANameAdjective = "a cluster";
-	public static final String Cluster_NameAdjectiveSingular = "cluster";
-	public static final String Cluster_NameAdjectivePlural = "clusters";
-	public static final String Cluster_Color = "gray";
-	public static final String Cluster_IconGroup = "regular";
-	public static final String Cluster_IconName = "fort-awesome";
-
 	//////////////////
 	// siteRequest_ //
 	//////////////////
@@ -98,7 +76,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -124,6 +102,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -140,7 +119,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected Long pk;
 	@JsonIgnore
-	public Wrap<Long> pkWrap = new Wrap<Long>().p(this).c(Long.class).var("pk").o(pk);
+	public Wrap<Long> pkWrap = new Wrap<Long>().var("pk").o(pk);
 
 	/**	<br/> The entity pk
 	 *  is defined as null before being initialized. 
@@ -172,6 +151,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_pk(pkWrap);
 			if(pk == null)
 				setPk(pkWrap.o);
+			pkWrap.o(null);
 		}
 		pkWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -205,41 +185,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return pk == null ? "" : pk.toString();
 	}
 
-	public String htmTooltipPk() {
-		return null;
-	}
-
-	public String htmPk() {
-		return pk == null ? "" : StringEscapeUtils.escapeHtml4(strPk());
-	}
-
-	public void inputPk(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		s.e("span").a("class", "varCluster", pk, "Pk ").f().sx(htmPk()).g("span");
-	}
-
-	public void htmPk(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ s.e("div").a("class", "w3-padding ").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-gray ").f();
-							s.e("label").a("class", "").f().sx("primary key").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row  ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-								{ s.e("div").a("class", "w3-rest ").f();
-									s.e("span").a("class", "varCluster", pk, "Pk ").f().sx(strPk()).g("span");
-								} s.g("div");
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			}
-		} s.g("div");
-	}
-
 	///////////////
 	// inheritPk //
 	///////////////
@@ -250,7 +195,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected String inheritPk;
 	@JsonIgnore
-	public Wrap<String> inheritPkWrap = new Wrap<String>().p(this).c(String.class).var("inheritPk").o(inheritPk);
+	public Wrap<String> inheritPkWrap = new Wrap<String>().var("inheritPk").o(inheritPk);
 
 	/**	<br/> The entity inheritPk
 	 *  is defined as null before being initialized. 
@@ -275,6 +220,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_inheritPk(inheritPkWrap);
 			if(inheritPk == null)
 				setInheritPk(inheritPkWrap.o);
+			inheritPkWrap.o(null);
 		}
 		inheritPkWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -308,76 +254,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return inheritPk == null ? "" : inheritPk;
 	}
 
-	public String htmTooltipInheritPk() {
-		return null;
-	}
-
-	public String htmInheritPk() {
-		return inheritPk == null ? "" : StringEscapeUtils.escapeHtml4(strInheritPk());
-	}
-
-	public void inputInheritPk(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			s.e("input")
-				.a("type", "text")
-				.a("id", classApiMethodMethod, "_inheritPk");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					s.a("class", "setInheritPk classCluster inputCluster", pk, "InheritPk w3-input w3-border ");
-					s.a("name", "setInheritPk");
-				} else {
-					s.a("class", "valueInheritPk w3-input w3-border classCluster inputCluster", pk, "InheritPk w3-input w3-border ");
-					s.a("name", "inheritPk");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					s.a("onclick", "removeGlow($(this)); ");
-					s.a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setInheritPk', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_inheritPk')); }, function() { addError($('#", classApiMethodMethod, "_inheritPk')); }); ");
-				}
-				s.a("value", strInheritPk())
-			.fg();
-
-		} else {
-				s.e("span").a("class", "varCluster", pk, "InheritPk ").f().sx(htmInheritPk()).g("span");
-		}
-	}
-
-	public void htmInheritPk(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ s.e("div").a("class", "w3-padding ").f();
-				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterInheritPk").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-
-								inputInheritPk(classApiMethodMethod);
-							} s.g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ s.e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ s.e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-gray ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_inheritPk')); $('#", classApiMethodMethod, "_inheritPk').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#ClusterForm :input[name=pk]').val() }], 'setInheritPk', null, function() { addGlow($('#", classApiMethodMethod, "_inheritPk')); }, function() { addError($('#", classApiMethodMethod, "_inheritPk')); }); ")
-											.f();
-											s.e("i").a("class", "far fa-eraser ").f().g("i");
-										} s.g("button");
-									} s.g("div");
-								}
-							}
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			} s.g("div");
-		} s.g("div");
-	}
-
 	////////
 	// id //
 	////////
@@ -388,7 +264,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected String id;
 	@JsonIgnore
-	public Wrap<String> idWrap = new Wrap<String>().p(this).c(String.class).var("id").o(id);
+	public Wrap<String> idWrap = new Wrap<String>().var("id").o(id);
 
 	/**	<br/> The entity id
 	 *  is defined as null before being initialized. 
@@ -413,6 +289,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_id(idWrap);
 			if(id == null)
 				setId(idWrap.o);
+			idWrap.o(null);
 		}
 		idWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -446,14 +323,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return id == null ? "" : id;
 	}
 
-	public String htmTooltipId() {
-		return null;
-	}
-
-	public String htmId() {
-		return id == null ? "" : StringEscapeUtils.escapeHtml4(strId());
-	}
-
 	/////////////
 	// created //
 	/////////////
@@ -465,7 +334,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
 	@JsonIgnore
-	public Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().p(this).c(ZonedDateTime.class).var("created").o(created);
+	public Wrap<ZonedDateTime> createdWrap = new Wrap<ZonedDateTime>().var("created").o(created);
 
 	/**	<br/> The entity created
 	 *  is defined as null before being initialized. 
@@ -504,6 +373,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_created(createdWrap);
 			if(created == null)
 				setCreated(createdWrap.o);
+			createdWrap.o(null);
 		}
 		createdWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -537,39 +407,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return created == null ? "" : created.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String htmTooltipCreated() {
-		return null;
-	}
-
-	public String htmCreated() {
-		return created == null ? "" : StringEscapeUtils.escapeHtml4(strCreated());
-	}
-
-	public void inputCreated(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		s.e("span").a("class", "varCluster", pk, "Created ").f().sx(htmCreated()).g("span");
-	}
-
-	public void htmCreated(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ s.e("div").a("class", "w3-padding ").f();
-				{ s.e("div").a("id", "suggest", classApiMethodMethod, "ClusterCreated").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-gray ").f();
-							s.e("label").a("for", classApiMethodMethod, "_created").a("class", "").f().sx("created").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-								inputCreated(classApiMethodMethod);
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			} s.g("div");
-		} s.g("div");
-	}
-
 	//////////////
 	// modified //
 	//////////////
@@ -581,7 +418,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime modified;
 	@JsonIgnore
-	public Wrap<ZonedDateTime> modifiedWrap = new Wrap<ZonedDateTime>().p(this).c(ZonedDateTime.class).var("modified").o(modified);
+	public Wrap<ZonedDateTime> modifiedWrap = new Wrap<ZonedDateTime>().var("modified").o(modified);
 
 	/**	<br/> The entity modified
 	 *  is defined as null before being initialized. 
@@ -620,6 +457,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_modified(modifiedWrap);
 			if(modified == null)
 				setModified(modifiedWrap.o);
+			modifiedWrap.o(null);
 		}
 		modifiedWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -653,41 +491,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return modified == null ? "" : modified.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String htmTooltipModified() {
-		return null;
-	}
-
-	public String htmModified() {
-		return modified == null ? "" : StringEscapeUtils.escapeHtml4(strModified());
-	}
-
-	public void inputModified(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		s.e("span").a("class", "varCluster", pk, "Modified ").f().sx(htmModified()).g("span");
-	}
-
-	public void htmModified(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ s.e("div").a("class", "w3-padding ").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row w3-gray ").f();
-							s.e("label").a("class", "").f().sx("modified").g("label");
-						} s.g("div");
-						{ s.e("div").a("class", "w3-cell-row  ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-								{ s.e("div").a("class", "w3-rest ").f();
-									s.e("span").a("class", "varCluster", pk, "Modified ").f().sx(strModified()).g("span");
-								} s.g("div");
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			}
-		} s.g("div");
-	}
-
 	////////////////////////
 	// classCanonicalName //
 	////////////////////////
@@ -698,7 +501,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected String classCanonicalName;
 	@JsonIgnore
-	public Wrap<String> classCanonicalNameWrap = new Wrap<String>().p(this).c(String.class).var("classCanonicalName").o(classCanonicalName);
+	public Wrap<String> classCanonicalNameWrap = new Wrap<String>().var("classCanonicalName").o(classCanonicalName);
 
 	/**	<br/> The entity classCanonicalName
 	 *  is defined as null before being initialized. 
@@ -723,6 +526,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_classCanonicalName(classCanonicalNameWrap);
 			if(classCanonicalName == null)
 				setClassCanonicalName(classCanonicalNameWrap.o);
+			classCanonicalNameWrap.o(null);
 		}
 		classCanonicalNameWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -756,14 +560,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalName == null ? "" : classCanonicalName;
 	}
 
-	public String htmTooltipClassCanonicalName() {
-		return null;
-	}
-
-	public String htmClassCanonicalName() {
-		return classCanonicalName == null ? "" : StringEscapeUtils.escapeHtml4(strClassCanonicalName());
-	}
-
 	/////////////////////
 	// classSimpleName //
 	/////////////////////
@@ -774,7 +570,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected String classSimpleName;
 	@JsonIgnore
-	public Wrap<String> classSimpleNameWrap = new Wrap<String>().p(this).c(String.class).var("classSimpleName").o(classSimpleName);
+	public Wrap<String> classSimpleNameWrap = new Wrap<String>().var("classSimpleName").o(classSimpleName);
 
 	/**	<br/> The entity classSimpleName
 	 *  is defined as null before being initialized. 
@@ -799,6 +595,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_classSimpleName(classSimpleNameWrap);
 			if(classSimpleName == null)
 				setClassSimpleName(classSimpleNameWrap.o);
+			classSimpleNameWrap.o(null);
 		}
 		classSimpleNameWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -832,14 +629,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classSimpleName == null ? "" : classSimpleName;
 	}
 
-	public String htmTooltipClassSimpleName() {
-		return null;
-	}
-
-	public String htmClassSimpleName() {
-		return classSimpleName == null ? "" : StringEscapeUtils.escapeHtml4(strClassSimpleName());
-	}
-
 	/////////////////////////
 	// classCanonicalNames //
 	/////////////////////////
@@ -850,7 +639,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classCanonicalNames = new ArrayList<String>();
 	@JsonIgnore
-	public Wrap<List<String>> classCanonicalNamesWrap = new Wrap<List<String>>().p(this).c(List.class).var("classCanonicalNames").o(classCanonicalNames);
+	public Wrap<List<String>> classCanonicalNamesWrap = new Wrap<List<String>>().var("classCanonicalNames").o(classCanonicalNames);
 
 	/**	<br/> The entity classCanonicalNames
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -929,14 +718,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
 	}
 
-	public String htmTooltipClassCanonicalNames() {
-		return null;
-	}
-
-	public String htmClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : StringEscapeUtils.escapeHtml4(strClassCanonicalNames());
-	}
-
 	///////////
 	// saves //
 	///////////
@@ -947,7 +728,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> saves = new ArrayList<String>();
 	@JsonIgnore
-	public Wrap<List<String>> savesWrap = new Wrap<List<String>>().p(this).c(List.class).var("saves").o(saves);
+	public Wrap<List<String>> savesWrap = new Wrap<List<String>>().var("saves").o(saves);
 
 	/**	<br/> The entity saves
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
@@ -1026,14 +807,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return saves == null ? "" : saves.toString();
 	}
 
-	public String htmTooltipSaves() {
-		return null;
-	}
-
-	public String htmSaves() {
-		return saves == null ? "" : StringEscapeUtils.escapeHtml4(strSaves());
-	}
-
 	/////////////////
 	// objectTitle //
 	/////////////////
@@ -1044,7 +817,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected String objectTitle;
 	@JsonIgnore
-	public Wrap<String> objectTitleWrap = new Wrap<String>().p(this).c(String.class).var("objectTitle").o(objectTitle);
+	public Wrap<String> objectTitleWrap = new Wrap<String>().var("objectTitle").o(objectTitle);
 
 	/**	<br/> The entity objectTitle
 	 *  is defined as null before being initialized. 
@@ -1069,6 +842,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_objectTitle(objectTitleWrap);
 			if(objectTitle == null)
 				setObjectTitle(objectTitleWrap.o);
+			objectTitleWrap.o(null);
 		}
 		objectTitleWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -1102,37 +876,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectTitle == null ? "" : objectTitle;
 	}
 
-	public String htmTooltipObjectTitle() {
-		return null;
-	}
-
-	public String htmObjectTitle() {
-		return objectTitle == null ? "" : StringEscapeUtils.escapeHtml4(strObjectTitle());
-	}
-
-	public void inputObjectTitle(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-	}
-
-	public void htmObjectTitle(String classApiMethodMethod) {
-		Cluster s = (Cluster)this;
-		{ s.e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ s.e("div").a("class", "w3-padding ").f();
-					{ s.e("div").a("class", "w3-card ").f();
-						{ s.e("div").a("class", "w3-cell-row  ").f();
-							{ s.e("div").a("class", "w3-cell ").f();
-								{ s.e("div").a("class", "w3-rest ").f();
-									s.e("span").a("class", "varCluster", pk, "ObjectTitle ").f().sx(strObjectTitle()).g("span");
-								} s.g("div");
-							} s.g("div");
-						} s.g("div");
-					} s.g("div");
-				} s.g("div");
-			}
-		} s.g("div");
-	}
-
 	//////////////
 	// objectId //
 	//////////////
@@ -1143,7 +886,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected String objectId;
 	@JsonIgnore
-	public Wrap<String> objectIdWrap = new Wrap<String>().p(this).c(String.class).var("objectId").o(objectId);
+	public Wrap<String> objectIdWrap = new Wrap<String>().var("objectId").o(objectId);
 
 	/**	<br/> The entity objectId
 	 *  is defined as null before being initialized. 
@@ -1168,6 +911,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			_objectId(objectIdWrap);
 			if(objectId == null)
 				setObjectId(objectIdWrap.o);
+			objectIdWrap.o(null);
 		}
 		objectIdWrap.alreadyInitialized(true);
 		return (Cluster)this;
@@ -1201,14 +945,6 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectId == null ? "" : objectId;
 	}
 
-	public String htmTooltipObjectId() {
-		return null;
-	}
-
-	public String htmObjectId() {
-		return objectId == null ? "" : StringEscapeUtils.escapeHtml4(strObjectId());
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -1238,21 +974,25 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public Future<Void> promiseCluster(Promise<Void> promise) {
-		Future.future(a -> {}).compose(a -> {
+		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
-			siteRequest_Init();
-			pkInit();
-			inheritPkInit();
-			idInit();
-			createdInit();
-			modifiedInit();
-			classCanonicalNameInit();
-			classSimpleNameInit();
-			classCanonicalNamesInit();
-			savesInit();
-			objectTitleInit();
-			objectIdInit();
-			promise2.complete();
+			try {
+				siteRequest_Init();
+				pkInit();
+				inheritPkInit();
+				idInit();
+				createdInit();
+				modifiedInit();
+				classCanonicalNameInit();
+				classSimpleNameInit();
+				classCanonicalNamesInit();
+				savesInit();
+				objectTitleInit();
+				objectIdInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
 			return promise2.future();
 		}).onSuccess(a -> {
 			promise.complete();
@@ -1691,48 +1431,18 @@ public abstract class ClusterGen<DEV> extends Object {
 	public void storeCluster(SolrDocument solrDocument) {
 		Cluster oCluster = (Cluster)this;
 
-		Long pk = (Long)solrDocument.get("pk_stored_long");
-		if(pk != null)
-			oCluster.setPk(pk);
-
-		String inheritPk = (String)solrDocument.get("inheritPk_stored_string");
-		if(inheritPk != null)
-			oCluster.setInheritPk(inheritPk);
-
+		oCluster.setPk(Optional.ofNullable(solrDocument.get("pk_stored_long")).map(v -> v.toString()).orElse(null));
+		oCluster.setInheritPk(Optional.ofNullable(solrDocument.get("inheritPk_stored_string")).map(v -> v.toString()).orElse(null));
 		String id = (String)solrDocument.get("id");
 		oCluster.setId(id);
-
-		Date created = (Date)solrDocument.get("created_stored_date");
-		if(created != null)
-			oCluster.setCreated(created);
-
-		Date modified = (Date)solrDocument.get("modified_stored_date");
-		if(modified != null)
-			oCluster.setModified(modified);
-
-		String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
-		if(classCanonicalName != null)
-			oCluster.setClassCanonicalName(classCanonicalName);
-
-		String classSimpleName = (String)solrDocument.get("classSimpleName_stored_string");
-		if(classSimpleName != null)
-			oCluster.setClassSimpleName(classSimpleName);
-
-		List<String> classCanonicalNames = (List<String>)solrDocument.get("classCanonicalNames_stored_strings");
-		if(classCanonicalNames != null)
-			oCluster.classCanonicalNames.addAll(classCanonicalNames);
-
-		List<String> saves = (List<String>)solrDocument.get("saves_stored_strings");
-		if(saves != null)
-			oCluster.saves.addAll(saves);
-
-		String objectTitle = (String)solrDocument.get("objectTitle_stored_string");
-		if(objectTitle != null)
-			oCluster.setObjectTitle(objectTitle);
-
-		String objectId = (String)solrDocument.get("objectId_stored_string");
-		if(objectId != null)
-			oCluster.setObjectId(objectId);
+		oCluster.setCreated(Optional.ofNullable(solrDocument.get("created_stored_date")).map(v -> v.toString()).orElse(null));
+		oCluster.setModified(Optional.ofNullable(solrDocument.get("modified_stored_date")).map(v -> v.toString()).orElse(null));
+		oCluster.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_stored_string")).map(v -> v.toString()).orElse(null));
+		oCluster.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_stored_string")).map(v -> v.toString()).orElse(null));
+		oCluster.addClassCanonicalNames(Optional.ofNullable(solrDocument.get("classCanonicalNames_stored_strings")).map(v -> v.toString()).orElse(null));
+		oCluster.addSaves(Optional.ofNullable(solrDocument.get("saves_stored_strings")).map(v -> v.toString()).orElse(null));
+		oCluster.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oCluster.setObjectId(Optional.ofNullable(solrDocument.get("objectId_stored_string")).map(v -> v.toString()).orElse(null));
 	}
 
 	//////////////////

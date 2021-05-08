@@ -284,4 +284,5 @@ public abstract class AppOpenApi3Gen<DEV> extends AppSwagger2 {
 		sb.append(" }");
 		return sb.toString();
 	}
+
 }

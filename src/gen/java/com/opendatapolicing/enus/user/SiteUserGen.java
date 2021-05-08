@@ -57,27 +57,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public static final List<String> ROLES = Arrays.asList("SiteAdmin", "SiteAdmin");
 	public static final List<String> ROLE_READS = Arrays.asList("");
 
-	public static final String SiteUser_AName = "a site user";
-	public static final String SiteUser_This = "this ";
-	public static final String SiteUser_ThisName = "this site user";
-	public static final String SiteUser_A = "a ";
-	public static final String SiteUser_TheName = "the site user";
-	public static final String SiteUser_NameSingular = "site user";
-	public static final String SiteUser_NamePlural = "site users";
-	public static final String SiteUser_NameActual = "current site user";
-	public static final String SiteUser_AllName = "all the site users";
-	public static final String SiteUser_SearchAllNameBy = "search site users by ";
-	public static final String SiteUser_Title = "site users";
-	public static final String SiteUser_ThePluralName = "the site users";
-	public static final String SiteUser_NoNameFound = "no site user found";
-	public static final String SiteUser_NameVar = "siteUser";
-	public static final String SiteUser_OfName = "of site user";
-	public static final String SiteUser_ANameAdjective = "a site user";
-	public static final String SiteUser_NameAdjectiveSingular = "site user";
-	public static final String SiteUser_NameAdjectivePlural = "site users";
-	public static final String SiteUser_IconGroup = "regular";
-	public static final String SiteUser_IconName = "user-cog";
-
 	/////////////
 	// userKey //
 	/////////////
@@ -89,7 +68,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Long userKey;
 	@JsonIgnore
-	public Wrap<Long> userKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("userKey").o(userKey);
+	public Wrap<Long> userKeyWrap = new Wrap<Long>().var("userKey").o(userKey);
 
 	/**	<br/> The entity userKey
 	 *  is defined as null before being initialized. 
@@ -121,6 +100,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			_userKey(userKeyWrap);
 			if(userKey == null)
 				setUserKey(userKeyWrap.o);
+			userKeyWrap.o(null);
 		}
 		userKeyWrap.alreadyInitialized(true);
 		return (SiteUser)this;
@@ -154,37 +134,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userKey == null ? "" : userKey.toString();
 	}
 
-	public String htmTooltipUserKey() {
-		return null;
-	}
-
-	public String htmUserKey() {
-		return userKey == null ? "" : StringEscapeUtils.escapeHtml4(strUserKey());
-	}
-
-	public void inputUserKey(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		e("span").a("class", "varSiteUser", pk, "UserKey ").f().sx(htmUserKey()).g("span");
-	}
-
-	public void htmUserKey(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserKey").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserKey(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////
 	// userKeys //
 	//////////////
@@ -196,7 +145,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> userKeys = new ArrayList<Long>();
 	@JsonIgnore
-	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("userKeys").o(userKeys);
+	public Wrap<List<Long>> userKeysWrap = new Wrap<List<Long>>().var("userKeys").o(userKeys);
 
 	/**	<br/> The entity userKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -290,14 +239,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userKeys == null ? "" : userKeys.toString();
 	}
 
-	public String htmTooltipUserKeys() {
-		return null;
-	}
-
-	public String htmUserKeys() {
-		return userKeys == null ? "" : StringEscapeUtils.escapeHtml4(strUserKeys());
-	}
-
 	////////////
 	// userId //
 	////////////
@@ -308,7 +249,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String userId;
 	@JsonIgnore
-	public Wrap<String> userIdWrap = new Wrap<String>().p(this).c(String.class).var("userId").o(userId);
+	public Wrap<String> userIdWrap = new Wrap<String>().var("userId").o(userId);
 
 	/**	<br/> The entity userId
 	 *  is defined as null before being initialized. 
@@ -333,6 +274,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			_userId(userIdWrap);
 			if(userId == null)
 				setUserId(userIdWrap.o);
+			userIdWrap.o(null);
 		}
 		userIdWrap.alreadyInitialized(true);
 		return (SiteUser)this;
@@ -366,80 +308,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userId == null ? "" : userId;
 	}
 
-	public String htmTooltipUserId() {
-		return null;
-	}
-
-	public String htmUserId() {
-		return userId == null ? "" : StringEscapeUtils.escapeHtml4(strUserId());
-	}
-
-	public void inputUserId(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "user ID")
-				.a("id", classApiMethodMethod, "_userId");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setUserId classSiteUser inputSiteUser", pk, "UserId w3-input w3-border ");
-					a("name", "setUserId");
-				} else {
-					a("class", "valueUserId w3-input w3-border classSiteUser inputSiteUser", pk, "UserId w3-input w3-border ");
-					a("name", "userId");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserId', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userId')); }, function() { addError($('#", classApiMethodMethod, "_userId')); }); ");
-				}
-				a("value", strUserId())
-			.fg();
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserId ").f().sx(htmUserId()).g("span");
-		}
-	}
-
-	public void htmUserId(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserId").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3- ").f();
-							e("label").a("for", classApiMethodMethod, "_userId").a("class", "").f().sx("user ID").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserId(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userId')); $('#", classApiMethodMethod, "_userId').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserId', null, function() { addGlow($('#", classApiMethodMethod, "_userId')); }, function() { addError($('#", classApiMethodMethod, "_userId')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////
 	// userName //
 	//////////////
@@ -450,7 +318,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String userName;
 	@JsonIgnore
-	public Wrap<String> userNameWrap = new Wrap<String>().p(this).c(String.class).var("userName").o(userName);
+	public Wrap<String> userNameWrap = new Wrap<String>().var("userName").o(userName);
 
 	/**	<br/> The entity userName
 	 *  is defined as null before being initialized. 
@@ -475,6 +343,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			_userName(userNameWrap);
 			if(userName == null)
 				setUserName(userNameWrap.o);
+			userNameWrap.o(null);
 		}
 		userNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
@@ -508,76 +377,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userName == null ? "" : userName;
 	}
 
-	public String htmTooltipUserName() {
-		return null;
-	}
-
-	public String htmUserName() {
-		return userName == null ? "" : StringEscapeUtils.escapeHtml4(strUserName());
-	}
-
-	public void inputUserName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("id", classApiMethodMethod, "_userName");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setUserName classSiteUser inputSiteUser", pk, "UserName w3-input w3-border ");
-					a("name", "setUserName");
-				} else {
-					a("class", "valueUserName w3-input w3-border classSiteUser inputSiteUser", pk, "UserName w3-input w3-border ");
-					a("name", "userName");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userName')); }, function() { addError($('#", classApiMethodMethod, "_userName')); }); ");
-				}
-				a("value", strUserName())
-			.fg();
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserName ").f().sx(htmUserName()).g("span");
-		}
-	}
-
-	public void htmUserName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserName").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserName(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userName')); $('#", classApiMethodMethod, "_userName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserName', null, function() { addGlow($('#", classApiMethodMethod, "_userName')); }, function() { addError($('#", classApiMethodMethod, "_userName')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	///////////////
 	// userEmail //
 	///////////////
@@ -588,7 +387,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String userEmail;
 	@JsonIgnore
-	public Wrap<String> userEmailWrap = new Wrap<String>().p(this).c(String.class).var("userEmail").o(userEmail);
+	public Wrap<String> userEmailWrap = new Wrap<String>().var("userEmail").o(userEmail);
 
 	/**	<br/> The entity userEmail
 	 *  is defined as null before being initialized. 
@@ -613,6 +412,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			_userEmail(userEmailWrap);
 			if(userEmail == null)
 				setUserEmail(userEmailWrap.o);
+			userEmailWrap.o(null);
 		}
 		userEmailWrap.alreadyInitialized(true);
 		return (SiteUser)this;
@@ -646,76 +446,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userEmail == null ? "" : userEmail;
 	}
 
-	public String htmTooltipUserEmail() {
-		return null;
-	}
-
-	public String htmUserEmail() {
-		return userEmail == null ? "" : StringEscapeUtils.escapeHtml4(strUserEmail());
-	}
-
-	public void inputUserEmail(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("id", classApiMethodMethod, "_userEmail");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setUserEmail classSiteUser inputSiteUser", pk, "UserEmail w3-input w3-border ");
-					a("name", "setUserEmail");
-				} else {
-					a("class", "valueUserEmail w3-input w3-border classSiteUser inputSiteUser", pk, "UserEmail w3-input w3-border ");
-					a("name", "userEmail");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserEmail', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userEmail')); }, function() { addError($('#", classApiMethodMethod, "_userEmail')); }); ");
-				}
-				a("value", strUserEmail())
-			.fg();
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserEmail ").f().sx(htmUserEmail()).g("span");
-		}
-	}
-
-	public void htmUserEmail(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserEmail").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserEmail(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userEmail')); $('#", classApiMethodMethod, "_userEmail').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserEmail', null, function() { addGlow($('#", classApiMethodMethod, "_userEmail')); }, function() { addError($('#", classApiMethodMethod, "_userEmail')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	///////////////////
 	// userFirstName //
 	///////////////////
@@ -726,7 +456,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String userFirstName;
 	@JsonIgnore
-	public Wrap<String> userFirstNameWrap = new Wrap<String>().p(this).c(String.class).var("userFirstName").o(userFirstName);
+	public Wrap<String> userFirstNameWrap = new Wrap<String>().var("userFirstName").o(userFirstName);
 
 	/**	<br/> The entity userFirstName
 	 *  is defined as null before being initialized. 
@@ -751,6 +481,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			_userFirstName(userFirstNameWrap);
 			if(userFirstName == null)
 				setUserFirstName(userFirstNameWrap.o);
+			userFirstNameWrap.o(null);
 		}
 		userFirstNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
@@ -784,76 +515,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userFirstName == null ? "" : userFirstName;
 	}
 
-	public String htmTooltipUserFirstName() {
-		return null;
-	}
-
-	public String htmUserFirstName() {
-		return userFirstName == null ? "" : StringEscapeUtils.escapeHtml4(strUserFirstName());
-	}
-
-	public void inputUserFirstName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("id", classApiMethodMethod, "_userFirstName");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setUserFirstName classSiteUser inputSiteUser", pk, "UserFirstName w3-input w3-border ");
-					a("name", "setUserFirstName");
-				} else {
-					a("class", "valueUserFirstName w3-input w3-border classSiteUser inputSiteUser", pk, "UserFirstName w3-input w3-border ");
-					a("name", "userFirstName");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserFirstName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userFirstName')); }, function() { addError($('#", classApiMethodMethod, "_userFirstName')); }); ");
-				}
-				a("value", strUserFirstName())
-			.fg();
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserFirstName ").f().sx(htmUserFirstName()).g("span");
-		}
-	}
-
-	public void htmUserFirstName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserFirstName").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserFirstName(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userFirstName')); $('#", classApiMethodMethod, "_userFirstName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserFirstName', null, function() { addGlow($('#", classApiMethodMethod, "_userFirstName')); }, function() { addError($('#", classApiMethodMethod, "_userFirstName')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////////
 	// userLastName //
 	//////////////////
@@ -864,7 +525,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String userLastName;
 	@JsonIgnore
-	public Wrap<String> userLastNameWrap = new Wrap<String>().p(this).c(String.class).var("userLastName").o(userLastName);
+	public Wrap<String> userLastNameWrap = new Wrap<String>().var("userLastName").o(userLastName);
 
 	/**	<br/> The entity userLastName
 	 *  is defined as null before being initialized. 
@@ -889,6 +550,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			_userLastName(userLastNameWrap);
 			if(userLastName == null)
 				setUserLastName(userLastNameWrap.o);
+			userLastNameWrap.o(null);
 		}
 		userLastNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
@@ -922,76 +584,6 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userLastName == null ? "" : userLastName;
 	}
 
-	public String htmTooltipUserLastName() {
-		return null;
-	}
-
-	public String htmUserLastName() {
-		return userLastName == null ? "" : StringEscapeUtils.escapeHtml4(strUserLastName());
-	}
-
-	public void inputUserLastName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("id", classApiMethodMethod, "_userLastName");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setUserLastName classSiteUser inputSiteUser", pk, "UserLastName w3-input w3-border ");
-					a("name", "setUserLastName");
-				} else {
-					a("class", "valueUserLastName w3-input w3-border classSiteUser inputSiteUser", pk, "UserLastName w3-input w3-border ");
-					a("name", "userLastName");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserLastName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userLastName')); }, function() { addError($('#", classApiMethodMethod, "_userLastName')); }); ");
-				}
-				a("value", strUserLastName())
-			.fg();
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserLastName ").f().sx(htmUserLastName()).g("span");
-		}
-	}
-
-	public void htmUserLastName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserLastName").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserLastName(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userLastName')); $('#", classApiMethodMethod, "_userLastName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserLastName', null, function() { addGlow($('#", classApiMethodMethod, "_userLastName')); }, function() { addError($('#", classApiMethodMethod, "_userLastName')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////////
 	// userFullName //
 	//////////////////
@@ -1002,7 +594,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String userFullName;
 	@JsonIgnore
-	public Wrap<String> userFullNameWrap = new Wrap<String>().p(this).c(String.class).var("userFullName").o(userFullName);
+	public Wrap<String> userFullNameWrap = new Wrap<String>().var("userFullName").o(userFullName);
 
 	/**	<br/> The entity userFullName
 	 *  is defined as null before being initialized. 
@@ -1027,6 +619,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			_userFullName(userFullNameWrap);
 			if(userFullName == null)
 				setUserFullName(userFullNameWrap.o);
+			userFullNameWrap.o(null);
 		}
 		userFullNameWrap.alreadyInitialized(true);
 		return (SiteUser)this;
@@ -1060,109 +653,65 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		return userFullName == null ? "" : userFullName;
 	}
 
-	public String htmTooltipUserFullName() {
-		return null;
-	}
-
-	public String htmUserFullName() {
-		return userFullName == null ? "" : StringEscapeUtils.escapeHtml4(strUserFullName());
-	}
-
-	public void inputUserFullName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("id", classApiMethodMethod, "_userFullName");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setUserFullName classSiteUser inputSiteUser", pk, "UserFullName w3-input w3-border ");
-					a("name", "setUserFullName");
-				} else {
-					a("class", "valueUserFullName w3-input w3-border classSiteUser inputSiteUser", pk, "UserFullName w3-input w3-border ");
-					a("name", "userFullName");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setUserFullName', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_userFullName')); }, function() { addError($('#", classApiMethodMethod, "_userFullName')); }); ");
-				}
-				a("value", strUserFullName())
-			.fg();
-
-		} else {
-				e("span").a("class", "varSiteUser", pk, "UserFullName ").f().sx(htmUserFullName()).g("span");
-		}
-	}
-
-	public void htmUserFullName(String classApiMethodMethod) {
-		SiteUser s = (SiteUser)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "SiteUserUserFullName").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputUserFullName(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3- ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_userFullName')); $('#", classApiMethodMethod, "_userFullName').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#SiteUserForm :input[name=pk]').val() }], 'setUserFullName', null, function() { addGlow($('#", classApiMethodMethod, "_userFullName')); }, function() { addError($('#", classApiMethodMethod, "_userFullName')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
 
 	protected boolean alreadyInitializedSiteUser = false;
 
-	public SiteUser initDeepSiteUser(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepSiteUser(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedSiteUser) {
 			alreadyInitializedSiteUser = true;
-			initDeepSiteUser();
+			return promiseDeepSiteUser();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (SiteUser)this;
 	}
 
-	public void initDeepSiteUser() {
-		initSiteUser();
-		super.initDeepCluster(siteRequest_);
+	public Future<Void> promiseDeepSiteUser() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseSiteUser(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepCluster(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initSiteUser() {
-		userKeyInit();
-		userKeysInit();
-		userIdInit();
-		userNameInit();
-		userEmailInit();
-		userFirstNameInit();
-		userLastNameInit();
-		userFullNameInit();
+	public Future<Void> promiseSiteUser(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				userKeyInit();
+				userKeysInit();
+				userIdInit();
+				userNameInit();
+				userEmailInit();
+				userFirstNameInit();
+				userLastNameInit();
+				userFullNameInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepSiteUser(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepSiteUser(siteRequest_);
 	}
 
 	/////////////////
@@ -1637,37 +1186,14 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	public void storeSiteUser(SolrDocument solrDocument) {
 		SiteUser oSiteUser = (SiteUser)this;
 
-		Long userKey = (Long)solrDocument.get("userKey_stored_long");
-		if(userKey != null)
-			oSiteUser.setUserKey(userKey);
-
-		List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
-		if(userKeys != null)
-			oSiteUser.userKeys.addAll(userKeys);
-
-		String userId = (String)solrDocument.get("userId_stored_string");
-		if(userId != null)
-			oSiteUser.setUserId(userId);
-
-		String userName = (String)solrDocument.get("userName_stored_string");
-		if(userName != null)
-			oSiteUser.setUserName(userName);
-
-		String userEmail = (String)solrDocument.get("userEmail_stored_string");
-		if(userEmail != null)
-			oSiteUser.setUserEmail(userEmail);
-
-		String userFirstName = (String)solrDocument.get("userFirstName_stored_string");
-		if(userFirstName != null)
-			oSiteUser.setUserFirstName(userFirstName);
-
-		String userLastName = (String)solrDocument.get("userLastName_stored_string");
-		if(userLastName != null)
-			oSiteUser.setUserLastName(userLastName);
-
-		String userFullName = (String)solrDocument.get("userFullName_stored_string");
-		if(userFullName != null)
-			oSiteUser.setUserFullName(userFullName);
+		oSiteUser.setUserKey(Optional.ofNullable(solrDocument.get("userKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteUser.addUserKeys(Optional.ofNullable(solrDocument.get("userKeys_stored_longs")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserId(Optional.ofNullable(solrDocument.get("userId_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserName(Optional.ofNullable(solrDocument.get("userName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserEmail(Optional.ofNullable(solrDocument.get("userEmail_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserFirstName(Optional.ofNullable(solrDocument.get("userFirstName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserLastName(Optional.ofNullable(solrDocument.get("userLastName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserFullName(Optional.ofNullable(solrDocument.get("userFullName_stored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeCluster(solrDocument);
 	}
@@ -1749,4 +1275,13 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_userKey = "userKey";
+	public static final String VAR_userKeys = "userKeys";
+	public static final String VAR_userId = "userId";
+	public static final String VAR_userName = "userName";
+	public static final String VAR_userEmail = "userEmail";
+	public static final String VAR_userFirstName = "userFirstName";
+	public static final String VAR_userLastName = "userLastName";
+	public static final String VAR_userFullName = "userFullName";
 }

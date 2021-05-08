@@ -71,28 +71,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	public static final List<String> ROLES = Arrays.asList("SiteService");
 	public static final List<String> ROLE_READS = Arrays.asList("");
 
-	public static final String TrafficContraband_AName = "a contraband";
-	public static final String TrafficContraband_This = "this ";
-	public static final String TrafficContraband_ThisName = "this contraband";
-	public static final String TrafficContraband_A = "a ";
-	public static final String TrafficContraband_TheName = "the contraband";
-	public static final String TrafficContraband_NameSingular = "contraband";
-	public static final String TrafficContraband_NamePlural = "contrabands";
-	public static final String TrafficContraband_NameActual = "current contraband";
-	public static final String TrafficContraband_AllName = "all the contrabands";
-	public static final String TrafficContraband_SearchAllNameBy = "search contrabands by ";
-	public static final String TrafficContraband_Title = "contrabands";
-	public static final String TrafficContraband_ThePluralName = "the contrabands";
-	public static final String TrafficContraband_NoNameFound = "no contraband found";
-	public static final String TrafficContraband_NameVar = "contraband";
-	public static final String TrafficContraband_OfName = "of contraband";
-	public static final String TrafficContraband_ANameAdjective = "a contraband";
-	public static final String TrafficContraband_NameAdjectiveSingular = "contraband";
-	public static final String TrafficContraband_NameAdjectivePlural = "contrabands";
-	public static final String TrafficContraband_Color = "pale-green";
-	public static final String TrafficContraband_IconGroup = "regular";
-	public static final String TrafficContraband_IconName = "newspaper";
-
 	///////////////////
 	// contrabandKey //
 	///////////////////
@@ -104,7 +82,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Long contrabandKey;
 	@JsonIgnore
-	public Wrap<Long> contrabandKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("contrabandKey").o(contrabandKey);
+	public Wrap<Long> contrabandKeyWrap = new Wrap<Long>().var("contrabandKey").o(contrabandKey);
 
 	/**	<br/> The entity contrabandKey
 	 *  is defined as null before being initialized. 
@@ -136,6 +114,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandKey(contrabandKeyWrap);
 			if(contrabandKey == null)
 				setContrabandKey(contrabandKeyWrap.o);
+			contrabandKeyWrap.o(null);
 		}
 		contrabandKeyWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -169,14 +148,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandKey == null ? "" : contrabandKey.toString();
 	}
 
-	public String htmTooltipContrabandKey() {
-		return null;
-	}
-
-	public String htmContrabandKey() {
-		return contrabandKey == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandKey());
-	}
-
 	///////////////
 	// searchKey //
 	///////////////
@@ -188,7 +159,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Long searchKey;
 	@JsonIgnore
-	public Wrap<Long> searchKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("searchKey").o(searchKey);
+	public Wrap<Long> searchKeyWrap = new Wrap<Long>().var("searchKey").o(searchKey);
 
 	/**	<br/> The entity searchKey
 	 *  is defined as null before being initialized. 
@@ -220,6 +191,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchKey(searchKeyWrap);
 			if(searchKey == null)
 				setSearchKey(searchKeyWrap.o);
+			searchKeyWrap.o(null);
 		}
 		searchKeyWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -253,118 +225,26 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchKey == null ? "" : searchKey.toString();
 	}
 
-	public String htmTooltipSearchKey() {
-		return null;
-	}
-
-	public String htmSearchKey() {
-		return searchKey == null ? "" : StringEscapeUtils.escapeHtml4(strSearchKey());
-	}
-
-	public void inputSearchKey(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-			if("PUTCopy".equals(classApiMethodMethod)) {
-				{ e("div").f();
-					e("input")
-						.a("type", "checkbox")
-						.a("id", classApiMethodMethod, "_searchKey_clear")
-						.a("class", "searchKey_clear ")
-						.fg();
-					e("label").a("for", "classApiMethodMethod, \"_searchKey_clear").f().sx("clear").g("label");
-				} g("div");
-			}
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "search key")
-				.a("class", "value suggestSearchKey w3-input w3-border w3-cell w3-cell-middle ")
-				.a("name", "setSearchKey")
-				.a("id", classApiMethodMethod, "_searchKey")
-				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficContrabandSearchKey($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'contrabandKeys:" + pk + "'}", "], $('#listTrafficContrabandSearchKey_", classApiMethodMethod, "'), ", pk, "); ");
-
-				fg();
-
-		} else {
-		}
-	}
-
-	public void htmSearchKey(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandSearchKey").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "/traffic-search?fq=contrabandKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
-								e("i").a("class", "far fa-newspaper ").f().g("i");
-								sx("search key");
-							} g("a");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("h5").a("class", "w3-cell ").f();
-								sx("relate a traffic search to this contraband");
-							} g("h5");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-cell-row ").f();
-
-								inputSearchKey(classApiMethodMethod);
-								} g("div");
-							} g("div");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listTrafficContrabandSearchKey_", classApiMethodMethod).f();
-								} g("ul");
-								if(
-										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), TrafficSearch.ROLES)
-										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), TrafficSearch.ROLES)
-										) {
-									if("Page".equals(classApiMethodMethod)) {
-										{ e("div").a("class", "w3-cell-row ").f();
-											e("button")
-												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
-												.a("id", classApiMethodMethod, "_searchKey_add")
-												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postTrafficSearchVals({ contrabandKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "searchKey')); });")
-												.f().sx("add a traffic search")
-											.g("button");
-										} g("div");
-									}
-								}
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////////
 	// trafficSearchSearch //
 	/////////////////////////
 
 	/**	 The entity trafficSearchSearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<TrafficSearch>(). 
+	 *	 is defined as null before being initialized. 
 	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<TrafficSearch> trafficSearchSearch = new SearchList<TrafficSearch>();
+	protected SearchList<TrafficSearch> trafficSearchSearch;
 	@JsonIgnore
-	public Wrap<SearchList<TrafficSearch>> trafficSearchSearchWrap = new Wrap<SearchList<TrafficSearch>>().p(this).c(SearchList.class).var("trafficSearchSearch").o(trafficSearchSearch);
+	public Wrap<SearchList<TrafficSearch>> trafficSearchSearchWrap = new Wrap<SearchList<TrafficSearch>>().var("trafficSearchSearch").o(trafficSearchSearch);
 
 	/**	<br/> The entity trafficSearchSearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<TrafficSearch>(). 
+	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchSearch">Find the entity trafficSearchSearch in Solr</a>
 	 * <br/>
-	 * @param trafficSearchSearch is the entity already constructed. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _trafficSearchSearch(SearchList<TrafficSearch> l);
+	protected abstract void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise);
 
 	public SearchList<TrafficSearch> getTrafficSearchSearch() {
 		return trafficSearchSearch;
@@ -377,13 +257,31 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	public static SearchList<TrafficSearch> staticSetTrafficSearchSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected TrafficContraband trafficSearchSearchInit() {
+	protected Future<SearchList<TrafficSearch>> trafficSearchSearchPromise() {
+		Promise<SearchList<TrafficSearch>> promise = Promise.promise();
 		if(!trafficSearchSearchWrap.alreadyInitialized) {
-			_trafficSearchSearch(trafficSearchSearch);
+			Promise<SearchList<TrafficSearch>> promise2 = Promise.promise();
+			_trafficSearchSearch(promise2);
+			promise2.future().onSuccess(o -> {
+				if(o != null && trafficSearchSearch == null) {
+					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+						setTrafficSearchSearch(o);
+						trafficSearchSearchWrap.alreadyInitialized(true);
+						promise.complete(o);
+					}).onFailure(ex -> {
+						promise.fail(ex);
+					});
+				} else {
+					trafficSearchSearchWrap.alreadyInitialized(true);
+					promise.complete(o);
+				}
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		trafficSearchSearch.initDeepForClass(siteRequest_);
-		trafficSearchSearchWrap.alreadyInitialized(true);
-		return (TrafficContraband)this;
+		return promise.future();
 	}
 
 	////////////////////
@@ -396,7 +294,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficSearch trafficSearch_;
 	@JsonIgnore
-	public Wrap<TrafficSearch> trafficSearch_Wrap = new Wrap<TrafficSearch>().p(this).c(TrafficSearch.class).var("trafficSearch_").o(trafficSearch_);
+	public Wrap<TrafficSearch> trafficSearch_Wrap = new Wrap<TrafficSearch>().var("trafficSearch_").o(trafficSearch_);
 
 	/**	<br/> The entity trafficSearch_
 	 *  is defined as null before being initialized. 
@@ -422,6 +320,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_trafficSearch_(trafficSearch_Wrap);
 			if(trafficSearch_ == null)
 				setTrafficSearch_(trafficSearch_Wrap.o);
+			trafficSearch_Wrap.o(null);
 		}
 		trafficSearch_Wrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -437,7 +336,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyTitle;
 	@JsonIgnore
-	public Wrap<String> agencyTitleWrap = new Wrap<String>().p(this).c(String.class).var("agencyTitle").o(agencyTitle);
+	public Wrap<String> agencyTitleWrap = new Wrap<String>().var("agencyTitle").o(agencyTitle);
 
 	/**	<br/> The entity agencyTitle
 	 *  is defined as null before being initialized. 
@@ -462,6 +361,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_agencyTitle(agencyTitleWrap);
 			if(agencyTitle == null)
 				setAgencyTitle(agencyTitleWrap.o);
+			agencyTitleWrap.o(null);
 		}
 		agencyTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -495,14 +395,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return agencyTitle == null ? "" : agencyTitle;
 	}
 
-	public String htmTooltipAgencyTitle() {
-		return null;
-	}
-
-	public String htmAgencyTitle() {
-		return agencyTitle == null ? "" : StringEscapeUtils.escapeHtml4(strAgencyTitle());
-	}
-
 	//////////////////
 	// stopDateTime //
 	//////////////////
@@ -514,7 +406,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
 	@JsonIgnore
-	public Wrap<ZonedDateTime> stopDateTimeWrap = new Wrap<ZonedDateTime>().p(this).c(ZonedDateTime.class).var("stopDateTime").o(stopDateTime);
+	public Wrap<ZonedDateTime> stopDateTimeWrap = new Wrap<ZonedDateTime>().var("stopDateTime").o(stopDateTime);
 
 	/**	<br/> The entity stopDateTime
 	 *  is defined as null before being initialized. 
@@ -553,6 +445,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopDateTime(stopDateTimeWrap);
 			if(stopDateTime == null)
 				setStopDateTime(stopDateTimeWrap.o);
+			stopDateTimeWrap.o(null);
 		}
 		stopDateTimeWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -586,14 +479,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String htmTooltipStopDateTime() {
-		return null;
-	}
-
-	public String htmStopDateTime() {
-		return stopDateTime == null ? "" : StringEscapeUtils.escapeHtml4(strStopDateTime());
-	}
-
 	////////////////////
 	// stopPurposeNum //
 	////////////////////
@@ -605,7 +490,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopPurposeNum;
 	@JsonIgnore
-	public Wrap<Integer> stopPurposeNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("stopPurposeNum").o(stopPurposeNum);
+	public Wrap<Integer> stopPurposeNumWrap = new Wrap<Integer>().var("stopPurposeNum").o(stopPurposeNum);
 
 	/**	<br/> The entity stopPurposeNum
 	 *  is defined as null before being initialized. 
@@ -637,6 +522,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopPurposeNum(stopPurposeNumWrap);
 			if(stopPurposeNum == null)
 				setStopPurposeNum(stopPurposeNumWrap.o);
+			stopPurposeNumWrap.o(null);
 		}
 		stopPurposeNumWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -670,14 +556,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopPurposeNum == null ? "" : stopPurposeNum.toString();
 	}
 
-	public String htmTooltipStopPurposeNum() {
-		return null;
-	}
-
-	public String htmStopPurposeNum() {
-		return stopPurposeNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeNum());
-	}
-
 	//////////////////////
 	// stopPurposeTitle //
 	//////////////////////
@@ -688,7 +566,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopPurposeTitle;
 	@JsonIgnore
-	public Wrap<String> stopPurposeTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopPurposeTitle").o(stopPurposeTitle);
+	public Wrap<String> stopPurposeTitleWrap = new Wrap<String>().var("stopPurposeTitle").o(stopPurposeTitle);
 
 	/**	<br/> The entity stopPurposeTitle
 	 *  is defined as null before being initialized. 
@@ -713,6 +591,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopPurposeTitle(stopPurposeTitleWrap);
 			if(stopPurposeTitle == null)
 				setStopPurposeTitle(stopPurposeTitleWrap.o);
+			stopPurposeTitleWrap.o(null);
 		}
 		stopPurposeTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -746,14 +625,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopPurposeTitle == null ? "" : stopPurposeTitle;
 	}
 
-	public String htmTooltipStopPurposeTitle() {
-		return null;
-	}
-
-	public String htmStopPurposeTitle() {
-		return stopPurposeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeTitle());
-	}
-
 	///////////////////
 	// stopActionNum //
 	///////////////////
@@ -765,7 +636,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopActionNum;
 	@JsonIgnore
-	public Wrap<Integer> stopActionNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("stopActionNum").o(stopActionNum);
+	public Wrap<Integer> stopActionNumWrap = new Wrap<Integer>().var("stopActionNum").o(stopActionNum);
 
 	/**	<br/> The entity stopActionNum
 	 *  is defined as null before being initialized. 
@@ -797,6 +668,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopActionNum(stopActionNumWrap);
 			if(stopActionNum == null)
 				setStopActionNum(stopActionNumWrap.o);
+			stopActionNumWrap.o(null);
 		}
 		stopActionNumWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -830,14 +702,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopActionNum == null ? "" : stopActionNum.toString();
 	}
 
-	public String htmTooltipStopActionNum() {
-		return null;
-	}
-
-	public String htmStopActionNum() {
-		return stopActionNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionNum());
-	}
-
 	/////////////////////
 	// stopActionTitle //
 	/////////////////////
@@ -848,7 +712,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopActionTitle;
 	@JsonIgnore
-	public Wrap<String> stopActionTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopActionTitle").o(stopActionTitle);
+	public Wrap<String> stopActionTitleWrap = new Wrap<String>().var("stopActionTitle").o(stopActionTitle);
 
 	/**	<br/> The entity stopActionTitle
 	 *  is defined as null before being initialized. 
@@ -873,6 +737,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopActionTitle(stopActionTitleWrap);
 			if(stopActionTitle == null)
 				setStopActionTitle(stopActionTitleWrap.o);
+			stopActionTitleWrap.o(null);
 		}
 		stopActionTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -906,14 +771,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopActionTitle == null ? "" : stopActionTitle;
 	}
 
-	public String htmTooltipStopActionTitle() {
-		return null;
-	}
-
-	public String htmStopActionTitle() {
-		return stopActionTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionTitle());
-	}
-
 	//////////////////////
 	// stopDriverArrest //
 	//////////////////////
@@ -924,7 +781,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverArrest;
 	@JsonIgnore
-	public Wrap<Boolean> stopDriverArrestWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopDriverArrest").o(stopDriverArrest);
+	public Wrap<Boolean> stopDriverArrestWrap = new Wrap<Boolean>().var("stopDriverArrest").o(stopDriverArrest);
 
 	/**	<br/> The entity stopDriverArrest
 	 *  is defined as null before being initialized. 
@@ -954,6 +811,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopDriverArrest(stopDriverArrestWrap);
 			if(stopDriverArrest == null)
 				setStopDriverArrest(stopDriverArrestWrap.o);
+			stopDriverArrestWrap.o(null);
 		}
 		stopDriverArrestWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -987,14 +845,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopDriverArrest == null ? "" : stopDriverArrest.toString();
 	}
 
-	public String htmTooltipStopDriverArrest() {
-		return null;
-	}
-
-	public String htmStopDriverArrest() {
-		return stopDriverArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverArrest());
-	}
-
 	/////////////////////////
 	// stopPassengerArrest //
 	/////////////////////////
@@ -1005,7 +855,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerArrest;
 	@JsonIgnore
-	public Wrap<Boolean> stopPassengerArrestWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopPassengerArrest").o(stopPassengerArrest);
+	public Wrap<Boolean> stopPassengerArrestWrap = new Wrap<Boolean>().var("stopPassengerArrest").o(stopPassengerArrest);
 
 	/**	<br/> The entity stopPassengerArrest
 	 *  is defined as null before being initialized. 
@@ -1035,6 +885,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopPassengerArrest(stopPassengerArrestWrap);
 			if(stopPassengerArrest == null)
 				setStopPassengerArrest(stopPassengerArrestWrap.o);
+			stopPassengerArrestWrap.o(null);
 		}
 		stopPassengerArrestWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1068,14 +919,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopPassengerArrest == null ? "" : stopPassengerArrest.toString();
 	}
 
-	public String htmTooltipStopPassengerArrest() {
-		return null;
-	}
-
-	public String htmStopPassengerArrest() {
-		return stopPassengerArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerArrest());
-	}
-
 	////////////////////////
 	// stopEncounterForce //
 	////////////////////////
@@ -1086,7 +929,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEncounterForce;
 	@JsonIgnore
-	public Wrap<Boolean> stopEncounterForceWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopEncounterForce").o(stopEncounterForce);
+	public Wrap<Boolean> stopEncounterForceWrap = new Wrap<Boolean>().var("stopEncounterForce").o(stopEncounterForce);
 
 	/**	<br/> The entity stopEncounterForce
 	 *  is defined as null before being initialized. 
@@ -1116,6 +959,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopEncounterForce(stopEncounterForceWrap);
 			if(stopEncounterForce == null)
 				setStopEncounterForce(stopEncounterForceWrap.o);
+			stopEncounterForceWrap.o(null);
 		}
 		stopEncounterForceWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1149,14 +993,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopEncounterForce == null ? "" : stopEncounterForce.toString();
 	}
 
-	public String htmTooltipStopEncounterForce() {
-		return null;
-	}
-
-	public String htmStopEncounterForce() {
-		return stopEncounterForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEncounterForce());
-	}
-
 	/////////////////////
 	// stopEngageForce //
 	/////////////////////
@@ -1167,7 +1003,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEngageForce;
 	@JsonIgnore
-	public Wrap<Boolean> stopEngageForceWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopEngageForce").o(stopEngageForce);
+	public Wrap<Boolean> stopEngageForceWrap = new Wrap<Boolean>().var("stopEngageForce").o(stopEngageForce);
 
 	/**	<br/> The entity stopEngageForce
 	 *  is defined as null before being initialized. 
@@ -1197,6 +1033,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopEngageForce(stopEngageForceWrap);
 			if(stopEngageForce == null)
 				setStopEngageForce(stopEngageForceWrap.o);
+			stopEngageForceWrap.o(null);
 		}
 		stopEngageForceWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1230,14 +1067,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopEngageForce == null ? "" : stopEngageForce.toString();
 	}
 
-	public String htmTooltipStopEngageForce() {
-		return null;
-	}
-
-	public String htmStopEngageForce() {
-		return stopEngageForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEngageForce());
-	}
-
 	///////////////////////
 	// stopOfficerInjury //
 	///////////////////////
@@ -1248,7 +1077,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopOfficerInjury;
 	@JsonIgnore
-	public Wrap<Boolean> stopOfficerInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopOfficerInjury").o(stopOfficerInjury);
+	public Wrap<Boolean> stopOfficerInjuryWrap = new Wrap<Boolean>().var("stopOfficerInjury").o(stopOfficerInjury);
 
 	/**	<br/> The entity stopOfficerInjury
 	 *  is defined as null before being initialized. 
@@ -1278,6 +1107,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopOfficerInjury(stopOfficerInjuryWrap);
 			if(stopOfficerInjury == null)
 				setStopOfficerInjury(stopOfficerInjuryWrap.o);
+			stopOfficerInjuryWrap.o(null);
 		}
 		stopOfficerInjuryWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1311,14 +1141,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopOfficerInjury == null ? "" : stopOfficerInjury.toString();
 	}
 
-	public String htmTooltipStopOfficerInjury() {
-		return null;
-	}
-
-	public String htmStopOfficerInjury() {
-		return stopOfficerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerInjury());
-	}
-
 	//////////////////////
 	// stopDriverInjury //
 	//////////////////////
@@ -1329,7 +1151,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverInjury;
 	@JsonIgnore
-	public Wrap<Boolean> stopDriverInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopDriverInjury").o(stopDriverInjury);
+	public Wrap<Boolean> stopDriverInjuryWrap = new Wrap<Boolean>().var("stopDriverInjury").o(stopDriverInjury);
 
 	/**	<br/> The entity stopDriverInjury
 	 *  is defined as null before being initialized. 
@@ -1359,6 +1181,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopDriverInjury(stopDriverInjuryWrap);
 			if(stopDriverInjury == null)
 				setStopDriverInjury(stopDriverInjuryWrap.o);
+			stopDriverInjuryWrap.o(null);
 		}
 		stopDriverInjuryWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1392,14 +1215,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopDriverInjury == null ? "" : stopDriverInjury.toString();
 	}
 
-	public String htmTooltipStopDriverInjury() {
-		return null;
-	}
-
-	public String htmStopDriverInjury() {
-		return stopDriverInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverInjury());
-	}
-
 	/////////////////////////
 	// stopPassengerInjury //
 	/////////////////////////
@@ -1410,7 +1225,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerInjury;
 	@JsonIgnore
-	public Wrap<Boolean> stopPassengerInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopPassengerInjury").o(stopPassengerInjury);
+	public Wrap<Boolean> stopPassengerInjuryWrap = new Wrap<Boolean>().var("stopPassengerInjury").o(stopPassengerInjury);
 
 	/**	<br/> The entity stopPassengerInjury
 	 *  is defined as null before being initialized. 
@@ -1440,6 +1255,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopPassengerInjury(stopPassengerInjuryWrap);
 			if(stopPassengerInjury == null)
 				setStopPassengerInjury(stopPassengerInjuryWrap.o);
+			stopPassengerInjuryWrap.o(null);
 		}
 		stopPassengerInjuryWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1473,14 +1289,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
 
-	public String htmTooltipStopPassengerInjury() {
-		return null;
-	}
-
-	public String htmStopPassengerInjury() {
-		return stopPassengerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerInjury());
-	}
-
 	///////////////////
 	// stopOfficerId //
 	///////////////////
@@ -1491,7 +1299,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopOfficerId;
 	@JsonIgnore
-	public Wrap<String> stopOfficerIdWrap = new Wrap<String>().p(this).c(String.class).var("stopOfficerId").o(stopOfficerId);
+	public Wrap<String> stopOfficerIdWrap = new Wrap<String>().var("stopOfficerId").o(stopOfficerId);
 
 	/**	<br/> The entity stopOfficerId
 	 *  is defined as null before being initialized. 
@@ -1516,6 +1324,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopOfficerId(stopOfficerIdWrap);
 			if(stopOfficerId == null)
 				setStopOfficerId(stopOfficerIdWrap.o);
+			stopOfficerIdWrap.o(null);
 		}
 		stopOfficerIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1549,14 +1358,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopOfficerId == null ? "" : stopOfficerId;
 	}
 
-	public String htmTooltipStopOfficerId() {
-		return null;
-	}
-
-	public String htmStopOfficerId() {
-		return stopOfficerId == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerId());
-	}
-
 	////////////////////
 	// stopLocationId //
 	////////////////////
@@ -1567,7 +1368,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopLocationId;
 	@JsonIgnore
-	public Wrap<String> stopLocationIdWrap = new Wrap<String>().p(this).c(String.class).var("stopLocationId").o(stopLocationId);
+	public Wrap<String> stopLocationIdWrap = new Wrap<String>().var("stopLocationId").o(stopLocationId);
 
 	/**	<br/> The entity stopLocationId
 	 *  is defined as null before being initialized. 
@@ -1592,6 +1393,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopLocationId(stopLocationIdWrap);
 			if(stopLocationId == null)
 				setStopLocationId(stopLocationIdWrap.o);
+			stopLocationIdWrap.o(null);
 		}
 		stopLocationIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1625,14 +1427,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
 
-	public String htmTooltipStopLocationId() {
-		return null;
-	}
-
-	public String htmStopLocationId() {
-		return stopLocationId == null ? "" : StringEscapeUtils.escapeHtml4(strStopLocationId());
-	}
-
 	////////////////
 	// stopCityId //
 	////////////////
@@ -1643,7 +1437,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopCityId;
 	@JsonIgnore
-	public Wrap<String> stopCityIdWrap = new Wrap<String>().p(this).c(String.class).var("stopCityId").o(stopCityId);
+	public Wrap<String> stopCityIdWrap = new Wrap<String>().var("stopCityId").o(stopCityId);
 
 	/**	<br/> The entity stopCityId
 	 *  is defined as null before being initialized. 
@@ -1668,6 +1462,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_stopCityId(stopCityIdWrap);
 			if(stopCityId == null)
 				setStopCityId(stopCityIdWrap.o);
+			stopCityIdWrap.o(null);
 		}
 		stopCityIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1701,14 +1496,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return stopCityId == null ? "" : stopCityId;
 	}
 
-	public String htmTooltipStopCityId() {
-		return null;
-	}
-
-	public String htmStopCityId() {
-		return stopCityId == null ? "" : StringEscapeUtils.escapeHtml4(strStopCityId());
-	}
-
 	///////////////
 	// personAge //
 	///////////////
@@ -1720,7 +1507,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer personAge;
 	@JsonIgnore
-	public Wrap<Integer> personAgeWrap = new Wrap<Integer>().p(this).c(Integer.class).var("personAge").o(personAge);
+	public Wrap<Integer> personAgeWrap = new Wrap<Integer>().var("personAge").o(personAge);
 
 	/**	<br/> The entity personAge
 	 *  is defined as null before being initialized. 
@@ -1752,6 +1539,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personAge(personAgeWrap);
 			if(personAge == null)
 				setPersonAge(personAgeWrap.o);
+			personAgeWrap.o(null);
 		}
 		personAgeWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1785,14 +1573,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personAge == null ? "" : personAge.toString();
 	}
 
-	public String htmTooltipPersonAge() {
-		return null;
-	}
-
-	public String htmPersonAge() {
-		return personAge == null ? "" : StringEscapeUtils.escapeHtml4(strPersonAge());
-	}
-
 	//////////////////
 	// personTypeId //
 	//////////////////
@@ -1803,7 +1583,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeId;
 	@JsonIgnore
-	public Wrap<String> personTypeIdWrap = new Wrap<String>().p(this).c(String.class).var("personTypeId").o(personTypeId);
+	public Wrap<String> personTypeIdWrap = new Wrap<String>().var("personTypeId").o(personTypeId);
 
 	/**	<br/> The entity personTypeId
 	 *  is defined as null before being initialized. 
@@ -1828,6 +1608,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personTypeId(personTypeIdWrap);
 			if(personTypeId == null)
 				setPersonTypeId(personTypeIdWrap.o);
+			personTypeIdWrap.o(null);
 		}
 		personTypeIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1861,14 +1642,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personTypeId == null ? "" : personTypeId;
 	}
 
-	public String htmTooltipPersonTypeId() {
-		return null;
-	}
-
-	public String htmPersonTypeId() {
-		return personTypeId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeId());
-	}
-
 	/////////////////////
 	// personTypeTitle //
 	/////////////////////
@@ -1879,7 +1652,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeTitle;
 	@JsonIgnore
-	public Wrap<String> personTypeTitleWrap = new Wrap<String>().p(this).c(String.class).var("personTypeTitle").o(personTypeTitle);
+	public Wrap<String> personTypeTitleWrap = new Wrap<String>().var("personTypeTitle").o(personTypeTitle);
 
 	/**	<br/> The entity personTypeTitle
 	 *  is defined as null before being initialized. 
@@ -1904,6 +1677,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personTypeTitle(personTypeTitleWrap);
 			if(personTypeTitle == null)
 				setPersonTypeTitle(personTypeTitleWrap.o);
+			personTypeTitleWrap.o(null);
 		}
 		personTypeTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -1937,14 +1711,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personTypeTitle == null ? "" : personTypeTitle;
 	}
 
-	public String htmTooltipPersonTypeTitle() {
-		return null;
-	}
-
-	public String htmPersonTypeTitle() {
-		return personTypeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeTitle());
-	}
-
 	//////////////////////
 	// personTypeDriver //
 	//////////////////////
@@ -1955,7 +1721,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypeDriver;
 	@JsonIgnore
-	public Wrap<Boolean> personTypeDriverWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personTypeDriver").o(personTypeDriver);
+	public Wrap<Boolean> personTypeDriverWrap = new Wrap<Boolean>().var("personTypeDriver").o(personTypeDriver);
 
 	/**	<br/> The entity personTypeDriver
 	 *  is defined as null before being initialized. 
@@ -1985,6 +1751,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personTypeDriver(personTypeDriverWrap);
 			if(personTypeDriver == null)
 				setPersonTypeDriver(personTypeDriverWrap.o);
+			personTypeDriverWrap.o(null);
 		}
 		personTypeDriverWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2018,14 +1785,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personTypeDriver == null ? "" : personTypeDriver.toString();
 	}
 
-	public String htmTooltipPersonTypeDriver() {
-		return null;
-	}
-
-	public String htmPersonTypeDriver() {
-		return personTypeDriver == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeDriver());
-	}
-
 	/////////////////////////
 	// personTypePassenger //
 	/////////////////////////
@@ -2036,7 +1795,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypePassenger;
 	@JsonIgnore
-	public Wrap<Boolean> personTypePassengerWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personTypePassenger").o(personTypePassenger);
+	public Wrap<Boolean> personTypePassengerWrap = new Wrap<Boolean>().var("personTypePassenger").o(personTypePassenger);
 
 	/**	<br/> The entity personTypePassenger
 	 *  is defined as null before being initialized. 
@@ -2066,6 +1825,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personTypePassenger(personTypePassengerWrap);
 			if(personTypePassenger == null)
 				setPersonTypePassenger(personTypePassengerWrap.o);
+			personTypePassengerWrap.o(null);
 		}
 		personTypePassengerWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2099,14 +1859,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personTypePassenger == null ? "" : personTypePassenger.toString();
 	}
 
-	public String htmTooltipPersonTypePassenger() {
-		return null;
-	}
-
-	public String htmPersonTypePassenger() {
-		return personTypePassenger == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypePassenger());
-	}
-
 	////////////////////
 	// personGenderId //
 	////////////////////
@@ -2117,7 +1869,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderId;
 	@JsonIgnore
-	public Wrap<String> personGenderIdWrap = new Wrap<String>().p(this).c(String.class).var("personGenderId").o(personGenderId);
+	public Wrap<String> personGenderIdWrap = new Wrap<String>().var("personGenderId").o(personGenderId);
 
 	/**	<br/> The entity personGenderId
 	 *  is defined as null before being initialized. 
@@ -2142,6 +1894,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personGenderId(personGenderIdWrap);
 			if(personGenderId == null)
 				setPersonGenderId(personGenderIdWrap.o);
+			personGenderIdWrap.o(null);
 		}
 		personGenderIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2175,14 +1928,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personGenderId == null ? "" : personGenderId;
 	}
 
-	public String htmTooltipPersonGenderId() {
-		return null;
-	}
-
-	public String htmPersonGenderId() {
-		return personGenderId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderId());
-	}
-
 	///////////////////////
 	// personGenderTitle //
 	///////////////////////
@@ -2193,7 +1938,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderTitle;
 	@JsonIgnore
-	public Wrap<String> personGenderTitleWrap = new Wrap<String>().p(this).c(String.class).var("personGenderTitle").o(personGenderTitle);
+	public Wrap<String> personGenderTitleWrap = new Wrap<String>().var("personGenderTitle").o(personGenderTitle);
 
 	/**	<br/> The entity personGenderTitle
 	 *  is defined as null before being initialized. 
@@ -2218,6 +1963,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personGenderTitle(personGenderTitleWrap);
 			if(personGenderTitle == null)
 				setPersonGenderTitle(personGenderTitleWrap.o);
+			personGenderTitleWrap.o(null);
 		}
 		personGenderTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2251,14 +1997,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personGenderTitle == null ? "" : personGenderTitle;
 	}
 
-	public String htmTooltipPersonGenderTitle() {
-		return null;
-	}
-
-	public String htmPersonGenderTitle() {
-		return personGenderTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderTitle());
-	}
-
 	////////////////////////
 	// personGenderFemale //
 	////////////////////////
@@ -2269,7 +2007,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderFemale;
 	@JsonIgnore
-	public Wrap<Boolean> personGenderFemaleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personGenderFemale").o(personGenderFemale);
+	public Wrap<Boolean> personGenderFemaleWrap = new Wrap<Boolean>().var("personGenderFemale").o(personGenderFemale);
 
 	/**	<br/> The entity personGenderFemale
 	 *  is defined as null before being initialized. 
@@ -2299,6 +2037,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personGenderFemale(personGenderFemaleWrap);
 			if(personGenderFemale == null)
 				setPersonGenderFemale(personGenderFemaleWrap.o);
+			personGenderFemaleWrap.o(null);
 		}
 		personGenderFemaleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2332,14 +2071,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personGenderFemale == null ? "" : personGenderFemale.toString();
 	}
 
-	public String htmTooltipPersonGenderFemale() {
-		return null;
-	}
-
-	public String htmPersonGenderFemale() {
-		return personGenderFemale == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderFemale());
-	}
-
 	//////////////////////
 	// personGenderMale //
 	//////////////////////
@@ -2350,7 +2081,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderMale;
 	@JsonIgnore
-	public Wrap<Boolean> personGenderMaleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personGenderMale").o(personGenderMale);
+	public Wrap<Boolean> personGenderMaleWrap = new Wrap<Boolean>().var("personGenderMale").o(personGenderMale);
 
 	/**	<br/> The entity personGenderMale
 	 *  is defined as null before being initialized. 
@@ -2380,6 +2111,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personGenderMale(personGenderMaleWrap);
 			if(personGenderMale == null)
 				setPersonGenderMale(personGenderMaleWrap.o);
+			personGenderMaleWrap.o(null);
 		}
 		personGenderMaleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2413,14 +2145,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personGenderMale == null ? "" : personGenderMale.toString();
 	}
 
-	public String htmTooltipPersonGenderMale() {
-		return null;
-	}
-
-	public String htmPersonGenderMale() {
-		return personGenderMale == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderMale());
-	}
-
 	///////////////////////
 	// personEthnicityId //
 	///////////////////////
@@ -2431,7 +2155,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityId;
 	@JsonIgnore
-	public Wrap<String> personEthnicityIdWrap = new Wrap<String>().p(this).c(String.class).var("personEthnicityId").o(personEthnicityId);
+	public Wrap<String> personEthnicityIdWrap = new Wrap<String>().var("personEthnicityId").o(personEthnicityId);
 
 	/**	<br/> The entity personEthnicityId
 	 *  is defined as null before being initialized. 
@@ -2456,6 +2180,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personEthnicityId(personEthnicityIdWrap);
 			if(personEthnicityId == null)
 				setPersonEthnicityId(personEthnicityIdWrap.o);
+			personEthnicityIdWrap.o(null);
 		}
 		personEthnicityIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2489,14 +2214,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personEthnicityId == null ? "" : personEthnicityId;
 	}
 
-	public String htmTooltipPersonEthnicityId() {
-		return null;
-	}
-
-	public String htmPersonEthnicityId() {
-		return personEthnicityId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityId());
-	}
-
 	//////////////////////////
 	// personEthnicityTitle //
 	//////////////////////////
@@ -2507,7 +2224,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityTitle;
 	@JsonIgnore
-	public Wrap<String> personEthnicityTitleWrap = new Wrap<String>().p(this).c(String.class).var("personEthnicityTitle").o(personEthnicityTitle);
+	public Wrap<String> personEthnicityTitleWrap = new Wrap<String>().var("personEthnicityTitle").o(personEthnicityTitle);
 
 	/**	<br/> The entity personEthnicityTitle
 	 *  is defined as null before being initialized. 
@@ -2532,6 +2249,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personEthnicityTitle(personEthnicityTitleWrap);
 			if(personEthnicityTitle == null)
 				setPersonEthnicityTitle(personEthnicityTitleWrap.o);
+			personEthnicityTitleWrap.o(null);
 		}
 		personEthnicityTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2565,14 +2283,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personEthnicityTitle == null ? "" : personEthnicityTitle;
 	}
 
-	public String htmTooltipPersonEthnicityTitle() {
-		return null;
-	}
-
-	public String htmPersonEthnicityTitle() {
-		return personEthnicityTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityTitle());
-	}
-
 	//////////////////
 	// personRaceId //
 	//////////////////
@@ -2583,7 +2293,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceId;
 	@JsonIgnore
-	public Wrap<String> personRaceIdWrap = new Wrap<String>().p(this).c(String.class).var("personRaceId").o(personRaceId);
+	public Wrap<String> personRaceIdWrap = new Wrap<String>().var("personRaceId").o(personRaceId);
 
 	/**	<br/> The entity personRaceId
 	 *  is defined as null before being initialized. 
@@ -2608,6 +2318,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personRaceId(personRaceIdWrap);
 			if(personRaceId == null)
 				setPersonRaceId(personRaceIdWrap.o);
+			personRaceIdWrap.o(null);
 		}
 		personRaceIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2641,14 +2352,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personRaceId == null ? "" : personRaceId;
 	}
 
-	public String htmTooltipPersonRaceId() {
-		return null;
-	}
-
-	public String htmPersonRaceId() {
-		return personRaceId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceId());
-	}
-
 	/////////////////////
 	// personRaceTitle //
 	/////////////////////
@@ -2659,7 +2362,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceTitle;
 	@JsonIgnore
-	public Wrap<String> personRaceTitleWrap = new Wrap<String>().p(this).c(String.class).var("personRaceTitle").o(personRaceTitle);
+	public Wrap<String> personRaceTitleWrap = new Wrap<String>().var("personRaceTitle").o(personRaceTitle);
 
 	/**	<br/> The entity personRaceTitle
 	 *  is defined as null before being initialized. 
@@ -2684,6 +2387,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_personRaceTitle(personRaceTitleWrap);
 			if(personRaceTitle == null)
 				setPersonRaceTitle(personRaceTitleWrap.o);
+			personRaceTitleWrap.o(null);
 		}
 		personRaceTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2717,14 +2421,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personRaceTitle == null ? "" : personRaceTitle;
 	}
 
-	public String htmTooltipPersonRaceTitle() {
-		return null;
-	}
-
-	public String htmPersonRaceTitle() {
-		return personRaceTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceTitle());
-	}
-
 	////////////////////
 	// trafficStopKey //
 	////////////////////
@@ -2736,7 +2432,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Long trafficStopKey;
 	@JsonIgnore
-	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("trafficStopKey").o(trafficStopKey);
+	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().var("trafficStopKey").o(trafficStopKey);
 
 	/**	<br/> The entity trafficStopKey
 	 *  is defined as null before being initialized. 
@@ -2768,6 +2464,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_trafficStopKey(trafficStopKeyWrap);
 			if(trafficStopKey == null)
 				setTrafficStopKey(trafficStopKeyWrap.o);
+			trafficStopKeyWrap.o(null);
 		}
 		trafficStopKeyWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2801,14 +2498,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
 	}
 
-	public String htmTooltipTrafficStopKey() {
-		return null;
-	}
-
-	public String htmTrafficStopKey() {
-		return trafficStopKey == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficStopKey());
-	}
-
 	///////////////////
 	// searchTypeNum //
 	///////////////////
@@ -2820,7 +2509,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer searchTypeNum;
 	@JsonIgnore
-	public Wrap<Integer> searchTypeNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("searchTypeNum").o(searchTypeNum);
+	public Wrap<Integer> searchTypeNumWrap = new Wrap<Integer>().var("searchTypeNum").o(searchTypeNum);
 
 	/**	<br/> The entity searchTypeNum
 	 *  is defined as null before being initialized. 
@@ -2852,6 +2541,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchTypeNum(searchTypeNumWrap);
 			if(searchTypeNum == null)
 				setSearchTypeNum(searchTypeNumWrap.o);
+			searchTypeNumWrap.o(null);
 		}
 		searchTypeNumWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2885,14 +2575,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchTypeNum == null ? "" : searchTypeNum.toString();
 	}
 
-	public String htmTooltipSearchTypeNum() {
-		return null;
-	}
-
-	public String htmSearchTypeNum() {
-		return searchTypeNum == null ? "" : StringEscapeUtils.escapeHtml4(strSearchTypeNum());
-	}
-
 	/////////////////////
 	// searchTypeTitle //
 	/////////////////////
@@ -2903,7 +2585,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String searchTypeTitle;
 	@JsonIgnore
-	public Wrap<String> searchTypeTitleWrap = new Wrap<String>().p(this).c(String.class).var("searchTypeTitle").o(searchTypeTitle);
+	public Wrap<String> searchTypeTitleWrap = new Wrap<String>().var("searchTypeTitle").o(searchTypeTitle);
 
 	/**	<br/> The entity searchTypeTitle
 	 *  is defined as null before being initialized. 
@@ -2928,6 +2610,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchTypeTitle(searchTypeTitleWrap);
 			if(searchTypeTitle == null)
 				setSearchTypeTitle(searchTypeTitleWrap.o);
+			searchTypeTitleWrap.o(null);
 		}
 		searchTypeTitleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -2961,14 +2644,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchTypeTitle == null ? "" : searchTypeTitle;
 	}
 
-	public String htmTooltipSearchTypeTitle() {
-		return null;
-	}
-
-	public String htmSearchTypeTitle() {
-		return searchTypeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strSearchTypeTitle());
-	}
-
 	///////////////////
 	// searchVehicle //
 	///////////////////
@@ -2979,7 +2654,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicle;
 	@JsonIgnore
-	public Wrap<Boolean> searchVehicleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchVehicle").o(searchVehicle);
+	public Wrap<Boolean> searchVehicleWrap = new Wrap<Boolean>().var("searchVehicle").o(searchVehicle);
 
 	/**	<br/> The entity searchVehicle
 	 *  is defined as null before being initialized. 
@@ -3009,6 +2684,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchVehicle(searchVehicleWrap);
 			if(searchVehicle == null)
 				setSearchVehicle(searchVehicleWrap.o);
+			searchVehicleWrap.o(null);
 		}
 		searchVehicleWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3042,14 +2718,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchVehicle == null ? "" : searchVehicle.toString();
 	}
 
-	public String htmTooltipSearchVehicle() {
-		return null;
-	}
-
-	public String htmSearchVehicle() {
-		return searchVehicle == null ? "" : StringEscapeUtils.escapeHtml4(strSearchVehicle());
-	}
-
 	//////////////////
 	// searchDriver //
 	//////////////////
@@ -3060,7 +2728,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchDriver;
 	@JsonIgnore
-	public Wrap<Boolean> searchDriverWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchDriver").o(searchDriver);
+	public Wrap<Boolean> searchDriverWrap = new Wrap<Boolean>().var("searchDriver").o(searchDriver);
 
 	/**	<br/> The entity searchDriver
 	 *  is defined as null before being initialized. 
@@ -3090,6 +2758,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchDriver(searchDriverWrap);
 			if(searchDriver == null)
 				setSearchDriver(searchDriverWrap.o);
+			searchDriverWrap.o(null);
 		}
 		searchDriverWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3123,14 +2792,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchDriver == null ? "" : searchDriver.toString();
 	}
 
-	public String htmTooltipSearchDriver() {
-		return null;
-	}
-
-	public String htmSearchDriver() {
-		return searchDriver == null ? "" : StringEscapeUtils.escapeHtml4(strSearchDriver());
-	}
-
 	/////////////////////
 	// searchPassenger //
 	/////////////////////
@@ -3141,7 +2802,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPassenger;
 	@JsonIgnore
-	public Wrap<Boolean> searchPassengerWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchPassenger").o(searchPassenger);
+	public Wrap<Boolean> searchPassengerWrap = new Wrap<Boolean>().var("searchPassenger").o(searchPassenger);
 
 	/**	<br/> The entity searchPassenger
 	 *  is defined as null before being initialized. 
@@ -3171,6 +2832,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchPassenger(searchPassengerWrap);
 			if(searchPassenger == null)
 				setSearchPassenger(searchPassengerWrap.o);
+			searchPassengerWrap.o(null);
 		}
 		searchPassengerWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3204,14 +2866,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchPassenger == null ? "" : searchPassenger.toString();
 	}
 
-	public String htmTooltipSearchPassenger() {
-		return null;
-	}
-
-	public String htmSearchPassenger() {
-		return searchPassenger == null ? "" : StringEscapeUtils.escapeHtml4(strSearchPassenger());
-	}
-
 	////////////////////
 	// searchProperty //
 	////////////////////
@@ -3222,7 +2876,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchProperty;
 	@JsonIgnore
-	public Wrap<Boolean> searchPropertyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchProperty").o(searchProperty);
+	public Wrap<Boolean> searchPropertyWrap = new Wrap<Boolean>().var("searchProperty").o(searchProperty);
 
 	/**	<br/> The entity searchProperty
 	 *  is defined as null before being initialized. 
@@ -3252,6 +2906,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchProperty(searchPropertyWrap);
 			if(searchProperty == null)
 				setSearchProperty(searchPropertyWrap.o);
+			searchPropertyWrap.o(null);
 		}
 		searchPropertyWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3285,14 +2940,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchProperty == null ? "" : searchProperty.toString();
 	}
 
-	public String htmTooltipSearchProperty() {
-		return null;
-	}
-
-	public String htmSearchProperty() {
-		return searchProperty == null ? "" : StringEscapeUtils.escapeHtml4(strSearchProperty());
-	}
-
 	/////////////////////////
 	// searchVehicleSiezed //
 	/////////////////////////
@@ -3303,7 +2950,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicleSiezed;
 	@JsonIgnore
-	public Wrap<Boolean> searchVehicleSiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchVehicleSiezed").o(searchVehicleSiezed);
+	public Wrap<Boolean> searchVehicleSiezedWrap = new Wrap<Boolean>().var("searchVehicleSiezed").o(searchVehicleSiezed);
 
 	/**	<br/> The entity searchVehicleSiezed
 	 *  is defined as null before being initialized. 
@@ -3333,6 +2980,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchVehicleSiezed(searchVehicleSiezedWrap);
 			if(searchVehicleSiezed == null)
 				setSearchVehicleSiezed(searchVehicleSiezedWrap.o);
+			searchVehicleSiezedWrap.o(null);
 		}
 		searchVehicleSiezedWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3366,14 +3014,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchVehicleSiezed == null ? "" : searchVehicleSiezed.toString();
 	}
 
-	public String htmTooltipSearchVehicleSiezed() {
-		return null;
-	}
-
-	public String htmSearchVehicleSiezed() {
-		return searchVehicleSiezed == null ? "" : StringEscapeUtils.escapeHtml4(strSearchVehicleSiezed());
-	}
-
 	//////////////////////////////////
 	// searchPersonalPropertySiezed //
 	//////////////////////////////////
@@ -3384,7 +3024,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPersonalPropertySiezed;
 	@JsonIgnore
-	public Wrap<Boolean> searchPersonalPropertySiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchPersonalPropertySiezed").o(searchPersonalPropertySiezed);
+	public Wrap<Boolean> searchPersonalPropertySiezedWrap = new Wrap<Boolean>().var("searchPersonalPropertySiezed").o(searchPersonalPropertySiezed);
 
 	/**	<br/> The entity searchPersonalPropertySiezed
 	 *  is defined as null before being initialized. 
@@ -3414,6 +3054,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchPersonalPropertySiezed(searchPersonalPropertySiezedWrap);
 			if(searchPersonalPropertySiezed == null)
 				setSearchPersonalPropertySiezed(searchPersonalPropertySiezedWrap.o);
+			searchPersonalPropertySiezedWrap.o(null);
 		}
 		searchPersonalPropertySiezedWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3447,14 +3088,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchPersonalPropertySiezed == null ? "" : searchPersonalPropertySiezed.toString();
 	}
 
-	public String htmTooltipSearchPersonalPropertySiezed() {
-		return null;
-	}
-
-	public String htmSearchPersonalPropertySiezed() {
-		return searchPersonalPropertySiezed == null ? "" : StringEscapeUtils.escapeHtml4(strSearchPersonalPropertySiezed());
-	}
-
 	///////////////////////////////
 	// searchOtherPropertySiezed //
 	///////////////////////////////
@@ -3465,7 +3098,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchOtherPropertySiezed;
 	@JsonIgnore
-	public Wrap<Boolean> searchOtherPropertySiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchOtherPropertySiezed").o(searchOtherPropertySiezed);
+	public Wrap<Boolean> searchOtherPropertySiezedWrap = new Wrap<Boolean>().var("searchOtherPropertySiezed").o(searchOtherPropertySiezed);
 
 	/**	<br/> The entity searchOtherPropertySiezed
 	 *  is defined as null before being initialized. 
@@ -3495,6 +3128,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_searchOtherPropertySiezed(searchOtherPropertySiezedWrap);
 			if(searchOtherPropertySiezed == null)
 				setSearchOtherPropertySiezed(searchOtherPropertySiezedWrap.o);
+			searchOtherPropertySiezedWrap.o(null);
 		}
 		searchOtherPropertySiezedWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3528,14 +3162,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return searchOtherPropertySiezed == null ? "" : searchOtherPropertySiezed.toString();
 	}
 
-	public String htmTooltipSearchOtherPropertySiezed() {
-		return null;
-	}
-
-	public String htmSearchOtherPropertySiezed() {
-		return searchOtherPropertySiezed == null ? "" : StringEscapeUtils.escapeHtml4(strSearchOtherPropertySiezed());
-	}
-
 	//////////////////////
 	// contrabandOunces //
 	//////////////////////
@@ -3547,7 +3173,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandOunces;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandOuncesWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandOunces").o(contrabandOunces);
+	public Wrap<BigDecimal> contrabandOuncesWrap = new Wrap<BigDecimal>().var("contrabandOunces").o(contrabandOunces);
 
 	/**	<br/> The entity contrabandOunces
 	 *  is defined as null before being initialized. 
@@ -3588,6 +3214,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandOunces(contrabandOuncesWrap);
 			if(contrabandOunces == null)
 				setContrabandOunces(contrabandOuncesWrap.o);
+			contrabandOuncesWrap.o(null);
 		}
 		contrabandOuncesWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3621,80 +3248,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandOunces == null ? "" : contrabandOunces.toString();
 	}
 
-	public String htmTooltipContrabandOunces() {
-		return null;
-	}
-
-	public String htmContrabandOunces() {
-		return contrabandOunces == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandOunces());
-	}
-
-	public void inputContrabandOunces(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "ounces")
-				.a("id", classApiMethodMethod, "_contrabandOunces");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandOunces classTrafficContraband inputTrafficContraband", pk, "ContrabandOunces w3-input w3-border ");
-					a("name", "setContrabandOunces");
-				} else {
-					a("class", "valueContrabandOunces w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandOunces w3-input w3-border ");
-					a("name", "contrabandOunces");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandOunces', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandOunces')); }, function() { addError($('#", classApiMethodMethod, "_contrabandOunces')); }); ");
-				}
-				a("value", strContrabandOunces())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandOunces ").f().sx(htmContrabandOunces()).g("span");
-		}
-	}
-
-	public void htmContrabandOunces(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandOunces").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandOunces").a("class", "").f().sx("ounces").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandOunces(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandOunces')); $('#", classApiMethodMethod, "_contrabandOunces').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandOunces', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandOunces')); }, function() { addError($('#", classApiMethodMethod, "_contrabandOunces')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////////////
 	// contrabandPounds //
 	//////////////////////
@@ -3706,7 +3259,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandPounds;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandPoundsWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandPounds").o(contrabandPounds);
+	public Wrap<BigDecimal> contrabandPoundsWrap = new Wrap<BigDecimal>().var("contrabandPounds").o(contrabandPounds);
 
 	/**	<br/> The entity contrabandPounds
 	 *  is defined as null before being initialized. 
@@ -3747,6 +3300,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandPounds(contrabandPoundsWrap);
 			if(contrabandPounds == null)
 				setContrabandPounds(contrabandPoundsWrap.o);
+			contrabandPoundsWrap.o(null);
 		}
 		contrabandPoundsWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3780,80 +3334,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandPounds == null ? "" : contrabandPounds.toString();
 	}
 
-	public String htmTooltipContrabandPounds() {
-		return null;
-	}
-
-	public String htmContrabandPounds() {
-		return contrabandPounds == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandPounds());
-	}
-
-	public void inputContrabandPounds(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "pounds")
-				.a("id", classApiMethodMethod, "_contrabandPounds");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandPounds classTrafficContraband inputTrafficContraband", pk, "ContrabandPounds w3-input w3-border ");
-					a("name", "setContrabandPounds");
-				} else {
-					a("class", "valueContrabandPounds w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandPounds w3-input w3-border ");
-					a("name", "contrabandPounds");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandPounds', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandPounds')); }, function() { addError($('#", classApiMethodMethod, "_contrabandPounds')); }); ");
-				}
-				a("value", strContrabandPounds())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandPounds ").f().sx(htmContrabandPounds()).g("span");
-		}
-	}
-
-	public void htmContrabandPounds(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandPounds").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandPounds").a("class", "").f().sx("pounds").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandPounds(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandPounds')); $('#", classApiMethodMethod, "_contrabandPounds').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandPounds', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandPounds')); }, function() { addError($('#", classApiMethodMethod, "_contrabandPounds')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////
 	// contrabandPints //
 	/////////////////////
@@ -3865,7 +3345,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandPints;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandPintsWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandPints").o(contrabandPints);
+	public Wrap<BigDecimal> contrabandPintsWrap = new Wrap<BigDecimal>().var("contrabandPints").o(contrabandPints);
 
 	/**	<br/> The entity contrabandPints
 	 *  is defined as null before being initialized. 
@@ -3906,6 +3386,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandPints(contrabandPintsWrap);
 			if(contrabandPints == null)
 				setContrabandPints(contrabandPintsWrap.o);
+			contrabandPintsWrap.o(null);
 		}
 		contrabandPintsWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -3939,80 +3420,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandPints == null ? "" : contrabandPints.toString();
 	}
 
-	public String htmTooltipContrabandPints() {
-		return null;
-	}
-
-	public String htmContrabandPints() {
-		return contrabandPints == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandPints());
-	}
-
-	public void inputContrabandPints(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "pints")
-				.a("id", classApiMethodMethod, "_contrabandPints");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandPints classTrafficContraband inputTrafficContraband", pk, "ContrabandPints w3-input w3-border ");
-					a("name", "setContrabandPints");
-				} else {
-					a("class", "valueContrabandPints w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandPints w3-input w3-border ");
-					a("name", "contrabandPints");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandPints', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandPints')); }, function() { addError($('#", classApiMethodMethod, "_contrabandPints')); }); ");
-				}
-				a("value", strContrabandPints())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandPints ").f().sx(htmContrabandPints()).g("span");
-		}
-	}
-
-	public void htmContrabandPints(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandPints").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandPints").a("class", "").f().sx("pints").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandPints(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandPints')); $('#", classApiMethodMethod, "_contrabandPints').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandPints', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandPints')); }, function() { addError($('#", classApiMethodMethod, "_contrabandPints')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	///////////////////////
 	// contrabandGallons //
 	///////////////////////
@@ -4024,7 +3431,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandGallons;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandGallonsWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandGallons").o(contrabandGallons);
+	public Wrap<BigDecimal> contrabandGallonsWrap = new Wrap<BigDecimal>().var("contrabandGallons").o(contrabandGallons);
 
 	/**	<br/> The entity contrabandGallons
 	 *  is defined as null before being initialized. 
@@ -4065,6 +3472,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandGallons(contrabandGallonsWrap);
 			if(contrabandGallons == null)
 				setContrabandGallons(contrabandGallonsWrap.o);
+			contrabandGallonsWrap.o(null);
 		}
 		contrabandGallonsWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -4098,80 +3506,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandGallons == null ? "" : contrabandGallons.toString();
 	}
 
-	public String htmTooltipContrabandGallons() {
-		return null;
-	}
-
-	public String htmContrabandGallons() {
-		return contrabandGallons == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandGallons());
-	}
-
-	public void inputContrabandGallons(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "gallons")
-				.a("id", classApiMethodMethod, "_contrabandGallons");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandGallons classTrafficContraband inputTrafficContraband", pk, "ContrabandGallons w3-input w3-border ");
-					a("name", "setContrabandGallons");
-				} else {
-					a("class", "valueContrabandGallons w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandGallons w3-input w3-border ");
-					a("name", "contrabandGallons");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandGallons', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandGallons')); }, function() { addError($('#", classApiMethodMethod, "_contrabandGallons')); }); ");
-				}
-				a("value", strContrabandGallons())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandGallons ").f().sx(htmContrabandGallons()).g("span");
-		}
-	}
-
-	public void htmContrabandGallons(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandGallons").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandGallons").a("class", "").f().sx("gallons").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandGallons(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandGallons')); $('#", classApiMethodMethod, "_contrabandGallons').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandGallons', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandGallons')); }, function() { addError($('#", classApiMethodMethod, "_contrabandGallons')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	///////////////////////
 	// contrabandDosages //
 	///////////////////////
@@ -4183,7 +3517,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandDosages;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandDosagesWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandDosages").o(contrabandDosages);
+	public Wrap<BigDecimal> contrabandDosagesWrap = new Wrap<BigDecimal>().var("contrabandDosages").o(contrabandDosages);
 
 	/**	<br/> The entity contrabandDosages
 	 *  is defined as null before being initialized. 
@@ -4224,6 +3558,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandDosages(contrabandDosagesWrap);
 			if(contrabandDosages == null)
 				setContrabandDosages(contrabandDosagesWrap.o);
+			contrabandDosagesWrap.o(null);
 		}
 		contrabandDosagesWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -4257,80 +3592,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandDosages == null ? "" : contrabandDosages.toString();
 	}
 
-	public String htmTooltipContrabandDosages() {
-		return null;
-	}
-
-	public String htmContrabandDosages() {
-		return contrabandDosages == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandDosages());
-	}
-
-	public void inputContrabandDosages(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "dosages")
-				.a("id", classApiMethodMethod, "_contrabandDosages");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandDosages classTrafficContraband inputTrafficContraband", pk, "ContrabandDosages w3-input w3-border ");
-					a("name", "setContrabandDosages");
-				} else {
-					a("class", "valueContrabandDosages w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandDosages w3-input w3-border ");
-					a("name", "contrabandDosages");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandDosages', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandDosages')); }, function() { addError($('#", classApiMethodMethod, "_contrabandDosages')); }); ");
-				}
-				a("value", strContrabandDosages())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandDosages ").f().sx(htmContrabandDosages()).g("span");
-		}
-	}
-
-	public void htmContrabandDosages(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandDosages").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandDosages").a("class", "").f().sx("dosages").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandDosages(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandDosages')); $('#", classApiMethodMethod, "_contrabandDosages').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandDosages', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandDosages')); }, function() { addError($('#", classApiMethodMethod, "_contrabandDosages')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////
 	// contrabandGrams //
 	/////////////////////
@@ -4342,7 +3603,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandGrams;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandGramsWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandGrams").o(contrabandGrams);
+	public Wrap<BigDecimal> contrabandGramsWrap = new Wrap<BigDecimal>().var("contrabandGrams").o(contrabandGrams);
 
 	/**	<br/> The entity contrabandGrams
 	 *  is defined as null before being initialized. 
@@ -4383,6 +3644,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandGrams(contrabandGramsWrap);
 			if(contrabandGrams == null)
 				setContrabandGrams(contrabandGramsWrap.o);
+			contrabandGramsWrap.o(null);
 		}
 		contrabandGramsWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -4416,80 +3678,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandGrams == null ? "" : contrabandGrams.toString();
 	}
 
-	public String htmTooltipContrabandGrams() {
-		return null;
-	}
-
-	public String htmContrabandGrams() {
-		return contrabandGrams == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandGrams());
-	}
-
-	public void inputContrabandGrams(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "grams")
-				.a("id", classApiMethodMethod, "_contrabandGrams");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandGrams classTrafficContraband inputTrafficContraband", pk, "ContrabandGrams w3-input w3-border ");
-					a("name", "setContrabandGrams");
-				} else {
-					a("class", "valueContrabandGrams w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandGrams w3-input w3-border ");
-					a("name", "contrabandGrams");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandGrams', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandGrams')); }, function() { addError($('#", classApiMethodMethod, "_contrabandGrams')); }); ");
-				}
-				a("value", strContrabandGrams())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandGrams ").f().sx(htmContrabandGrams()).g("span");
-		}
-	}
-
-	public void htmContrabandGrams(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandGrams").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandGrams").a("class", "").f().sx("grams").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandGrams(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandGrams')); $('#", classApiMethodMethod, "_contrabandGrams').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandGrams', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandGrams')); }, function() { addError($('#", classApiMethodMethod, "_contrabandGrams')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////
 	// contrabandKilos //
 	/////////////////////
@@ -4501,7 +3689,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandKilos;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandKilosWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandKilos").o(contrabandKilos);
+	public Wrap<BigDecimal> contrabandKilosWrap = new Wrap<BigDecimal>().var("contrabandKilos").o(contrabandKilos);
 
 	/**	<br/> The entity contrabandKilos
 	 *  is defined as null before being initialized. 
@@ -4542,6 +3730,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandKilos(contrabandKilosWrap);
 			if(contrabandKilos == null)
 				setContrabandKilos(contrabandKilosWrap.o);
+			contrabandKilosWrap.o(null);
 		}
 		contrabandKilosWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -4575,80 +3764,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandKilos == null ? "" : contrabandKilos.toString();
 	}
 
-	public String htmTooltipContrabandKilos() {
-		return null;
-	}
-
-	public String htmContrabandKilos() {
-		return contrabandKilos == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandKilos());
-	}
-
-	public void inputContrabandKilos(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "kilos")
-				.a("id", classApiMethodMethod, "_contrabandKilos");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandKilos classTrafficContraband inputTrafficContraband", pk, "ContrabandKilos w3-input w3-border ");
-					a("name", "setContrabandKilos");
-				} else {
-					a("class", "valueContrabandKilos w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandKilos w3-input w3-border ");
-					a("name", "contrabandKilos");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandKilos', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandKilos')); }, function() { addError($('#", classApiMethodMethod, "_contrabandKilos')); }); ");
-				}
-				a("value", strContrabandKilos())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandKilos ").f().sx(htmContrabandKilos()).g("span");
-		}
-	}
-
-	public void htmContrabandKilos(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandKilos").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandKilos").a("class", "").f().sx("kilos").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandKilos(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandKilos')); $('#", classApiMethodMethod, "_contrabandKilos').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandKilos', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandKilos')); }, function() { addError($('#", classApiMethodMethod, "_contrabandKilos')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////
 	// contrabandMoney //
 	/////////////////////
@@ -4660,7 +3775,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandMoney;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandMoneyWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandMoney").o(contrabandMoney);
+	public Wrap<BigDecimal> contrabandMoneyWrap = new Wrap<BigDecimal>().var("contrabandMoney").o(contrabandMoney);
 
 	/**	<br/> The entity contrabandMoney
 	 *  is defined as null before being initialized. 
@@ -4701,6 +3816,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandMoney(contrabandMoneyWrap);
 			if(contrabandMoney == null)
 				setContrabandMoney(contrabandMoneyWrap.o);
+			contrabandMoneyWrap.o(null);
 		}
 		contrabandMoneyWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -4734,80 +3850,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandMoney == null ? "" : contrabandMoney.toString();
 	}
 
-	public String htmTooltipContrabandMoney() {
-		return null;
-	}
-
-	public String htmContrabandMoney() {
-		return contrabandMoney == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandMoney());
-	}
-
-	public void inputContrabandMoney(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "money")
-				.a("id", classApiMethodMethod, "_contrabandMoney");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandMoney classTrafficContraband inputTrafficContraband", pk, "ContrabandMoney w3-input w3-border ");
-					a("name", "setContrabandMoney");
-				} else {
-					a("class", "valueContrabandMoney w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandMoney w3-input w3-border ");
-					a("name", "contrabandMoney");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandMoney', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandMoney')); }, function() { addError($('#", classApiMethodMethod, "_contrabandMoney')); }); ");
-				}
-				a("value", strContrabandMoney())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandMoney ").f().sx(htmContrabandMoney()).g("span");
-		}
-	}
-
-	public void htmContrabandMoney(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandMoney").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandMoney").a("class", "").f().sx("money").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandMoney(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandMoney')); $('#", classApiMethodMethod, "_contrabandMoney').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandMoney', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandMoney')); }, function() { addError($('#", classApiMethodMethod, "_contrabandMoney')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	///////////////////////
 	// contrabandWeapons //
 	///////////////////////
@@ -4819,7 +3861,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandWeapons;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandWeaponsWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandWeapons").o(contrabandWeapons);
+	public Wrap<BigDecimal> contrabandWeaponsWrap = new Wrap<BigDecimal>().var("contrabandWeapons").o(contrabandWeapons);
 
 	/**	<br/> The entity contrabandWeapons
 	 *  is defined as null before being initialized. 
@@ -4860,6 +3902,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandWeapons(contrabandWeaponsWrap);
 			if(contrabandWeapons == null)
 				setContrabandWeapons(contrabandWeaponsWrap.o);
+			contrabandWeaponsWrap.o(null);
 		}
 		contrabandWeaponsWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -4893,80 +3936,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandWeapons == null ? "" : contrabandWeapons.toString();
 	}
 
-	public String htmTooltipContrabandWeapons() {
-		return null;
-	}
-
-	public String htmContrabandWeapons() {
-		return contrabandWeapons == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandWeapons());
-	}
-
-	public void inputContrabandWeapons(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "weapons")
-				.a("id", classApiMethodMethod, "_contrabandWeapons");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandWeapons classTrafficContraband inputTrafficContraband", pk, "ContrabandWeapons w3-input w3-border ");
-					a("name", "setContrabandWeapons");
-				} else {
-					a("class", "valueContrabandWeapons w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandWeapons w3-input w3-border ");
-					a("name", "contrabandWeapons");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandWeapons', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandWeapons')); }, function() { addError($('#", classApiMethodMethod, "_contrabandWeapons')); }); ");
-				}
-				a("value", strContrabandWeapons())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandWeapons ").f().sx(htmContrabandWeapons()).g("span");
-		}
-	}
-
-	public void htmContrabandWeapons(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandWeapons").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandWeapons").a("class", "").f().sx("weapons").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandWeapons(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandWeapons')); $('#", classApiMethodMethod, "_contrabandWeapons').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandWeapons', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandWeapons')); }, function() { addError($('#", classApiMethodMethod, "_contrabandWeapons')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	////////////////////////////
 	// contrabandDollarAmount //
 	////////////////////////////
@@ -4978,7 +3947,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandDollarAmount;
 	@JsonIgnore
-	public Wrap<BigDecimal> contrabandDollarAmountWrap = new Wrap<BigDecimal>().p(this).c(BigDecimal.class).var("contrabandDollarAmount").o(contrabandDollarAmount);
+	public Wrap<BigDecimal> contrabandDollarAmountWrap = new Wrap<BigDecimal>().var("contrabandDollarAmount").o(contrabandDollarAmount);
 
 	/**	<br/> The entity contrabandDollarAmount
 	 *  is defined as null before being initialized. 
@@ -5019,6 +3988,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			_contrabandDollarAmount(contrabandDollarAmountWrap);
 			if(contrabandDollarAmount == null)
 				setContrabandDollarAmount(contrabandDollarAmountWrap.o);
+			contrabandDollarAmountWrap.o(null);
 		}
 		contrabandDollarAmountWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
@@ -5052,158 +4022,125 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandDollarAmount == null ? "" : contrabandDollarAmount.toString();
 	}
 
-	public String htmTooltipContrabandDollarAmount() {
-		return null;
-	}
-
-	public String htmContrabandDollarAmount() {
-		return contrabandDollarAmount == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandDollarAmount());
-	}
-
-	public void inputContrabandDollarAmount(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "dollar amount")
-				.a("id", classApiMethodMethod, "_contrabandDollarAmount");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setContrabandDollarAmount classTrafficContraband inputTrafficContraband", pk, "ContrabandDollarAmount w3-input w3-border ");
-					a("name", "setContrabandDollarAmount");
-				} else {
-					a("class", "valueContrabandDollarAmount w3-input w3-border classTrafficContraband inputTrafficContraband", pk, "ContrabandDollarAmount w3-input w3-border ");
-					a("name", "contrabandDollarAmount");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setContrabandDollarAmount', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_contrabandDollarAmount')); }, function() { addError($('#", classApiMethodMethod, "_contrabandDollarAmount')); }); ");
-				}
-				a("value", strContrabandDollarAmount())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficContraband", pk, "ContrabandDollarAmount ").f().sx(htmContrabandDollarAmount()).g("span");
-		}
-	}
-
-	public void htmContrabandDollarAmount(String classApiMethodMethod) {
-		TrafficContraband s = (TrafficContraband)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficContrabandContrabandDollarAmount").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_contrabandDollarAmount").a("class", "").f().sx("dollar amount").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputContrabandDollarAmount(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_contrabandDollarAmount')); $('#", classApiMethodMethod, "_contrabandDollarAmount').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficContrabandForm :input[name=pk]').val() }], 'setContrabandDollarAmount', null, function() { addGlow($('#", classApiMethodMethod, "_contrabandDollarAmount')); }, function() { addError($('#", classApiMethodMethod, "_contrabandDollarAmount')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
 
 	protected boolean alreadyInitializedTrafficContraband = false;
 
-	public TrafficContraband initDeepTrafficContraband(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepTrafficContraband(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
 		if(!alreadyInitializedTrafficContraband) {
 			alreadyInitializedTrafficContraband = true;
-			initDeepTrafficContraband();
+			return promiseDeepTrafficContraband();
+		} else {
+			return Future.succeededFuture();
 		}
-		return (TrafficContraband)this;
 	}
 
-	public void initDeepTrafficContraband() {
-		initTrafficContraband();
-		super.initDeepCluster(siteRequest_);
+	public Future<Void> promiseDeepTrafficContraband() {
+		Promise<Void> promise = Promise.promise();
+		Promise<Void> promise2 = Promise.promise();
+		promiseTrafficContraband(promise2);
+		promise2.future().onSuccess(a -> {
+			super.promiseDeepCluster(siteRequest_).onSuccess(b -> {
+				promise.complete();
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	public void initTrafficContraband() {
-		contrabandKeyInit();
-		searchKeyInit();
-		trafficSearchSearchInit();
-		trafficSearch_Init();
-		agencyTitleInit();
-		stopDateTimeInit();
-		stopPurposeNumInit();
-		stopPurposeTitleInit();
-		stopActionNumInit();
-		stopActionTitleInit();
-		stopDriverArrestInit();
-		stopPassengerArrestInit();
-		stopEncounterForceInit();
-		stopEngageForceInit();
-		stopOfficerInjuryInit();
-		stopDriverInjuryInit();
-		stopPassengerInjuryInit();
-		stopOfficerIdInit();
-		stopLocationIdInit();
-		stopCityIdInit();
-		personAgeInit();
-		personTypeIdInit();
-		personTypeTitleInit();
-		personTypeDriverInit();
-		personTypePassengerInit();
-		personGenderIdInit();
-		personGenderTitleInit();
-		personGenderFemaleInit();
-		personGenderMaleInit();
-		personEthnicityIdInit();
-		personEthnicityTitleInit();
-		personRaceIdInit();
-		personRaceTitleInit();
-		trafficStopKeyInit();
-		searchTypeNumInit();
-		searchTypeTitleInit();
-		searchVehicleInit();
-		searchDriverInit();
-		searchPassengerInit();
-		searchPropertyInit();
-		searchVehicleSiezedInit();
-		searchPersonalPropertySiezedInit();
-		searchOtherPropertySiezedInit();
-		contrabandOuncesInit();
-		contrabandPoundsInit();
-		contrabandPintsInit();
-		contrabandGallonsInit();
-		contrabandDosagesInit();
-		contrabandGramsInit();
-		contrabandKilosInit();
-		contrabandMoneyInit();
-		contrabandWeaponsInit();
-		contrabandDollarAmountInit();
+	public Future<Void> promiseTrafficContraband(Promise<Void> promise) {
+		Future.future(a -> a.complete()).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				contrabandKeyInit();
+				searchKeyInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			trafficSearchSearchPromise().onSuccess(trafficSearchSearch -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				trafficSearch_Init();
+				agencyTitleInit();
+				stopDateTimeInit();
+				stopPurposeNumInit();
+				stopPurposeTitleInit();
+				stopActionNumInit();
+				stopActionTitleInit();
+				stopDriverArrestInit();
+				stopPassengerArrestInit();
+				stopEncounterForceInit();
+				stopEngageForceInit();
+				stopOfficerInjuryInit();
+				stopDriverInjuryInit();
+				stopPassengerInjuryInit();
+				stopOfficerIdInit();
+				stopLocationIdInit();
+				stopCityIdInit();
+				personAgeInit();
+				personTypeIdInit();
+				personTypeTitleInit();
+				personTypeDriverInit();
+				personTypePassengerInit();
+				personGenderIdInit();
+				personGenderTitleInit();
+				personGenderFemaleInit();
+				personGenderMaleInit();
+				personEthnicityIdInit();
+				personEthnicityTitleInit();
+				personRaceIdInit();
+				personRaceTitleInit();
+				trafficStopKeyInit();
+				searchTypeNumInit();
+				searchTypeTitleInit();
+				searchVehicleInit();
+				searchDriverInit();
+				searchPassengerInit();
+				searchPropertyInit();
+				searchVehicleSiezedInit();
+				searchPersonalPropertySiezedInit();
+				searchOtherPropertySiezedInit();
+				contrabandOuncesInit();
+				contrabandPoundsInit();
+				contrabandPintsInit();
+				contrabandGallonsInit();
+				contrabandDosagesInit();
+				contrabandGramsInit();
+				contrabandKilosInit();
+				contrabandMoneyInit();
+				contrabandWeaponsInit();
+				contrabandDollarAmountInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).onSuccess(a -> {
+			promise.complete();
+		}).onFailure(ex -> {
+			promise.fail(ex);
+		});
+		return promise.future();
 	}
 
-	@Override public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepTrafficContraband(siteRequest_);
+	@Override public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
+		return promiseDeepTrafficContraband(siteRequest_);
 	}
 
 	/////////////////
@@ -6670,209 +5607,57 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	public void storeTrafficContraband(SolrDocument solrDocument) {
 		TrafficContraband oTrafficContraband = (TrafficContraband)this;
 
-		Long contrabandKey = (Long)solrDocument.get("contrabandKey_stored_long");
-		if(contrabandKey != null)
-			oTrafficContraband.setContrabandKey(contrabandKey);
-
-		Long searchKey = (Long)solrDocument.get("searchKey_stored_long");
-		if(searchKey != null)
-			oTrafficContraband.setSearchKey(searchKey);
-
-		String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
-		if(agencyTitle != null)
-			oTrafficContraband.setAgencyTitle(agencyTitle);
-
-		Date stopDateTime = (Date)solrDocument.get("stopDateTime_stored_date");
-		if(stopDateTime != null)
-			oTrafficContraband.setStopDateTime(stopDateTime);
-
-		Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_stored_int");
-		if(stopPurposeNum != null)
-			oTrafficContraband.setStopPurposeNum(stopPurposeNum);
-
-		String stopPurposeTitle = (String)solrDocument.get("stopPurposeTitle_stored_string");
-		if(stopPurposeTitle != null)
-			oTrafficContraband.setStopPurposeTitle(stopPurposeTitle);
-
-		Integer stopActionNum = (Integer)solrDocument.get("stopActionNum_stored_int");
-		if(stopActionNum != null)
-			oTrafficContraband.setStopActionNum(stopActionNum);
-
-		String stopActionTitle = (String)solrDocument.get("stopActionTitle_stored_string");
-		if(stopActionTitle != null)
-			oTrafficContraband.setStopActionTitle(stopActionTitle);
-
-		Boolean stopDriverArrest = (Boolean)solrDocument.get("stopDriverArrest_stored_boolean");
-		if(stopDriverArrest != null)
-			oTrafficContraband.setStopDriverArrest(stopDriverArrest);
-
-		Boolean stopPassengerArrest = (Boolean)solrDocument.get("stopPassengerArrest_stored_boolean");
-		if(stopPassengerArrest != null)
-			oTrafficContraband.setStopPassengerArrest(stopPassengerArrest);
-
-		Boolean stopEncounterForce = (Boolean)solrDocument.get("stopEncounterForce_stored_boolean");
-		if(stopEncounterForce != null)
-			oTrafficContraband.setStopEncounterForce(stopEncounterForce);
-
-		Boolean stopEngageForce = (Boolean)solrDocument.get("stopEngageForce_stored_boolean");
-		if(stopEngageForce != null)
-			oTrafficContraband.setStopEngageForce(stopEngageForce);
-
-		Boolean stopOfficerInjury = (Boolean)solrDocument.get("stopOfficerInjury_stored_boolean");
-		if(stopOfficerInjury != null)
-			oTrafficContraband.setStopOfficerInjury(stopOfficerInjury);
-
-		Boolean stopDriverInjury = (Boolean)solrDocument.get("stopDriverInjury_stored_boolean");
-		if(stopDriverInjury != null)
-			oTrafficContraband.setStopDriverInjury(stopDriverInjury);
-
-		Boolean stopPassengerInjury = (Boolean)solrDocument.get("stopPassengerInjury_stored_boolean");
-		if(stopPassengerInjury != null)
-			oTrafficContraband.setStopPassengerInjury(stopPassengerInjury);
-
-		String stopOfficerId = (String)solrDocument.get("stopOfficerId_stored_string");
-		if(stopOfficerId != null)
-			oTrafficContraband.setStopOfficerId(stopOfficerId);
-
-		String stopLocationId = (String)solrDocument.get("stopLocationId_stored_string");
-		if(stopLocationId != null)
-			oTrafficContraband.setStopLocationId(stopLocationId);
-
-		String stopCityId = (String)solrDocument.get("stopCityId_stored_string");
-		if(stopCityId != null)
-			oTrafficContraband.setStopCityId(stopCityId);
-
-		Integer personAge = (Integer)solrDocument.get("personAge_stored_int");
-		if(personAge != null)
-			oTrafficContraband.setPersonAge(personAge);
-
-		String personTypeId = (String)solrDocument.get("personTypeId_stored_string");
-		if(personTypeId != null)
-			oTrafficContraband.setPersonTypeId(personTypeId);
-
-		String personTypeTitle = (String)solrDocument.get("personTypeTitle_stored_string");
-		if(personTypeTitle != null)
-			oTrafficContraband.setPersonTypeTitle(personTypeTitle);
-
-		Boolean personTypeDriver = (Boolean)solrDocument.get("personTypeDriver_stored_boolean");
-		if(personTypeDriver != null)
-			oTrafficContraband.setPersonTypeDriver(personTypeDriver);
-
-		Boolean personTypePassenger = (Boolean)solrDocument.get("personTypePassenger_stored_boolean");
-		if(personTypePassenger != null)
-			oTrafficContraband.setPersonTypePassenger(personTypePassenger);
-
-		String personGenderId = (String)solrDocument.get("personGenderId_stored_string");
-		if(personGenderId != null)
-			oTrafficContraband.setPersonGenderId(personGenderId);
-
-		String personGenderTitle = (String)solrDocument.get("personGenderTitle_stored_string");
-		if(personGenderTitle != null)
-			oTrafficContraband.setPersonGenderTitle(personGenderTitle);
-
-		Boolean personGenderFemale = (Boolean)solrDocument.get("personGenderFemale_stored_boolean");
-		if(personGenderFemale != null)
-			oTrafficContraband.setPersonGenderFemale(personGenderFemale);
-
-		Boolean personGenderMale = (Boolean)solrDocument.get("personGenderMale_stored_boolean");
-		if(personGenderMale != null)
-			oTrafficContraband.setPersonGenderMale(personGenderMale);
-
-		String personEthnicityId = (String)solrDocument.get("personEthnicityId_stored_string");
-		if(personEthnicityId != null)
-			oTrafficContraband.setPersonEthnicityId(personEthnicityId);
-
-		String personEthnicityTitle = (String)solrDocument.get("personEthnicityTitle_stored_string");
-		if(personEthnicityTitle != null)
-			oTrafficContraband.setPersonEthnicityTitle(personEthnicityTitle);
-
-		String personRaceId = (String)solrDocument.get("personRaceId_stored_string");
-		if(personRaceId != null)
-			oTrafficContraband.setPersonRaceId(personRaceId);
-
-		String personRaceTitle = (String)solrDocument.get("personRaceTitle_stored_string");
-		if(personRaceTitle != null)
-			oTrafficContraband.setPersonRaceTitle(personRaceTitle);
-
-		Long trafficStopKey = (Long)solrDocument.get("trafficStopKey_stored_long");
-		if(trafficStopKey != null)
-			oTrafficContraband.setTrafficStopKey(trafficStopKey);
-
-		Integer searchTypeNum = (Integer)solrDocument.get("searchTypeNum_stored_int");
-		if(searchTypeNum != null)
-			oTrafficContraband.setSearchTypeNum(searchTypeNum);
-
-		String searchTypeTitle = (String)solrDocument.get("searchTypeTitle_stored_string");
-		if(searchTypeTitle != null)
-			oTrafficContraband.setSearchTypeTitle(searchTypeTitle);
-
-		Boolean searchVehicle = (Boolean)solrDocument.get("searchVehicle_stored_boolean");
-		if(searchVehicle != null)
-			oTrafficContraband.setSearchVehicle(searchVehicle);
-
-		Boolean searchDriver = (Boolean)solrDocument.get("searchDriver_stored_boolean");
-		if(searchDriver != null)
-			oTrafficContraband.setSearchDriver(searchDriver);
-
-		Boolean searchPassenger = (Boolean)solrDocument.get("searchPassenger_stored_boolean");
-		if(searchPassenger != null)
-			oTrafficContraband.setSearchPassenger(searchPassenger);
-
-		Boolean searchProperty = (Boolean)solrDocument.get("searchProperty_stored_boolean");
-		if(searchProperty != null)
-			oTrafficContraband.setSearchProperty(searchProperty);
-
-		Boolean searchVehicleSiezed = (Boolean)solrDocument.get("searchVehicleSiezed_stored_boolean");
-		if(searchVehicleSiezed != null)
-			oTrafficContraband.setSearchVehicleSiezed(searchVehicleSiezed);
-
-		Boolean searchPersonalPropertySiezed = (Boolean)solrDocument.get("searchPersonalPropertySiezed_stored_boolean");
-		if(searchPersonalPropertySiezed != null)
-			oTrafficContraband.setSearchPersonalPropertySiezed(searchPersonalPropertySiezed);
-
-		Boolean searchOtherPropertySiezed = (Boolean)solrDocument.get("searchOtherPropertySiezed_stored_boolean");
-		if(searchOtherPropertySiezed != null)
-			oTrafficContraband.setSearchOtherPropertySiezed(searchOtherPropertySiezed);
-
-		Double contrabandOunces = (Double)solrDocument.get("contrabandOunces_stored_double");
-		if(contrabandOunces != null)
-			oTrafficContraband.setContrabandOunces(contrabandOunces);
-
-		Double contrabandPounds = (Double)solrDocument.get("contrabandPounds_stored_double");
-		if(contrabandPounds != null)
-			oTrafficContraband.setContrabandPounds(contrabandPounds);
-
-		Double contrabandPints = (Double)solrDocument.get("contrabandPints_stored_double");
-		if(contrabandPints != null)
-			oTrafficContraband.setContrabandPints(contrabandPints);
-
-		Double contrabandGallons = (Double)solrDocument.get("contrabandGallons_stored_double");
-		if(contrabandGallons != null)
-			oTrafficContraband.setContrabandGallons(contrabandGallons);
-
-		Double contrabandDosages = (Double)solrDocument.get("contrabandDosages_stored_double");
-		if(contrabandDosages != null)
-			oTrafficContraband.setContrabandDosages(contrabandDosages);
-
-		Double contrabandGrams = (Double)solrDocument.get("contrabandGrams_stored_double");
-		if(contrabandGrams != null)
-			oTrafficContraband.setContrabandGrams(contrabandGrams);
-
-		Double contrabandKilos = (Double)solrDocument.get("contrabandKilos_stored_double");
-		if(contrabandKilos != null)
-			oTrafficContraband.setContrabandKilos(contrabandKilos);
-
-		Double contrabandMoney = (Double)solrDocument.get("contrabandMoney_stored_double");
-		if(contrabandMoney != null)
-			oTrafficContraband.setContrabandMoney(contrabandMoney);
-
-		Double contrabandWeapons = (Double)solrDocument.get("contrabandWeapons_stored_double");
-		if(contrabandWeapons != null)
-			oTrafficContraband.setContrabandWeapons(contrabandWeapons);
-
-		Double contrabandDollarAmount = (Double)solrDocument.get("contrabandDollarAmount_stored_double");
-		if(contrabandDollarAmount != null)
-			oTrafficContraband.setContrabandDollarAmount(contrabandDollarAmount);
+		oTrafficContraband.setContrabandKey(Optional.ofNullable(solrDocument.get("contrabandKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchKey(Optional.ofNullable(solrDocument.get("searchKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopPurposeTitle(Optional.ofNullable(solrDocument.get("stopPurposeTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopActionNum(Optional.ofNullable(solrDocument.get("stopActionNum_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopActionTitle(Optional.ofNullable(solrDocument.get("stopActionTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopDriverArrest(Optional.ofNullable(solrDocument.get("stopDriverArrest_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopPassengerArrest(Optional.ofNullable(solrDocument.get("stopPassengerArrest_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopEncounterForce(Optional.ofNullable(solrDocument.get("stopEncounterForce_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopEngageForce(Optional.ofNullable(solrDocument.get("stopEngageForce_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopOfficerInjury(Optional.ofNullable(solrDocument.get("stopOfficerInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopDriverInjury(Optional.ofNullable(solrDocument.get("stopDriverInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopPassengerInjury(Optional.ofNullable(solrDocument.get("stopPassengerInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopOfficerId(Optional.ofNullable(solrDocument.get("stopOfficerId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopLocationId(Optional.ofNullable(solrDocument.get("stopLocationId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopCityId(Optional.ofNullable(solrDocument.get("stopCityId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonAge(Optional.ofNullable(solrDocument.get("personAge_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonTypeId(Optional.ofNullable(solrDocument.get("personTypeId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonTypeTitle(Optional.ofNullable(solrDocument.get("personTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonTypeDriver(Optional.ofNullable(solrDocument.get("personTypeDriver_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonTypePassenger(Optional.ofNullable(solrDocument.get("personTypePassenger_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonGenderId(Optional.ofNullable(solrDocument.get("personGenderId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonGenderTitle(Optional.ofNullable(solrDocument.get("personGenderTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonGenderFemale(Optional.ofNullable(solrDocument.get("personGenderFemale_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonGenderMale(Optional.ofNullable(solrDocument.get("personGenderMale_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonEthnicityId(Optional.ofNullable(solrDocument.get("personEthnicityId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonEthnicityTitle(Optional.ofNullable(solrDocument.get("personEthnicityTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonRaceId(Optional.ofNullable(solrDocument.get("personRaceId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setPersonRaceTitle(Optional.ofNullable(solrDocument.get("personRaceTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setTrafficStopKey(Optional.ofNullable(solrDocument.get("trafficStopKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchTypeNum(Optional.ofNullable(solrDocument.get("searchTypeNum_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchTypeTitle(Optional.ofNullable(solrDocument.get("searchTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchVehicle(Optional.ofNullable(solrDocument.get("searchVehicle_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchDriver(Optional.ofNullable(solrDocument.get("searchDriver_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchPassenger(Optional.ofNullable(solrDocument.get("searchPassenger_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchProperty(Optional.ofNullable(solrDocument.get("searchProperty_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchVehicleSiezed(Optional.ofNullable(solrDocument.get("searchVehicleSiezed_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchPersonalPropertySiezed(Optional.ofNullable(solrDocument.get("searchPersonalPropertySiezed_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchOtherPropertySiezed(Optional.ofNullable(solrDocument.get("searchOtherPropertySiezed_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandOunces(Optional.ofNullable(solrDocument.get("contrabandOunces_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandPounds(Optional.ofNullable(solrDocument.get("contrabandPounds_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandPints(Optional.ofNullable(solrDocument.get("contrabandPints_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandGallons(Optional.ofNullable(solrDocument.get("contrabandGallons_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandDosages(Optional.ofNullable(solrDocument.get("contrabandDosages_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandGrams(Optional.ofNullable(solrDocument.get("contrabandGrams_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandKilos(Optional.ofNullable(solrDocument.get("contrabandKilos_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandMoney(Optional.ofNullable(solrDocument.get("contrabandMoney_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandWeapons(Optional.ofNullable(solrDocument.get("contrabandWeapons_stored_double")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setContrabandDollarAmount(Optional.ofNullable(solrDocument.get("contrabandDollarAmount_stored_double")).map(v -> v.toString()).orElse(null));
 
 		super.storeCluster(solrDocument);
 	}
@@ -7126,4 +5911,58 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_contrabandKey = "contrabandKey";
+	public static final String VAR_searchKey = "searchKey";
+	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
+	public static final String VAR_trafficSearch_ = "trafficSearch_";
+	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_stopDateTime = "stopDateTime";
+	public static final String VAR_stopPurposeNum = "stopPurposeNum";
+	public static final String VAR_stopPurposeTitle = "stopPurposeTitle";
+	public static final String VAR_stopActionNum = "stopActionNum";
+	public static final String VAR_stopActionTitle = "stopActionTitle";
+	public static final String VAR_stopDriverArrest = "stopDriverArrest";
+	public static final String VAR_stopPassengerArrest = "stopPassengerArrest";
+	public static final String VAR_stopEncounterForce = "stopEncounterForce";
+	public static final String VAR_stopEngageForce = "stopEngageForce";
+	public static final String VAR_stopOfficerInjury = "stopOfficerInjury";
+	public static final String VAR_stopDriverInjury = "stopDriverInjury";
+	public static final String VAR_stopPassengerInjury = "stopPassengerInjury";
+	public static final String VAR_stopOfficerId = "stopOfficerId";
+	public static final String VAR_stopLocationId = "stopLocationId";
+	public static final String VAR_stopCityId = "stopCityId";
+	public static final String VAR_personAge = "personAge";
+	public static final String VAR_personTypeId = "personTypeId";
+	public static final String VAR_personTypeTitle = "personTypeTitle";
+	public static final String VAR_personTypeDriver = "personTypeDriver";
+	public static final String VAR_personTypePassenger = "personTypePassenger";
+	public static final String VAR_personGenderId = "personGenderId";
+	public static final String VAR_personGenderTitle = "personGenderTitle";
+	public static final String VAR_personGenderFemale = "personGenderFemale";
+	public static final String VAR_personGenderMale = "personGenderMale";
+	public static final String VAR_personEthnicityId = "personEthnicityId";
+	public static final String VAR_personEthnicityTitle = "personEthnicityTitle";
+	public static final String VAR_personRaceId = "personRaceId";
+	public static final String VAR_personRaceTitle = "personRaceTitle";
+	public static final String VAR_trafficStopKey = "trafficStopKey";
+	public static final String VAR_searchTypeNum = "searchTypeNum";
+	public static final String VAR_searchTypeTitle = "searchTypeTitle";
+	public static final String VAR_searchVehicle = "searchVehicle";
+	public static final String VAR_searchDriver = "searchDriver";
+	public static final String VAR_searchPassenger = "searchPassenger";
+	public static final String VAR_searchProperty = "searchProperty";
+	public static final String VAR_searchVehicleSiezed = "searchVehicleSiezed";
+	public static final String VAR_searchPersonalPropertySiezed = "searchPersonalPropertySiezed";
+	public static final String VAR_searchOtherPropertySiezed = "searchOtherPropertySiezed";
+	public static final String VAR_contrabandOunces = "contrabandOunces";
+	public static final String VAR_contrabandPounds = "contrabandPounds";
+	public static final String VAR_contrabandPints = "contrabandPints";
+	public static final String VAR_contrabandGallons = "contrabandGallons";
+	public static final String VAR_contrabandDosages = "contrabandDosages";
+	public static final String VAR_contrabandGrams = "contrabandGrams";
+	public static final String VAR_contrabandKilos = "contrabandKilos";
+	public static final String VAR_contrabandMoney = "contrabandMoney";
+	public static final String VAR_contrabandWeapons = "contrabandWeapons";
+	public static final String VAR_contrabandDollarAmount = "contrabandDollarAmount";
 }

@@ -183,7 +183,17 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
-	public static final String SOLR_URL = "solrUrl";
+	public static final String SOLR_HOST_NAME = "solrHostName";
+
+	/**
+	 * 
+	 **/
+	public static final String SOLR_PORT = "solrPort";
+
+	/**
+	 * 
+	 **/
+	public static final String SOLR_COLLECTION = "solrCollection";
 
 	/**
 	 * 
@@ -339,4 +349,14 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String SITE_ZONE = "siteZone";
+
+	/**
+	 * 
+	 **/
+	public static final String ENABLE_DB_SOLR_SYNC = "enableDbSolrSync";
+
+	/**
+	 * 
+	 **/
+	public static final String SEMAPHORE_PERMITS = "semaphorePermits";
 }

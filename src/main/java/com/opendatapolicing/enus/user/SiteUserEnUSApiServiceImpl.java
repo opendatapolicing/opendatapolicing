@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
@@ -25,8 +26,9 @@ public class SiteUserEnUSApiServiceImpl extends SiteUserEnUSGenApiServiceImpl {
 		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
+
 	@Override
-	public void sqlPOSTSiteUser(SiteUser o, Boolean inheritPk, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public Future<Void> sqlPOSTSiteUser(SiteUser o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest_ = o.getSiteRequest_();
 		JsonObject jsonObject = siteRequest_.getJsonObject();
 		if(StringUtils.equals(o.getUserId(), siteRequest_.getUserId())) {
@@ -37,11 +39,11 @@ public class SiteUserEnUSApiServiceImpl extends SiteUserEnUSGenApiServiceImpl {
 			jsonObject.put("userId", siteRequest_.getUserId());
 			jsonObject.put("userName", siteRequest_.getUserName());
 		}
-		super.sqlPOSTSiteUser(o, inheritPk, eventHandler);
+		return super.sqlPOSTSiteUser(o, inheritPk);
 	}
 
 	@Override
-	public void sqlPATCHSiteUser(SiteUser o, Boolean inheritPk, Handler<AsyncResult<SiteUser>> eventHandler) {
+	public Future<SiteUser> sqlPATCHSiteUser(SiteUser o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest_ = o.getSiteRequest_();
 		JsonObject jsonObject = siteRequest_.getJsonObject();
 		if(StringUtils.equals(o.getUserId(), siteRequest_.getUserId())) {
@@ -52,6 +54,6 @@ public class SiteUserEnUSApiServiceImpl extends SiteUserEnUSGenApiServiceImpl {
 			jsonObject.put("setUserId", siteRequest_.getUserId());
 			jsonObject.put("setUserName", siteRequest_.getUserName());
 		}
-		super.sqlPATCHSiteUser(o, inheritPk, eventHandler);
+		return super.sqlPATCHSiteUser(o, inheritPk);
 	}
 }

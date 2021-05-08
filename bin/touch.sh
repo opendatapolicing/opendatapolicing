@@ -8,9 +8,6 @@ touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/se
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/writer/AllWriter.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/writer/AllWriters.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/writer/ApiWriter.java
-touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/design/PageDesign.java
-touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/html/part/HtmlPart.java
-touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/page/PageLayout.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/AppOpenApi3.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/AppSwagger2.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/AppVertx.java

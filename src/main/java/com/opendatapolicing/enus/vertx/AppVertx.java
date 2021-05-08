@@ -1,29 +1,22 @@
 package com.opendatapolicing.enus.vertx;    
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
 import com.opendatapolicing.enus.config.ConfigKeys;
-import com.opendatapolicing.enus.design.PageDesignEnUSGenApiService;
-import com.opendatapolicing.enus.html.part.HtmlPartEnUSGenApiService;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
@@ -34,6 +27,7 @@ import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiService;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiService;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiService;
 import com.opendatapolicing.enus.user.SiteUserEnUSGenApiService;
+import com.opendatapolicing.enus.wrap.Wrap;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -99,7 +93,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	 **/
 	private PgPool pgPool;
 
-	private SolrClient solrClient;
 	private WebClient webClient;
 
 	private JsonObject config;
@@ -112,7 +105,14 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 	AuthorizationProvider authorizationProvider;
 
+	Semaphore semaphore;
+
 	public static final String CONFIG_staticPath = "staticPath";
+
+	public AppVertx setSemaphore(Semaphore semaphore) {
+		this.semaphore = semaphore;
+		return this;
+	}
 
 	/**	
 	 *	The main method for the Vert.x application that runs the Vert.x Runner class
@@ -122,6 +122,9 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	}
 
 	public static void  run() {
+		Integer semaphorePermits = System.getenv(ConfigKeys.SEMAPHORE_PERMITS) == null ? 10 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_PERMITS));
+		Semaphore semaphore = new Semaphore(semaphorePermits);
+
 		JsonObject zkConfig = new JsonObject();
 		String zookeeperHostName = System.getenv("zookeeperHostName");
 		Integer zookeeperPort = Integer.parseInt(System.getenv("zookeeperPort"));
@@ -175,7 +178,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		optionsVertx.setEventBusOptions(eventBusOptions);
 		optionsVertx.setClusterManager(gestionnaireCluster);
 		DeploymentOptions deploymentOptions = new DeploymentOptions();
-		deploymentOptions.setInstances(siteInstances);
 
 		DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
 		mailVerticleDeploymentOptions.setWorker(true);
@@ -184,9 +186,10 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		mailVerticleDeploymentOptions.setWorker(true);
 
 		Consumer<Vertx> runner = vertx -> {
-			vertx.deployVerticle(AppVertx.class.getName(), deploymentOptions);
+			for(Integer i = 0; i < siteInstances; i++)
+				vertx.deployVerticle(new AppVertx().setSemaphore(semaphore), deploymentOptions);
 			vertx.deployVerticle(new MailVerticle(), mailVerticleDeploymentOptions);
-			vertx.deployVerticle(new WorkerVerticle(), workerVerticleDeploymentOptions);
+			vertx.deployVerticle(new WorkerVerticle().setSemaphore(semaphore), workerVerticleDeploymentOptions);
 		};
 		Vertx.clusteredVertx(optionsVertx).onSuccess(vertx -> {
 			EventBus eventBus = vertx.eventBus();
@@ -600,22 +603,20 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	}
 
 	/**
-	 * Val.Fail.enUS:The API was configured properly. 
-	 * Val.Complete.enUS:The API was not configured properly. 
+	 * Val.Fail.enUS:The API was not configured properly. 
+	 * Val.Complete.enUS:The API was configured properly. 
 	 */
 	private Future<Void> configureApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			PageDesignEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			HtmlPartEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteStateEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteAgencyEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SearchBasisEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficContrabandEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficPersonEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficSearchEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, solrClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficStopEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteStateEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteAgencyEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SearchBasisEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficContrabandEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficPersonEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficSearchEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficStopEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 
 			LOG.info(configureApiComplete);
 			promise.complete();
@@ -627,8 +628,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	}
 
 	/**
-	 * Val.Fail.enUS:The UI was configured properly. 
-	 * Val.Complete.enUS:The UI was not configured properly. 
+	 * Val.Fail.enUS:The UI was not configured properly. 
+	 * Val.Complete.enUS:The UI was configured properly. 
 	 */
 	private Future<Void> configureUi() {
 		Promise<Void> promise = Promise.promise();

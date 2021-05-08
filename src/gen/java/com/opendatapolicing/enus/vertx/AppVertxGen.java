@@ -42,49 +42,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 public abstract class AppVertxGen<DEV> extends AbstractVerticle {
 
 /*
-CREATE TABLE PageDesign(
-	pk bigserial primary key
-	, inheritPk text
-	, created timestamp with time zone
-	, pageDesignCompleteName text
-	, designHidden boolean
-	, pageContentType text
-	);
-CREATE TABLE HtmlPart(
-	pk bigserial primary key
-	, inheritPk text
-	, created timestamp with time zone
-	, htmlLink text
-	, htmlElement text
-	, htmlId text
-	, htmlClasses text
-	, htmlStyle text
-	, htmlBefore text
-	, htmlAfter text
-	, htmlText text
-	, htmlVar text
-	, htmlVarSpan text
-	, htmlVarForm text
-	, htmlVarInput text
-	, htmlVarForEach text
-	, htmlVarHtml text
-	, htmlVarBase64Decode text
-	, htmlExclude boolean
-	, pdfExclude boolean
-	, loginLogout boolean
-	, searchUri text
-	, mapTo text
-	, sort1 double precision
-	, sort2 double precision
-	, sort3 double precision
-	, sort4 double precision
-	, sort5 double precision
-	, sort6 double precision
-	, sort7 double precision
-	, sort8 double precision
-	, sort9 double precision
-	, sort10 double precision
-	);
 CREATE TABLE SiteUser(
 	pk bigserial primary key
 	, inheritPk text
@@ -186,19 +143,7 @@ CREATE TABLE SearchBasis(
 	, searchBasisId text
 	, searchBasisTitle text
 	);
-CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
-	pk bigserial primary key
-	, pk1 bigint references PageDesign(pk)
-	, pk2 bigint references PageDesign(pk)
-	);
-CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
-	pk bigserial primary key
-	, pk1 bigint references PageDesign(pk)
-	, pk2 bigint references HtmlPart(pk)
-	);
 
-DROP TABLE PageDesign CASCADE;
-DROP TABLE HtmlPart CASCADE;
 DROP TABLE SiteUser CASCADE;
 DROP TABLE SiteState CASCADE;
 DROP TABLE SiteAgency CASCADE;
@@ -207,8 +152,6 @@ DROP TABLE TrafficPerson CASCADE;
 DROP TABLE TrafficSearch CASCADE;
 DROP TABLE TrafficContraband CASCADE;
 DROP TABLE SearchBasis CASCADE;
-DROP TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys CASCADE;
-DROP TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys CASCADE;
 */
 
 	protected static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
@@ -255,14 +198,14 @@ DROP TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys CASCADE;
 	public static final String configureEmailFail1 = "Configure sending email failed. ";
 	public static final String configureEmailFail = configureEmailFail1;
 
-	public static final String configureApiFail1 = "The API was configured properly. ";
+	public static final String configureApiFail1 = "The API was not configured properly. ";
 	public static final String configureApiFail = configureApiFail1;
-	public static final String configureApiComplete1 = "The API was not configured properly. ";
+	public static final String configureApiComplete1 = "The API was configured properly. ";
 	public static final String configureApiComplete = configureApiComplete1;
 
-	public static final String configureUiFail1 = "The UI was configured properly. ";
+	public static final String configureUiFail1 = "The UI was not configured properly. ";
 	public static final String configureUiFail = configureUiFail1;
-	public static final String configureUiComplete1 = "The UI was not configured properly. ";
+	public static final String configureUiComplete1 = "The UI was configured properly. ";
 	public static final String configureUiComplete = configureUiComplete1;
 
 	public static final String startServerErrorServer1 = "The server is not configured properly. ";
@@ -496,4 +439,5 @@ DROP TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys CASCADE;
 	}
 
 	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
+
 }

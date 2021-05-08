@@ -3,21 +3,16 @@ package com.opendatapolicing.enus.cluster;
 import java.text.Normalizer;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.opendatapolicing.enus.config.ConfigKeys;
-import com.opendatapolicing.enus.page.PageLayout;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.wrap.Wrap;
-import com.opendatapolicing.enus.writer.AllWriter;
-import com.opendatapolicing.enus.xml.UtilXml;
 
 /**
  * Indexed: true
- * Page: true
  * 
  * AName.enUS: a cluster
  * Color: gray
@@ -172,163 +167,5 @@ public class Cluster extends ClusterGen<Object> {
 		}
 
 		return s;
-	}
-
-	public Cluster e(String localName) {
-		AllWriter w = siteRequest_.getW();
-		String localNameParent = siteRequest_.getXmlStack().isEmpty() ? null : siteRequest_.getXmlStack().peek();
-
-		boolean eNoWrapParent = localNameParent == null || PageLayout.HTML_ELEMENTS_NO_WRAP.contains(localNameParent);
-		String tabs = String.join("", Collections.nCopies(siteRequest_.getXmlStack().size(), "  "));
-
-		siteRequest_.getXmlStack().push(localName);
-		if(StringUtils.equals(localName, "html"))
-			w.s("<!DOCTYPE html>\n");
-		if(!eNoWrapParent && !tabs.isEmpty()) {
-			w.l();
-			w.s(tabs);
-		}
-		w.s("<");
-		w.s(localName);
-		
-		return this;
-	}
-
-	public Cluster a1(String attributeName, Object...objects) {
-		AllWriter w = siteRequest_.getW();
-		w.s(" ");
-		w.s(attributeName);
-		w.s("=\"");
-		for(Object object : objects) {
-			if(object != null) {
-				String s = object.toString();
-				w.s(UtilXml.escapeInQuotes(s));
-			}
-		}
-		
-		return this;
-	}
-
-	public Cluster a(String attributeName, Object...objects) {
-		AllWriter w = siteRequest_.getW();
-		w.s(" ");
-		w.s(attributeName);
-		w.s("=\"");
-		for(Object object : objects) {
-			if(object != null) {
-				String s = object.toString();
-				w.s(UtilXml.escapeInQuotes(s));
-			}
-		}
-		w.s("\"");
-		
-		return this;
-	}
-
-	public Cluster a2() {
-		AllWriter w = siteRequest_.getW();
-		w.s("\"");
-		
-		return this;
-	}
-
-	public Cluster f() {
-		AllWriter w = siteRequest_.getW();
-		w.s(">");
-		
-		return this;
-	}
-
-	public Cluster s(Object...objects) {
-		AllWriter w = siteRequest_.getW();
-		for(Object object : objects) {
-			if(object != null) {
-				String s = object.toString();
-				w.s(s);
-			}
-		}
-		
-		return this;
-	}
-
-	public Cluster t(int numberTabs, Object...objects) {
-		for(int i = 0; i < numberTabs; i++)
-			s("  ");
-		s(objects);
-		return this;
-	}
-
-	public Cluster tl(int numberTabs, Object...objects) {
-		for(int i = 0; i < numberTabs; i++)
-			s("  ");
-		s(objects);
-		s("\n");
-		return this;
-	}
-
-	public Cluster l(Object...objects) {
-		s(objects);
-		s("\n");
-		return this;
-	}
-
-	public Cluster lx(Object...objects) {
-		s(objects);
-		sx("\n");
-		return this;
-	}
-
-	public Cluster sx(Object...objects) {
-		AllWriter w = siteRequest_.getW();
-		for(Object object : objects) {
-			if(object != null) {
-				String s = object.toString();
-				w.s(UtilXml.escape(s));
-			}
-		}
-		
-		return this;
-	}
-
-	public Cluster tx(int numberTabs, Object...objects) {
-		for(int i = 0; i < numberTabs; i++)
-			sx("  ");
-		sx(objects);
-		return this;
-	}
-
-	public Cluster tlx(int numberTabs, Object...objects) {
-		for(int i = 0; i < numberTabs; i++)
-			sx("  ");
-		sx(objects);
-		sx("\n");
-		return this;
-	}
-
-	public Cluster fg() {
-		AllWriter w = siteRequest_.getW();
-		w.s("/>");
-		siteRequest_.getXmlStack().pop();
-		
-		return this;
-	}
-
-	public Cluster g(String localName) {
-		AllWriter w = siteRequest_.getW();
-		String localNameParent = siteRequest_.getXmlStack().peek();
-		boolean eNoWrap = localNameParent == null || PageLayout.HTML_ELEMENTS_NO_WRAP.contains(localName);
-
-		siteRequest_.getXmlStack().pop();
-		String tabs = String.join("", Collections.nCopies(siteRequest_.getXmlStack().size(), "  "));
-
-		if(!eNoWrap || localNameParent == null)
-			w.l();
-		if(!eNoWrap && !tabs.isEmpty())
-			w.s(tabs);
-		w.s("</");
-		w.s(localName);
-		w.s(">");
-		
-		return this;
 	}
 }

@@ -2,8 +2,7 @@ package com.opendatapolicing.enus.trafficperson;
 
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.vertx.core.Future;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
@@ -22,8 +21,7 @@ public class TrafficPersonEnUSApiServiceImpl extends TrafficPersonEnUSGenApiServ
 	}
 
 	@Override
-	public void sqlPATCHTrafficPerson(TrafficPerson o, Boolean inheritPk,
-			Handler<AsyncResult<TrafficPerson>> eventHandler) {
+	public Future<TrafficPerson> sqlPATCHTrafficPerson(TrafficPerson o, Boolean inheritPk) {
 		SiteRequestEnUS siteRequest = o.getSiteRequest_();
 		JsonObject jsonObject = siteRequest.getJsonObject();
 
@@ -31,6 +29,6 @@ public class TrafficPersonEnUSApiServiceImpl extends TrafficPersonEnUSGenApiServ
 		// don't set the searchKeys to null when reimporting TrafficPerson data. 
 		jsonObject.remove("setTrafficSearchKeys");
 
-		super.sqlPATCHTrafficPerson(o, inheritPk, eventHandler);
+		return super.sqlPATCHTrafficPerson(o, inheritPk);
 	}
 }

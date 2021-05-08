@@ -72,29 +72,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	public static final List<String> ROLES = Arrays.asList("SiteService");
 	public static final List<String> ROLE_READS = Arrays.asList("");
 
-	public static final String TrafficSearch_AName = "a traffic search";
-	public static final String TrafficSearch_This = "this ";
-	public static final String TrafficSearch_ThisName = "this traffic search";
-	public static final String TrafficSearch_A = "a ";
-	public static final String TrafficSearch_TheName = "the traffic search";
-	public static final String TrafficSearch_NameSingular = "traffic search";
-	public static final String TrafficSearch_NamePlural = "traffic searches";
-	public static final String TrafficSearch_NameActual = "current traffic search";
-	public static final String TrafficSearch_AllName = "all the traffic searches";
-	public static final String TrafficSearch_SearchAllNameBy = "search traffic searches by ";
-	public static final String TrafficSearch_Title = "traffic searches";
-	public static final String TrafficSearch_ThePluralName = "the traffic searches";
-	public static final String TrafficSearch_NoNameFound = "no traffic search found";
-	public static final String TrafficSearch_NameVar = "trafficSearch";
-	public static final String TrafficSearch_OfName = "of traffic search";
-	public static final String TrafficSearch_ANameAdjective = "a traffic search";
-	public static final String TrafficSearch_NameAdjectiveSingular = "traffic search";
-	public static final String TrafficSearch_NameAdjectivePlural = "traffic searches";
-	public static final String TrafficSearch_Color = "pale-green";
-	public static final String TrafficSearch_IconGroup = "regular";
-	public static final String TrafficSearch_IconName = "newspaper";
-	public static final Integer TrafficSearch_Rows = 100;
-
 	//////////////////////
 	// trafficSearchKey //
 	//////////////////////
@@ -106,7 +83,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Long trafficSearchKey;
 	@JsonIgnore
-	public Wrap<Long> trafficSearchKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("trafficSearchKey").o(trafficSearchKey);
+	public Wrap<Long> trafficSearchKeyWrap = new Wrap<Long>().var("trafficSearchKey").o(trafficSearchKey);
 
 	/**	<br/> The entity trafficSearchKey
 	 *  is defined as null before being initialized. 
@@ -138,6 +115,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_trafficSearchKey(trafficSearchKeyWrap);
 			if(trafficSearchKey == null)
 				setTrafficSearchKey(trafficSearchKeyWrap.o);
+			trafficSearchKeyWrap.o(null);
 		}
 		trafficSearchKeyWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -171,14 +149,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return trafficSearchKey == null ? "" : trafficSearchKey.toString();
 	}
 
-	public String htmTooltipTrafficSearchKey() {
-		return null;
-	}
-
-	public String htmTrafficSearchKey() {
-		return trafficSearchKey == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficSearchKey());
-	}
-
 	///////////////
 	// personKey //
 	///////////////
@@ -190,7 +160,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Long personKey;
 	@JsonIgnore
-	public Wrap<Long> personKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("personKey").o(personKey);
+	public Wrap<Long> personKeyWrap = new Wrap<Long>().var("personKey").o(personKey);
 
 	/**	<br/> The entity personKey
 	 *  is defined as null before being initialized. 
@@ -222,6 +192,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personKey(personKeyWrap);
 			if(personKey == null)
 				setPersonKey(personKeyWrap.o);
+			personKeyWrap.o(null);
 		}
 		personKeyWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -255,118 +226,26 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personKey == null ? "" : personKey.toString();
 	}
 
-	public String htmTooltipPersonKey() {
-		return null;
-	}
-
-	public String htmPersonKey() {
-		return personKey == null ? "" : StringEscapeUtils.escapeHtml4(strPersonKey());
-	}
-
-	public void inputPersonKey(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-			if("PUTCopy".equals(classApiMethodMethod)) {
-				{ e("div").f();
-					e("input")
-						.a("type", "checkbox")
-						.a("id", classApiMethodMethod, "_personKey_clear")
-						.a("class", "personKey_clear ")
-						.fg();
-					e("label").a("for", "classApiMethodMethod, \"_personKey_clear").f().sx("clear").g("label");
-				} g("div");
-			}
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "person key")
-				.a("class", "value suggestPersonKey w3-input w3-border w3-cell w3-cell-middle ")
-				.a("name", "setPersonKey")
-				.a("id", classApiMethodMethod, "_personKey")
-				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchPersonKey($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'trafficSearchKeys:" + pk + "'}", "], $('#listTrafficSearchPersonKey_", classApiMethodMethod, "'), ", pk, "); ");
-
-				fg();
-
-		} else {
-		}
-	}
-
-	public void htmPersonKey(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchPersonKey").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "/person?fq=trafficSearchKeys:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
-								e("i").a("class", "far fa-newspaper ").f().g("i");
-								sx("person key");
-							} g("a");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("h5").a("class", "w3-cell ").f();
-								sx("relate a person to this traffic search");
-							} g("h5");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-cell-row ").f();
-
-								inputPersonKey(classApiMethodMethod);
-								} g("div");
-							} g("div");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listTrafficSearchPersonKey_", classApiMethodMethod).f();
-								} g("ul");
-								if(
-										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), TrafficPerson.ROLES)
-										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), TrafficPerson.ROLES)
-										) {
-									if("Page".equals(classApiMethodMethod)) {
-										{ e("div").a("class", "w3-cell-row ").f();
-											e("button")
-												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
-												.a("id", classApiMethodMethod, "_personKey_add")
-												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postTrafficPersonVals({ trafficSearchKeys: [ \"", pk, "\" ] }, function() {}, function() { addError($('#", classApiMethodMethod, "personKey')); });")
-												.f().sx("add a person")
-											.g("button");
-										} g("div");
-									}
-								}
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////////
 	// trafficPersonSearch //
 	/////////////////////////
 
 	/**	 The entity trafficPersonSearch
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SearchList<TrafficPerson>(). 
+	 *	 is defined as null before being initialized. 
 	 */
 	@JsonIgnore
 	@JsonInclude(Include.NON_NULL)
-	protected SearchList<TrafficPerson> trafficPersonSearch = new SearchList<TrafficPerson>();
+	protected SearchList<TrafficPerson> trafficPersonSearch;
 	@JsonIgnore
-	public Wrap<SearchList<TrafficPerson>> trafficPersonSearchWrap = new Wrap<SearchList<TrafficPerson>>().p(this).c(SearchList.class).var("trafficPersonSearch").o(trafficPersonSearch);
+	public Wrap<SearchList<TrafficPerson>> trafficPersonSearchWrap = new Wrap<SearchList<TrafficPerson>>().var("trafficPersonSearch").o(trafficPersonSearch);
 
 	/**	<br/> The entity trafficPersonSearch
-	 *  It is constructed before being initialized with the constructor by default SearchList<TrafficPerson>(). 
+	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearch&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficPersonSearch">Find the entity trafficPersonSearch in Solr</a>
 	 * <br/>
-	 * @param trafficPersonSearch is the entity already constructed. 
+	 * @param promise is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _trafficPersonSearch(SearchList<TrafficPerson> l);
+	protected abstract void _trafficPersonSearch(Promise<SearchList<TrafficPerson>> promise);
 
 	public SearchList<TrafficPerson> getTrafficPersonSearch() {
 		return trafficPersonSearch;
@@ -379,13 +258,31 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	public static SearchList<TrafficPerson> staticSetTrafficPersonSearch(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected TrafficSearch trafficPersonSearchInit() {
+	protected Future<SearchList<TrafficPerson>> trafficPersonSearchPromise() {
+		Promise<SearchList<TrafficPerson>> promise = Promise.promise();
 		if(!trafficPersonSearchWrap.alreadyInitialized) {
-			_trafficPersonSearch(trafficPersonSearch);
+			Promise<SearchList<TrafficPerson>> promise2 = Promise.promise();
+			_trafficPersonSearch(promise2);
+			promise2.future().onSuccess(o -> {
+				if(o != null && trafficPersonSearch == null) {
+					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
+						setTrafficPersonSearch(o);
+						trafficPersonSearchWrap.alreadyInitialized(true);
+						promise.complete(o);
+					}).onFailure(ex -> {
+						promise.fail(ex);
+					});
+				} else {
+					trafficPersonSearchWrap.alreadyInitialized(true);
+					promise.complete(o);
+				}
+			}).onFailure(ex -> {
+				promise.fail(ex);
+			});
+		} else {
+			promise.complete();
 		}
-		trafficPersonSearch.initDeepForClass(siteRequest_);
-		trafficPersonSearchWrap.alreadyInitialized(true);
-		return (TrafficSearch)this;
+		return promise.future();
 	}
 
 	////////////////////
@@ -398,7 +295,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficPerson trafficPerson_;
 	@JsonIgnore
-	public Wrap<TrafficPerson> trafficPerson_Wrap = new Wrap<TrafficPerson>().p(this).c(TrafficPerson.class).var("trafficPerson_").o(trafficPerson_);
+	public Wrap<TrafficPerson> trafficPerson_Wrap = new Wrap<TrafficPerson>().var("trafficPerson_").o(trafficPerson_);
 
 	/**	<br/> The entity trafficPerson_
 	 *  is defined as null before being initialized. 
@@ -424,6 +321,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_trafficPerson_(trafficPerson_Wrap);
 			if(trafficPerson_ == null)
 				setTrafficPerson_(trafficPerson_Wrap.o);
+			trafficPerson_Wrap.o(null);
 		}
 		trafficPerson_Wrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -440,7 +338,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> contrabandKeys = new ArrayList<Long>();
 	@JsonIgnore
-	public Wrap<List<Long>> contrabandKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("contrabandKeys").o(contrabandKeys);
+	public Wrap<List<Long>> contrabandKeysWrap = new Wrap<List<Long>>().var("contrabandKeys").o(contrabandKeys);
 
 	/**	<br/> The entity contrabandKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -534,98 +432,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return contrabandKeys == null ? "" : contrabandKeys.toString();
 	}
 
-	public String htmTooltipContrabandKeys() {
-		return null;
-	}
-
-	public String htmContrabandKeys() {
-		return contrabandKeys == null ? "" : StringEscapeUtils.escapeHtml4(strContrabandKeys());
-	}
-
-	public void inputContrabandKeys(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-			if("PUTCopy".equals(classApiMethodMethod)) {
-				{ e("div").f();
-					e("input")
-						.a("type", "checkbox")
-						.a("id", classApiMethodMethod, "_contrabandKeys_clear")
-						.a("class", "contrabandKeys_clear ")
-						.fg();
-					e("label").a("for", "classApiMethodMethod, \"_contrabandKeys_clear").f().sx("clear").g("label");
-				} g("div");
-			}
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "contrabands")
-				.a("class", "value suggestContrabandKeys w3-input w3-border w3-cell w3-cell-middle ")
-				.a("name", "setContrabandKeys")
-				.a("id", classApiMethodMethod, "_contrabandKeys")
-				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchContrabandKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchContrabandKeys_", classApiMethodMethod, "'), ", pk, "); ");
-
-				fg();
-
-		} else {
-		}
-	}
-
-	public void htmContrabandKeys(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchContrabandKeys").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "/contraband?fq=searchKey:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
-								e("i").a("class", "far fa-newspaper ").f().g("i");
-								sx("contrabands");
-							} g("a");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("h5").a("class", "w3-cell ").f();
-								sx("relate  to this traffic search");
-							} g("h5");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-cell-row ").f();
-
-								inputContrabandKeys(classApiMethodMethod);
-								} g("div");
-							} g("div");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listTrafficSearchContrabandKeys_", classApiMethodMethod).f();
-								} g("ul");
-								if(
-										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), TrafficContraband.ROLES)
-										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), TrafficContraband.ROLES)
-										) {
-									if("Page".equals(classApiMethodMethod)) {
-										{ e("div").a("class", "w3-cell-row ").f();
-											e("button")
-												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
-												.a("id", classApiMethodMethod, "_contrabandKeys_add")
-												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postTrafficContrabandVals({ searchKey: \"", pk, "\" }, function() {}, function() { addError($('#", classApiMethodMethod, "contrabandKeys')); });")
-												.f().sx("add a contraband")
-											.g("button");
-										} g("div");
-									}
-								}
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////
 	// searchBasisKeys //
 	/////////////////////
@@ -637,7 +443,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> searchBasisKeys = new ArrayList<Long>();
 	@JsonIgnore
-	public Wrap<List<Long>> searchBasisKeysWrap = new Wrap<List<Long>>().p(this).c(List.class).var("searchBasisKeys").o(searchBasisKeys);
+	public Wrap<List<Long>> searchBasisKeysWrap = new Wrap<List<Long>>().var("searchBasisKeys").o(searchBasisKeys);
 
 	/**	<br/> The entity searchBasisKeys
 	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
@@ -731,98 +537,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchBasisKeys == null ? "" : searchBasisKeys.toString();
 	}
 
-	public String htmTooltipSearchBasisKeys() {
-		return null;
-	}
-
-	public String htmSearchBasisKeys() {
-		return searchBasisKeys == null ? "" : StringEscapeUtils.escapeHtml4(strSearchBasisKeys());
-	}
-
-	public void inputSearchBasisKeys(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("i").a("class", "far fa-search w3-xxlarge w3-cell w3-cell-middle ").f().g("i");
-			if("PUTCopy".equals(classApiMethodMethod)) {
-				{ e("div").f();
-					e("input")
-						.a("type", "checkbox")
-						.a("id", classApiMethodMethod, "_searchBasisKeys_clear")
-						.a("class", "searchBasisKeys_clear ")
-						.fg();
-					e("label").a("for", "classApiMethodMethod, \"_searchBasisKeys_clear").f().sx("clear").g("label");
-				} g("div");
-			}
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "search bases")
-				.a("class", "value suggestSearchBasisKeys w3-input w3-border w3-cell w3-cell-middle ")
-				.a("name", "setSearchBasisKeys")
-				.a("id", classApiMethodMethod, "_searchBasisKeys")
-				.a("autocomplete", "off");
-				a("oninput", "suggestTrafficSearchSearchBasisKeys($(this).val() ? [ { 'name': 'q', 'value': ':' + $(this).val() }, { 'name': 'rows', 'value': '10' }, { 'name': 'fl', 'value': 'pk,objectTitle' } ] : [", pk == null ? "" : "{'name':'fq','value':'searchKey:" + pk + "'}", "], $('#listTrafficSearchSearchBasisKeys_", classApiMethodMethod, "'), ", pk, "); ");
-
-				fg();
-
-		} else {
-		}
-	}
-
-	public void htmSearchBasisKeys(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchBasisKeys").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("a").a("href", "/search-basis?fq=searchKey:", pk).a("class", "w3-cell w3-btn w3-center h4 w3-block h4 w3-pale-green w3-hover-pale-green ").f();
-								e("i").a("class", "far fa-newspaper ").f().g("i");
-								sx("search bases");
-							} g("a");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row ").f();
-							{ e("h5").a("class", "w3-cell ").f();
-								sx("relate  to this traffic search");
-							} g("h5");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-cell-row ").f();
-
-								inputSearchBasisKeys(classApiMethodMethod);
-								} g("div");
-							} g("div");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-								{ e("ul").a("class", "w3-ul w3-hoverable ").a("id", "listTrafficSearchSearchBasisKeys_", classApiMethodMethod).f();
-								} g("ul");
-								if(
-										CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), SearchBasis.ROLES)
-										|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), SearchBasis.ROLES)
-										) {
-									if("Page".equals(classApiMethodMethod)) {
-										{ e("div").a("class", "w3-cell-row ").f();
-											e("button")
-												.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-pale-green ")
-												.a("id", classApiMethodMethod, "_searchBasisKeys_add")
-												.a("onclick", "$(this).addClass('w3-disabled'); this.disabled = true; this.innerHTML = 'Sending…'; postSearchBasisVals({ searchKey: \"", pk, "\" }, function() {}, function() { addError($('#", classApiMethodMethod, "searchBasisKeys')); });")
-												.f().sx("add a search basis")
-											.g("button");
-										} g("div");
-									}
-								}
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////
 	// agencyTitle //
 	/////////////////
@@ -833,7 +547,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyTitle;
 	@JsonIgnore
-	public Wrap<String> agencyTitleWrap = new Wrap<String>().p(this).c(String.class).var("agencyTitle").o(agencyTitle);
+	public Wrap<String> agencyTitleWrap = new Wrap<String>().var("agencyTitle").o(agencyTitle);
 
 	/**	<br/> The entity agencyTitle
 	 *  is defined as null before being initialized. 
@@ -858,6 +572,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_agencyTitle(agencyTitleWrap);
 			if(agencyTitle == null)
 				setAgencyTitle(agencyTitleWrap.o);
+			agencyTitleWrap.o(null);
 		}
 		agencyTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -891,14 +606,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return agencyTitle == null ? "" : agencyTitle;
 	}
 
-	public String htmTooltipAgencyTitle() {
-		return null;
-	}
-
-	public String htmAgencyTitle() {
-		return agencyTitle == null ? "" : StringEscapeUtils.escapeHtml4(strAgencyTitle());
-	}
-
 	//////////////////
 	// stopDateTime //
 	//////////////////
@@ -910,7 +617,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
 	@JsonIgnore
-	public Wrap<ZonedDateTime> stopDateTimeWrap = new Wrap<ZonedDateTime>().p(this).c(ZonedDateTime.class).var("stopDateTime").o(stopDateTime);
+	public Wrap<ZonedDateTime> stopDateTimeWrap = new Wrap<ZonedDateTime>().var("stopDateTime").o(stopDateTime);
 
 	/**	<br/> The entity stopDateTime
 	 *  is defined as null before being initialized. 
@@ -949,6 +656,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopDateTime(stopDateTimeWrap);
 			if(stopDateTime == null)
 				setStopDateTime(stopDateTimeWrap.o);
+			stopDateTimeWrap.o(null);
 		}
 		stopDateTimeWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -982,14 +690,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
 	}
 
-	public String htmTooltipStopDateTime() {
-		return null;
-	}
-
-	public String htmStopDateTime() {
-		return stopDateTime == null ? "" : StringEscapeUtils.escapeHtml4(strStopDateTime());
-	}
-
 	////////////////////
 	// stopPurposeNum //
 	////////////////////
@@ -1001,7 +701,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopPurposeNum;
 	@JsonIgnore
-	public Wrap<Integer> stopPurposeNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("stopPurposeNum").o(stopPurposeNum);
+	public Wrap<Integer> stopPurposeNumWrap = new Wrap<Integer>().var("stopPurposeNum").o(stopPurposeNum);
 
 	/**	<br/> The entity stopPurposeNum
 	 *  is defined as null before being initialized. 
@@ -1033,6 +733,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopPurposeNum(stopPurposeNumWrap);
 			if(stopPurposeNum == null)
 				setStopPurposeNum(stopPurposeNumWrap.o);
+			stopPurposeNumWrap.o(null);
 		}
 		stopPurposeNumWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1066,14 +767,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopPurposeNum == null ? "" : stopPurposeNum.toString();
 	}
 
-	public String htmTooltipStopPurposeNum() {
-		return null;
-	}
-
-	public String htmStopPurposeNum() {
-		return stopPurposeNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeNum());
-	}
-
 	//////////////////////
 	// stopPurposeTitle //
 	//////////////////////
@@ -1084,7 +777,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopPurposeTitle;
 	@JsonIgnore
-	public Wrap<String> stopPurposeTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopPurposeTitle").o(stopPurposeTitle);
+	public Wrap<String> stopPurposeTitleWrap = new Wrap<String>().var("stopPurposeTitle").o(stopPurposeTitle);
 
 	/**	<br/> The entity stopPurposeTitle
 	 *  is defined as null before being initialized. 
@@ -1109,6 +802,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopPurposeTitle(stopPurposeTitleWrap);
 			if(stopPurposeTitle == null)
 				setStopPurposeTitle(stopPurposeTitleWrap.o);
+			stopPurposeTitleWrap.o(null);
 		}
 		stopPurposeTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1142,14 +836,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopPurposeTitle == null ? "" : stopPurposeTitle;
 	}
 
-	public String htmTooltipStopPurposeTitle() {
-		return null;
-	}
-
-	public String htmStopPurposeTitle() {
-		return stopPurposeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopPurposeTitle());
-	}
-
 	///////////////////
 	// stopActionNum //
 	///////////////////
@@ -1161,7 +847,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopActionNum;
 	@JsonIgnore
-	public Wrap<Integer> stopActionNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("stopActionNum").o(stopActionNum);
+	public Wrap<Integer> stopActionNumWrap = new Wrap<Integer>().var("stopActionNum").o(stopActionNum);
 
 	/**	<br/> The entity stopActionNum
 	 *  is defined as null before being initialized. 
@@ -1193,6 +879,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopActionNum(stopActionNumWrap);
 			if(stopActionNum == null)
 				setStopActionNum(stopActionNumWrap.o);
+			stopActionNumWrap.o(null);
 		}
 		stopActionNumWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1226,14 +913,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopActionNum == null ? "" : stopActionNum.toString();
 	}
 
-	public String htmTooltipStopActionNum() {
-		return null;
-	}
-
-	public String htmStopActionNum() {
-		return stopActionNum == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionNum());
-	}
-
 	/////////////////////
 	// stopActionTitle //
 	/////////////////////
@@ -1244,7 +923,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopActionTitle;
 	@JsonIgnore
-	public Wrap<String> stopActionTitleWrap = new Wrap<String>().p(this).c(String.class).var("stopActionTitle").o(stopActionTitle);
+	public Wrap<String> stopActionTitleWrap = new Wrap<String>().var("stopActionTitle").o(stopActionTitle);
 
 	/**	<br/> The entity stopActionTitle
 	 *  is defined as null before being initialized. 
@@ -1269,6 +948,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopActionTitle(stopActionTitleWrap);
 			if(stopActionTitle == null)
 				setStopActionTitle(stopActionTitleWrap.o);
+			stopActionTitleWrap.o(null);
 		}
 		stopActionTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1302,14 +982,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopActionTitle == null ? "" : stopActionTitle;
 	}
 
-	public String htmTooltipStopActionTitle() {
-		return null;
-	}
-
-	public String htmStopActionTitle() {
-		return stopActionTitle == null ? "" : StringEscapeUtils.escapeHtml4(strStopActionTitle());
-	}
-
 	//////////////////////
 	// stopDriverArrest //
 	//////////////////////
@@ -1320,7 +992,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverArrest;
 	@JsonIgnore
-	public Wrap<Boolean> stopDriverArrestWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopDriverArrest").o(stopDriverArrest);
+	public Wrap<Boolean> stopDriverArrestWrap = new Wrap<Boolean>().var("stopDriverArrest").o(stopDriverArrest);
 
 	/**	<br/> The entity stopDriverArrest
 	 *  is defined as null before being initialized. 
@@ -1350,6 +1022,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopDriverArrest(stopDriverArrestWrap);
 			if(stopDriverArrest == null)
 				setStopDriverArrest(stopDriverArrestWrap.o);
+			stopDriverArrestWrap.o(null);
 		}
 		stopDriverArrestWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1383,14 +1056,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopDriverArrest == null ? "" : stopDriverArrest.toString();
 	}
 
-	public String htmTooltipStopDriverArrest() {
-		return null;
-	}
-
-	public String htmStopDriverArrest() {
-		return stopDriverArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverArrest());
-	}
-
 	/////////////////////////
 	// stopPassengerArrest //
 	/////////////////////////
@@ -1401,7 +1066,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerArrest;
 	@JsonIgnore
-	public Wrap<Boolean> stopPassengerArrestWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopPassengerArrest").o(stopPassengerArrest);
+	public Wrap<Boolean> stopPassengerArrestWrap = new Wrap<Boolean>().var("stopPassengerArrest").o(stopPassengerArrest);
 
 	/**	<br/> The entity stopPassengerArrest
 	 *  is defined as null before being initialized. 
@@ -1431,6 +1096,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopPassengerArrest(stopPassengerArrestWrap);
 			if(stopPassengerArrest == null)
 				setStopPassengerArrest(stopPassengerArrestWrap.o);
+			stopPassengerArrestWrap.o(null);
 		}
 		stopPassengerArrestWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1464,14 +1130,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopPassengerArrest == null ? "" : stopPassengerArrest.toString();
 	}
 
-	public String htmTooltipStopPassengerArrest() {
-		return null;
-	}
-
-	public String htmStopPassengerArrest() {
-		return stopPassengerArrest == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerArrest());
-	}
-
 	////////////////////////
 	// stopEncounterForce //
 	////////////////////////
@@ -1482,7 +1140,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEncounterForce;
 	@JsonIgnore
-	public Wrap<Boolean> stopEncounterForceWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopEncounterForce").o(stopEncounterForce);
+	public Wrap<Boolean> stopEncounterForceWrap = new Wrap<Boolean>().var("stopEncounterForce").o(stopEncounterForce);
 
 	/**	<br/> The entity stopEncounterForce
 	 *  is defined as null before being initialized. 
@@ -1512,6 +1170,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopEncounterForce(stopEncounterForceWrap);
 			if(stopEncounterForce == null)
 				setStopEncounterForce(stopEncounterForceWrap.o);
+			stopEncounterForceWrap.o(null);
 		}
 		stopEncounterForceWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1545,14 +1204,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopEncounterForce == null ? "" : stopEncounterForce.toString();
 	}
 
-	public String htmTooltipStopEncounterForce() {
-		return null;
-	}
-
-	public String htmStopEncounterForce() {
-		return stopEncounterForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEncounterForce());
-	}
-
 	/////////////////////
 	// stopEngageForce //
 	/////////////////////
@@ -1563,7 +1214,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEngageForce;
 	@JsonIgnore
-	public Wrap<Boolean> stopEngageForceWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopEngageForce").o(stopEngageForce);
+	public Wrap<Boolean> stopEngageForceWrap = new Wrap<Boolean>().var("stopEngageForce").o(stopEngageForce);
 
 	/**	<br/> The entity stopEngageForce
 	 *  is defined as null before being initialized. 
@@ -1593,6 +1244,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopEngageForce(stopEngageForceWrap);
 			if(stopEngageForce == null)
 				setStopEngageForce(stopEngageForceWrap.o);
+			stopEngageForceWrap.o(null);
 		}
 		stopEngageForceWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1626,14 +1278,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopEngageForce == null ? "" : stopEngageForce.toString();
 	}
 
-	public String htmTooltipStopEngageForce() {
-		return null;
-	}
-
-	public String htmStopEngageForce() {
-		return stopEngageForce == null ? "" : StringEscapeUtils.escapeHtml4(strStopEngageForce());
-	}
-
 	///////////////////////
 	// stopOfficerInjury //
 	///////////////////////
@@ -1644,7 +1288,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopOfficerInjury;
 	@JsonIgnore
-	public Wrap<Boolean> stopOfficerInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopOfficerInjury").o(stopOfficerInjury);
+	public Wrap<Boolean> stopOfficerInjuryWrap = new Wrap<Boolean>().var("stopOfficerInjury").o(stopOfficerInjury);
 
 	/**	<br/> The entity stopOfficerInjury
 	 *  is defined as null before being initialized. 
@@ -1674,6 +1318,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopOfficerInjury(stopOfficerInjuryWrap);
 			if(stopOfficerInjury == null)
 				setStopOfficerInjury(stopOfficerInjuryWrap.o);
+			stopOfficerInjuryWrap.o(null);
 		}
 		stopOfficerInjuryWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1707,14 +1352,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopOfficerInjury == null ? "" : stopOfficerInjury.toString();
 	}
 
-	public String htmTooltipStopOfficerInjury() {
-		return null;
-	}
-
-	public String htmStopOfficerInjury() {
-		return stopOfficerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerInjury());
-	}
-
 	//////////////////////
 	// stopDriverInjury //
 	//////////////////////
@@ -1725,7 +1362,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverInjury;
 	@JsonIgnore
-	public Wrap<Boolean> stopDriverInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopDriverInjury").o(stopDriverInjury);
+	public Wrap<Boolean> stopDriverInjuryWrap = new Wrap<Boolean>().var("stopDriverInjury").o(stopDriverInjury);
 
 	/**	<br/> The entity stopDriverInjury
 	 *  is defined as null before being initialized. 
@@ -1755,6 +1392,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopDriverInjury(stopDriverInjuryWrap);
 			if(stopDriverInjury == null)
 				setStopDriverInjury(stopDriverInjuryWrap.o);
+			stopDriverInjuryWrap.o(null);
 		}
 		stopDriverInjuryWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1788,14 +1426,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopDriverInjury == null ? "" : stopDriverInjury.toString();
 	}
 
-	public String htmTooltipStopDriverInjury() {
-		return null;
-	}
-
-	public String htmStopDriverInjury() {
-		return stopDriverInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopDriverInjury());
-	}
-
 	/////////////////////////
 	// stopPassengerInjury //
 	/////////////////////////
@@ -1806,7 +1436,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerInjury;
 	@JsonIgnore
-	public Wrap<Boolean> stopPassengerInjuryWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("stopPassengerInjury").o(stopPassengerInjury);
+	public Wrap<Boolean> stopPassengerInjuryWrap = new Wrap<Boolean>().var("stopPassengerInjury").o(stopPassengerInjury);
 
 	/**	<br/> The entity stopPassengerInjury
 	 *  is defined as null before being initialized. 
@@ -1836,6 +1466,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopPassengerInjury(stopPassengerInjuryWrap);
 			if(stopPassengerInjury == null)
 				setStopPassengerInjury(stopPassengerInjuryWrap.o);
+			stopPassengerInjuryWrap.o(null);
 		}
 		stopPassengerInjuryWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1869,14 +1500,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopPassengerInjury == null ? "" : stopPassengerInjury.toString();
 	}
 
-	public String htmTooltipStopPassengerInjury() {
-		return null;
-	}
-
-	public String htmStopPassengerInjury() {
-		return stopPassengerInjury == null ? "" : StringEscapeUtils.escapeHtml4(strStopPassengerInjury());
-	}
-
 	///////////////////
 	// stopOfficerId //
 	///////////////////
@@ -1887,7 +1510,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopOfficerId;
 	@JsonIgnore
-	public Wrap<String> stopOfficerIdWrap = new Wrap<String>().p(this).c(String.class).var("stopOfficerId").o(stopOfficerId);
+	public Wrap<String> stopOfficerIdWrap = new Wrap<String>().var("stopOfficerId").o(stopOfficerId);
 
 	/**	<br/> The entity stopOfficerId
 	 *  is defined as null before being initialized. 
@@ -1912,6 +1535,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopOfficerId(stopOfficerIdWrap);
 			if(stopOfficerId == null)
 				setStopOfficerId(stopOfficerIdWrap.o);
+			stopOfficerIdWrap.o(null);
 		}
 		stopOfficerIdWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -1945,14 +1569,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopOfficerId == null ? "" : stopOfficerId;
 	}
 
-	public String htmTooltipStopOfficerId() {
-		return null;
-	}
-
-	public String htmStopOfficerId() {
-		return stopOfficerId == null ? "" : StringEscapeUtils.escapeHtml4(strStopOfficerId());
-	}
-
 	////////////////////
 	// stopLocationId //
 	////////////////////
@@ -1963,7 +1579,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopLocationId;
 	@JsonIgnore
-	public Wrap<String> stopLocationIdWrap = new Wrap<String>().p(this).c(String.class).var("stopLocationId").o(stopLocationId);
+	public Wrap<String> stopLocationIdWrap = new Wrap<String>().var("stopLocationId").o(stopLocationId);
 
 	/**	<br/> The entity stopLocationId
 	 *  is defined as null before being initialized. 
@@ -1988,6 +1604,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopLocationId(stopLocationIdWrap);
 			if(stopLocationId == null)
 				setStopLocationId(stopLocationIdWrap.o);
+			stopLocationIdWrap.o(null);
 		}
 		stopLocationIdWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2021,14 +1638,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopLocationId == null ? "" : stopLocationId;
 	}
 
-	public String htmTooltipStopLocationId() {
-		return null;
-	}
-
-	public String htmStopLocationId() {
-		return stopLocationId == null ? "" : StringEscapeUtils.escapeHtml4(strStopLocationId());
-	}
-
 	////////////////
 	// stopCityId //
 	////////////////
@@ -2039,7 +1648,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String stopCityId;
 	@JsonIgnore
-	public Wrap<String> stopCityIdWrap = new Wrap<String>().p(this).c(String.class).var("stopCityId").o(stopCityId);
+	public Wrap<String> stopCityIdWrap = new Wrap<String>().var("stopCityId").o(stopCityId);
 
 	/**	<br/> The entity stopCityId
 	 *  is defined as null before being initialized. 
@@ -2064,6 +1673,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_stopCityId(stopCityIdWrap);
 			if(stopCityId == null)
 				setStopCityId(stopCityIdWrap.o);
+			stopCityIdWrap.o(null);
 		}
 		stopCityIdWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2097,14 +1707,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return stopCityId == null ? "" : stopCityId;
 	}
 
-	public String htmTooltipStopCityId() {
-		return null;
-	}
-
-	public String htmStopCityId() {
-		return stopCityId == null ? "" : StringEscapeUtils.escapeHtml4(strStopCityId());
-	}
-
 	///////////////
 	// personAge //
 	///////////////
@@ -2116,7 +1718,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer personAge;
 	@JsonIgnore
-	public Wrap<Integer> personAgeWrap = new Wrap<Integer>().p(this).c(Integer.class).var("personAge").o(personAge);
+	public Wrap<Integer> personAgeWrap = new Wrap<Integer>().var("personAge").o(personAge);
 
 	/**	<br/> The entity personAge
 	 *  is defined as null before being initialized. 
@@ -2148,6 +1750,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personAge(personAgeWrap);
 			if(personAge == null)
 				setPersonAge(personAgeWrap.o);
+			personAgeWrap.o(null);
 		}
 		personAgeWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2181,14 +1784,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personAge == null ? "" : personAge.toString();
 	}
 
-	public String htmTooltipPersonAge() {
-		return null;
-	}
-
-	public String htmPersonAge() {
-		return personAge == null ? "" : StringEscapeUtils.escapeHtml4(strPersonAge());
-	}
-
 	//////////////////
 	// personTypeId //
 	//////////////////
@@ -2199,7 +1794,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeId;
 	@JsonIgnore
-	public Wrap<String> personTypeIdWrap = new Wrap<String>().p(this).c(String.class).var("personTypeId").o(personTypeId);
+	public Wrap<String> personTypeIdWrap = new Wrap<String>().var("personTypeId").o(personTypeId);
 
 	/**	<br/> The entity personTypeId
 	 *  is defined as null before being initialized. 
@@ -2224,6 +1819,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personTypeId(personTypeIdWrap);
 			if(personTypeId == null)
 				setPersonTypeId(personTypeIdWrap.o);
+			personTypeIdWrap.o(null);
 		}
 		personTypeIdWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2257,14 +1853,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personTypeId == null ? "" : personTypeId;
 	}
 
-	public String htmTooltipPersonTypeId() {
-		return null;
-	}
-
-	public String htmPersonTypeId() {
-		return personTypeId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeId());
-	}
-
 	/////////////////////
 	// personTypeTitle //
 	/////////////////////
@@ -2275,7 +1863,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeTitle;
 	@JsonIgnore
-	public Wrap<String> personTypeTitleWrap = new Wrap<String>().p(this).c(String.class).var("personTypeTitle").o(personTypeTitle);
+	public Wrap<String> personTypeTitleWrap = new Wrap<String>().var("personTypeTitle").o(personTypeTitle);
 
 	/**	<br/> The entity personTypeTitle
 	 *  is defined as null before being initialized. 
@@ -2300,6 +1888,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personTypeTitle(personTypeTitleWrap);
 			if(personTypeTitle == null)
 				setPersonTypeTitle(personTypeTitleWrap.o);
+			personTypeTitleWrap.o(null);
 		}
 		personTypeTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2333,14 +1922,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personTypeTitle == null ? "" : personTypeTitle;
 	}
 
-	public String htmTooltipPersonTypeTitle() {
-		return null;
-	}
-
-	public String htmPersonTypeTitle() {
-		return personTypeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeTitle());
-	}
-
 	//////////////////////
 	// personTypeDriver //
 	//////////////////////
@@ -2351,7 +1932,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypeDriver;
 	@JsonIgnore
-	public Wrap<Boolean> personTypeDriverWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personTypeDriver").o(personTypeDriver);
+	public Wrap<Boolean> personTypeDriverWrap = new Wrap<Boolean>().var("personTypeDriver").o(personTypeDriver);
 
 	/**	<br/> The entity personTypeDriver
 	 *  is defined as null before being initialized. 
@@ -2381,6 +1962,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personTypeDriver(personTypeDriverWrap);
 			if(personTypeDriver == null)
 				setPersonTypeDriver(personTypeDriverWrap.o);
+			personTypeDriverWrap.o(null);
 		}
 		personTypeDriverWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2414,14 +1996,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personTypeDriver == null ? "" : personTypeDriver.toString();
 	}
 
-	public String htmTooltipPersonTypeDriver() {
-		return null;
-	}
-
-	public String htmPersonTypeDriver() {
-		return personTypeDriver == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypeDriver());
-	}
-
 	/////////////////////////
 	// personTypePassenger //
 	/////////////////////////
@@ -2432,7 +2006,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypePassenger;
 	@JsonIgnore
-	public Wrap<Boolean> personTypePassengerWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personTypePassenger").o(personTypePassenger);
+	public Wrap<Boolean> personTypePassengerWrap = new Wrap<Boolean>().var("personTypePassenger").o(personTypePassenger);
 
 	/**	<br/> The entity personTypePassenger
 	 *  is defined as null before being initialized. 
@@ -2462,6 +2036,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personTypePassenger(personTypePassengerWrap);
 			if(personTypePassenger == null)
 				setPersonTypePassenger(personTypePassengerWrap.o);
+			personTypePassengerWrap.o(null);
 		}
 		personTypePassengerWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2495,14 +2070,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personTypePassenger == null ? "" : personTypePassenger.toString();
 	}
 
-	public String htmTooltipPersonTypePassenger() {
-		return null;
-	}
-
-	public String htmPersonTypePassenger() {
-		return personTypePassenger == null ? "" : StringEscapeUtils.escapeHtml4(strPersonTypePassenger());
-	}
-
 	////////////////////
 	// personGenderId //
 	////////////////////
@@ -2513,7 +2080,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderId;
 	@JsonIgnore
-	public Wrap<String> personGenderIdWrap = new Wrap<String>().p(this).c(String.class).var("personGenderId").o(personGenderId);
+	public Wrap<String> personGenderIdWrap = new Wrap<String>().var("personGenderId").o(personGenderId);
 
 	/**	<br/> The entity personGenderId
 	 *  is defined as null before being initialized. 
@@ -2538,6 +2105,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personGenderId(personGenderIdWrap);
 			if(personGenderId == null)
 				setPersonGenderId(personGenderIdWrap.o);
+			personGenderIdWrap.o(null);
 		}
 		personGenderIdWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2571,14 +2139,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personGenderId == null ? "" : personGenderId;
 	}
 
-	public String htmTooltipPersonGenderId() {
-		return null;
-	}
-
-	public String htmPersonGenderId() {
-		return personGenderId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderId());
-	}
-
 	///////////////////////
 	// personGenderTitle //
 	///////////////////////
@@ -2589,7 +2149,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderTitle;
 	@JsonIgnore
-	public Wrap<String> personGenderTitleWrap = new Wrap<String>().p(this).c(String.class).var("personGenderTitle").o(personGenderTitle);
+	public Wrap<String> personGenderTitleWrap = new Wrap<String>().var("personGenderTitle").o(personGenderTitle);
 
 	/**	<br/> The entity personGenderTitle
 	 *  is defined as null before being initialized. 
@@ -2614,6 +2174,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personGenderTitle(personGenderTitleWrap);
 			if(personGenderTitle == null)
 				setPersonGenderTitle(personGenderTitleWrap.o);
+			personGenderTitleWrap.o(null);
 		}
 		personGenderTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2647,14 +2208,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personGenderTitle == null ? "" : personGenderTitle;
 	}
 
-	public String htmTooltipPersonGenderTitle() {
-		return null;
-	}
-
-	public String htmPersonGenderTitle() {
-		return personGenderTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderTitle());
-	}
-
 	////////////////////////
 	// personGenderFemale //
 	////////////////////////
@@ -2665,7 +2218,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderFemale;
 	@JsonIgnore
-	public Wrap<Boolean> personGenderFemaleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personGenderFemale").o(personGenderFemale);
+	public Wrap<Boolean> personGenderFemaleWrap = new Wrap<Boolean>().var("personGenderFemale").o(personGenderFemale);
 
 	/**	<br/> The entity personGenderFemale
 	 *  is defined as null before being initialized. 
@@ -2695,6 +2248,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personGenderFemale(personGenderFemaleWrap);
 			if(personGenderFemale == null)
 				setPersonGenderFemale(personGenderFemaleWrap.o);
+			personGenderFemaleWrap.o(null);
 		}
 		personGenderFemaleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2728,14 +2282,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personGenderFemale == null ? "" : personGenderFemale.toString();
 	}
 
-	public String htmTooltipPersonGenderFemale() {
-		return null;
-	}
-
-	public String htmPersonGenderFemale() {
-		return personGenderFemale == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderFemale());
-	}
-
 	//////////////////////
 	// personGenderMale //
 	//////////////////////
@@ -2746,7 +2292,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderMale;
 	@JsonIgnore
-	public Wrap<Boolean> personGenderMaleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("personGenderMale").o(personGenderMale);
+	public Wrap<Boolean> personGenderMaleWrap = new Wrap<Boolean>().var("personGenderMale").o(personGenderMale);
 
 	/**	<br/> The entity personGenderMale
 	 *  is defined as null before being initialized. 
@@ -2776,6 +2322,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personGenderMale(personGenderMaleWrap);
 			if(personGenderMale == null)
 				setPersonGenderMale(personGenderMaleWrap.o);
+			personGenderMaleWrap.o(null);
 		}
 		personGenderMaleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2809,14 +2356,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personGenderMale == null ? "" : personGenderMale.toString();
 	}
 
-	public String htmTooltipPersonGenderMale() {
-		return null;
-	}
-
-	public String htmPersonGenderMale() {
-		return personGenderMale == null ? "" : StringEscapeUtils.escapeHtml4(strPersonGenderMale());
-	}
-
 	///////////////////////
 	// personEthnicityId //
 	///////////////////////
@@ -2827,7 +2366,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityId;
 	@JsonIgnore
-	public Wrap<String> personEthnicityIdWrap = new Wrap<String>().p(this).c(String.class).var("personEthnicityId").o(personEthnicityId);
+	public Wrap<String> personEthnicityIdWrap = new Wrap<String>().var("personEthnicityId").o(personEthnicityId);
 
 	/**	<br/> The entity personEthnicityId
 	 *  is defined as null before being initialized. 
@@ -2852,6 +2391,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personEthnicityId(personEthnicityIdWrap);
 			if(personEthnicityId == null)
 				setPersonEthnicityId(personEthnicityIdWrap.o);
+			personEthnicityIdWrap.o(null);
 		}
 		personEthnicityIdWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2885,14 +2425,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personEthnicityId == null ? "" : personEthnicityId;
 	}
 
-	public String htmTooltipPersonEthnicityId() {
-		return null;
-	}
-
-	public String htmPersonEthnicityId() {
-		return personEthnicityId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityId());
-	}
-
 	//////////////////////////
 	// personEthnicityTitle //
 	//////////////////////////
@@ -2903,7 +2435,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityTitle;
 	@JsonIgnore
-	public Wrap<String> personEthnicityTitleWrap = new Wrap<String>().p(this).c(String.class).var("personEthnicityTitle").o(personEthnicityTitle);
+	public Wrap<String> personEthnicityTitleWrap = new Wrap<String>().var("personEthnicityTitle").o(personEthnicityTitle);
 
 	/**	<br/> The entity personEthnicityTitle
 	 *  is defined as null before being initialized. 
@@ -2928,6 +2460,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personEthnicityTitle(personEthnicityTitleWrap);
 			if(personEthnicityTitle == null)
 				setPersonEthnicityTitle(personEthnicityTitleWrap.o);
+			personEthnicityTitleWrap.o(null);
 		}
 		personEthnicityTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -2961,14 +2494,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personEthnicityTitle == null ? "" : personEthnicityTitle;
 	}
 
-	public String htmTooltipPersonEthnicityTitle() {
-		return null;
-	}
-
-	public String htmPersonEthnicityTitle() {
-		return personEthnicityTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonEthnicityTitle());
-	}
-
 	//////////////////
 	// personRaceId //
 	//////////////////
@@ -2979,7 +2504,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceId;
 	@JsonIgnore
-	public Wrap<String> personRaceIdWrap = new Wrap<String>().p(this).c(String.class).var("personRaceId").o(personRaceId);
+	public Wrap<String> personRaceIdWrap = new Wrap<String>().var("personRaceId").o(personRaceId);
 
 	/**	<br/> The entity personRaceId
 	 *  is defined as null before being initialized. 
@@ -3004,6 +2529,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personRaceId(personRaceIdWrap);
 			if(personRaceId == null)
 				setPersonRaceId(personRaceIdWrap.o);
+			personRaceIdWrap.o(null);
 		}
 		personRaceIdWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3037,14 +2563,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personRaceId == null ? "" : personRaceId;
 	}
 
-	public String htmTooltipPersonRaceId() {
-		return null;
-	}
-
-	public String htmPersonRaceId() {
-		return personRaceId == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceId());
-	}
-
 	/////////////////////
 	// personRaceTitle //
 	/////////////////////
@@ -3055,7 +2573,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceTitle;
 	@JsonIgnore
-	public Wrap<String> personRaceTitleWrap = new Wrap<String>().p(this).c(String.class).var("personRaceTitle").o(personRaceTitle);
+	public Wrap<String> personRaceTitleWrap = new Wrap<String>().var("personRaceTitle").o(personRaceTitle);
 
 	/**	<br/> The entity personRaceTitle
 	 *  is defined as null before being initialized. 
@@ -3080,6 +2598,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_personRaceTitle(personRaceTitleWrap);
 			if(personRaceTitle == null)
 				setPersonRaceTitle(personRaceTitleWrap.o);
+			personRaceTitleWrap.o(null);
 		}
 		personRaceTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3113,14 +2632,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return personRaceTitle == null ? "" : personRaceTitle;
 	}
 
-	public String htmTooltipPersonRaceTitle() {
-		return null;
-	}
-
-	public String htmPersonRaceTitle() {
-		return personRaceTitle == null ? "" : StringEscapeUtils.escapeHtml4(strPersonRaceTitle());
-	}
-
 	////////////////////
 	// trafficStopKey //
 	////////////////////
@@ -3132,7 +2643,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Long trafficStopKey;
 	@JsonIgnore
-	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().p(this).c(Long.class).var("trafficStopKey").o(trafficStopKey);
+	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().var("trafficStopKey").o(trafficStopKey);
 
 	/**	<br/> The entity trafficStopKey
 	 *  is defined as null before being initialized. 
@@ -3164,6 +2675,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_trafficStopKey(trafficStopKeyWrap);
 			if(trafficStopKey == null)
 				setTrafficStopKey(trafficStopKeyWrap.o);
+			trafficStopKeyWrap.o(null);
 		}
 		trafficStopKeyWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3197,14 +2709,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return trafficStopKey == null ? "" : trafficStopKey.toString();
 	}
 
-	public String htmTooltipTrafficStopKey() {
-		return null;
-	}
-
-	public String htmTrafficStopKey() {
-		return trafficStopKey == null ? "" : StringEscapeUtils.escapeHtml4(strTrafficStopKey());
-	}
-
 	///////////////////
 	// searchTypeNum //
 	///////////////////
@@ -3216,7 +2720,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Integer searchTypeNum;
 	@JsonIgnore
-	public Wrap<Integer> searchTypeNumWrap = new Wrap<Integer>().p(this).c(Integer.class).var("searchTypeNum").o(searchTypeNum);
+	public Wrap<Integer> searchTypeNumWrap = new Wrap<Integer>().var("searchTypeNum").o(searchTypeNum);
 
 	/**	<br/> The entity searchTypeNum
 	 *  is defined as null before being initialized. 
@@ -3248,6 +2752,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchTypeNum(searchTypeNumWrap);
 			if(searchTypeNum == null)
 				setSearchTypeNum(searchTypeNumWrap.o);
+			searchTypeNumWrap.o(null);
 		}
 		searchTypeNumWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3281,80 +2786,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchTypeNum == null ? "" : searchTypeNum.toString();
 	}
 
-	public String htmTooltipSearchTypeNum() {
-		return null;
-	}
-
-	public String htmSearchTypeNum() {
-		return searchTypeNum == null ? "" : StringEscapeUtils.escapeHtml4(strSearchTypeNum());
-	}
-
-	public void inputSearchTypeNum(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			e("input")
-				.a("type", "text")
-				.a("placeholder", "search type number")
-				.a("id", classApiMethodMethod, "_searchTypeNum");
-				if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-					a("class", "setSearchTypeNum classTrafficSearch inputTrafficSearch", pk, "SearchTypeNum w3-input w3-border ");
-					a("name", "setSearchTypeNum");
-				} else {
-					a("class", "valueSearchTypeNum w3-input w3-border classTrafficSearch inputTrafficSearch", pk, "SearchTypeNum w3-input w3-border ");
-					a("name", "searchTypeNum");
-				}
-				if("Page".equals(classApiMethodMethod)) {
-					a("onclick", "removeGlow($(this)); ");
-					a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchTypeNum', $(this).val(), function() { addGlow($('#", classApiMethodMethod, "_searchTypeNum')); }, function() { addError($('#", classApiMethodMethod, "_searchTypeNum')); }); ");
-				}
-				a("value", strSearchTypeNum())
-			.fg();
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchTypeNum ").f().sx(htmSearchTypeNum()).g("span");
-		}
-	}
-
-	public void htmSearchTypeNum(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchTypeNum").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchTypeNum").a("class", "").f().sx("search type number").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchTypeNum(classApiMethodMethod);
-							} g("div");
-							if(
-									CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-									|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-									) {
-								if("Page".equals(classApiMethodMethod)) {
-									{ e("div").a("class", "w3-cell w3-left-align w3-cell-top ").f();
-										{ e("button")
-											.a("tabindex", "-1")
-											.a("class", "w3-btn w3-round w3-border w3-border-black w3-ripple w3-padding w3-bar-item w3-pale-green ")
-										.a("onclick", "removeGlow($('#", classApiMethodMethod, "_searchTypeNum')); $('#", classApiMethodMethod, "_searchTypeNum').val(null); patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:' + $('#TrafficSearchForm :input[name=pk]').val() }], 'setSearchTypeNum', null, function() { addGlow($('#", classApiMethodMethod, "_searchTypeNum')); }, function() { addError($('#", classApiMethodMethod, "_searchTypeNum')); }); ")
-											.f();
-											e("i").a("class", "far fa-eraser ").f().g("i");
-										} g("button");
-									} g("div");
-								}
-							}
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////
 	// searchTypeTitle //
 	/////////////////////
@@ -3365,7 +2796,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected String searchTypeTitle;
 	@JsonIgnore
-	public Wrap<String> searchTypeTitleWrap = new Wrap<String>().p(this).c(String.class).var("searchTypeTitle").o(searchTypeTitle);
+	public Wrap<String> searchTypeTitleWrap = new Wrap<String>().var("searchTypeTitle").o(searchTypeTitle);
 
 	/**	<br/> The entity searchTypeTitle
 	 *  is defined as null before being initialized. 
@@ -3390,6 +2821,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchTypeTitle(searchTypeTitleWrap);
 			if(searchTypeTitle == null)
 				setSearchTypeTitle(searchTypeTitleWrap.o);
+			searchTypeTitleWrap.o(null);
 		}
 		searchTypeTitleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3423,40 +2855,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchTypeTitle == null ? "" : searchTypeTitle;
 	}
 
-	public String htmTooltipSearchTypeTitle() {
-		return null;
-	}
-
-	public String htmSearchTypeTitle() {
-		return searchTypeTitle == null ? "" : StringEscapeUtils.escapeHtml4(strSearchTypeTitle());
-	}
-
-	public void inputSearchTypeTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-	}
-
-	public void htmSearchTypeTitle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			if("Page".equals(classApiMethodMethod)) {
-				{ e("div").a("class", "w3-padding ").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("class", "").f().sx("search type title").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row  ").f();
-							{ e("div").a("class", "w3-cell ").f();
-								{ e("div").a("class", "w3-rest ").f();
-									e("span").a("class", "varTrafficSearch", pk, "SearchTypeTitle ").f().sx(strSearchTypeTitle()).g("span");
-								} g("div");
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			}
-		} g("div");
-	}
-
 	///////////////////
 	// searchVehicle //
 	///////////////////
@@ -3467,7 +2865,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicle;
 	@JsonIgnore
-	public Wrap<Boolean> searchVehicleWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchVehicle").o(searchVehicle);
+	public Wrap<Boolean> searchVehicleWrap = new Wrap<Boolean>().var("searchVehicle").o(searchVehicle);
 
 	/**	<br/> The entity searchVehicle
 	 *  is defined as null before being initialized. 
@@ -3497,6 +2895,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchVehicle(searchVehicleWrap);
 			if(searchVehicle == null)
 				setSearchVehicle(searchVehicleWrap.o);
+			searchVehicleWrap.o(null);
 		}
 		searchVehicleWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3530,77 +2929,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchVehicle == null ? "" : searchVehicle.toString();
 	}
 
-	public String htmTooltipSearchVehicle() {
-		return null;
-	}
-
-	public String htmSearchVehicle() {
-		return searchVehicle == null ? "" : StringEscapeUtils.escapeHtml4(strSearchVehicle());
-	}
-
-	public void inputSearchVehicle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_searchVehicle")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_searchVehicle");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSearchVehicle classTrafficSearch inputTrafficSearch", pk, "SearchVehicle w3-input w3-border ");
-				a("name", "setSearchVehicle");
-			} else {
-				a("class", "valueSearchVehicle classTrafficSearch inputTrafficSearch", pk, "SearchVehicle w3-input w3-border ");
-				a("name", "searchVehicle");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchVehicle', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_searchVehicle')); }, function() { addError($('#", classApiMethodMethod, "_searchVehicle')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSearchVehicle() != null && getSearchVehicle())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchVehicle ").f().sx(htmSearchVehicle()).g("span");
-		}
-	}
-
-	public void htmSearchVehicle(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchVehicle").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchVehicle").a("class", "").f().sx("vehicle search").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchVehicle(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////////
 	// searchDriver //
 	//////////////////
@@ -3611,7 +2939,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchDriver;
 	@JsonIgnore
-	public Wrap<Boolean> searchDriverWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchDriver").o(searchDriver);
+	public Wrap<Boolean> searchDriverWrap = new Wrap<Boolean>().var("searchDriver").o(searchDriver);
 
 	/**	<br/> The entity searchDriver
 	 *  is defined as null before being initialized. 
@@ -3641,6 +2969,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchDriver(searchDriverWrap);
 			if(searchDriver == null)
 				setSearchDriver(searchDriverWrap.o);
+			searchDriverWrap.o(null);
 		}
 		searchDriverWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3674,77 +3003,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchDriver == null ? "" : searchDriver.toString();
 	}
 
-	public String htmTooltipSearchDriver() {
-		return null;
-	}
-
-	public String htmSearchDriver() {
-		return searchDriver == null ? "" : StringEscapeUtils.escapeHtml4(strSearchDriver());
-	}
-
-	public void inputSearchDriver(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_searchDriver")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_searchDriver");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSearchDriver classTrafficSearch inputTrafficSearch", pk, "SearchDriver w3-input w3-border ");
-				a("name", "setSearchDriver");
-			} else {
-				a("class", "valueSearchDriver classTrafficSearch inputTrafficSearch", pk, "SearchDriver w3-input w3-border ");
-				a("name", "searchDriver");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchDriver', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_searchDriver')); }, function() { addError($('#", classApiMethodMethod, "_searchDriver')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSearchDriver() != null && getSearchDriver())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchDriver ").f().sx(htmSearchDriver()).g("span");
-		}
-	}
-
-	public void htmSearchDriver(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchDriver").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchDriver").a("class", "").f().sx("driver search").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchDriver(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////
 	// searchPassenger //
 	/////////////////////
@@ -3755,7 +3013,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPassenger;
 	@JsonIgnore
-	public Wrap<Boolean> searchPassengerWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchPassenger").o(searchPassenger);
+	public Wrap<Boolean> searchPassengerWrap = new Wrap<Boolean>().var("searchPassenger").o(searchPassenger);
 
 	/**	<br/> The entity searchPassenger
 	 *  is defined as null before being initialized. 
@@ -3785,6 +3043,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchPassenger(searchPassengerWrap);
 			if(searchPassenger == null)
 				setSearchPassenger(searchPassengerWrap.o);
+			searchPassengerWrap.o(null);
 		}
 		searchPassengerWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3818,77 +3077,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchPassenger == null ? "" : searchPassenger.toString();
 	}
 
-	public String htmTooltipSearchPassenger() {
-		return null;
-	}
-
-	public String htmSearchPassenger() {
-		return searchPassenger == null ? "" : StringEscapeUtils.escapeHtml4(strSearchPassenger());
-	}
-
-	public void inputSearchPassenger(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_searchPassenger")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_searchPassenger");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSearchPassenger classTrafficSearch inputTrafficSearch", pk, "SearchPassenger w3-input w3-border ");
-				a("name", "setSearchPassenger");
-			} else {
-				a("class", "valueSearchPassenger classTrafficSearch inputTrafficSearch", pk, "SearchPassenger w3-input w3-border ");
-				a("name", "searchPassenger");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchPassenger', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_searchPassenger')); }, function() { addError($('#", classApiMethodMethod, "_searchPassenger')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSearchPassenger() != null && getSearchPassenger())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchPassenger ").f().sx(htmSearchPassenger()).g("span");
-		}
-	}
-
-	public void htmSearchPassenger(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchPassenger").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchPassenger").a("class", "").f().sx("passenger search").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchPassenger(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	////////////////////
 	// searchProperty //
 	////////////////////
@@ -3899,7 +3087,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchProperty;
 	@JsonIgnore
-	public Wrap<Boolean> searchPropertyWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchProperty").o(searchProperty);
+	public Wrap<Boolean> searchPropertyWrap = new Wrap<Boolean>().var("searchProperty").o(searchProperty);
 
 	/**	<br/> The entity searchProperty
 	 *  is defined as null before being initialized. 
@@ -3929,6 +3117,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchProperty(searchPropertyWrap);
 			if(searchProperty == null)
 				setSearchProperty(searchPropertyWrap.o);
+			searchPropertyWrap.o(null);
 		}
 		searchPropertyWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -3962,77 +3151,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchProperty == null ? "" : searchProperty.toString();
 	}
 
-	public String htmTooltipSearchProperty() {
-		return null;
-	}
-
-	public String htmSearchProperty() {
-		return searchProperty == null ? "" : StringEscapeUtils.escapeHtml4(strSearchProperty());
-	}
-
-	public void inputSearchProperty(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_searchProperty")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_searchProperty");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSearchProperty classTrafficSearch inputTrafficSearch", pk, "SearchProperty w3-input w3-border ");
-				a("name", "setSearchProperty");
-			} else {
-				a("class", "valueSearchProperty classTrafficSearch inputTrafficSearch", pk, "SearchProperty w3-input w3-border ");
-				a("name", "searchProperty");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchProperty', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_searchProperty')); }, function() { addError($('#", classApiMethodMethod, "_searchProperty')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSearchProperty() != null && getSearchProperty())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchProperty ").f().sx(htmSearchProperty()).g("span");
-		}
-	}
-
-	public void htmSearchProperty(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchProperty").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchProperty").a("class", "").f().sx("property search").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchProperty(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	/////////////////////////
 	// searchVehicleSiezed //
 	/////////////////////////
@@ -4043,7 +3161,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicleSiezed;
 	@JsonIgnore
-	public Wrap<Boolean> searchVehicleSiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchVehicleSiezed").o(searchVehicleSiezed);
+	public Wrap<Boolean> searchVehicleSiezedWrap = new Wrap<Boolean>().var("searchVehicleSiezed").o(searchVehicleSiezed);
 
 	/**	<br/> The entity searchVehicleSiezed
 	 *  is defined as null before being initialized. 
@@ -4073,6 +3191,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchVehicleSiezed(searchVehicleSiezedWrap);
 			if(searchVehicleSiezed == null)
 				setSearchVehicleSiezed(searchVehicleSiezedWrap.o);
+			searchVehicleSiezedWrap.o(null);
 		}
 		searchVehicleSiezedWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -4106,77 +3225,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchVehicleSiezed == null ? "" : searchVehicleSiezed.toString();
 	}
 
-	public String htmTooltipSearchVehicleSiezed() {
-		return null;
-	}
-
-	public String htmSearchVehicleSiezed() {
-		return searchVehicleSiezed == null ? "" : StringEscapeUtils.escapeHtml4(strSearchVehicleSiezed());
-	}
-
-	public void inputSearchVehicleSiezed(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_searchVehicleSiezed")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_searchVehicleSiezed");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSearchVehicleSiezed classTrafficSearch inputTrafficSearch", pk, "SearchVehicleSiezed w3-input w3-border ");
-				a("name", "setSearchVehicleSiezed");
-			} else {
-				a("class", "valueSearchVehicleSiezed classTrafficSearch inputTrafficSearch", pk, "SearchVehicleSiezed w3-input w3-border ");
-				a("name", "searchVehicleSiezed");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchVehicleSiezed', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_searchVehicleSiezed')); }, function() { addError($('#", classApiMethodMethod, "_searchVehicleSiezed')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSearchVehicleSiezed() != null && getSearchVehicleSiezed())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchVehicleSiezed ").f().sx(htmSearchVehicleSiezed()).g("span");
-		}
-	}
-
-	public void htmSearchVehicleSiezed(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchVehicleSiezed").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchVehicleSiezed").a("class", "").f().sx("vehicle siezed").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchVehicleSiezed(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	//////////////////////////////////
 	// searchPersonalPropertySiezed //
 	//////////////////////////////////
@@ -4187,7 +3235,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPersonalPropertySiezed;
 	@JsonIgnore
-	public Wrap<Boolean> searchPersonalPropertySiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchPersonalPropertySiezed").o(searchPersonalPropertySiezed);
+	public Wrap<Boolean> searchPersonalPropertySiezedWrap = new Wrap<Boolean>().var("searchPersonalPropertySiezed").o(searchPersonalPropertySiezed);
 
 	/**	<br/> The entity searchPersonalPropertySiezed
 	 *  is defined as null before being initialized. 
@@ -4217,6 +3265,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchPersonalPropertySiezed(searchPersonalPropertySiezedWrap);
 			if(searchPersonalPropertySiezed == null)
 				setSearchPersonalPropertySiezed(searchPersonalPropertySiezedWrap.o);
+			searchPersonalPropertySiezedWrap.o(null);
 		}
 		searchPersonalPropertySiezedWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -4250,77 +3299,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return searchPersonalPropertySiezed == null ? "" : searchPersonalPropertySiezed.toString();
 	}
 
-	public String htmTooltipSearchPersonalPropertySiezed() {
-		return null;
-	}
-
-	public String htmSearchPersonalPropertySiezed() {
-		return searchPersonalPropertySiezed == null ? "" : StringEscapeUtils.escapeHtml4(strSearchPersonalPropertySiezed());
-	}
-
-	public void inputSearchPersonalPropertySiezed(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_searchPersonalPropertySiezed")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_searchPersonalPropertySiezed");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSearchPersonalPropertySiezed classTrafficSearch inputTrafficSearch", pk, "SearchPersonalPropertySiezed w3-input w3-border ");
-				a("name", "setSearchPersonalPropertySiezed");
-			} else {
-				a("class", "valueSearchPersonalPropertySiezed classTrafficSearch inputTrafficSearch", pk, "SearchPersonalPropertySiezed w3-input w3-border ");
-				a("name", "searchPersonalPropertySiezed");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchPersonalPropertySiezed', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_searchPersonalPropertySiezed')); }, function() { addError($('#", classApiMethodMethod, "_searchPersonalPropertySiezed')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSearchPersonalPropertySiezed() != null && getSearchPersonalPropertySiezed())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchPersonalPropertySiezed ").f().sx(htmSearchPersonalPropertySiezed()).g("span");
-		}
-	}
-
-	public void htmSearchPersonalPropertySiezed(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchPersonalPropertySiezed").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchPersonalPropertySiezed").a("class", "").f().sx("personal property siezed").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchPersonalPropertySiezed(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
-	}
-
 	///////////////////////////////
 	// searchOtherPropertySiezed //
 	///////////////////////////////
@@ -4331,7 +3309,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchOtherPropertySiezed;
 	@JsonIgnore
-	public Wrap<Boolean> searchOtherPropertySiezedWrap = new Wrap<Boolean>().p(this).c(Boolean.class).var("searchOtherPropertySiezed").o(searchOtherPropertySiezed);
+	public Wrap<Boolean> searchOtherPropertySiezedWrap = new Wrap<Boolean>().var("searchOtherPropertySiezed").o(searchOtherPropertySiezed);
 
 	/**	<br/> The entity searchOtherPropertySiezed
 	 *  is defined as null before being initialized. 
@@ -4361,6 +3339,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			_searchOtherPropertySiezed(searchOtherPropertySiezedWrap);
 			if(searchOtherPropertySiezed == null)
 				setSearchOtherPropertySiezed(searchOtherPropertySiezedWrap.o);
+			searchOtherPropertySiezedWrap.o(null);
 		}
 		searchOtherPropertySiezedWrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
@@ -4392,77 +3371,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 	public String jsonSearchOtherPropertySiezed() {
 		return searchOtherPropertySiezed == null ? "" : searchOtherPropertySiezed.toString();
-	}
-
-	public String htmTooltipSearchOtherPropertySiezed() {
-		return null;
-	}
-
-	public String htmSearchOtherPropertySiezed() {
-		return searchOtherPropertySiezed == null ? "" : StringEscapeUtils.escapeHtml4(strSearchOtherPropertySiezed());
-	}
-
-	public void inputSearchOtherPropertySiezed(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		if(
-				CollectionUtils.containsAny(siteRequest_.getUserResourceRoles(), ROLES)
-				|| CollectionUtils.containsAny(siteRequest_.getUserRealmRoles(), ROLES)
-				) {
-			if("Page".equals(classApiMethodMethod)) {
-				e("input")
-					.a("type", "checkbox")
-					.a("id", classApiMethodMethod, "_searchOtherPropertySiezed")
-					.a("value", "true");
-			} else {
-				e("select")
-					.a("id", classApiMethodMethod, "_searchOtherPropertySiezed");
-			}
-			if("Page".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
-				a("class", "setSearchOtherPropertySiezed classTrafficSearch inputTrafficSearch", pk, "SearchOtherPropertySiezed w3-input w3-border ");
-				a("name", "setSearchOtherPropertySiezed");
-			} else {
-				a("class", "valueSearchOtherPropertySiezed classTrafficSearch inputTrafficSearch", pk, "SearchOtherPropertySiezed w3-input w3-border ");
-				a("name", "searchOtherPropertySiezed");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				a("onchange", "patch", getClass().getSimpleName(), "Val([{ name: 'fq', value: 'pk:", pk, "' }], 'setSearchOtherPropertySiezed', $(this).prop('checked'), function() { addGlow($('#", classApiMethodMethod, "_searchOtherPropertySiezed')); }, function() { addError($('#", classApiMethodMethod, "_searchOtherPropertySiezed')); }); ");
-			}
-			if("Page".equals(classApiMethodMethod)) {
-				if(getSearchOtherPropertySiezed() != null && getSearchOtherPropertySiezed())
-					a("checked", "checked");
-				fg();
-			} else {
-				f();
-				e("option").a("value", "").a("selected", "selected").f().g("option");
-				e("option").a("value", "true").f().sx("true").g("option");
-				e("option").a("value", "false").f().sx("false").g("option");
-				g("select");
-			}
-
-		} else {
-			e("span").a("class", "varTrafficSearch", pk, "SearchOtherPropertySiezed ").f().sx(htmSearchOtherPropertySiezed()).g("span");
-		}
-	}
-
-	public void htmSearchOtherPropertySiezed(String classApiMethodMethod) {
-		TrafficSearch s = (TrafficSearch)this;
-		{ e("div").a("class", "w3-cell w3-cell-top w3-center w3-mobile ").f();
-			{ e("div").a("class", "w3-padding ").f();
-				{ e("div").a("id", "suggest", classApiMethodMethod, "TrafficSearchSearchOtherPropertySiezed").f();
-					{ e("div").a("class", "w3-card ").f();
-						{ e("div").a("class", "w3-cell-row w3-pale-green ").f();
-							e("label").a("for", classApiMethodMethod, "_searchOtherPropertySiezed").a("class", "").f().sx("other property siezed").g("label");
-						} g("div");
-						{ e("div").a("class", "w3-cell-row w3-padding ").f();
-							{ e("div").a("class", "w3-cell ").f();
-
-								inputSearchOtherPropertySiezed(classApiMethodMethod);
-							} g("div");
-						} g("div");
-					} g("div");
-				} g("div");
-			} g("div");
-		} g("div");
 	}
 
 	//////////////
@@ -4498,54 +3406,73 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	}
 
 	public Future<Void> promiseTrafficSearch(Promise<Void> promise) {
-		Future.future(a -> {}).compose(a -> {
+		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
-			trafficSearchKeyInit();
-			personKeyInit();
-			trafficPersonSearchInit();
-			trafficPerson_Init();
-			contrabandKeysInit();
-			searchBasisKeysInit();
-			agencyTitleInit();
-			stopDateTimeInit();
-			stopPurposeNumInit();
-			stopPurposeTitleInit();
-			stopActionNumInit();
-			stopActionTitleInit();
-			stopDriverArrestInit();
-			stopPassengerArrestInit();
-			stopEncounterForceInit();
-			stopEngageForceInit();
-			stopOfficerInjuryInit();
-			stopDriverInjuryInit();
-			stopPassengerInjuryInit();
-			stopOfficerIdInit();
-			stopLocationIdInit();
-			stopCityIdInit();
-			personAgeInit();
-			personTypeIdInit();
-			personTypeTitleInit();
-			personTypeDriverInit();
-			personTypePassengerInit();
-			personGenderIdInit();
-			personGenderTitleInit();
-			personGenderFemaleInit();
-			personGenderMaleInit();
-			personEthnicityIdInit();
-			personEthnicityTitleInit();
-			personRaceIdInit();
-			personRaceTitleInit();
-			trafficStopKeyInit();
-			searchTypeNumInit();
-			searchTypeTitleInit();
-			searchVehicleInit();
-			searchDriverInit();
-			searchPassengerInit();
-			searchPropertyInit();
-			searchVehicleSiezedInit();
-			searchPersonalPropertySiezedInit();
-			searchOtherPropertySiezedInit();
-			promise2.complete();
+			try {
+				trafficSearchKeyInit();
+				personKeyInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			trafficPersonSearchPromise().onSuccess(trafficPersonSearch -> {
+				promise2.complete();
+			}).onFailure(ex -> {
+				promise2.fail(ex);
+			});
+			return promise2.future();
+		}).compose(a -> {
+			Promise<Void> promise2 = Promise.promise();
+			try {
+				trafficPerson_Init();
+				contrabandKeysInit();
+				searchBasisKeysInit();
+				agencyTitleInit();
+				stopDateTimeInit();
+				stopPurposeNumInit();
+				stopPurposeTitleInit();
+				stopActionNumInit();
+				stopActionTitleInit();
+				stopDriverArrestInit();
+				stopPassengerArrestInit();
+				stopEncounterForceInit();
+				stopEngageForceInit();
+				stopOfficerInjuryInit();
+				stopDriverInjuryInit();
+				stopPassengerInjuryInit();
+				stopOfficerIdInit();
+				stopLocationIdInit();
+				stopCityIdInit();
+				personAgeInit();
+				personTypeIdInit();
+				personTypeTitleInit();
+				personTypeDriverInit();
+				personTypePassengerInit();
+				personGenderIdInit();
+				personGenderTitleInit();
+				personGenderFemaleInit();
+				personGenderMaleInit();
+				personEthnicityIdInit();
+				personEthnicityTitleInit();
+				personRaceIdInit();
+				personRaceTitleInit();
+				trafficStopKeyInit();
+				searchTypeNumInit();
+				searchTypeTitleInit();
+				searchVehicleInit();
+				searchDriverInit();
+				searchPassengerInit();
+				searchPropertyInit();
+				searchVehicleSiezedInit();
+				searchPersonalPropertySiezedInit();
+				searchOtherPropertySiezedInit();
+				promise2.complete();
+			} catch(Exception ex) {
+				promise2.fail(ex);
+			}
 			return promise2.future();
 		}).onSuccess(a -> {
 			promise.complete();
@@ -5841,177 +4768,49 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	public void storeTrafficSearch(SolrDocument solrDocument) {
 		TrafficSearch oTrafficSearch = (TrafficSearch)this;
 
-		Long trafficSearchKey = (Long)solrDocument.get("trafficSearchKey_stored_long");
-		if(trafficSearchKey != null)
-			oTrafficSearch.setTrafficSearchKey(trafficSearchKey);
-
-		Long personKey = (Long)solrDocument.get("personKey_stored_long");
-		if(personKey != null)
-			oTrafficSearch.setPersonKey(personKey);
-
-		List<Long> contrabandKeys = (List<Long>)solrDocument.get("contrabandKeys_stored_longs");
-		if(contrabandKeys != null)
-			oTrafficSearch.contrabandKeys.addAll(contrabandKeys);
-
-		List<Long> searchBasisKeys = (List<Long>)solrDocument.get("searchBasisKeys_stored_longs");
-		if(searchBasisKeys != null)
-			oTrafficSearch.searchBasisKeys.addAll(searchBasisKeys);
-
-		String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
-		if(agencyTitle != null)
-			oTrafficSearch.setAgencyTitle(agencyTitle);
-
-		Date stopDateTime = (Date)solrDocument.get("stopDateTime_stored_date");
-		if(stopDateTime != null)
-			oTrafficSearch.setStopDateTime(stopDateTime);
-
-		Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_stored_int");
-		if(stopPurposeNum != null)
-			oTrafficSearch.setStopPurposeNum(stopPurposeNum);
-
-		String stopPurposeTitle = (String)solrDocument.get("stopPurposeTitle_stored_string");
-		if(stopPurposeTitle != null)
-			oTrafficSearch.setStopPurposeTitle(stopPurposeTitle);
-
-		Integer stopActionNum = (Integer)solrDocument.get("stopActionNum_stored_int");
-		if(stopActionNum != null)
-			oTrafficSearch.setStopActionNum(stopActionNum);
-
-		String stopActionTitle = (String)solrDocument.get("stopActionTitle_stored_string");
-		if(stopActionTitle != null)
-			oTrafficSearch.setStopActionTitle(stopActionTitle);
-
-		Boolean stopDriverArrest = (Boolean)solrDocument.get("stopDriverArrest_stored_boolean");
-		if(stopDriverArrest != null)
-			oTrafficSearch.setStopDriverArrest(stopDriverArrest);
-
-		Boolean stopPassengerArrest = (Boolean)solrDocument.get("stopPassengerArrest_stored_boolean");
-		if(stopPassengerArrest != null)
-			oTrafficSearch.setStopPassengerArrest(stopPassengerArrest);
-
-		Boolean stopEncounterForce = (Boolean)solrDocument.get("stopEncounterForce_stored_boolean");
-		if(stopEncounterForce != null)
-			oTrafficSearch.setStopEncounterForce(stopEncounterForce);
-
-		Boolean stopEngageForce = (Boolean)solrDocument.get("stopEngageForce_stored_boolean");
-		if(stopEngageForce != null)
-			oTrafficSearch.setStopEngageForce(stopEngageForce);
-
-		Boolean stopOfficerInjury = (Boolean)solrDocument.get("stopOfficerInjury_stored_boolean");
-		if(stopOfficerInjury != null)
-			oTrafficSearch.setStopOfficerInjury(stopOfficerInjury);
-
-		Boolean stopDriverInjury = (Boolean)solrDocument.get("stopDriverInjury_stored_boolean");
-		if(stopDriverInjury != null)
-			oTrafficSearch.setStopDriverInjury(stopDriverInjury);
-
-		Boolean stopPassengerInjury = (Boolean)solrDocument.get("stopPassengerInjury_stored_boolean");
-		if(stopPassengerInjury != null)
-			oTrafficSearch.setStopPassengerInjury(stopPassengerInjury);
-
-		String stopOfficerId = (String)solrDocument.get("stopOfficerId_stored_string");
-		if(stopOfficerId != null)
-			oTrafficSearch.setStopOfficerId(stopOfficerId);
-
-		String stopLocationId = (String)solrDocument.get("stopLocationId_stored_string");
-		if(stopLocationId != null)
-			oTrafficSearch.setStopLocationId(stopLocationId);
-
-		String stopCityId = (String)solrDocument.get("stopCityId_stored_string");
-		if(stopCityId != null)
-			oTrafficSearch.setStopCityId(stopCityId);
-
-		Integer personAge = (Integer)solrDocument.get("personAge_stored_int");
-		if(personAge != null)
-			oTrafficSearch.setPersonAge(personAge);
-
-		String personTypeId = (String)solrDocument.get("personTypeId_stored_string");
-		if(personTypeId != null)
-			oTrafficSearch.setPersonTypeId(personTypeId);
-
-		String personTypeTitle = (String)solrDocument.get("personTypeTitle_stored_string");
-		if(personTypeTitle != null)
-			oTrafficSearch.setPersonTypeTitle(personTypeTitle);
-
-		Boolean personTypeDriver = (Boolean)solrDocument.get("personTypeDriver_stored_boolean");
-		if(personTypeDriver != null)
-			oTrafficSearch.setPersonTypeDriver(personTypeDriver);
-
-		Boolean personTypePassenger = (Boolean)solrDocument.get("personTypePassenger_stored_boolean");
-		if(personTypePassenger != null)
-			oTrafficSearch.setPersonTypePassenger(personTypePassenger);
-
-		String personGenderId = (String)solrDocument.get("personGenderId_stored_string");
-		if(personGenderId != null)
-			oTrafficSearch.setPersonGenderId(personGenderId);
-
-		String personGenderTitle = (String)solrDocument.get("personGenderTitle_stored_string");
-		if(personGenderTitle != null)
-			oTrafficSearch.setPersonGenderTitle(personGenderTitle);
-
-		Boolean personGenderFemale = (Boolean)solrDocument.get("personGenderFemale_stored_boolean");
-		if(personGenderFemale != null)
-			oTrafficSearch.setPersonGenderFemale(personGenderFemale);
-
-		Boolean personGenderMale = (Boolean)solrDocument.get("personGenderMale_stored_boolean");
-		if(personGenderMale != null)
-			oTrafficSearch.setPersonGenderMale(personGenderMale);
-
-		String personEthnicityId = (String)solrDocument.get("personEthnicityId_stored_string");
-		if(personEthnicityId != null)
-			oTrafficSearch.setPersonEthnicityId(personEthnicityId);
-
-		String personEthnicityTitle = (String)solrDocument.get("personEthnicityTitle_stored_string");
-		if(personEthnicityTitle != null)
-			oTrafficSearch.setPersonEthnicityTitle(personEthnicityTitle);
-
-		String personRaceId = (String)solrDocument.get("personRaceId_stored_string");
-		if(personRaceId != null)
-			oTrafficSearch.setPersonRaceId(personRaceId);
-
-		String personRaceTitle = (String)solrDocument.get("personRaceTitle_stored_string");
-		if(personRaceTitle != null)
-			oTrafficSearch.setPersonRaceTitle(personRaceTitle);
-
-		Long trafficStopKey = (Long)solrDocument.get("trafficStopKey_stored_long");
-		if(trafficStopKey != null)
-			oTrafficSearch.setTrafficStopKey(trafficStopKey);
-
-		Integer searchTypeNum = (Integer)solrDocument.get("searchTypeNum_stored_int");
-		if(searchTypeNum != null)
-			oTrafficSearch.setSearchTypeNum(searchTypeNum);
-
-		String searchTypeTitle = (String)solrDocument.get("searchTypeTitle_stored_string");
-		if(searchTypeTitle != null)
-			oTrafficSearch.setSearchTypeTitle(searchTypeTitle);
-
-		Boolean searchVehicle = (Boolean)solrDocument.get("searchVehicle_stored_boolean");
-		if(searchVehicle != null)
-			oTrafficSearch.setSearchVehicle(searchVehicle);
-
-		Boolean searchDriver = (Boolean)solrDocument.get("searchDriver_stored_boolean");
-		if(searchDriver != null)
-			oTrafficSearch.setSearchDriver(searchDriver);
-
-		Boolean searchPassenger = (Boolean)solrDocument.get("searchPassenger_stored_boolean");
-		if(searchPassenger != null)
-			oTrafficSearch.setSearchPassenger(searchPassenger);
-
-		Boolean searchProperty = (Boolean)solrDocument.get("searchProperty_stored_boolean");
-		if(searchProperty != null)
-			oTrafficSearch.setSearchProperty(searchProperty);
-
-		Boolean searchVehicleSiezed = (Boolean)solrDocument.get("searchVehicleSiezed_stored_boolean");
-		if(searchVehicleSiezed != null)
-			oTrafficSearch.setSearchVehicleSiezed(searchVehicleSiezed);
-
-		Boolean searchPersonalPropertySiezed = (Boolean)solrDocument.get("searchPersonalPropertySiezed_stored_boolean");
-		if(searchPersonalPropertySiezed != null)
-			oTrafficSearch.setSearchPersonalPropertySiezed(searchPersonalPropertySiezed);
-
-		Boolean searchOtherPropertySiezed = (Boolean)solrDocument.get("searchOtherPropertySiezed_stored_boolean");
-		if(searchOtherPropertySiezed != null)
-			oTrafficSearch.setSearchOtherPropertySiezed(searchOtherPropertySiezed);
+		oTrafficSearch.setTrafficSearchKey(Optional.ofNullable(solrDocument.get("trafficSearchKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonKey(Optional.ofNullable(solrDocument.get("personKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.addContrabandKeys(Optional.ofNullable(solrDocument.get("contrabandKeys_stored_longs")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.addSearchBasisKeys(Optional.ofNullable(solrDocument.get("searchBasisKeys_stored_longs")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopPurposeTitle(Optional.ofNullable(solrDocument.get("stopPurposeTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopActionNum(Optional.ofNullable(solrDocument.get("stopActionNum_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopActionTitle(Optional.ofNullable(solrDocument.get("stopActionTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopDriverArrest(Optional.ofNullable(solrDocument.get("stopDriverArrest_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopPassengerArrest(Optional.ofNullable(solrDocument.get("stopPassengerArrest_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopEncounterForce(Optional.ofNullable(solrDocument.get("stopEncounterForce_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopEngageForce(Optional.ofNullable(solrDocument.get("stopEngageForce_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopOfficerInjury(Optional.ofNullable(solrDocument.get("stopOfficerInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopDriverInjury(Optional.ofNullable(solrDocument.get("stopDriverInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopPassengerInjury(Optional.ofNullable(solrDocument.get("stopPassengerInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopOfficerId(Optional.ofNullable(solrDocument.get("stopOfficerId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopLocationId(Optional.ofNullable(solrDocument.get("stopLocationId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStopCityId(Optional.ofNullable(solrDocument.get("stopCityId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonAge(Optional.ofNullable(solrDocument.get("personAge_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonTypeId(Optional.ofNullable(solrDocument.get("personTypeId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonTypeTitle(Optional.ofNullable(solrDocument.get("personTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonTypeDriver(Optional.ofNullable(solrDocument.get("personTypeDriver_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonTypePassenger(Optional.ofNullable(solrDocument.get("personTypePassenger_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonGenderId(Optional.ofNullable(solrDocument.get("personGenderId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonGenderTitle(Optional.ofNullable(solrDocument.get("personGenderTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonGenderFemale(Optional.ofNullable(solrDocument.get("personGenderFemale_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonGenderMale(Optional.ofNullable(solrDocument.get("personGenderMale_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonEthnicityId(Optional.ofNullable(solrDocument.get("personEthnicityId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonEthnicityTitle(Optional.ofNullable(solrDocument.get("personEthnicityTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonRaceId(Optional.ofNullable(solrDocument.get("personRaceId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setPersonRaceTitle(Optional.ofNullable(solrDocument.get("personRaceTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setTrafficStopKey(Optional.ofNullable(solrDocument.get("trafficStopKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchTypeNum(Optional.ofNullable(solrDocument.get("searchTypeNum_stored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchTypeTitle(Optional.ofNullable(solrDocument.get("searchTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchVehicle(Optional.ofNullable(solrDocument.get("searchVehicle_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchDriver(Optional.ofNullable(solrDocument.get("searchDriver_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchPassenger(Optional.ofNullable(solrDocument.get("searchPassenger_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchProperty(Optional.ofNullable(solrDocument.get("searchProperty_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchVehicleSiezed(Optional.ofNullable(solrDocument.get("searchVehicleSiezed_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchPersonalPropertySiezed(Optional.ofNullable(solrDocument.get("searchPersonalPropertySiezed_stored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setSearchOtherPropertySiezed(Optional.ofNullable(solrDocument.get("searchOtherPropertySiezed_stored_boolean")).map(v -> v.toString()).orElse(null));
 
 		super.storeCluster(solrDocument);
 	}

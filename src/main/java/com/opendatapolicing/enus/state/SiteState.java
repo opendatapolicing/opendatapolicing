@@ -28,11 +28,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiUriAdminSearch.enUS: /api/admin/state
  * RoleUtilisateurAdminSearch.enUS: true
  * 
- * ApiMethod.enUS: SearchPage
- * PageSearchPage.enUS: SiteStatePage
- * PageSuperSearchPage.enUS: ClusterPage
- * ApiUriSearchPage.enUS: /state
- * 
  * AName.enUS: a state
  * Color: pale-blue
  * IconGroup: regular

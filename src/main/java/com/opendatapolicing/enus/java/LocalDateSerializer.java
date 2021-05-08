@@ -2,8 +2,8 @@ package com.opendatapolicing.enus.java;
 
 import java.io.IOException;
 import java.time.LocalDate;
-
-import com.opendatapolicing.enus.page.PageLayout;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -11,8 +11,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class LocalDateSerializer extends JsonSerializer<LocalDate> {
 
+	public static DateTimeFormatter FORMATDateDisplay = DateTimeFormatter.ofPattern("EEEE MMMM d yyyy", Locale.US);
+
 	@Override()
 	public void  serialize(LocalDate o, JsonGenerator generator, SerializerProvider provider) throws IOException, IOException {
-		generator.writeString(PageLayout.FORMATDateDisplay.format(o));
+		generator.writeString(FORMATDateDisplay.format(o));
 	}
 }

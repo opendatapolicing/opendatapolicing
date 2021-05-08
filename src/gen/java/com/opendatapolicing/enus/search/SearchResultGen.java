@@ -55,7 +55,7 @@ public abstract class SearchResultGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
-	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().p(this).c(SiteRequestEnUS.class).var("siteRequest_").o(siteRequest_);
+	public Wrap<SiteRequestEnUS> siteRequest_Wrap = new Wrap<SiteRequestEnUS>().var("siteRequest_").o(siteRequest_);
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
@@ -81,6 +81,7 @@ public abstract class SearchResultGen<DEV> extends Object {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
 				setSiteRequest_(siteRequest_Wrap.o);
+			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
 		return (SearchResult)this;
@@ -96,7 +97,7 @@ public abstract class SearchResultGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument solrDocument;
 	@JsonIgnore
-	public Wrap<SolrDocument> solrDocumentWrap = new Wrap<SolrDocument>().p(this).c(SolrDocument.class).var("solrDocument").o(solrDocument);
+	public Wrap<SolrDocument> solrDocumentWrap = new Wrap<SolrDocument>().var("solrDocument").o(solrDocument);
 
 	/**	<br/> The entity solrDocument
 	 *  is defined as null before being initialized. 
@@ -122,6 +123,7 @@ public abstract class SearchResultGen<DEV> extends Object {
 			_solrDocument(solrDocumentWrap);
 			if(solrDocument == null)
 				setSolrDocument(solrDocumentWrap.o);
+			solrDocumentWrap.o(null);
 		}
 		solrDocumentWrap.alreadyInitialized(true);
 		return (SearchResult)this;
@@ -138,7 +140,7 @@ public abstract class SearchResultGen<DEV> extends Object {
 	@JsonInclude(Include.NON_NULL)
 	protected Long resultIndex;
 	@JsonIgnore
-	public Wrap<Long> resultIndexWrap = new Wrap<Long>().p(this).c(Long.class).var("resultIndex").o(resultIndex);
+	public Wrap<Long> resultIndexWrap = new Wrap<Long>().var("resultIndex").o(resultIndex);
 
 	/**	<br/> The entity resultIndex
 	 *  is defined as null before being initialized. 
@@ -170,6 +172,7 @@ public abstract class SearchResultGen<DEV> extends Object {
 			_resultIndex(resultIndexWrap);
 			if(resultIndex == null)
 				setResultIndex(resultIndexWrap.o);
+			resultIndexWrap.o(null);
 		}
 		resultIndexWrap.alreadyInitialized(true);
 		return (SearchResult)this;
@@ -223,9 +226,9 @@ public abstract class SearchResultGen<DEV> extends Object {
 	}
 
 	public void initSearchResult() {
-		siteRequest_Init();
-		solrDocumentInit();
-		resultIndexInit();
+				siteRequest_Init();
+				solrDocumentInit();
+				resultIndexInit();
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
@@ -458,4 +461,8 @@ public abstract class SearchResultGen<DEV> extends Object {
 		sb.append(" }");
 		return sb.toString();
 	}
+
+	public static final String VAR_siteRequest_ = "siteRequest_";
+	public static final String VAR_solrDocument = "solrDocument";
+	public static final String VAR_resultIndex = "resultIndex";
 }

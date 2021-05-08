@@ -17,10 +17,12 @@ import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
 import java.math.MathContext;
+import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
@@ -48,6 +50,11 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String configureDataInitSuccess1 = "The database tables were created successfully. ";
 	public static final String configureDataInitSuccess = configureDataInitSuccess1;
 
+	public static final String configureSharedWorkerExecutorError1 = "Could not configure the shared worker executor. ";
+	public static final String configureSharedWorkerExecutorError = configureSharedWorkerExecutorError1;
+	public static final String configureSharedWorkerExecutorSuccess1 = "The shared worker executor was configured successfully. ";
+	public static final String configureSharedWorkerExecutorSuccess = configureSharedWorkerExecutorSuccess1;
+
 	public static final String configureEmailComplete1 = "Configure sending email succeeded. ";
 	public static final String configureEmailComplete = configureEmailComplete1;
 	public static final String configureEmailFail1 = "Configure sending email failed. ";
@@ -57,6 +64,18 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String importDataComplete = importDataComplete1;
 	public static final String importDataFail1 = "Importing initial data failed. ";
 	public static final String importDataFail = importDataFail1;
+
+	public static final String syncDbToSolrComplete1 = "Syncing database to Solr completed. ";
+	public static final String syncDbToSolrComplete = syncDbToSolrComplete1;
+	public static final String syncDbToSolrFail1 = "Syncing database to Solr failed. ";
+	public static final String syncDbToSolrFail = syncDbToSolrFail1;
+	public static final String syncDbToSolrSkip1 = "Skip syncing database to Solr. ";
+	public static final String syncDbToSolrSkip = syncDbToSolrSkip1;
+
+	public static final String syncTrafficStopsComplete1 = "TrafficStop data sync completed. ";
+	public static final String syncTrafficStopsComplete = syncTrafficStopsComplete1;
+	public static final String syncTrafficStopsFail1 = "TrafficStop data sync failed. ";
+	public static final String syncTrafficStopsFail = syncTrafficStopsFail1;
 
 
 	//////////////
@@ -274,5 +293,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1 };
+	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncTrafficStopsComplete1, syncTrafficStopsFail1 };
+
 }
