@@ -74,14 +74,14 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _trafficStopSearch(Promise<SearchList<TrafficStop>> promise) {
+		SearchList<TrafficStop> l = new SearchList<>();
 		if(trafficStopKey != null) {
-			SearchList<TrafficStop> l = new SearchList<>();
 			l.setQuery("*:*");
 			l.addFilterQuery("pk_indexed_long:" + trafficStopKey);
 			l.setC(TrafficStop.class);
 			l.setStore(true);
-			promise.complete(l);
 		}
+		promise.complete(l);
 	}
 
 	protected void _trafficStop_(Wrap<TrafficStop> c) {
@@ -372,11 +372,13 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person gender title
 	 */ 
 	protected void _personGenderTitle(Wrap<String> w) {
-		switch(personGenderId) {
-		case "M":
-			w.o("Male"); break;
-		case "F":
-			w.o("Female"); break;
+		if(personGenderId != null) {
+			switch(personGenderId) {
+			case "M":
+				w.o("Male"); break;
+			case "F":
+				w.o("Female"); break;
+			}
 		}
 	}
 
@@ -387,11 +389,13 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person was female
 	 */ 
 	protected void _personGenderFemale(Wrap<Boolean> w) {
-		switch(personGenderId) {
-		case "F":
-			w.o(true); break;
-		default:
-			w.o(false); break;
+		if(personGenderId != null) {
+			switch(personGenderId) {
+			case "F":
+				w.o(true); break;
+			default:
+				w.o(false); break;
+			}
 		}
 	}
 
@@ -402,11 +406,13 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person was male
 	 */ 
 	protected void _personGenderMale(Wrap<Boolean> w) {
-		switch(personGenderId) {
-		case "M":
-			w.o(true); break;
-		default:
-			w.o(false); break;
+		if(personGenderId != null) {
+			switch(personGenderId) {
+			case "M":
+				w.o(true); break;
+			default:
+				w.o(false); break;
+			}
 		}
 	}
 

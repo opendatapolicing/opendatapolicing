@@ -359,4 +359,9 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String SEMAPHORE_PERMITS = "semaphorePermits";
+
+	/**
+	 * 
+	 **/
+	public static final String WORKER_POOL_SIZE = "workerPoolSize";
 }

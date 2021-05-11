@@ -14,6 +14,7 @@ import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
+import java.util.concurrent.Semaphore;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -109,8 +110,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficPersonEnUSGenApiServiceImpl.class);
 
-	public TrafficPersonEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public TrafficPersonEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
@@ -144,6 +145,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -169,6 +171,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putimportTrafficPerson failed. ", ex));
@@ -301,6 +304,23 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		return promise.future();
 	}
 
+	@Override
+	public void putimportTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTImportTrafficPerson(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTImportTrafficPerson(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -344,6 +364,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -369,6 +390,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putmergeTrafficPerson failed. ", ex));
@@ -500,6 +522,23 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		return promise.future();
 	}
 
+	@Override
+	public void putmergeTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTMergeTrafficPerson(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTMergeTrafficPerson(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -543,6 +582,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								searchTrafficPersonList(siteRequest, false, true, true, "/api/person/copy", "PUTCopy").onSuccess(listTrafficPerson -> {
 									ApiRequest apiRequest = new ApiRequest();
 									apiRequest.setRows(listTrafficPerson.getRows());
@@ -572,6 +612,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putcopyTrafficPerson failed. ", ex));
@@ -893,6 +934,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						)
 					));
 				} else {
+					semaphore.acquire();
 					ApiRequest apiRequest = new ApiRequest();
 					apiRequest.setRows(1);
 					apiRequest.setNumFound(1L);
@@ -903,14 +945,17 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					postTrafficPersonFuture(siteRequest, false).onSuccess(trafficPerson -> {
 						apiRequest.setPk(trafficPerson.getPk());
 						response200POSTTrafficPerson(trafficPerson).onSuccess(response -> {
+							semaphore.release();
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("postTrafficPerson succeeded. "));
 						}).onFailure(ex -> {
 							LOG.error(String.format("postTrafficPerson failed. ", ex));
+							semaphore.release();
 							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("postTrafficPerson failed. ", ex));
+						semaphore.release();
 						error(siteRequest, eventHandler, ex);
 					});
 				}
@@ -933,6 +978,23 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		});
 	}
 
+
+	@Override
+	public void postTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		postTrafficPersonFuture(siteRequest, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
 
 	public Future<TrafficPerson> postTrafficPersonFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<TrafficPerson> promise = Promise.promise();
@@ -1191,6 +1253,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							searchTrafficPersonList(siteRequest, false, true, true, "/api/person", "PATCH").onSuccess(listTrafficPerson -> {
 								try {
+									semaphore.acquire();
 									List<String> roles2 = Arrays.asList("SiteAdmin");
 									if(listTrafficPerson.getQueryResponse().getResults().getNumFound() > 1
 											&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
@@ -1236,6 +1299,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								blockingCodeHandler.fail(ex);
 							});
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("patchTrafficPerson failed. ", ex));
@@ -1292,6 +1356,26 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 			error(listTrafficPerson.getSiteRequest_(), null, ex);
 		});
 		return promise.future();
+	}
+
+	@Override
+	public void patchTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		TrafficPerson o = new TrafficPerson();
+		o.setSiteRequest_(siteRequest);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		o.setPk(body.getString(TrafficPerson.VAR_pk));
+		patchTrafficPersonFuture(o, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
 	}
 
 	public Future<TrafficPerson> patchTrafficPersonFuture(TrafficPerson o, Boolean inheritPk) {
@@ -2437,6 +2521,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 									if(o2 != null) {
 										JsonObject params = new JsonObject();
 										params.put("body", new JsonObject());
+										params.put("cookie", new JsonObject());
+										params.put("path", new JsonObject());
 										params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
 										JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
 										JsonObject json = new JsonObject().put("context", context);
@@ -2465,6 +2551,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 									if(o2 != null) {
 										JsonObject params = new JsonObject();
 										params.put("body", new JsonObject());
+										params.put("cookie", new JsonObject());
+										params.put("path", new JsonObject());
 										params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
 										JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
 										JsonObject json = new JsonObject().put("context", context);

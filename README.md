@@ -155,4 +155,5 @@ dos2unix ~/backup/opendatapolicing/Stop.txt
 cut -d $'\t' -f 1-15 Stop.txt > Stop2.txt
 
 psql opendatapolicing -c "copy TrafficStop(inheritPk, agencyTitle, stopDateTime, stopPurposeNum, stopActionNum, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId) from '/home/ctate/backup/opendatapolicing/Stop2.txt' (delimiter E'\t', format csv, null '');"
+psql opendatapolicing -c "copy TrafficPerson(inheritPk, trafficStopKey, personTypeId, personAge, personGenderId, personEthnicityId, personRaceId) from '/home/ctate/backup/opendatapolicing/PERSON.txt' (delimiter E'\t', format csv, null '');"
 

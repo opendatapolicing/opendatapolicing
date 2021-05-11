@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.vertx;    
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -11,6 +12,9 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +31,6 @@ import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiService;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiService;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiService;
 import com.opendatapolicing.enus.user.SiteUserEnUSGenApiService;
-import com.opendatapolicing.enus.wrap.Wrap;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -88,6 +91,14 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 	public final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
+	private Integer siteInstances;
+
+	private Integer workerPoolSize;
+
+	private Integer jdbcMaxPoolSize;
+
+	private Integer jdbcMaxWaitQueueSize;
+
 	/**
 	 * A io.vertx.ext.jdbc.JDBCClient for connecting to the relational database PostgreSQL. 
 	 **/
@@ -104,6 +115,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	OAuth2Auth oauth2AuthenticationProvider;
 
 	AuthorizationProvider authorizationProvider;
+
+	Integer semaphorePermits;
 
 	Semaphore semaphore;
 
@@ -146,7 +159,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			}
 		});
 		ClusterManager gestionnaireCluster = new ZookeeperClusterManager(zkConfig);
-		VertxOptions optionsVertx = new VertxOptions();
+		VertxOptions vertxOptions = new VertxOptions();
 		// For OpenShift
 		EventBusOptions eventBusOptions = new EventBusOptions();
 		String hostname = System.getenv("HOSTNAME");
@@ -175,8 +188,9 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			LOG.info(String.format("clusterPublicPort: %s", clusterPublicPort));
 			eventBusOptions.setClusterPublicPort(clusterPublicPort);
 		}
-		optionsVertx.setEventBusOptions(eventBusOptions);
-		optionsVertx.setClusterManager(gestionnaireCluster);
+		vertxOptions.setEventBusOptions(eventBusOptions);
+		vertxOptions.setClusterManager(gestionnaireCluster);
+		vertxOptions.setWorkerPoolSize(System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? 5 : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE)));
 		DeploymentOptions deploymentOptions = new DeploymentOptions();
 
 		DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
@@ -191,7 +205,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			vertx.deployVerticle(new MailVerticle(), mailVerticleDeploymentOptions);
 			vertx.deployVerticle(new WorkerVerticle().setSemaphore(semaphore), workerVerticleDeploymentOptions);
 		};
-		Vertx.clusteredVertx(optionsVertx).onSuccess(vertx -> {
+		Vertx.clusteredVertx(vertxOptions).onSuccess(vertx -> {
 			EventBus eventBus = vertx.eventBus();
 			LOG.info("We now have a clustered event bus: {}", eventBus);
 			runner.accept(vertx);
@@ -288,6 +302,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureData() {
 		Promise<Void> promise = Promise.promise();
 		try {
+			semaphorePermits = System.getenv(ConfigKeys.SEMAPHORE_PERMITS) == null ? 10 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_PERMITS));
 			PgConnectOptions pgOptions = new PgConnectOptions();
 			pgOptions.setPort(config.getInteger(ConfigKeys.JDBC_PORT));
 			pgOptions.setHost(config.getString(ConfigKeys.JDBC_HOST));
@@ -299,8 +314,10 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			pgOptions.setConnectTimeout(config.getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT, 5));
 
 			PoolOptions poolOptions = new PoolOptions();
-			poolOptions.setMaxSize(config.getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1));
-			poolOptions.setMaxWaitQueueSize(config.getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10));
+			jdbcMaxPoolSize = config.getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1);
+			jdbcMaxWaitQueueSize = config.getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10);
+			poolOptions.setMaxSize(jdbcMaxPoolSize);
+			poolOptions.setMaxWaitQueueSize(jdbcMaxWaitQueueSize);
 
 			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
 
@@ -484,8 +501,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 	/**	
 	 * 
-	 * Val.Error.enUS:Could not configure the shared worker executor. 
-	 * Val.Success.enUS:The shared worker executor was configured successfully. 
+	 * Val.Fail.enUS:Could not configure the shared worker executor. 
+	 * Val.Complete.enUS:The shared worker executor was configured successfully. 
 	 * 
 	 *	Configure a shared worker executor for running blocking tasks in the background. 
 	 *	Return a promise that configures the shared worker executor. 
@@ -494,15 +511,18 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			workerExecutor = vertx.createSharedWorkerExecutor("WorkerExecutor");
+			LOG.info(configureSharedWorkerExecutorComplete);
 			promise.complete();
 		} catch (Exception ex) {
-			LOG.error(configureSharedWorkerExecutorError, ex);
+			LOG.error(configureSharedWorkerExecutorFail, ex);
 			promise.fail(ex);
 		}
 		return promise.future();
 	}
 
 	/**	
+	 * Val.Complete.enUS:The health checks were configured successfully. 
+	 * Val.Fail.enUS:Could not configure the health checks. 
 	 * Val.ErrorDatabase.enUS:The database is not configured properly. 
 	 * Val.EmptySolr.enUS:The Solr search engine is empty. 
 	 * Val.ErrorSolr.enUS:The Solr search engine is not configured properly. 
@@ -514,37 +534,54 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
+			siteInstances = System.getenv("siteInstances") == null ? 1 : Integer.parseInt(System.getenv("siteInstances"));
+			workerPoolSize = System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? null : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE));
 
 			healthCheckHandler.register("database", 2000, a -> {
 				pgPool.preparedQuery("select current_timestamp").execute(selectCAsync -> {
 					if(selectCAsync.succeeded()) {
-						a.complete(Status.OK());
+						a.complete(Status.OK(new JsonObject().put("jdbcMaxPoolSize", jdbcMaxPoolSize).put("jdbcMaxWaitQueueSize", jdbcMaxWaitQueueSize)));
 					} else {
 						LOG.error(configureHealthChecksErrorDatabase, a.future().cause());
 						promise.fail(a.future().cause());
 					}
 				});
 			});
-//			healthCheckHandler.register("solr", 2000, a -> {
-//				SolrQuery query = new SolrQuery();
-//				query.setQuery("*:*");
-//				try {
-//					QueryResponse r = solrClient.query(query);
-//					if(r.getResults().size() > 0)
-//						a.complete(Status.OK());
-//					else {
-//						LOG.error(configureHealthChecksEmptySolr, a.future().cause());
-//						promise.fail(a.future().cause());
-//					}
-//				} catch (SolrServerException | IOException e) {
-//					LOG.error(configureHealthChecksErrorSolr, a.future().cause());
-//					promise.fail(a.future().cause());
-//				}
-//			});
+			healthCheckHandler.register("solr", 2000, a -> {
+				SolrQuery query = new SolrQuery();
+				query.setQuery("*:*");
+				try {
+					String solrHostName = config.getString(ConfigKeys.SOLR_HOST_NAME);
+					Integer solrPort = config.getInteger(ConfigKeys.SOLR_PORT);
+					String solrCollection = config.getString(ConfigKeys.SOLR_COLLECTION);
+					String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, query.toQueryString() + "&suggest=true&terms=true&terms.fl=stopPurposeTitle_indexed_string");
+					webClient.get(solrPort, solrHostName, solrRequestUri).send().onSuccess(b -> {
+						try {
+							a.complete(Status.OK());
+						} catch(Exception ex) {
+							LOG.error("Could not read response from Solr. ", ex);
+							a.fail(ex);
+						}
+					}).onFailure(ex -> {
+						LOG.error(String.format("indexTrafficStop failed. "), new RuntimeException(ex));
+						a.fail(ex);
+					});
+				} catch (Exception e) {
+					LOG.error(configureHealthChecksErrorSolr, a.future().cause());
+					a.fail(a.future().cause());
+				}
+			});
+			healthCheckHandler.register("semaphore", 2000, a -> {
+				a.complete(Status.OK(new JsonObject().put("permits", semaphorePermits).put("availablePermits", semaphore.availablePermits()).put("queueLengthEstimate", semaphore.getQueueLength())));
+			});
+			healthCheckHandler.register("vertx", 2000, a -> {
+				a.complete(Status.OK(new JsonObject().put("siteInstances", siteInstances).put("workerPoolSize", workerPoolSize)));
+			});
 			router.get("/health").handler(healthCheckHandler);
+			LOG.info(configureHealthChecksComplete);
 			promise.complete();
 		} catch (Exception ex) {
-			LOG.error(configureHealthChecksErrorSolr, ex);
+			LOG.error(configureHealthChecksFail, ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -609,13 +646,13 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteStateEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteAgencyEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SearchBasisEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficContrabandEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficPersonEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficSearchEnUSGenApiService.registerService(vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteUserEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteStateEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteAgencyEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SearchBasisEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficContrabandEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficPersonEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficSearchEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 			TrafficStopEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 
 			LOG.info(configureApiComplete);

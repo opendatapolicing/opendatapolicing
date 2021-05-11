@@ -12,6 +12,7 @@ import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
+import java.util.concurrent.Semaphore;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -76,6 +77,8 @@ import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.util.HashMap;
 import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -105,8 +108,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficContrabandEnUSGenApiServiceImpl.class);
 
-	public TrafficContrabandEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public TrafficContrabandEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
@@ -140,6 +143,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -165,6 +169,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putimportTrafficContraband failed. ", ex));
@@ -297,6 +302,23 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		return promise.future();
 	}
 
+	@Override
+	public void putimportTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTImportTrafficContraband(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTImportTrafficContraband(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -340,6 +362,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -365,6 +388,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putmergeTrafficContraband failed. ", ex));
@@ -496,6 +520,23 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		return promise.future();
 	}
 
+	@Override
+	public void putmergeTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTMergeTrafficContraband(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTMergeTrafficContraband(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -539,6 +580,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								searchTrafficContrabandList(siteRequest, false, true, true, "/api/contraband/copy", "PUTCopy").onSuccess(listTrafficContraband -> {
 									ApiRequest apiRequest = new ApiRequest();
 									apiRequest.setRows(listTrafficContraband.getRows());
@@ -568,6 +610,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putcopyTrafficContraband failed. ", ex));
@@ -913,6 +956,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						)
 					));
 				} else {
+					semaphore.acquire();
 					ApiRequest apiRequest = new ApiRequest();
 					apiRequest.setRows(1);
 					apiRequest.setNumFound(1L);
@@ -923,14 +967,17 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 					postTrafficContrabandFuture(siteRequest, false).onSuccess(trafficContraband -> {
 						apiRequest.setPk(trafficContraband.getPk());
 						response200POSTTrafficContraband(trafficContraband).onSuccess(response -> {
+							semaphore.release();
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("postTrafficContraband succeeded. "));
 						}).onFailure(ex -> {
 							LOG.error(String.format("postTrafficContraband failed. ", ex));
+							semaphore.release();
 							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("postTrafficContraband failed. ", ex));
+						semaphore.release();
 						error(siteRequest, eventHandler, ex);
 					});
 				}
@@ -953,6 +1000,23 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		});
 	}
 
+
+	@Override
+	public void postTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		postTrafficContrabandFuture(siteRequest, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
 
 	public Future<TrafficContraband> postTrafficContrabandFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<TrafficContraband> promise = Promise.promise();
@@ -1241,6 +1305,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							searchTrafficContrabandList(siteRequest, false, true, true, "/api/contraband", "PATCH").onSuccess(listTrafficContraband -> {
 								try {
+									semaphore.acquire();
 									List<String> roles2 = Arrays.asList("SiteAdmin");
 									if(listTrafficContraband.getQueryResponse().getResults().getNumFound() > 1
 											&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
@@ -1286,6 +1351,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								blockingCodeHandler.fail(ex);
 							});
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("patchTrafficContraband failed. ", ex));
@@ -1342,6 +1408,26 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			error(listTrafficContraband.getSiteRequest_(), null, ex);
 		});
 		return promise.future();
+	}
+
+	@Override
+	public void patchTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		TrafficContraband o = new TrafficContraband();
+		o.setSiteRequest_(siteRequest);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		o.setPk(body.getString(TrafficContraband.VAR_pk));
+		patchTrafficContrabandFuture(o, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
 	}
 
 	public Future<TrafficContraband> patchTrafficContrabandFuture(TrafficContraband o, Boolean inheritPk) {
@@ -2428,10 +2514,11 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
 				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?commitWithin=10000&overwrite=true&wt=json");
-				webClient.post(solrPort, solrHostName, solrRequestUri).sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(b -> {
+				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
+				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
 				}).onFailure(ex -> {
-					LOG.error(String.format("indexTrafficContraband failed. "), ex);
+					LOG.error(String.format("indexTrafficContraband failed. "), new RuntimeException(ex));
 					promise.fail(ex);
 				});
 			}).onFailure(ex -> {
@@ -2479,7 +2566,14 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
 									TrafficSearch o2 = searchList2.getList().stream().findFirst().orElse(null);
 									if(o2 != null) {
-										eventBus.request("opendatapolicing-enUS-TrafficSearch", new JsonObject(), new DeliveryOptions().addHeader("action", "patchTrafficSearch")).onSuccess(c -> {
+										JsonObject params = new JsonObject();
+										params.put("body", new JsonObject());
+										params.put("cookie", new JsonObject());
+										params.put("path", new JsonObject());
+										params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
+										JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
+										JsonObject json = new JsonObject().put("context", context);
+										eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "patchTrafficSearch")).onSuccess(c -> {
 											promise2.complete();
 										}).onFailure(ex -> {
 											promise2.fail(ex);

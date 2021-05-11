@@ -174,11 +174,15 @@ DROP TABLE SearchBasis CASCADE;
 	public static final String configureOpenApiSuccess1 = "The auth server and API was configured successfully. ";
 	public static final String configureOpenApiSuccess = configureOpenApiSuccess1;
 
-	public static final String configureSharedWorkerExecutorError1 = "Could not configure the shared worker executor. ";
-	public static final String configureSharedWorkerExecutorError = configureSharedWorkerExecutorError1;
-	public static final String configureSharedWorkerExecutorSuccess1 = "The shared worker executor was configured successfully. ";
-	public static final String configureSharedWorkerExecutorSuccess = configureSharedWorkerExecutorSuccess1;
+	public static final String configureSharedWorkerExecutorFail1 = "Could not configure the shared worker executor. ";
+	public static final String configureSharedWorkerExecutorFail = configureSharedWorkerExecutorFail1;
+	public static final String configureSharedWorkerExecutorComplete1 = "The shared worker executor was configured successfully. ";
+	public static final String configureSharedWorkerExecutorComplete = configureSharedWorkerExecutorComplete1;
 
+	public static final String configureHealthChecksComplete1 = "The health checks were configured successfully. ";
+	public static final String configureHealthChecksComplete = configureHealthChecksComplete1;
+	public static final String configureHealthChecksFail1 = "Could not configure the health checks. ";
+	public static final String configureHealthChecksFail = configureHealthChecksFail1;
 	public static final String configureHealthChecksErrorDatabase1 = "The database is not configured properly. ";
 	public static final String configureHealthChecksErrorDatabase = configureHealthChecksErrorDatabase1;
 	public static final String configureHealthChecksEmptySolr1 = "The Solr search engine is empty. ";
@@ -438,6 +442,6 @@ DROP TABLE SearchBasis CASCADE;
 		return sb.toString();
 	}
 
-	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
+	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureHealthChecksComplete1, configureHealthChecksFail1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
 
 }

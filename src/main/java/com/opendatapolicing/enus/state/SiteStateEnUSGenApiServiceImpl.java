@@ -12,6 +12,7 @@ import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
+import java.util.concurrent.Semaphore;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -76,6 +77,8 @@ import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.util.HashMap;
 import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -105,8 +108,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteStateEnUSGenApiServiceImpl.class);
 
-	public SiteStateEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public SiteStateEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
@@ -140,6 +143,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -165,6 +169,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putimportSiteState failed. ", ex));
@@ -297,6 +302,23 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		return promise.future();
 	}
 
+	@Override
+	public void putimportSiteStateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTImportSiteState(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTImportSiteState(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -340,6 +362,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -365,6 +388,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putmergeSiteState failed. ", ex));
@@ -496,6 +520,23 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		return promise.future();
 	}
 
+	@Override
+	public void putmergeSiteStateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTMergeSiteState(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTMergeSiteState(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -539,6 +580,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								searchSiteStateList(siteRequest, false, true, true, "/api/state/copy", "PUTCopy").onSuccess(listSiteState -> {
 									ApiRequest apiRequest = new ApiRequest();
 									apiRequest.setRows(listSiteState.getRows());
@@ -568,6 +610,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putcopySiteState failed. ", ex));
@@ -867,6 +910,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						)
 					));
 				} else {
+					semaphore.acquire();
 					ApiRequest apiRequest = new ApiRequest();
 					apiRequest.setRows(1);
 					apiRequest.setNumFound(1L);
@@ -877,14 +921,17 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					postSiteStateFuture(siteRequest, false).onSuccess(siteState -> {
 						apiRequest.setPk(siteState.getPk());
 						response200POSTSiteState(siteState).onSuccess(response -> {
+							semaphore.release();
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("postSiteState succeeded. "));
 						}).onFailure(ex -> {
 							LOG.error(String.format("postSiteState failed. ", ex));
+							semaphore.release();
 							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("postSiteState failed. ", ex));
+						semaphore.release();
 						error(siteRequest, eventHandler, ex);
 					});
 				}
@@ -907,6 +954,23 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		});
 	}
 
+
+	@Override
+	public void postSiteStateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		postSiteStateFuture(siteRequest, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
 
 	public Future<SiteState> postSiteStateFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<SiteState> promise = Promise.promise();
@@ -1141,6 +1205,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							searchSiteStateList(siteRequest, false, true, true, "/api/state", "PATCH").onSuccess(listSiteState -> {
 								try {
+									semaphore.acquire();
 									List<String> roles2 = Arrays.asList("SiteAdmin");
 									if(listSiteState.getQueryResponse().getResults().getNumFound() > 1
 											&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
@@ -1186,6 +1251,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								blockingCodeHandler.fail(ex);
 							});
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("patchSiteState failed. ", ex));
@@ -1242,6 +1308,26 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			error(listSiteState.getSiteRequest_(), null, ex);
 		});
 		return promise.future();
+	}
+
+	@Override
+	public void patchSiteStateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		SiteState o = new SiteState();
+		o.setSiteRequest_(siteRequest);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		o.setPk(body.getString(SiteState.VAR_pk));
+		patchSiteStateFuture(o, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
 	}
 
 	public Future<SiteState> patchSiteStateFuture(SiteState o, Boolean inheritPk) {
@@ -2283,10 +2369,11 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
 				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?commitWithin=10000&overwrite=true&wt=json");
-				webClient.post(solrPort, solrHostName, solrRequestUri).sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(b -> {
+				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
+				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
 				}).onFailure(ex -> {
-					LOG.error(String.format("indexSiteState failed. "), ex);
+					LOG.error(String.format("indexSiteState failed. "), new RuntimeException(ex));
 					promise.fail(ex);
 				});
 			}).onFailure(ex -> {
@@ -2334,7 +2421,14 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
 									SiteAgency o2 = searchList2.getList().stream().findFirst().orElse(null);
 									if(o2 != null) {
-										eventBus.request("opendatapolicing-enUS-SiteAgency", new JsonObject(), new DeliveryOptions().addHeader("action", "patchSiteAgency")).onSuccess(c -> {
+										JsonObject params = new JsonObject();
+										params.put("body", new JsonObject());
+										params.put("cookie", new JsonObject());
+										params.put("path", new JsonObject());
+										params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
+										JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
+										JsonObject json = new JsonObject().put("context", context);
+										eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "patchSiteAgency")).onSuccess(c -> {
 											promise2.complete();
 										}).onFailure(ex -> {
 											promise2.fail(ex);

@@ -218,7 +218,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			{
-				SiteStateEnUSApiServiceImpl stateApi = new SiteStateEnUSApiServiceImpl(vertx.eventBus(), config, workerExecutor, pgPool, webClient, null, null);
+				SiteStateEnUSApiServiceImpl stateApi = new SiteStateEnUSApiServiceImpl(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, null, null);
 				SiteRequestEnUS siteRequest = stateApi.generateSiteRequestEnUS(null, null);
 				JsonObject o = new JsonObject().put("stateName", "North Carolina").put("stateAbbreviation", "NC").put("pk", "NC");
 				JsonArray list = new JsonArray().add(o);
@@ -305,67 +305,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								JsonObject context = new JsonObject().put("params", params);
 								JsonObject json = new JsonObject().put("context", context);
 								vertx.eventBus().send("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "patchTrafficStopFuture"));
-//									LOG.info("release: {}", semaphore.availablePermits());
-//									semaphore.release();
-//								}).onFailure(ex -> {
-//									LOG.info("release: {}", semaphore.availablePermits());
-//									semaphore.release();
-//									promise1.fail(ex);
-//								});
-//								vertx.eventBus().request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().setSendTimeout(4000).addHeader("action", "patchTrafficStop")).onSuccess(c -> {
-//									LOG.info("release: {}", semaphore.availablePermits());
-//									semaphore.release();
-//								}).onFailure(ex -> {
-//									LOG.info("release: {}", semaphore.availablePermits());
-//									semaphore.release();
-//									promise1.fail(ex);
-//								});
-//
-//								SiteRequestEnUS siteRequest = api.generateSiteRequestEnUS(null, null);
-//								TrafficStop o = new TrafficStop();
-//								o.setSiteRequest_(siteRequest);
-//								o.setPk(row.getLong(0));
-//								siteRequest.setJsonObject(new JsonObject());
-//								siteRequest.setSqlConnection(sqlConnection);
-//								ApiRequest apiRequest = new ApiRequest();
-//								apiRequest.setNumFound(1L);
-//								apiRequest.setNumPATCH(1L);
-//								apiRequest.initDeepApiRequest(siteRequest);
-//								siteRequest.setApiRequest_(apiRequest);
-//
-//								api.sqlPATCHTrafficStop(o, false).onSuccess(trafficStop -> {
-//									LOG.info("sqlPATCH: {}", semaphore.availablePermits());
-//									api.defineTrafficStop(trafficStop).onSuccess(c -> {
-//										LOG.info("define: {}", semaphore.availablePermits());
-//										api.attributeTrafficStop(trafficStop).onSuccess(d -> {
-//											LOG.info("attribute: {}", semaphore.availablePermits());
-//											api.indexTrafficStop(trafficStop).onSuccess(e -> {
-//												LOG.info("release: {}", semaphore.availablePermits());
-//												semaphore.release();
-//											}).onFailure(ex -> {
-//												LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
-//												promise1.fail(ex);
-//												LOG.info("release: {}", semaphore.availablePermits());
-//												semaphore.release();
-//											});
-//										}).onFailure(ex -> {
-//											LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
-//											promise1.fail(ex);
-//											LOG.info("release: {}", semaphore.availablePermits());
-//											semaphore.release();
-//										});
-//									}).onFailure(ex -> {
-//										LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
-//										promise1.fail(ex);
-//										LOG.info("release: {}", semaphore.availablePermits());
-//										semaphore.release();
-//									});
-//								}).onFailure(ex -> {
-//									LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
-//									promise1.fail(ex);
-//									LOG.info("release: {}", semaphore.availablePermits());
-//									semaphore.release();
-//								});
 							} catch (Exception ex) {
 								LOG.error(syncTrafficStopsFail, ex);
 								promise1.fail(ex);

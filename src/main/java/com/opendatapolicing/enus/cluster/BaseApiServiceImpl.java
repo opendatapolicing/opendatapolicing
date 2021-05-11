@@ -2,6 +2,7 @@ package com.opendatapolicing.enus.cluster;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,8 @@ public class BaseApiServiceImpl {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(BaseApiServiceImpl.class);
 
+	protected Semaphore semaphore;
+
 	protected EventBus eventBus;
 
 	protected JsonObject config;
@@ -60,7 +63,8 @@ public class BaseApiServiceImpl {
 
 	protected AuthorizationProvider authorizationProvider;
 
-	public BaseApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+	public BaseApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		this.semaphore = semaphore;
 		this.eventBus = eventBus;
 		this.config = config;
 		this.workerExecutor = workerExecutor;
@@ -140,7 +144,7 @@ public class BaseApiServiceImpl {
 							searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
 							searchList.promiseDeepSearchList(siteRequest).onSuccess(c -> {
 								SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-								SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+								SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 
 								if(siteUser1 == null) {
 									JsonObject jsonObject = new JsonObject();

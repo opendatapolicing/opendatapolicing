@@ -1,76 +1,104 @@
 package com.opendatapolicing.enus.trafficstop;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSApiServiceImpl;
+import com.opendatapolicing.enus.trafficperson.TrafficPerson;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.user.SiteUser;
+import com.opendatapolicing.enus.request.api.ApiRequest;
+import com.opendatapolicing.enus.search.SearchResult;
+import com.opendatapolicing.enus.vertx.MailVerticle;
+import com.opendatapolicing.enus.config.ConfigKeys;
+import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
+import io.vertx.core.WorkerExecutor;
+import java.util.concurrent.Semaphore;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.pgclient.PgPool;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
+import io.vertx.core.eventbus.DeliveryOptions;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import io.vertx.core.json.Json;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.commons.lang3.StringUtils;
+import java.security.Principal;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.io.PrintWriter;
+import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
+import java.util.Collection;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.util.HashSet;
+import io.vertx.core.Handler;
+import io.vertx.ext.web.RoutingContext;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.PivotField;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.RangeFacet;
-import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.util.NamedList;
-import org.apache.solr.common.util.SimpleOrderedMap;
-import org.apache.solr.util.DateMathParser;
+import io.vertx.ext.web.Router;
+import io.vertx.core.Vertx;
+import io.vertx.ext.reactivestreams.ReactiveReadStream;
+import io.vertx.ext.reactivestreams.ReactiveWriteStream;
+import io.vertx.core.MultiMap;
+import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
-import com.opendatapolicing.enus.config.ConfigKeys;
-import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.opendatapolicing.enus.request.api.ApiRequest;
-import com.opendatapolicing.enus.search.SearchList;
-import com.opendatapolicing.enus.trafficperson.TrafficPerson;
-
-import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.MultiMap;
-import io.vertx.core.Promise;
-import io.vertx.core.WorkerExecutor;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.authorization.AuthorizationProvider;
-import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.web.api.service.ServiceRequest;
-import io.vertx.ext.web.api.service.ServiceResponse;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
-import io.vertx.pgclient.PgPool;
-import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
+import io.vertx.sqlclient.Row;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.sql.Timestamp;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.AsyncResult;
+import java.net.URLEncoder;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.http.HttpHeaders;
+import org.apache.http.client.utils.URLEncodedUtils;
+import java.nio.charset.Charset;
+import org.apache.http.NameValuePair;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.util.HashMap;
+import io.vertx.ext.auth.User;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.net.URLDecoder;
+import org.apache.solr.util.DateMathParser;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.PivotField;
+import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
+import java.util.Map.Entry;
+import java.util.Iterator;
+import java.time.ZonedDateTime;
+import org.apache.solr.common.util.SimpleOrderedMap;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import com.opendatapolicing.enus.user.SiteUserEnUSApiServiceImpl;
+import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.writer.AllWriter;
 
 
 /**
@@ -80,11 +108,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficStopEnUSGenApiServiceImpl.class);
 
-	private Semaphore semaphore;
-
 	public TrafficStopEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
-		this.semaphore = semaphore;
+		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
@@ -118,6 +143,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -143,6 +169,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putimportTrafficStop failed. ", ex));
@@ -275,6 +302,23 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		return promise.future();
 	}
 
+	@Override
+	public void putimportTrafficStopFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTImportTrafficStop(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTImportTrafficStop(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -318,6 +362,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								ApiRequest apiRequest = new ApiRequest();
 								JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
 								apiRequest.setRows(jsonArray.size());
@@ -343,6 +388,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putmergeTrafficStop failed. ", ex));
@@ -474,6 +520,23 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		return promise.future();
 	}
 
+	@Override
+	public void putmergeTrafficStopFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		listPUTMergeTrafficStop(apiRequest, siteRequest).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
+
 	public Future<ServiceResponse> response200PUTMergeTrafficStop(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -517,6 +580,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						eventHandler.handle(Future.succeededFuture(response));
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							try {
+								semaphore.acquire();
 								searchTrafficStopList(siteRequest, false, true, true, "/api/traffic-stop/copy", "PUTCopy").onSuccess(listTrafficStop -> {
 									ApiRequest apiRequest = new ApiRequest();
 									apiRequest.setRows(listTrafficStop.getRows());
@@ -546,6 +610,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								blockingCodeHandler.fail(ex);
 							}
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("putcopyTrafficStop failed. ", ex));
@@ -953,6 +1018,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						)
 					));
 				} else {
+					semaphore.acquire();
 					ApiRequest apiRequest = new ApiRequest();
 					apiRequest.setRows(1);
 					apiRequest.setNumFound(1L);
@@ -963,14 +1029,17 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					postTrafficStopFuture(siteRequest, false).onSuccess(trafficStop -> {
 						apiRequest.setPk(trafficStop.getPk());
 						response200POSTTrafficStop(trafficStop).onSuccess(response -> {
+							semaphore.release();
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("postTrafficStop succeeded. "));
 						}).onFailure(ex -> {
 							LOG.error(String.format("postTrafficStop failed. ", ex));
+							semaphore.release();
 							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("postTrafficStop failed. ", ex));
+						semaphore.release();
 						error(siteRequest, eventHandler, ex);
 					});
 				}
@@ -993,6 +1062,23 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		});
 	}
 
+
+	@Override
+	public void postTrafficStopFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		postTrafficStopFuture(siteRequest, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
 
 	public Future<TrafficStop> postTrafficStopFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<TrafficStop> promise = Promise.promise();
@@ -1314,12 +1400,28 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				siteRequest.setRequestUri("/api/traffic-stop");
 				siteRequest.setRequestMethod("PATCH");
 
-				{
-//					response200PATCHTrafficStop(siteRequest).onSuccess(response -> {
-//						eventHandler.handle(Future.succeededFuture(response));
-//						workerExecutor.executeBlocking(blockingCodeHandler -> {
+				List<String> roles = Arrays.asList("SiteService");
+				if(
+						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
+						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
+						) {
+					eventHandler.handle(Future.succeededFuture(
+						new ServiceResponse(401, "UNAUTHORIZED", 
+							Buffer.buffer().appendString(
+								new JsonObject()
+									.put("errorCode", "401")
+									.put("errorMessage", "roles required: " + String.join(", ", roles))
+									.encodePrettily()
+								), MultiMap.caseInsensitiveMultiMap()
+						)
+					));
+				} else {
+					response200PATCHTrafficStop(siteRequest).onSuccess(response -> {
+						eventHandler.handle(Future.succeededFuture(response));
+						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							searchTrafficStopList(siteRequest, false, true, true, "/api/traffic-stop", "PATCH").onSuccess(listTrafficStop -> {
 								try {
+									semaphore.acquire();
 									List<String> roles2 = Arrays.asList("SiteAdmin");
 									if(listTrafficStop.getQueryResponse().getResults().getNumFound() > 1
 											&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
@@ -1327,7 +1429,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 											) {
 										String message = String.format("roles required: " + String.join(", ", roles2));
 										LOG.error(message);
-										error(siteRequest, eventHandler, null);
+										blockingCodeHandler.fail(message);
 									} else {
 
 										ApiRequest apiRequest = new ApiRequest();
@@ -1349,32 +1451,28 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 										listTrafficStop.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
 
 										listPATCHTrafficStop(apiRequest, listTrafficStop, dt).onSuccess(e -> {
-											response200PATCHTrafficStop(siteRequest).onSuccess(response -> {
-												eventHandler.handle(Future.succeededFuture(response));
-												LOG.debug(String.format("patchTrafficStop succeeded. "));
-											}).onFailure(ex -> {
-												LOG.error(String.format("patchTrafficStop failed. ", ex));
-												error(siteRequest, eventHandler, ex);
-											});
+											LOG.debug(String.format("patchTrafficStop succeeded. "));
+											blockingCodeHandler.complete();
 										}).onFailure(ex -> {
 											LOG.error(String.format("patchTrafficStop failed. ", ex));
-											error(siteRequest, eventHandler, ex);
+											blockingCodeHandler.fail(ex);
 										});
 									}
 								} catch(Exception ex) {
 									LOG.error(String.format("patchTrafficStop failed. ", ex));
-									error(siteRequest, eventHandler, ex);
+									blockingCodeHandler.fail(ex);
 								}
 							}).onFailure(ex -> {
 								LOG.error(String.format("patchTrafficStop failed. ", ex));
-								error(siteRequest, eventHandler, ex);
+								blockingCodeHandler.fail(ex);
 							});
-//						}, resultHandler -> {
-//						});
-//					}).onFailure(ex -> {
-//						LOG.error(String.format("patchTrafficStop failed. ", ex));
-//						error(siteRequest, eventHandler, ex);
-//					});
+						}, resultHandler -> {
+							semaphore.release();
+						});
+					}).onFailure(ex -> {
+						LOG.error(String.format("patchTrafficStop failed. ", ex));
+						error(siteRequest, eventHandler, ex);
+					});
 				}
 			} catch(Exception ex) {
 				LOG.error(String.format("patchTrafficStop failed. ", ex));
@@ -2661,6 +2759,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 									if(o2 != null) {
 										JsonObject params = new JsonObject();
 										params.put("body", new JsonObject());
+										params.put("cookie", new JsonObject());
+										params.put("path", new JsonObject());
 										params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
 										JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
 										JsonObject json = new JsonObject().put("context", context);

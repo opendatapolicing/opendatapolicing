@@ -10,6 +10,7 @@ import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
+import java.util.concurrent.Semaphore;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -74,6 +75,8 @@ import java.nio.charset.Charset;
 import org.apache.http.NameValuePair;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.util.HashMap;
 import io.vertx.ext.auth.User;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -103,8 +106,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteUserEnUSGenApiServiceImpl.class);
 
-	public SiteUserEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public SiteUserEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// Search //
@@ -316,6 +319,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 						workerExecutor.executeBlocking(blockingCodeHandler -> {
 							searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
 								try {
+									semaphore.acquire();
 									List<String> roles2 = Arrays.asList("SiteAdmin");
 									if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1
 											&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
@@ -361,6 +365,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								blockingCodeHandler.fail(ex);
 							});
 						}, resultHandler -> {
+							semaphore.release();
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("patchSiteUser failed. ", ex));
@@ -417,6 +422,26 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			error(listSiteUser.getSiteRequest_(), null, ex);
 		});
 		return promise.future();
+	}
+
+	@Override
+	public void patchSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		SiteUser o = new SiteUser();
+		o.setSiteRequest_(siteRequest);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		o.setPk(body.getString(SiteUser.VAR_pk));
+		patchSiteUserFuture(o, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
 	}
 
 	public Future<SiteUser> patchSiteUserFuture(SiteUser o, Boolean inheritPk) {
@@ -627,6 +652,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				siteRequest.setRequestUri("/api/user");
 				siteRequest.setRequestMethod("POST");
 				{
+					semaphore.acquire();
 					ApiRequest apiRequest = new ApiRequest();
 					apiRequest.setRows(1);
 					apiRequest.setNumFound(1L);
@@ -637,14 +663,17 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					postSiteUserFuture(siteRequest, false).onSuccess(siteUser -> {
 						apiRequest.setPk(siteUser.getPk());
 						response200POSTSiteUser(siteUser).onSuccess(response -> {
+							semaphore.release();
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("postSiteUser succeeded. "));
 						}).onFailure(ex -> {
 							LOG.error(String.format("postSiteUser failed. ", ex));
+							semaphore.release();
 							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
 						LOG.error(String.format("postSiteUser failed. ", ex));
+						semaphore.release();
 						error(siteRequest, eventHandler, ex);
 					});
 				}
@@ -667,6 +696,23 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		});
 	}
 
+
+	@Override
+	public void postSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+		ApiRequest apiRequest = new ApiRequest();
+		apiRequest.setRows(1);
+		apiRequest.setNumFound(1L);
+		apiRequest.setNumPATCH(0L);
+		apiRequest.initDeepApiRequest(siteRequest);
+		siteRequest.setApiRequest_(apiRequest);
+		postSiteUserFuture(siteRequest, false).onSuccess(a -> {
+			semaphore.release();
+			eventHandler.handle(Future.succeededFuture());
+		}).onFailure(ex -> {
+			eventHandler.handle(Future.failedFuture(ex));
+		});
+	}
 
 	public Future<SiteUser> postSiteUserFuture(SiteRequestEnUS siteRequest, Boolean inheritPk) {
 		Promise<SiteUser> promise = Promise.promise();
@@ -1211,10 +1257,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
 				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?commitWithin=10000&overwrite=true&wt=json");
-				webClient.post(solrPort, solrHostName, solrRequestUri).sendBuffer(Buffer.buffer(document.jsonStr())).onSuccess(b -> {
+				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
+				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
 				}).onFailure(ex -> {
-					LOG.error(String.format("indexSiteUser failed. "), ex);
+					LOG.error(String.format("indexSiteUser failed. "), new RuntimeException(ex));
 					promise.fail(ex);
 				});
 			}).onFailure(ex -> {
