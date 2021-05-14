@@ -20,7 +20,7 @@ API_URL="$PROJECT_SITE_BASE_URL_ENUS/api/person/import?var=refresh:false"
 IMPORT_PATH=~/backup/opendatapolicing/PERSON.txt
 LINE_COUNT=`wc -l $IMPORT_PATH | cut -d ' ' -f 1`
 echo $LINE_COUNT
-DIVIDE_BY="${DIVIDE_BY:-1}"
+DIVIDE_BY="${DIVIDE_BY:-10}"
 (( PART = LINE_COUNT / DIVIDE_BY ))
 LINE_PART=$PART
 echo $LINE_COUNT

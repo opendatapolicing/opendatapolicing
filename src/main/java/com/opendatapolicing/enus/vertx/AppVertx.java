@@ -1,10 +1,12 @@
 package com.opendatapolicing.enus.vertx;    
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -13,8 +15,7 @@ import java.util.function.Function;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +25,15 @@ import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
+import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.state.SiteStateEnUSGenApiService;
 import com.opendatapolicing.enus.trafficcontraband.TrafficContrabandEnUSGenApiService;
 import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiService;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiService;
+import com.opendatapolicing.enus.trafficstop.TrafficStop;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiService;
 import com.opendatapolicing.enus.user.SiteUserEnUSGenApiService;
 
@@ -36,6 +41,7 @@ import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -47,6 +53,7 @@ import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.http.Cookie;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.core.net.JksOptions;
@@ -194,18 +201,49 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		DeploymentOptions deploymentOptions = new DeploymentOptions();
 
 		DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
-		mailVerticleDeploymentOptions.setWorker(true);
+//		mailVerticleDeploymentOptions.setWorker(true);
 
 		DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
-		mailVerticleDeploymentOptions.setWorker(true);
+//		mailVerticleDeploymentOptions.setWorker(true);
 
 		Consumer<Vertx> runner = vertx -> {
-			for(Integer i = 0; i < siteInstances; i++)
+			for(Integer i = 0; i < siteInstances; i++) {
 				vertx.deployVerticle(new AppVertx().setSemaphore(semaphore), deploymentOptions);
+			}
 			vertx.deployVerticle(new MailVerticle(), mailVerticleDeploymentOptions);
 			vertx.deployVerticle(new WorkerVerticle().setSemaphore(semaphore), workerVerticleDeploymentOptions);
 		};
 		Vertx.clusteredVertx(vertxOptions).onSuccess(vertx -> {
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				public void run() {
+					LOG.info("Shutting down vertx. ");
+					List<Future> futures = new ArrayList<>();
+					CountDownLatch latch = new CountDownLatch(vertx.deploymentIDs().size());
+					vertx.deploymentIDs().forEach(deploymentId -> {
+						futures.add(vertx.undeploy(deploymentId).onSuccess(a -> {
+							LOG.info("Succeeded to undeploy verticle {}. ", deploymentId);
+							latch.countDown();
+						}).onFailure(ex -> {
+							LOG.error("Failed to undeploy verticle {}. ", deploymentId);
+							latch.countDown();
+						}));
+						
+					});
+					CompositeFuture.all(futures).onSuccess(a -> {
+						vertx.close().onSuccess(b -> {
+							LOG.info("Goodbye");
+						}).onFailure(ex -> {
+							LOG.error("Failed to shut down vertx. ", ex);
+						});
+					}).onFailure(ex -> {
+						LOG.error(String.format("listPUTImportTrafficStop failed. ", ex));
+					});
+					try {
+						latch.await(10, TimeUnit.SECONDS);
+					} catch (Exception ignored) {
+					}
+				}
+			});
 			EventBus eventBus = vertx.eventBus();
 			LOG.info("We now have a clustered event bus: {}", eventBus);
 			runner.accept(vertx);
@@ -680,6 +718,60 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 				a.reroute("/template/home-page");
 			});
 
+			router.get("/template/home-page").handler(ctx -> {
+				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+				siteRequest.setWebClient(webClient);
+				siteRequest.setConfig(config);
+				siteRequest.initDeepSiteRequestEnUS(siteRequest);
+
+				SearchList<SiteState> stateSearch = new SearchList<SiteState>();
+				stateSearch.setStore(true);
+				stateSearch.setQuery("*:*");
+				stateSearch.setC(SiteState.class);
+				stateSearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
+					JsonArray states = new JsonArray();
+					ctx.put("states", states);
+					stateSearch.getList().stream().forEach(s -> states.add(JsonObject.mapFrom(s)));
+
+					SearchList<TrafficStop> stopSearch = new SearchList<TrafficStop>();
+					stopSearch.setStore(true);
+					stopSearch.setQuery("*:*");
+					stopSearch.setC(SiteState.class);
+					stopSearch.addFacetField("stateAbbreviation_indexed_string");
+					stopSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
+						stateSearch.getList().stream().forEach(state -> {
+							String stateAbbreviation = state.getStateAbbreviation();
+							Count count = stopSearch.getQueryResponse().getFacetField("stateAbbreviation_indexed_string").getValues().stream().filter(count1 -> count1.getName().equals(stateAbbreviation)).findFirst().orElse(null);
+							if(count != null) {
+								Long stopCount = count.getCount();
+								String stopCountStr;
+								if(stopCount > 1000000000)
+									stopCountStr = Math.floor(stopCount / 1000000000) + "+ billion";
+								else if(stopCount > 1000000)
+									stopCountStr = Math.floor(stopCount / 1000000) + "+ million";
+								else if(stopCount > 1000)
+									stopCountStr = Math.floor(stopCount / 1000) + "+ thousand";
+								else
+									stopCountStr = stopCount.toString();
+		
+								JsonObject stateJson = new JsonObject();
+								stateJson.put("stateAbbreviation", stateAbbreviation);
+								stateJson.put("stateName", state.getStateName());
+								stateJson.put("stopCountStr", stopCountStr);
+								states.add(stateJson);
+							}
+						});
+						ctx.next();
+					}).onFailure(ex -> {
+						LOG.error("Home page failed to load state data. ", ex);
+						ctx.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error("Home page failed to load state data. ", ex);
+					ctx.fail(ex);
+				});
+			});
+
 			router.get("/api").handler(a -> {
 				a.reroute("/template/openapi");
 			});
@@ -770,27 +862,19 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	/**	
 	 *	This is called by Vert.x when the verticle instance is undeployed. 
 	 *	Setup the stopPromise to handle tearing down the server. 
+	 * Val.Fail.enUS:Could not close the database client connection. 
+	 * Val.Complete.enUS:The database client connection was closed. 
 	 **/
 	@Override()
-	public void  stop(Promise<Void> stopPromise) throws Exception, Exception {
-		Promise<Void> promiseSteps = closeData();
-		promiseSteps.future().onComplete(stopPromise);
-	}
-
-	/**	
-	 * Val.Error.enUS:Could not close the database client connection. 
-	 * Val.Success.enUS:The database client connextion was closed. 
-	 * 
-	 *	Return a promise to close the database client connection. 
-	 **/
-	private Promise<Void> closeData() {
-		Promise<Void> promise = Promise.promise();
-
+	public void  stop(Promise<Void> promise) throws Exception, Exception {
 		if(pgPool != null) {
-			pgPool.close();
-			LOG.info(closeDataSuccess);
-			promise.complete();
+			pgPool.close().onSuccess(a -> {
+				LOG.info(stopComplete);
+				promise.complete();
+			}).onFailure(ex -> {
+				LOG.error(stopFail, ex);
+				promise.fail(ex);
+			});
 		}
-		return promise;
 	}
 }

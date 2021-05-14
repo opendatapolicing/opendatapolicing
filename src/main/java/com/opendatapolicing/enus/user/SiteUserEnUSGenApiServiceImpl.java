@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.time.Instant;
 import java.util.stream.Collectors;
 import io.vertx.core.json.Json;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -314,59 +315,47 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				siteRequest.setRequestUri("/api/user");
 				siteRequest.setRequestMethod("PATCH");
 				{
-					response200PATCHSiteUser(siteRequest).onSuccess(response -> {
-						eventHandler.handle(Future.succeededFuture(response));
-						workerExecutor.executeBlocking(blockingCodeHandler -> {
-							searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
-								try {
-									semaphore.acquire();
-									List<String> roles2 = Arrays.asList("SiteAdmin");
-									if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1
-											&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
-											&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
-											) {
-										String message = String.format("roles required: " + String.join(", ", roles2));
-										LOG.error(message);
-										blockingCodeHandler.fail(message);
-									} else {
+					serviceRequest.getParams().getJsonObject("query").put("rows", 100);
+					searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
+						try {
+							List<String> roles2 = Arrays.asList("SiteAdmin");
+							if(listSiteUser.getQueryResponse().getResults().getNumFound() > 1
+									&& !CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles2)
+									&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles2)
+									) {
+								String message = String.format("roles required: " + String.join(", ", roles2));
+								LOG.error(message);
+								error(siteRequest, eventHandler, new RuntimeException(message));
+							} else {
 
-										ApiRequest apiRequest = new ApiRequest();
-										apiRequest.setRows(listSiteUser.getRows());
-										apiRequest.setNumFound(listSiteUser.getQueryResponse().getResults().getNumFound());
-										apiRequest.setNumPATCH(0L);
-										apiRequest.initDeepApiRequest(siteRequest);
-										siteRequest.setApiRequest_(apiRequest);
-										eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-										SimpleOrderedMap facets = (SimpleOrderedMap)Optional.ofNullable(listSiteUser.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(null);
-										Date date = null;
-										if(facets != null)
-										date = (Date)facets.get("max_modified");
-										String dt;
-										if(date == null)
-											dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(ZonedDateTime.now().toInstant(), ZoneId.of("UTC")).minusNanos(1000));
-										else
-											dt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC")));
-										listSiteUser.addFilterQuery(String.format("modified_indexed_date:[* TO %s]", dt));
+								ApiRequest apiRequest = new ApiRequest();
+								apiRequest.setRows(listSiteUser.getRows());
+								apiRequest.setNumFound(listSiteUser.getQueryResponse().getResults().getNumFound());
+								apiRequest.setNumPATCH(0L);
+								apiRequest.initDeepApiRequest(siteRequest);
+								siteRequest.setApiRequest_(apiRequest);
+								if(apiRequest.getNumFound() == 1L)
+									apiRequest.setOriginal(listSiteUser.first());
+								apiRequest.setPk(listSiteUser.first().getPk());
+								eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
 
-										listPATCHSiteUser(apiRequest, listSiteUser, dt).onSuccess(e -> {
-											LOG.debug(String.format("patchSiteUser succeeded. "));
-											blockingCodeHandler.complete();
-										}).onFailure(ex -> {
-											LOG.error(String.format("patchSiteUser failed. ", ex));
-											blockingCodeHandler.fail(ex);
-										});
-									}
-								} catch(Exception ex) {
+								listPATCHSiteUser(apiRequest, listSiteUser).onSuccess(e -> {
+									response200PATCHSiteUser(siteRequest).onSuccess(response -> {
+										LOG.debug(String.format("patchSiteUser succeeded. "));
+										eventHandler.handle(Future.succeededFuture(response));
+									}).onFailure(ex -> {
+										LOG.error(String.format("patchSiteUser failed. ", ex));
+										error(siteRequest, eventHandler, ex);
+									});
+								}).onFailure(ex -> {
 									LOG.error(String.format("patchSiteUser failed. ", ex));
-									blockingCodeHandler.fail(ex);
-								}
-							}).onFailure(ex -> {
-								LOG.error(String.format("patchSiteUser failed. ", ex));
-								blockingCodeHandler.fail(ex);
-							});
-						}, resultHandler -> {
-							semaphore.release();
-						});
+									error(siteRequest, eventHandler, ex);
+								});
+							}
+						} catch(Exception ex) {
+							LOG.error(String.format("patchSiteUser failed. ", ex));
+							error(siteRequest, eventHandler, ex);
+						}
 					}).onFailure(ex -> {
 						LOG.error(String.format("patchSiteUser failed. ", ex));
 						error(siteRequest, eventHandler, ex);
@@ -392,7 +381,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 	}
 
 
-	public Future<Void> listPATCHSiteUser(ApiRequest apiRequest, SearchList<SiteUser> listSiteUser, String dt) {
+	public Future<Void> listPATCHSiteUser(ApiRequest apiRequest, SearchList<SiteUser> listSiteUser) {
 		Promise<Void> promise = Promise.promise();
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteUser.getSiteRequest_();
@@ -400,26 +389,53 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			SiteRequestEnUS siteRequest2 = siteRequest.copy();
 			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
 			o.setSiteRequest_(siteRequest2);
-			futures.add(
-				patchSiteUserFuture(o, false).onFailure(ex -> {
-					error(siteRequest2, null, ex);
-				})
-			);
+			futures.add(Future.future(promise1 -> {
+				workerExecutor.executeBlocking(blockingCodeHandler -> {
+					try {
+						semaphore.acquire();
+						Long pk = o.getPk();
+
+						JsonObject params = new JsonObject();
+						params.put("body", siteRequest.getJsonObject());
+						params.put("path", new JsonObject());
+						params.put("cookie", new JsonObject());
+						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+						JsonObject context = new JsonObject().put("params", params);
+						JsonObject json = new JsonObject().put("context", context);
+						eventBus.send("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture"));
+						blockingCodeHandler.complete();
+					} catch(Exception ex) {
+						LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+						blockingCodeHandler.fail(ex);
+					}
+				}).onSuccess(a -> {
+					promise1.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+					promise1.fail(ex);
+				});
+			}));
 		});
 		CompositeFuture.all(futures).onSuccess( a -> {
-			listSiteUser.next(dt).onSuccess(next -> {
+			if(apiRequest != null) {
+				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSiteUser.getQueryResponse().getResults().size());
+				if(apiRequest.getNumFound() == 1L)
+					listSiteUser.first().apiRequestSiteUser();
+				eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+			}
+			listSiteUser.next().onSuccess(next -> {
 				if(next) {
-					listPATCHSiteUser(apiRequest, listSiteUser, dt);
+					listPATCHSiteUser(apiRequest, listSiteUser);
 				} else {
 					promise.complete();
 				}
 			}).onFailure(ex -> {
 				LOG.error(String.format("listPATCHSiteUser failed. ", ex));
-				error(listSiteUser.getSiteRequest_(), null, ex);
+				promise.fail(ex);
 			});
 		}).onFailure(ex -> {
 			LOG.error(String.format("listPATCHSiteUser failed. ", ex));
-			error(listSiteUser.getSiteRequest_(), null, ex);
+			promise.fail(ex);
 		});
 		return promise.future();
 	}
@@ -450,10 +466,6 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			if(apiRequest != null && apiRequest.getNumFound() == 1L) {
-				apiRequest.setOriginal(o);
-				apiRequest.setPk(o.getPk());
-			}
 			pgPool.withTransaction(sqlConnection -> {
 				Promise<SiteUser> promise1 = Promise.promise();
 				siteRequest.setSqlConnection(sqlConnection);
@@ -487,11 +499,6 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			}).compose(siteUser -> {
 				Promise<SiteUser> promise2 = Promise.promise();
 				refreshSiteUser(siteUser).onSuccess(a -> {
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						siteUser.apiRequestSiteUser();
-						eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-					}
 					promise2.complete(siteUser);
 				}).onFailure(ex -> {
 					LOG.error(String.format("patchSiteUserFuture failed. ", ex));
@@ -984,7 +991,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 	}
 
 	public void searchSiteUserRows(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueRows) {
-			searchList.setRows(apiMethod != null && apiMethod.contains("Search") ? valueRows : 10);
+			searchList.setRows(apiMethod != null ? valueRows : 10);
 	}
 
 	public void searchSiteUserStart(String uri, String apiMethod, SearchList<SiteUser> searchList, Integer valueStart) {
@@ -1047,7 +1054,6 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			searchList.setSiteRequest_(siteRequest);
 			if(entityList != null)
 				searchList.addFields(entityList);
-			searchList.add("json.facet", "{max_modified:'max(modified_indexed_date)'}");
 
 			String id = serviceRequest.getParams().getJsonObject("path").getString("id");
 			if(id != null && NumberUtils.isCreatable(id)) {
@@ -1284,38 +1290,23 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
 			Boolean refresh = !"false".equals(siteRequest.getRequestVars().get("refresh"));
 			if(refresh && !Optional.ofNullable(siteRequest.getJsonObject()).map(JsonObject::isEmpty).orElse(true)) {
-				SearchList<SiteUser> searchList = new SearchList<SiteUser>();
-				searchList.setStore(true);
-				searchList.setQuery("*:*");
-				searchList.setC(SiteUser.class);
-				searchList.addFilterQuery("modified_indexed_date:[" + DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(siteRequest.getApiRequest_().getCreated().toInstant(), ZoneId.of("UTC"))) + " TO *]");
-				searchList.setRows(1000);
-				searchList.promiseDeepSearchList(siteRequest).onSuccess(a -> {
-					List<Future> futures = new ArrayList<>();
+				List<Future> futures = new ArrayList<>();
 
-					for(int i=0; i < pks.size(); i++) {
-						Long pk2 = pks.get(i);
-						String classSimpleName2 = classes.get(i);
-					}
+				for(int i=0; i < pks.size(); i++) {
+					Long pk2 = pks.get(i);
+					String classSimpleName2 = classes.get(i);
+				}
 
-					CompositeFuture.all(futures).onSuccess(b -> {
-						List<Future> futures2 = new ArrayList<>();
-						for(SiteUser o2 : searchList.getList()) {
-							SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), new JsonObject());
-							o2.setSiteRequest_(siteRequest2);
-							futures2.add(
-								patchSiteUserFuture(o2, false).onFailure(ex -> {
-									LOG.error(String.format("SiteUser %s failed. ", o2.getPk()), ex);
-								})
-							);
-						}
-
-						CompositeFuture.all(futures2).onSuccess(c -> {
-							promise.complete();
-						}).onFailure(ex -> {
-							LOG.error("Refresh relations failed. ", ex);
-							promise.fail(ex);
-						});
+				CompositeFuture.all(futures).onSuccess(b -> {
+					JsonObject params = new JsonObject();
+					params.put("body", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("path", new JsonObject());
+					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
+					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("opendatapolicing--SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUser")).onSuccess(c -> {
+						promise.complete();
 					}).onFailure(ex -> {
 						LOG.error("Refresh relations failed. ", ex);
 						promise.fail(ex);

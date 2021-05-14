@@ -221,10 +221,10 @@ DROP TABLE SearchBasis CASCADE;
 	public static final String startServerSsl1 = "Configuring SSL: %s";
 	public static final String startServerSsl = startServerSsl1;
 
-	public static final String closeDataError1 = "Could not close the database client connection. ";
-	public static final String closeDataError = closeDataError1;
-	public static final String closeDataSuccess1 = "The database client connextion was closed. ";
-	public static final String closeDataSuccess = closeDataSuccess1;
+	public static final String stopFail1 = "Could not close the database client connection. ";
+	public static final String stopFail = stopFail1;
+	public static final String stopComplete1 = "The database client connection was closed. ";
+	public static final String stopComplete = stopComplete1;
 
 
 	//////////////
@@ -442,6 +442,6 @@ DROP TABLE SearchBasis CASCADE;
 		return sb.toString();
 	}
 
-	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureHealthChecksComplete1, configureHealthChecksFail1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, closeDataError1, closeDataSuccess1 };
+	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureHealthChecksComplete1, configureHealthChecksFail1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, stopFail1, stopComplete1 };
 
 }

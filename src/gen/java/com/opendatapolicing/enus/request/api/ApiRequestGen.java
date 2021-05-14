@@ -138,7 +138,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)))).truncatedTo(ChronoUnit.MILLIS);
+		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 	}
 	public void setCreated(Date o) {
 		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);

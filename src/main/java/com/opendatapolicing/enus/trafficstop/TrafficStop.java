@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficstop;                                                       
+package com.opendatapolicing.enus.trafficstop;              
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -215,27 +215,29 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * DisplayName.enUS: stop purpose title
 	 */ 
 	protected void _stopPurposeTitle(Wrap<String> w) {
-		switch(stopPurposeNum) {
-		case 1:
-			w.o("Speed Limit Violation"); break;
-		case 2:
-			w.o("Stop Light/Sign Violation"); break;
-		case 3:
-			w.o("Driving While Impaired"); break;
-		case 4:
-			w.o("Safe Movement Violation"); break;
-		case 5:
-			w.o("Vehicle Equipment Violation"); break;
-		case 6:
-			w.o("Vehicle Regulatory Violation"); break;
-		case 7:
-			w.o("Seat Belt Violation"); break;
-		case 8:
-			w.o("Investigation"); break;
-		case 9:
-			w.o("Other Motor Vehicle Violation"); break;
-		case 10:
-			w.o("Checkpoint"); break;
+		if(stopPurposeNum != null) {
+			switch(stopPurposeNum) {
+			case 1:
+				w.o("Speed Limit Violation"); break;
+			case 2:
+				w.o("Stop Light/Sign Violation"); break;
+			case 3:
+				w.o("Driving While Impaired"); break;
+			case 4:
+				w.o("Safe Movement Violation"); break;
+			case 5:
+				w.o("Vehicle Equipment Violation"); break;
+			case 6:
+				w.o("Vehicle Regulatory Violation"); break;
+			case 7:
+				w.o("Seat Belt Violation"); break;
+			case 8:
+				w.o("Investigation"); break;
+			case 9:
+				w.o("Other Motor Vehicle Violation"); break;
+			case 10:
+				w.o("Checkpoint"); break;
+			}
 		}
 	}
 
@@ -258,17 +260,19 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _stopActionTitle(Wrap<String> w) {
-		switch(stopActionNum) {
-		case 1:
-			w.o("Verbal Warning"); break;
-		case 2:
-			w.o("Written Warning"); break;
-		case 3:
-			w.o("Citation Issued"); break;
-		case 4:
-			w.o("On-View Arrest"); break;
-		case 5:
-			w.o("No Action Taken"); break;
+		if(stopActionNum != null) {
+			switch(stopActionNum) {
+			case 1:
+				w.o("Verbal Warning"); break;
+			case 2:
+				w.o("Written Warning"); break;
+			case 3:
+				w.o("Citation Issued"); break;
+			case 4:
+				w.o("On-View Arrest"); break;
+			case 5:
+				w.o("No Action Taken"); break;
+			}
 		}
 	}
 
@@ -429,9 +433,11 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 */
 	protected void _personRaceTitles(List<String> l) {
 		FacetField field = personSearch.getQueryResponse().getFacetField("personRaceTitle_indexed_string");
-		for(Count count : field.getValues()) {
-			if(count.getCount() > 0)
-				l.add(count.getName());
+		if(field != null) {
+			for(Count count : field.getValues()) {
+				if(count.getCount() > 0)
+					l.add(count.getName());
+			}
 		}
 	}
 
@@ -457,9 +463,11 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 */
 	protected void _trafficSearchRaceTitles(List<String> l) {
 		FacetField field = trafficSearchSearch.getQueryResponse().getFacetField("personRaceTitle_indexed_string");
-		for(Count count : field.getValues()) {
-			if(count.getCount() > 0)
-				l.add(count.getName());
+		if(field != null) {
+			for(Count count : field.getValues()) {
+				if(count.getCount() > 0)
+					l.add(count.getName());
+			}
 		}
 	}
 //

@@ -434,7 +434,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetStopDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)))).truncatedTo(ChronoUnit.MILLIS);
+		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 	}
 	public void setStopDateTime(Date o) {
 		this.stopDateTime = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);

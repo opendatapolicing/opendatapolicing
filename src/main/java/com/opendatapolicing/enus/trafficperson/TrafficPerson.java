@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficperson;                                                   
+package com.opendatapolicing.enus.trafficperson;                                                    
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -435,11 +435,13 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person ethnicity title
 	 */ 
 	protected void _personEthnicityTitle(Wrap<String> w) {
-		switch(personEthnicityId) {
-		case "H":
-			w.o("Hispanic"); break;
-		case "N":
-			w.o("Non-Hispanic"); break;
+		if(personEthnicityId != null) {
+			switch(personEthnicityId) {
+			case "H":
+				w.o("Hispanic"); break;
+			case "N":
+				w.o("Non-Hispanic"); break;
+			}
 		}
 	}
 
@@ -462,17 +464,19 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * DisplayName.enUS: person race title
 	 */ 
 	protected void _personRaceTitle(Wrap<String> w) {
-		switch(personRaceId) {
-		case "A":
-			w.o("Asian"); break;
-		case "B":
-			w.o("Black"); break;
-		case "I":
-			w.o("Indigenous"); break;
-		case "U":
-			w.o("Other"); break;
-		case "W":
-			w.o("White"); break;
+		if(personRaceId != null) {
+			switch(personRaceId) {
+			case "A":
+				w.o("Asian"); break;
+			case "B":
+				w.o("Black"); break;
+			case "I":
+				w.o("Indigenous"); break;
+			case "U":
+				w.o("Other"); break;
+			case "W":
+				w.o("White"); break;
+			}
 		}
 	}
 //
