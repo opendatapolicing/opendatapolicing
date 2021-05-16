@@ -439,11 +439,11 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * DisplayName.enUS: traffic stop key
+	 * DisplayName.enUS: traffic stop ID
 	 */          
-	protected void _trafficStopKey(Wrap<Long> w) {
+	protected void _stopId(Wrap<String> w) {
 		if(trafficPerson_ != null)
-			w.o(trafficPerson_.getTrafficStopKey());
+			w.o(trafficPerson_.getStopId());
 	}
 
 	/**    

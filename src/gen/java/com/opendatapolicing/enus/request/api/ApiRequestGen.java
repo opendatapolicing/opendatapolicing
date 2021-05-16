@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.request.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,6 +24,7 @@ import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -47,7 +48,6 @@ import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.api.ApiRequest&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -106,7 +106,10 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity created
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
 	@JsonIgnore
@@ -128,18 +131,24 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.created = created;
 		this.createdWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setCreated(Instant o) {
 		this.created = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.createdWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
+	@JsonIgnore
 	public void setCreated(String o) {
 		this.created = ApiRequest.staticSetCreated(siteRequest_, o);
 		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		if(StringUtils.endsWith(o, "Z"))
+			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
 	}
+	@JsonIgnore
 	public void setCreated(Date o) {
 		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.createdWrap.alreadyInitialized = true;
@@ -190,6 +199,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity rows
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer rows;
@@ -212,6 +222,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.rows = rows;
 		this.rowsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setRows(String o) {
 		this.rows = ApiRequest.staticSetRows(siteRequest_, o);
 		this.rowsWrap.alreadyInitialized = true;
@@ -267,6 +278,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity numFound
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long numFound;
@@ -289,6 +301,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.numFound = numFound;
 		this.numFoundWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setNumFound(String o) {
 		this.numFound = ApiRequest.staticSetNumFound(siteRequest_, o);
 		this.numFoundWrap.alreadyInitialized = true;
@@ -344,6 +357,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity numPATCH
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long numPATCH;
@@ -366,6 +380,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.numPATCH = numPATCH;
 		this.numPATCHWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setNumPATCH(String o) {
 		this.numPATCH = ApiRequest.staticSetNumPATCH(siteRequest_, o);
 		this.numPATCHWrap.alreadyInitialized = true;
@@ -421,6 +436,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity uuid
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String uuid;
 	@JsonIgnore
@@ -490,6 +506,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity id
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String id;
 	@JsonIgnore
@@ -559,6 +576,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity pk
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long pk;
@@ -581,6 +599,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.pk = pk;
 		this.pkWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPk(String o) {
 		this.pk = ApiRequest.staticSetPk(siteRequest_, o);
 		this.pkWrap.alreadyInitialized = true;
@@ -636,6 +655,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity original
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Object original;
 	@JsonIgnore
@@ -678,6 +698,8 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity pks
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> pks = new ArrayList<Long>();
@@ -700,6 +722,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		this.pks = pks;
 		this.pksWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPks(String o) {
 		Long l = ApiRequest.staticSetPks(siteRequest_, o);
 		if(l != null)
@@ -722,6 +745,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			this.pks.add(o);
 		return (ApiRequest)this;
 	}
+	@JsonIgnore
 	public void setPks(JsonArray objets) {
 		pks.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -783,6 +807,8 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity classes
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classes = new ArrayList<String>();
 	@JsonIgnore
@@ -818,6 +844,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			this.classes.add(o);
 		return (ApiRequest)this;
 	}
+	@JsonIgnore
 	public void setClasses(JsonArray objets) {
 		classes.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -872,6 +899,8 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	/**	 The entity vars
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> vars = new ArrayList<String>();
 	@JsonIgnore
@@ -907,6 +936,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			this.vars.add(o);
 		return (ApiRequest)this;
 	}
+	@JsonIgnore
 	public void setVars(JsonArray objets) {
 		vars.clear();
 		for(int i = 0; i < objets.size(); i++) {

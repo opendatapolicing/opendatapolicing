@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.trafficstop;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Date;
 import java.time.ZonedDateTime;
@@ -8,7 +9,6 @@ import com.opendatapolicing.enus.state.SiteState;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.lang.Long;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
@@ -16,6 +16,7 @@ import java.time.ZoneOffset;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -61,7 +62,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -80,6 +80,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity trafficStopKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long trafficStopKey;
@@ -102,6 +103,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.trafficStopKey = trafficStopKey;
 		this.trafficStopKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setTrafficStopKey(String o) {
 		this.trafficStopKey = TrafficStop.staticSetTrafficStopKey(siteRequest_, o);
 		this.trafficStopKeyWrap.alreadyInitialized = true;
@@ -157,6 +159,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stateAbbreviation
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateAbbreviation;
 	@JsonIgnore
@@ -285,6 +288,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity state_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteState state_;
 	@JsonIgnore
@@ -327,6 +331,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stateKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long stateKey;
@@ -349,6 +354,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stateKey = stateKey;
 		this.stateKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStateKey(String o) {
 		this.stateKey = TrafficStop.staticSetStateKey(siteRequest_, o);
 		this.stateKeyWrap.alreadyInitialized = true;
@@ -404,6 +410,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stateName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateName;
 	@JsonIgnore
@@ -473,6 +480,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity agencyKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long agencyKey;
@@ -495,6 +503,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.agencyKey = agencyKey;
 		this.agencyKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setAgencyKey(String o) {
 		this.agencyKey = TrafficStop.staticSetAgencyKey(siteRequest_, o);
 		this.agencyKeyWrap.alreadyInitialized = true;
@@ -609,6 +618,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity agency_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteAgency agency_;
 	@JsonIgnore
@@ -651,6 +661,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity agencyTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyTitle;
 	@JsonIgnore
@@ -720,7 +731,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopDateTime
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
 	@JsonIgnore
@@ -742,18 +756,24 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopDateTime = stopDateTime;
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDateTime(Instant o) {
 		this.stopDateTime = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
+	@JsonIgnore
 	public void setStopDateTime(String o) {
 		this.stopDateTime = TrafficStop.staticSetStopDateTime(siteRequest_, o);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetStopDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		if(StringUtils.endsWith(o, "Z"))
+			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
 	}
+	@JsonIgnore
 	public void setStopDateTime(Date o) {
 		this.stopDateTime = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
@@ -804,6 +824,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopYear
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopYear;
@@ -826,6 +847,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopYear = stopYear;
 		this.stopYearWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopYear(String o) {
 		this.stopYear = TrafficStop.staticSetStopYear(siteRequest_, o);
 		this.stopYearWrap.alreadyInitialized = true;
@@ -881,6 +903,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopPurposeNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopPurposeNum;
@@ -903,6 +926,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopPurposeNum = stopPurposeNum;
 		this.stopPurposeNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPurposeNum(String o) {
 		this.stopPurposeNum = TrafficStop.staticSetStopPurposeNum(siteRequest_, o);
 		this.stopPurposeNumWrap.alreadyInitialized = true;
@@ -958,6 +982,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopPurposeTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopPurposeTitle;
 	@JsonIgnore
@@ -1027,6 +1052,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopActionNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopActionNum;
@@ -1049,6 +1075,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopActionNum = stopActionNum;
 		this.stopActionNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopActionNum(String o) {
 		this.stopActionNum = TrafficStop.staticSetStopActionNum(siteRequest_, o);
 		this.stopActionNumWrap.alreadyInitialized = true;
@@ -1104,6 +1131,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopActionTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopActionTitle;
 	@JsonIgnore
@@ -1173,6 +1201,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopDriverArrest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverArrest;
 	@JsonIgnore
@@ -1194,6 +1223,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopDriverArrest = stopDriverArrest;
 		this.stopDriverArrestWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDriverArrest(String o) {
 		this.stopDriverArrest = TrafficStop.staticSetStopDriverArrest(siteRequest_, o);
 		this.stopDriverArrestWrap.alreadyInitialized = true;
@@ -1247,6 +1277,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopPassengerArrest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerArrest;
 	@JsonIgnore
@@ -1268,6 +1299,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopPassengerArrest = stopPassengerArrest;
 		this.stopPassengerArrestWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPassengerArrest(String o) {
 		this.stopPassengerArrest = TrafficStop.staticSetStopPassengerArrest(siteRequest_, o);
 		this.stopPassengerArrestWrap.alreadyInitialized = true;
@@ -1321,6 +1353,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopEncounterForce
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEncounterForce;
 	@JsonIgnore
@@ -1342,6 +1375,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopEncounterForce = stopEncounterForce;
 		this.stopEncounterForceWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopEncounterForce(String o) {
 		this.stopEncounterForce = TrafficStop.staticSetStopEncounterForce(siteRequest_, o);
 		this.stopEncounterForceWrap.alreadyInitialized = true;
@@ -1395,6 +1429,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopEngageForce
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEngageForce;
 	@JsonIgnore
@@ -1416,6 +1451,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopEngageForce = stopEngageForce;
 		this.stopEngageForceWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopEngageForce(String o) {
 		this.stopEngageForce = TrafficStop.staticSetStopEngageForce(siteRequest_, o);
 		this.stopEngageForceWrap.alreadyInitialized = true;
@@ -1469,6 +1505,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopOfficerInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopOfficerInjury;
 	@JsonIgnore
@@ -1490,6 +1527,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopOfficerInjury = stopOfficerInjury;
 		this.stopOfficerInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopOfficerInjury(String o) {
 		this.stopOfficerInjury = TrafficStop.staticSetStopOfficerInjury(siteRequest_, o);
 		this.stopOfficerInjuryWrap.alreadyInitialized = true;
@@ -1543,6 +1581,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopDriverInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverInjury;
 	@JsonIgnore
@@ -1564,6 +1603,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopDriverInjury = stopDriverInjury;
 		this.stopDriverInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDriverInjury(String o) {
 		this.stopDriverInjury = TrafficStop.staticSetStopDriverInjury(siteRequest_, o);
 		this.stopDriverInjuryWrap.alreadyInitialized = true;
@@ -1617,6 +1657,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopPassengerInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerInjury;
 	@JsonIgnore
@@ -1638,6 +1679,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.stopPassengerInjury = stopPassengerInjury;
 		this.stopPassengerInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPassengerInjury(String o) {
 		this.stopPassengerInjury = TrafficStop.staticSetStopPassengerInjury(siteRequest_, o);
 		this.stopPassengerInjuryWrap.alreadyInitialized = true;
@@ -1691,6 +1733,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopOfficerId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopOfficerId;
 	@JsonIgnore
@@ -1760,6 +1803,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopLocationId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopLocationId;
 	@JsonIgnore
@@ -1829,6 +1873,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity stopCityId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopCityId;
 	@JsonIgnore
@@ -1898,6 +1943,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity personKeys
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> personKeys = new ArrayList<Long>();
@@ -1920,6 +1967,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		this.personKeys = personKeys;
 		this.personKeysWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonKeys(String o) {
 		Long l = TrafficStop.staticSetPersonKeys(siteRequest_, o);
 		if(l != null)
@@ -1942,6 +1990,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			this.personKeys.add(o);
 		return (TrafficStop)this;
 	}
+	@JsonIgnore
 	public void setPersonKeys(JsonArray objets) {
 		personKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -2062,6 +2111,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity personRaceTitles
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> personRaceTitles = new ArrayList<String>();
 	@JsonIgnore
@@ -2097,6 +2148,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			this.personRaceTitles.add(o);
 		return (TrafficStop)this;
 	}
+	@JsonIgnore
 	public void setPersonRaceTitles(JsonArray objets) {
 		personRaceTitles.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -2210,6 +2262,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	/**	 The entity trafficSearchRaceTitles
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> trafficSearchRaceTitles = new ArrayList<String>();
 	@JsonIgnore
@@ -2245,6 +2299,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			this.trafficSearchRaceTitles.add(o);
 		return (TrafficStop)this;
 	}
+	@JsonIgnore
 	public void setTrafficSearchRaceTitles(JsonArray objets) {
 		trafficSearchRaceTitles.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -2567,11 +2622,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public Object attributeTrafficStop(String var, Object val) {
 		TrafficStop oTrafficStop = (TrafficStop)this;
 		switch(var) {
-			case "personKeys":
-				oTrafficStop.addPersonKeys((Long)val);
-				if(!saves.contains("personKeys"))
-					saves.add("personKeys");
-				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -3187,9 +3237,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 					oTrafficStop.setStopCityId(stopCityId);
 			}
 
-			List<Long> personKeys = (List<Long>)solrDocument.get("personKeys_stored_longs");
-			if(personKeys != null)
-				oTrafficStop.personKeys.addAll(personKeys);
+			if(saves.contains("personKeys")) {
+				List<Long> personKeys = (List<Long>)solrDocument.get("personKeys_stored_longs");
+				if(personKeys != null)
+					oTrafficStop.personKeys.addAll(personKeys);
+			}
 
 			if(saves.contains("personRaceTitles")) {
 				List<String> personRaceTitles = (List<String>)solrDocument.get("personRaceTitles_stored_strings");

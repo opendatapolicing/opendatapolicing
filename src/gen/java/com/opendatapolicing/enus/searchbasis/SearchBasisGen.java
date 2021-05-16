@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.searchbasis;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Date;
 import java.time.ZonedDateTime;
@@ -7,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.lang.Long;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
@@ -15,6 +15,7 @@ import java.time.ZoneOffset;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -58,7 +59,6 @@ import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -77,6 +77,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchBasisKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long searchBasisKey;
@@ -99,6 +100,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchBasisKey = searchBasisKey;
 		this.searchBasisKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchBasisKey(String o) {
 		this.searchBasisKey = SearchBasis.staticSetSearchBasisKey(siteRequest_, o);
 		this.searchBasisKeyWrap.alreadyInitialized = true;
@@ -154,6 +156,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long searchKey;
@@ -176,6 +179,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchKey = searchKey;
 		this.searchKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchKey(String o) {
 		this.searchKey = SearchBasis.staticSetSearchKey(siteRequest_, o);
 		this.searchKeyWrap.alreadyInitialized = true;
@@ -290,6 +294,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity trafficSearch_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficSearch trafficSearch_;
 	@JsonIgnore
@@ -332,6 +337,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity agencyTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyTitle;
 	@JsonIgnore
@@ -401,7 +407,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopDateTime
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
 	@JsonIgnore
@@ -423,18 +432,24 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopDateTime = stopDateTime;
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDateTime(Instant o) {
 		this.stopDateTime = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
+	@JsonIgnore
 	public void setStopDateTime(String o) {
 		this.stopDateTime = SearchBasis.staticSetStopDateTime(siteRequest_, o);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetStopDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		if(StringUtils.endsWith(o, "Z"))
+			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
 	}
+	@JsonIgnore
 	public void setStopDateTime(Date o) {
 		this.stopDateTime = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
@@ -485,6 +500,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopPurposeNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopPurposeNum;
@@ -507,6 +523,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopPurposeNum = stopPurposeNum;
 		this.stopPurposeNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPurposeNum(String o) {
 		this.stopPurposeNum = SearchBasis.staticSetStopPurposeNum(siteRequest_, o);
 		this.stopPurposeNumWrap.alreadyInitialized = true;
@@ -562,6 +579,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopPurposeTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopPurposeTitle;
 	@JsonIgnore
@@ -631,6 +649,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopActionNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopActionNum;
@@ -653,6 +672,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopActionNum = stopActionNum;
 		this.stopActionNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopActionNum(String o) {
 		this.stopActionNum = SearchBasis.staticSetStopActionNum(siteRequest_, o);
 		this.stopActionNumWrap.alreadyInitialized = true;
@@ -708,6 +728,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopActionTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopActionTitle;
 	@JsonIgnore
@@ -777,6 +798,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopDriverArrest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverArrest;
 	@JsonIgnore
@@ -798,6 +820,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopDriverArrest = stopDriverArrest;
 		this.stopDriverArrestWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDriverArrest(String o) {
 		this.stopDriverArrest = SearchBasis.staticSetStopDriverArrest(siteRequest_, o);
 		this.stopDriverArrestWrap.alreadyInitialized = true;
@@ -851,6 +874,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopPassengerArrest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerArrest;
 	@JsonIgnore
@@ -872,6 +896,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopPassengerArrest = stopPassengerArrest;
 		this.stopPassengerArrestWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPassengerArrest(String o) {
 		this.stopPassengerArrest = SearchBasis.staticSetStopPassengerArrest(siteRequest_, o);
 		this.stopPassengerArrestWrap.alreadyInitialized = true;
@@ -925,6 +950,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopEncounterForce
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEncounterForce;
 	@JsonIgnore
@@ -946,6 +972,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopEncounterForce = stopEncounterForce;
 		this.stopEncounterForceWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopEncounterForce(String o) {
 		this.stopEncounterForce = SearchBasis.staticSetStopEncounterForce(siteRequest_, o);
 		this.stopEncounterForceWrap.alreadyInitialized = true;
@@ -999,6 +1026,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopEngageForce
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEngageForce;
 	@JsonIgnore
@@ -1020,6 +1048,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopEngageForce = stopEngageForce;
 		this.stopEngageForceWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopEngageForce(String o) {
 		this.stopEngageForce = SearchBasis.staticSetStopEngageForce(siteRequest_, o);
 		this.stopEngageForceWrap.alreadyInitialized = true;
@@ -1073,6 +1102,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopOfficerInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopOfficerInjury;
 	@JsonIgnore
@@ -1094,6 +1124,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopOfficerInjury = stopOfficerInjury;
 		this.stopOfficerInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopOfficerInjury(String o) {
 		this.stopOfficerInjury = SearchBasis.staticSetStopOfficerInjury(siteRequest_, o);
 		this.stopOfficerInjuryWrap.alreadyInitialized = true;
@@ -1147,6 +1178,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopDriverInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverInjury;
 	@JsonIgnore
@@ -1168,6 +1200,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopDriverInjury = stopDriverInjury;
 		this.stopDriverInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDriverInjury(String o) {
 		this.stopDriverInjury = SearchBasis.staticSetStopDriverInjury(siteRequest_, o);
 		this.stopDriverInjuryWrap.alreadyInitialized = true;
@@ -1221,6 +1254,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopPassengerInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerInjury;
 	@JsonIgnore
@@ -1242,6 +1276,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.stopPassengerInjury = stopPassengerInjury;
 		this.stopPassengerInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPassengerInjury(String o) {
 		this.stopPassengerInjury = SearchBasis.staticSetStopPassengerInjury(siteRequest_, o);
 		this.stopPassengerInjuryWrap.alreadyInitialized = true;
@@ -1295,6 +1330,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopOfficerId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopOfficerId;
 	@JsonIgnore
@@ -1364,6 +1400,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopLocationId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopLocationId;
 	@JsonIgnore
@@ -1433,6 +1470,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity stopCityId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopCityId;
 	@JsonIgnore
@@ -1502,6 +1540,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personAge
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer personAge;
@@ -1524,6 +1563,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.personAge = personAge;
 		this.personAgeWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonAge(String o) {
 		this.personAge = SearchBasis.staticSetPersonAge(siteRequest_, o);
 		this.personAgeWrap.alreadyInitialized = true;
@@ -1579,6 +1619,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personTypeId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeId;
 	@JsonIgnore
@@ -1648,6 +1689,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personTypeTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeTitle;
 	@JsonIgnore
@@ -1717,6 +1759,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personTypeDriver
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypeDriver;
 	@JsonIgnore
@@ -1738,6 +1781,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.personTypeDriver = personTypeDriver;
 		this.personTypeDriverWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonTypeDriver(String o) {
 		this.personTypeDriver = SearchBasis.staticSetPersonTypeDriver(siteRequest_, o);
 		this.personTypeDriverWrap.alreadyInitialized = true;
@@ -1791,6 +1835,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personTypePassenger
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypePassenger;
 	@JsonIgnore
@@ -1812,6 +1857,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.personTypePassenger = personTypePassenger;
 		this.personTypePassengerWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonTypePassenger(String o) {
 		this.personTypePassenger = SearchBasis.staticSetPersonTypePassenger(siteRequest_, o);
 		this.personTypePassengerWrap.alreadyInitialized = true;
@@ -1865,6 +1911,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personGenderId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderId;
 	@JsonIgnore
@@ -1934,6 +1981,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personGenderTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderTitle;
 	@JsonIgnore
@@ -2003,6 +2051,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personGenderFemale
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderFemale;
 	@JsonIgnore
@@ -2024,6 +2073,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.personGenderFemale = personGenderFemale;
 		this.personGenderFemaleWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonGenderFemale(String o) {
 		this.personGenderFemale = SearchBasis.staticSetPersonGenderFemale(siteRequest_, o);
 		this.personGenderFemaleWrap.alreadyInitialized = true;
@@ -2077,6 +2127,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personGenderMale
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderMale;
 	@JsonIgnore
@@ -2098,6 +2149,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.personGenderMale = personGenderMale;
 		this.personGenderMaleWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonGenderMale(String o) {
 		this.personGenderMale = SearchBasis.staticSetPersonGenderMale(siteRequest_, o);
 		this.personGenderMaleWrap.alreadyInitialized = true;
@@ -2151,6 +2203,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personEthnicityId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityId;
 	@JsonIgnore
@@ -2220,6 +2273,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personEthnicityTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityTitle;
 	@JsonIgnore
@@ -2289,6 +2343,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personRaceId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceId;
 	@JsonIgnore
@@ -2358,6 +2413,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity personRaceTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceTitle;
 	@JsonIgnore
@@ -2420,81 +2476,74 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return personRaceTitle == null ? "" : personRaceTitle;
 	}
 
-	////////////////////
-	// trafficStopKey //
-	////////////////////
+	////////////
+	// stopId //
+	////////////
 
-	/**	 The entity trafficStopKey
+	/**	 The entity stopId
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
-	protected Long trafficStopKey;
+	protected String stopId;
 	@JsonIgnore
-	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().var("trafficStopKey").o(trafficStopKey);
+	public Wrap<String> stopIdWrap = new Wrap<String>().var("stopId").o(stopId);
 
-	/**	<br/> The entity trafficStopKey
+	/**	<br/> The entity stopId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficStopKey">Find the entity trafficStopKey in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopId">Find the entity stopId in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _trafficStopKey(Wrap<Long> w);
+	protected abstract void _stopId(Wrap<String> w);
 
-	public Long getTrafficStopKey() {
-		return trafficStopKey;
+	public String getStopId() {
+		return stopId;
 	}
-
-	public void setTrafficStopKey(Long trafficStopKey) {
-		this.trafficStopKey = trafficStopKey;
-		this.trafficStopKeyWrap.alreadyInitialized = true;
+	public void setStopId(String o) {
+		this.stopId = SearchBasis.staticSetStopId(siteRequest_, o);
+		this.stopIdWrap.alreadyInitialized = true;
 	}
-	public void setTrafficStopKey(String o) {
-		this.trafficStopKey = SearchBasis.staticSetTrafficStopKey(siteRequest_, o);
-		this.trafficStopKeyWrap.alreadyInitialized = true;
+	public static String staticSetStopId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
-	public static Long staticSetTrafficStopKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected SearchBasis trafficStopKeyInit() {
-		if(!trafficStopKeyWrap.alreadyInitialized) {
-			_trafficStopKey(trafficStopKeyWrap);
-			if(trafficStopKey == null)
-				setTrafficStopKey(trafficStopKeyWrap.o);
-			trafficStopKeyWrap.o(null);
+	protected SearchBasis stopIdInit() {
+		if(!stopIdWrap.alreadyInitialized) {
+			_stopId(stopIdWrap);
+			if(stopId == null)
+				setStopId(stopIdWrap.o);
+			stopIdWrap.o(null);
 		}
-		trafficStopKeyWrap.alreadyInitialized(true);
+		stopIdWrap.alreadyInitialized(true);
 		return (SearchBasis)this;
 	}
 
-	public static Long staticSolrTrafficStopKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStopId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrTrafficStopKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStrStopId(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqTrafficStopKey(SiteRequestEnUS siteRequest_, String o) {
-		return SearchBasis.staticSolrStrTrafficStopKey(siteRequest_, SearchBasis.staticSolrTrafficStopKey(siteRequest_, SearchBasis.staticSetTrafficStopKey(siteRequest_, o)));
+	public static String staticSolrFqStopId(SiteRequestEnUS siteRequest_, String o) {
+		return SearchBasis.staticSolrStrStopId(siteRequest_, SearchBasis.staticSolrStopId(siteRequest_, SearchBasis.staticSetStopId(siteRequest_, o)));
 	}
 
-	public Long solrTrafficStopKey() {
-		return SearchBasis.staticSolrTrafficStopKey(siteRequest_, trafficStopKey);
+	public String solrStopId() {
+		return SearchBasis.staticSolrStopId(siteRequest_, stopId);
 	}
 
-	public String strTrafficStopKey() {
-		return trafficStopKey == null ? "" : trafficStopKey.toString();
+	public String strStopId() {
+		return stopId == null ? "" : stopId;
 	}
 
-	public Long sqlTrafficStopKey() {
-		return trafficStopKey;
+	public String sqlStopId() {
+		return stopId;
 	}
 
-	public String jsonTrafficStopKey() {
-		return trafficStopKey == null ? "" : trafficStopKey.toString();
+	public String jsonStopId() {
+		return stopId == null ? "" : stopId;
 	}
 
 	///////////////////
@@ -2504,6 +2553,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchTypeNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer searchTypeNum;
@@ -2526,6 +2576,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchTypeNum = searchTypeNum;
 		this.searchTypeNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchTypeNum(String o) {
 		this.searchTypeNum = SearchBasis.staticSetSearchTypeNum(siteRequest_, o);
 		this.searchTypeNumWrap.alreadyInitialized = true;
@@ -2581,6 +2632,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchTypeTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String searchTypeTitle;
 	@JsonIgnore
@@ -2650,6 +2702,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchVehicle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicle;
 	@JsonIgnore
@@ -2671,6 +2724,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchVehicle = searchVehicle;
 		this.searchVehicleWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchVehicle(String o) {
 		this.searchVehicle = SearchBasis.staticSetSearchVehicle(siteRequest_, o);
 		this.searchVehicleWrap.alreadyInitialized = true;
@@ -2724,6 +2778,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchDriver
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchDriver;
 	@JsonIgnore
@@ -2745,6 +2800,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchDriver = searchDriver;
 		this.searchDriverWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchDriver(String o) {
 		this.searchDriver = SearchBasis.staticSetSearchDriver(siteRequest_, o);
 		this.searchDriverWrap.alreadyInitialized = true;
@@ -2798,6 +2854,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchPassenger
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPassenger;
 	@JsonIgnore
@@ -2819,6 +2876,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchPassenger = searchPassenger;
 		this.searchPassengerWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchPassenger(String o) {
 		this.searchPassenger = SearchBasis.staticSetSearchPassenger(siteRequest_, o);
 		this.searchPassengerWrap.alreadyInitialized = true;
@@ -2872,6 +2930,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchProperty
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchProperty;
 	@JsonIgnore
@@ -2893,6 +2952,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchProperty = searchProperty;
 		this.searchPropertyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchProperty(String o) {
 		this.searchProperty = SearchBasis.staticSetSearchProperty(siteRequest_, o);
 		this.searchPropertyWrap.alreadyInitialized = true;
@@ -2946,6 +3006,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchVehicleSiezed
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicleSiezed;
 	@JsonIgnore
@@ -2967,6 +3028,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchVehicleSiezed = searchVehicleSiezed;
 		this.searchVehicleSiezedWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchVehicleSiezed(String o) {
 		this.searchVehicleSiezed = SearchBasis.staticSetSearchVehicleSiezed(siteRequest_, o);
 		this.searchVehicleSiezedWrap.alreadyInitialized = true;
@@ -3020,6 +3082,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchPersonalPropertySiezed
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPersonalPropertySiezed;
 	@JsonIgnore
@@ -3041,6 +3104,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchPersonalPropertySiezed = searchPersonalPropertySiezed;
 		this.searchPersonalPropertySiezedWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchPersonalPropertySiezed(String o) {
 		this.searchPersonalPropertySiezed = SearchBasis.staticSetSearchPersonalPropertySiezed(siteRequest_, o);
 		this.searchPersonalPropertySiezedWrap.alreadyInitialized = true;
@@ -3094,6 +3158,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchOtherPropertySiezed
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchOtherPropertySiezed;
 	@JsonIgnore
@@ -3115,6 +3180,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		this.searchOtherPropertySiezed = searchOtherPropertySiezed;
 		this.searchOtherPropertySiezedWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchOtherPropertySiezed(String o) {
 		this.searchOtherPropertySiezed = SearchBasis.staticSetSearchOtherPropertySiezed(siteRequest_, o);
 		this.searchOtherPropertySiezedWrap.alreadyInitialized = true;
@@ -3168,6 +3234,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchBasisId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String searchBasisId;
 	@JsonIgnore
@@ -3237,6 +3304,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	/**	 The entity searchBasisTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String searchBasisTitle;
 	@JsonIgnore
@@ -3383,7 +3451,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				personEthnicityTitleInit();
 				personRaceIdInit();
 				personRaceTitleInit();
-				trafficStopKeyInit();
+				stopIdInit();
 				searchTypeNumInit();
 				searchTypeTitleInit();
 				searchVehicleInit();
@@ -3516,8 +3584,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				return oSearchBasis.personRaceId;
 			case "personRaceTitle":
 				return oSearchBasis.personRaceTitle;
-			case "trafficStopKey":
-				return oSearchBasis.trafficStopKey;
+			case "stopId":
+				return oSearchBasis.stopId;
 			case "searchTypeNum":
 				return oSearchBasis.searchTypeNum;
 			case "searchTypeTitle":
@@ -3647,8 +3715,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSetPersonRaceId(siteRequest_, o);
 		case "personRaceTitle":
 			return SearchBasis.staticSetPersonRaceTitle(siteRequest_, o);
-		case "trafficStopKey":
-			return SearchBasis.staticSetTrafficStopKey(siteRequest_, o);
+		case "stopId":
+			return SearchBasis.staticSetStopId(siteRequest_, o);
 		case "searchTypeNum":
 			return SearchBasis.staticSetSearchTypeNum(siteRequest_, o);
 		case "searchTypeTitle":
@@ -3747,8 +3815,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSolrPersonRaceId(siteRequest_, (String)o);
 		case "personRaceTitle":
 			return SearchBasis.staticSolrPersonRaceTitle(siteRequest_, (String)o);
-		case "trafficStopKey":
-			return SearchBasis.staticSolrTrafficStopKey(siteRequest_, (Long)o);
+		case "stopId":
+			return SearchBasis.staticSolrStopId(siteRequest_, (String)o);
 		case "searchTypeNum":
 			return SearchBasis.staticSolrSearchTypeNum(siteRequest_, (Integer)o);
 		case "searchTypeTitle":
@@ -3847,8 +3915,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSolrStrPersonRaceId(siteRequest_, (String)o);
 		case "personRaceTitle":
 			return SearchBasis.staticSolrStrPersonRaceTitle(siteRequest_, (String)o);
-		case "trafficStopKey":
-			return SearchBasis.staticSolrStrTrafficStopKey(siteRequest_, (Long)o);
+		case "stopId":
+			return SearchBasis.staticSolrStrStopId(siteRequest_, (String)o);
 		case "searchTypeNum":
 			return SearchBasis.staticSolrStrSearchTypeNum(siteRequest_, (Integer)o);
 		case "searchTypeTitle":
@@ -3947,8 +4015,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			return SearchBasis.staticSolrFqPersonRaceId(siteRequest_, o);
 		case "personRaceTitle":
 			return SearchBasis.staticSolrFqPersonRaceTitle(siteRequest_, o);
-		case "trafficStopKey":
-			return SearchBasis.staticSolrFqTrafficStopKey(siteRequest_, o);
+		case "stopId":
+			return SearchBasis.staticSolrFqStopId(siteRequest_, o);
 		case "searchTypeNum":
 			return SearchBasis.staticSolrFqSearchTypeNum(siteRequest_, o);
 		case "searchTypeTitle":
@@ -4250,10 +4318,10 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 					oSearchBasis.setPersonRaceTitle(personRaceTitle);
 			}
 
-			if(saves.contains("trafficStopKey")) {
-				Long trafficStopKey = (Long)solrDocument.get("trafficStopKey_stored_long");
-				if(trafficStopKey != null)
-					oSearchBasis.setTrafficStopKey(trafficStopKey);
+			if(saves.contains("stopId")) {
+				String stopId = (String)solrDocument.get("stopId_stored_string");
+				if(stopId != null)
+					oSearchBasis.setStopId(stopId);
 			}
 
 			if(saves.contains("searchTypeNum")) {
@@ -4451,9 +4519,9 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			document.addField("personRaceTitle_indexed_string", personRaceTitle);
 			document.addField("personRaceTitle_stored_string", personRaceTitle);
 		}
-		if(trafficStopKey != null) {
-			document.addField("trafficStopKey_indexed_long", trafficStopKey);
-			document.addField("trafficStopKey_stored_long", trafficStopKey);
+		if(stopId != null) {
+			document.addField("stopId_indexed_string", stopId);
+			document.addField("stopId_stored_string", stopId);
 		}
 		if(searchTypeNum != null) {
 			document.addField("searchTypeNum_indexed_int", searchTypeNum);
@@ -4567,8 +4635,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				return "personRaceId_indexed_string";
 			case "personRaceTitle":
 				return "personRaceTitle_indexed_string";
-			case "trafficStopKey":
-				return "trafficStopKey_indexed_long";
+			case "stopId":
+				return "stopId_indexed_string";
 			case "searchTypeNum":
 				return "searchTypeNum_indexed_int";
 			case "searchTypeTitle":
@@ -4651,7 +4719,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		oSearchBasis.setPersonEthnicityTitle(Optional.ofNullable(solrDocument.get("personEthnicityTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setPersonRaceId(Optional.ofNullable(solrDocument.get("personRaceId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setPersonRaceTitle(Optional.ofNullable(solrDocument.get("personRaceTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oSearchBasis.setTrafficStopKey(Optional.ofNullable(solrDocument.get("trafficStopKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oSearchBasis.setStopId(Optional.ofNullable(solrDocument.get("stopId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setSearchTypeNum(Optional.ofNullable(solrDocument.get("searchTypeNum_stored_int")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setSearchTypeTitle(Optional.ofNullable(solrDocument.get("searchTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setSearchVehicle(Optional.ofNullable(solrDocument.get("searchVehicle_stored_boolean")).map(v -> v.toString()).orElse(null));
@@ -4738,8 +4806,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				apiRequest.addVars("personRaceId");
 			if(!Objects.equals(personRaceTitle, original.getPersonRaceTitle()))
 				apiRequest.addVars("personRaceTitle");
-			if(!Objects.equals(trafficStopKey, original.getTrafficStopKey()))
-				apiRequest.addVars("trafficStopKey");
+			if(!Objects.equals(stopId, original.getStopId()))
+				apiRequest.addVars("stopId");
 			if(!Objects.equals(searchTypeNum, original.getSearchTypeNum()))
 				apiRequest.addVars("searchTypeNum");
 			if(!Objects.equals(searchTypeTitle, original.getSearchTypeTitle()))
@@ -4771,7 +4839,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), searchBasisKey, searchKey, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle);
+		return Objects.hash(super.hashCode(), searchBasisKey, searchKey, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle);
 	}
 
 	////////////
@@ -4816,7 +4884,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 				&& Objects.equals( personEthnicityTitle, that.personEthnicityTitle )
 				&& Objects.equals( personRaceId, that.personRaceId )
 				&& Objects.equals( personRaceTitle, that.personRaceTitle )
-				&& Objects.equals( trafficStopKey, that.trafficStopKey )
+				&& Objects.equals( stopId, that.stopId )
 				&& Objects.equals( searchTypeNum, that.searchTypeNum )
 				&& Objects.equals( searchTypeTitle, that.searchTypeTitle )
 				&& Objects.equals( searchVehicle, that.searchVehicle )
@@ -4869,7 +4937,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		sb.append( ", personEthnicityTitle: \"" ).append(personEthnicityTitle).append( "\"" );
 		sb.append( ", personRaceId: \"" ).append(personRaceId).append( "\"" );
 		sb.append( ", personRaceTitle: \"" ).append(personRaceTitle).append( "\"" );
-		sb.append( ", trafficStopKey: " ).append(trafficStopKey);
+		sb.append( ", stopId: \"" ).append(stopId).append( "\"" );
 		sb.append( ", searchTypeNum: " ).append(searchTypeNum);
 		sb.append( ", searchTypeTitle: \"" ).append(searchTypeTitle).append( "\"" );
 		sb.append( ", searchVehicle: " ).append(searchVehicle);
@@ -4918,7 +4986,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	public static final String VAR_personEthnicityTitle = "personEthnicityTitle";
 	public static final String VAR_personRaceId = "personRaceId";
 	public static final String VAR_personRaceTitle = "personRaceTitle";
-	public static final String VAR_trafficStopKey = "trafficStopKey";
+	public static final String VAR_stopId = "stopId";
 	public static final String VAR_searchTypeNum = "searchTypeNum";
 	public static final String VAR_searchTypeTitle = "searchTypeTitle";
 	public static final String VAR_searchVehicle = "searchVehicle";

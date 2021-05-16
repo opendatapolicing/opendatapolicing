@@ -1,17 +1,18 @@
 package com.opendatapolicing.enus.cluster;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Date;
 import java.time.ZonedDateTime;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Long;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
 import java.util.Map;
 import java.time.ZoneOffset;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import com.opendatapolicing.enus.writer.AllWriter;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -53,7 +54,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.Object;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -115,6 +115,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity pk
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long pk;
@@ -137,6 +138,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		this.pk = pk;
 		this.pkWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPk(String o) {
 		this.pk = Cluster.staticSetPk(siteRequest_, o);
 		this.pkWrap.alreadyInitialized = true;
@@ -192,6 +194,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity inheritPk
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String inheritPk;
 	@JsonIgnore
@@ -261,6 +264,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity id
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String id;
 	@JsonIgnore
@@ -330,7 +334,10 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity created
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
 	@JsonIgnore
@@ -352,18 +359,24 @@ public abstract class ClusterGen<DEV> extends Object {
 		this.created = created;
 		this.createdWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setCreated(Instant o) {
 		this.created = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.createdWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
+	@JsonIgnore
 	public void setCreated(String o) {
 		this.created = Cluster.staticSetCreated(siteRequest_, o);
 		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		if(StringUtils.endsWith(o, "Z"))
+			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
 	}
+	@JsonIgnore
 	public void setCreated(Date o) {
 		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.createdWrap.alreadyInitialized = true;
@@ -414,7 +427,10 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity modified
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime modified;
 	@JsonIgnore
@@ -436,18 +452,24 @@ public abstract class ClusterGen<DEV> extends Object {
 		this.modified = modified;
 		this.modifiedWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setModified(Instant o) {
 		this.modified = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.modifiedWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
+	@JsonIgnore
 	public void setModified(String o) {
 		this.modified = Cluster.staticSetModified(siteRequest_, o);
 		this.modifiedWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetModified(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		if(StringUtils.endsWith(o, "Z"))
+			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
 	}
+	@JsonIgnore
 	public void setModified(Date o) {
 		this.modified = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.modifiedWrap.alreadyInitialized = true;
@@ -498,6 +520,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity classCanonicalName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classCanonicalName;
 	@JsonIgnore
@@ -567,6 +590,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity classSimpleName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSimpleName;
 	@JsonIgnore
@@ -636,6 +660,8 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity classCanonicalNames
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classCanonicalNames = new ArrayList<String>();
 	@JsonIgnore
@@ -671,6 +697,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			this.classCanonicalNames.add(o);
 		return (Cluster)this;
 	}
+	@JsonIgnore
 	public void setClassCanonicalNames(JsonArray objets) {
 		classCanonicalNames.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -725,6 +752,8 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity saves
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> saves = new ArrayList<String>();
 	@JsonIgnore
@@ -760,6 +789,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			this.saves.add(o);
 		return (Cluster)this;
 	}
+	@JsonIgnore
 	public void setSaves(JsonArray objets) {
 		saves.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -814,6 +844,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity objectTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String objectTitle;
 	@JsonIgnore
@@ -883,6 +914,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/**	 The entity objectId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String objectId;
 	@JsonIgnore

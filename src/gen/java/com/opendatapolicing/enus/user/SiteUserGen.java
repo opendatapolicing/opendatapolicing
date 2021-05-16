@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.json.JsonObject;
@@ -20,6 +20,7 @@ import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -43,7 +44,6 @@ import com.opendatapolicing.enus.cluster.Cluster;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -64,6 +64,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long userKey;
@@ -86,6 +87,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		this.userKey = userKey;
 		this.userKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setUserKey(String o) {
 		this.userKey = SiteUser.staticSetUserKey(siteRequest_, o);
 		this.userKeyWrap.alreadyInitialized = true;
@@ -141,6 +143,8 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userKeys
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> userKeys = new ArrayList<Long>();
@@ -163,6 +167,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		this.userKeys = userKeys;
 		this.userKeysWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setUserKeys(String o) {
 		Long l = SiteUser.staticSetUserKeys(siteRequest_, o);
 		if(l != null)
@@ -185,6 +190,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			this.userKeys.add(o);
 		return (SiteUser)this;
 	}
+	@JsonIgnore
 	public void setUserKeys(JsonArray objets) {
 		userKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -246,6 +252,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userId;
 	@JsonIgnore
@@ -315,6 +322,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userName;
 	@JsonIgnore
@@ -384,6 +392,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userEmail
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userEmail;
 	@JsonIgnore
@@ -453,6 +462,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userFirstName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userFirstName;
 	@JsonIgnore
@@ -522,6 +532,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userLastName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userLastName;
 	@JsonIgnore
@@ -591,6 +602,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/**	 The entity userFullName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userFullName;
 	@JsonIgnore

@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.vertx.ext.web.client.WebClient;
@@ -14,7 +15,6 @@ import io.vertx.sqlclient.SqlConnection;
 import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
@@ -24,6 +24,7 @@ import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -46,7 +47,6 @@ import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -62,6 +62,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject config;
 	@JsonIgnore
@@ -104,6 +105,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
@@ -146,6 +148,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity webClient
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected WebClient webClient;
 	@JsonIgnore
@@ -188,6 +191,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity apiRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected ApiRequest apiRequest_;
 	@JsonIgnore
@@ -230,6 +234,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity jsonObject
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject jsonObject;
 	@JsonIgnore
@@ -272,6 +277,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity solrQuery
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrQuery solrQuery;
 	@JsonIgnore
@@ -314,6 +320,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity serviceRequest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected ServiceRequest serviceRequest;
 	@JsonIgnore
@@ -356,6 +363,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity w
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter w;
 	@JsonIgnore
@@ -400,6 +408,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity user
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected User user;
 	@JsonIgnore
@@ -442,6 +451,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity jsonPrincipal
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject jsonPrincipal;
 	@JsonIgnore
@@ -484,6 +494,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userId;
 	@JsonIgnore
@@ -553,6 +564,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long userKey;
@@ -575,6 +587,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		this.userKey = userKey;
 		this.userKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setUserKey(String o) {
 		this.userKey = SiteRequestEnUS.staticSetUserKey(siteRequest_, o);
 		this.userKeyWrap.alreadyInitialized = true;
@@ -630,6 +643,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity sessionId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String sessionId;
 	@JsonIgnore
@@ -699,6 +713,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity sessionIdBefore
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String sessionIdBefore;
 	@JsonIgnore
@@ -768,6 +783,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userName;
 	@JsonIgnore
@@ -837,6 +853,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userLastName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userLastName;
 	@JsonIgnore
@@ -906,6 +923,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userFirstName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userFirstName;
 	@JsonIgnore
@@ -975,6 +993,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userFullName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userFullName;
 	@JsonIgnore
@@ -1044,6 +1063,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userEmail
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String userEmail;
 	@JsonIgnore
@@ -1113,6 +1133,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userRealmRoles
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> userRealmRoles = new ArrayList<String>();
 	@JsonIgnore
@@ -1148,6 +1170,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			this.userRealmRoles.add(o);
 		return (SiteRequestEnUS)this;
 	}
+	@JsonIgnore
 	public void setUserRealmRoles(JsonArray objets) {
 		userRealmRoles.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -1202,6 +1225,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userResource
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject userResource;
 	@JsonIgnore
@@ -1244,6 +1268,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity userResourceRoles
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> userResourceRoles = new ArrayList<String>();
 	@JsonIgnore
@@ -1279,6 +1305,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			this.userResourceRoles.add(o);
 		return (SiteRequestEnUS)this;
 	}
+	@JsonIgnore
 	public void setUserResourceRoles(JsonArray objets) {
 		userResourceRoles.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -1333,6 +1360,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity xmlStack
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut Stack<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected Stack<String> xmlStack = new Stack<String>();
 	@JsonIgnore
@@ -1372,6 +1401,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity solrDocument
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument solrDocument;
 	@JsonIgnore
@@ -1414,6 +1444,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity pageAdmin
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean pageAdmin;
 	@JsonIgnore
@@ -1435,6 +1466,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		this.pageAdmin = pageAdmin;
 		this.pageAdminWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPageAdmin(String o) {
 		this.pageAdmin = SiteRequestEnUS.staticSetPageAdmin(siteRequest_, o);
 		this.pageAdminWrap.alreadyInitialized = true;
@@ -1488,6 +1520,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity requestPk
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long requestPk;
@@ -1510,6 +1543,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		this.requestPk = requestPk;
 		this.requestPkWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setRequestPk(String o) {
 		this.requestPk = SiteRequestEnUS.staticSetRequestPk(siteRequest_, o);
 		this.requestPkWrap.alreadyInitialized = true;
@@ -1565,6 +1599,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity requestUri
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String requestUri;
 	@JsonIgnore
@@ -1634,6 +1669,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity requestMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String requestMethod;
 	@JsonIgnore
@@ -1703,6 +1739,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity sqlConnection
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SqlConnection sqlConnection;
 	@JsonIgnore
@@ -1745,6 +1782,7 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity requestHeaders
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected MultiMap requestHeaders;
 	@JsonIgnore
@@ -1787,6 +1825,8 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/**	 The entity requestVars
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut Map<String, String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected Map<String, String> requestVars = new HashMap<String, String>();
 	@JsonIgnore

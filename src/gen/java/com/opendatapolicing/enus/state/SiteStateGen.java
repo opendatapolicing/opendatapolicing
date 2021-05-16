@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.state;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.json.JsonObject;
@@ -21,6 +21,7 @@ import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -45,7 +46,6 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -66,6 +66,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	/**	 The entity stateKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long stateKey;
@@ -88,6 +89,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		this.stateKey = stateKey;
 		this.stateKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStateKey(String o) {
 		this.stateKey = SiteState.staticSetStateKey(siteRequest_, o);
 		this.stateKeyWrap.alreadyInitialized = true;
@@ -143,6 +145,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	/**	 The entity stateName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateName;
 	@JsonIgnore
@@ -212,6 +215,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	/**	 The entity stateAbbreviation
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateAbbreviation;
 	@JsonIgnore
@@ -281,6 +285,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	/**	 The entity imageLeft
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageLeft;
@@ -303,6 +308,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		this.imageLeft = imageLeft;
 		this.imageLeftWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setImageLeft(String o) {
 		this.imageLeft = SiteState.staticSetImageLeft(siteRequest_, o);
 		this.imageLeftWrap.alreadyInitialized = true;
@@ -358,6 +364,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	/**	 The entity imageTop
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageTop;
@@ -380,6 +387,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		this.imageTop = imageTop;
 		this.imageTopWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setImageTop(String o) {
 		this.imageTop = SiteState.staticSetImageTop(siteRequest_, o);
 		this.imageTopWrap.alreadyInitialized = true;
@@ -435,6 +443,8 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	/**	 The entity agencyKeys
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected List<Long> agencyKeys = new ArrayList<Long>();
@@ -457,6 +467,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 		this.agencyKeys = agencyKeys;
 		this.agencyKeysWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setAgencyKeys(String o) {
 		Long l = SiteState.staticSetAgencyKeys(siteRequest_, o);
 		if(l != null)
@@ -479,6 +490,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 			this.agencyKeys.add(o);
 		return (SiteState)this;
 	}
+	@JsonIgnore
 	public void setAgencyKeys(JsonArray objets) {
 		agencyKeys.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -540,6 +552,7 @@ public abstract class SiteStateGen<DEV> extends Cluster {
 	/**	 The entity stateCompleteName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateCompleteName;
 	@JsonIgnore

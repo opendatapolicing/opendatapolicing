@@ -125,16 +125,16 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("searchSiteUser succeeded. "));
 						}).onFailure(ex -> {
-							LOG.error(String.format("searchSiteUser failed. ", ex));
+							LOG.error(String.format("searchSiteUser failed. "), ex);
 							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("searchSiteUser failed. ", ex));
+						LOG.error(String.format("searchSiteUser failed. "), ex);
 						error(siteRequest, eventHandler, ex);
 					});
 				}
 			} catch(Exception ex) {
-				LOG.error(String.format("searchSiteUser failed. ", ex));
+				LOG.error(String.format("searchSiteUser failed. "), ex);
 				error(null, eventHandler, ex);
 			}
 		}).onFailure(ex -> {
@@ -146,7 +146,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					error(null, eventHandler, ex2);
 				}
 			} else {
-				LOG.error(String.format("searchSiteUser failed. ", ex));
+				LOG.error(String.format("searchSiteUser failed. "), ex);
 				error(null, eventHandler, ex);
 			}
 		});
@@ -224,15 +224,12 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					JsonObject rangeFacetJson = new JsonObject();
 					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
-					JsonArray rangeFacetCountsList = new JsonArray();
-					rangeFacetJson.put("counts", rangeFacetCountsList);
+					JsonObject rangeFacetCountsMap = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsMap);
 					List<?> rangeFacetCounts = rangeFacet.getCounts();
 					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
-						countJson.put("value", count.getValue());
-						countJson.put("count", count.getCount());
-						rangeFacetCountsList.add(countJson);
+						rangeFacetCountsMap.put(count.getValue(), count.getCount());
 					}
 				}
 			}
@@ -344,25 +341,25 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 										LOG.debug(String.format("patchSiteUser succeeded. "));
 										eventHandler.handle(Future.succeededFuture(response));
 									}).onFailure(ex -> {
-										LOG.error(String.format("patchSiteUser failed. ", ex));
+										LOG.error(String.format("patchSiteUser failed. "), ex);
 										error(siteRequest, eventHandler, ex);
 									});
 								}).onFailure(ex -> {
-									LOG.error(String.format("patchSiteUser failed. ", ex));
+									LOG.error(String.format("patchSiteUser failed. "), ex);
 									error(siteRequest, eventHandler, ex);
 								});
 							}
 						} catch(Exception ex) {
-							LOG.error(String.format("patchSiteUser failed. ", ex));
+							LOG.error(String.format("patchSiteUser failed. "), ex);
 							error(siteRequest, eventHandler, ex);
 						}
 					}).onFailure(ex -> {
-						LOG.error(String.format("patchSiteUser failed. ", ex));
+						LOG.error(String.format("patchSiteUser failed. "), ex);
 						error(siteRequest, eventHandler, ex);
 					});
 				}
 			} catch(Exception ex) {
-				LOG.error(String.format("patchSiteUser failed. ", ex));
+				LOG.error(String.format("patchSiteUser failed. "), ex);
 				error(null, eventHandler, ex);
 			}
 		}).onFailure(ex -> {
@@ -374,7 +371,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					error(null, eventHandler, ex2);
 				}
 			} else {
-				LOG.error(String.format("patchSiteUser failed. ", ex));
+				LOG.error(String.format("patchSiteUser failed. "), ex);
 				error(null, eventHandler, ex);
 			}
 		});
@@ -386,9 +383,6 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listSiteUser.getSiteRequest_();
 		listSiteUser.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = siteRequest.copy();
-			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
-			o.setSiteRequest_(siteRequest2);
 			futures.add(Future.future(promise1 -> {
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					try {
@@ -405,13 +399,13 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 						eventBus.send("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture"));
 						blockingCodeHandler.complete();
 					} catch(Exception ex) {
-						LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+						LOG.error(String.format("listPATCHSiteUser failed. "), ex);
 						blockingCodeHandler.fail(ex);
 					}
 				}).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
-					LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+					LOG.error(String.format("listPATCHSiteUser failed. "), ex);
 					promise1.fail(ex);
 				});
 			}));
@@ -430,19 +424,19 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					promise.complete();
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+				LOG.error(String.format("listPATCHSiteUser failed. "), ex);
 				promise.fail(ex);
 			});
 		}).onFailure(ex -> {
-			LOG.error(String.format("listPATCHSiteUser failed. ", ex));
+			LOG.error(String.format("listPATCHSiteUser failed. "), ex);
 			promise.fail(ex);
 		});
 		return promise.future();
 	}
 
 	@Override
-	public void patchSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+	public void patchSiteUserFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
 		SiteUser o = new SiteUser();
 		o.setSiteRequest_(siteRequest);
 		ApiRequest apiRequest = new ApiRequest();
@@ -451,11 +445,12 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
-		o.setPk(body.getString(SiteUser.VAR_pk));
+		o.setPk(json.getString(SiteUser.VAR_pk));
 		patchSiteUserFuture(o, false).onSuccess(a -> {
 			semaphore.release();
 			eventHandler.handle(Future.succeededFuture());
 		}).onFailure(ex -> {
+			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}
@@ -501,7 +496,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				refreshSiteUser(siteUser).onSuccess(a -> {
 					promise2.complete(siteUser);
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSiteUserFuture failed. ", ex));
+					LOG.error(String.format("patchSiteUserFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
@@ -622,11 +617,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					o3.setPk(pk);
 					promise.complete(o3);
 				}).onFailure(ex -> {
-					LOG.error(String.format("sqlPATCHSiteUser failed. ", ex));
+					LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
 					promise.fail(ex);
 				});
 			}).onFailure(ex -> {
-				LOG.error(String.format("sqlPATCHSiteUser failed. ", ex));
+				LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
 				promise.fail(ex);
 			});
 		} catch(Exception ex) {
@@ -659,7 +654,6 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				siteRequest.setRequestUri("/api/user");
 				siteRequest.setRequestMethod("POST");
 				{
-					semaphore.acquire();
 					ApiRequest apiRequest = new ApiRequest();
 					apiRequest.setRows(1);
 					apiRequest.setNumFound(1L);
@@ -670,22 +664,19 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					postSiteUserFuture(siteRequest, false).onSuccess(siteUser -> {
 						apiRequest.setPk(siteUser.getPk());
 						response200POSTSiteUser(siteUser).onSuccess(response -> {
-							semaphore.release();
 							eventHandler.handle(Future.succeededFuture(response));
 							LOG.debug(String.format("postSiteUser succeeded. "));
 						}).onFailure(ex -> {
-							LOG.error(String.format("postSiteUser failed. ", ex));
-							semaphore.release();
+							LOG.error(String.format("postSiteUser failed. "), ex);
 							error(siteRequest, eventHandler, ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postSiteUser failed. ", ex));
-						semaphore.release();
+						LOG.error(String.format("postSiteUser failed. "), ex);
 						error(siteRequest, eventHandler, ex);
 					});
 				}
 			} catch(Exception ex) {
-				LOG.error(String.format("postSiteUser failed. ", ex));
+				LOG.error(String.format("postSiteUser failed. "), ex);
 				error(null, eventHandler, ex);
 			}
 		}).onFailure(ex -> {
@@ -697,7 +688,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					error(null, eventHandler, ex2);
 				}
 			} else {
-				LOG.error(String.format("postSiteUser failed. ", ex));
+				LOG.error(String.format("postSiteUser failed. "), ex);
 				error(null, eventHandler, ex);
 			}
 		});
@@ -705,8 +696,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 
 	@Override
-	public void postSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
+	public void postSiteUserFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
 		ApiRequest apiRequest = new ApiRequest();
 		apiRequest.setRows(1);
 		apiRequest.setNumFound(1L);
@@ -717,6 +708,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			semaphore.release();
 			eventHandler.handle(Future.succeededFuture());
 		}).onFailure(ex -> {
+			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}
@@ -735,23 +727,23 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								indexSiteUser(siteUser).onSuccess(e -> {
 									promise1.complete(siteUser);
 								}).onFailure(ex -> {
-									LOG.error(String.format("postSiteUserFuture failed. ", ex));
+									LOG.error(String.format("postSiteUserFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("postSiteUserFuture failed. ", ex));
+								LOG.error(String.format("postSiteUserFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postSiteUserFuture failed. ", ex));
+							LOG.error(String.format("postSiteUserFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postSiteUserFuture failed. ", ex));
+						LOG.error(String.format("postSiteUserFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSiteUserFuture failed. ", ex));
+					LOG.error(String.format("postSiteUserFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
@@ -771,7 +763,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					}
 					promise2.complete(siteUser);
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSiteUserFuture failed. ", ex));
+					LOG.error(String.format("postSiteUserFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
@@ -898,11 +890,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				CompositeFuture.all(futures2).onSuccess(b -> {
 					promise.complete();
 				}).onFailure(ex -> {
-					LOG.error(String.format("sqlPOSTSiteUser failed. ", ex));
+					LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
 					promise.fail(ex);
 				});
 			}).onFailure(ex -> {
-				LOG.error(String.format("sqlPOSTSiteUser failed. ", ex));
+				LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
 				promise.fail(ex);
 			});
 		} catch(Exception ex) {
@@ -1193,11 +1185,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				promise.complete(searchList);
 			}).onFailure(ex -> {
-				LOG.error(String.format("searchSiteUser failed. ", ex));
+				LOG.error(String.format("searchSiteUser failed. "), ex);
 				promise.fail(ex);
 			});
 		} catch(Exception ex) {
-			LOG.error(String.format("searchSiteUser failed. ", ex));
+			LOG.error(String.format("searchSiteUser failed. "), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -1235,7 +1227,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("defineSiteUser failed. ", ex));
+				LOG.error(String.format("defineSiteUser failed. "), ex);
 				promise.fail(ex);
 			});
 		} catch(Exception ex) {
@@ -1305,7 +1297,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
 					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
 					JsonObject json = new JsonObject().put("context", context);
-					eventBus.request("opendatapolicing--SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUser")).onSuccess(c -> {
+					eventBus.request("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUser")).onSuccess(c -> {
 						promise.complete();
 					}).onFailure(ex -> {
 						LOG.error("Refresh relations failed. ", ex);

@@ -293,7 +293,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 						});
 						stream.handler(row -> {
 							try {
-								LOG.info("aquire: {}", semaphore.availablePermits());
 								semaphore.acquire();
 								Long pk = row.getLong(0);
 
@@ -309,7 +308,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								LOG.error(syncTrafficStopsFail, ex);
 								promise1.fail(ex);
 								LOG.info("release: {}", semaphore.availablePermits());
-								semaphore.release();
 							}
 						});
 					} catch (Exception ex) {

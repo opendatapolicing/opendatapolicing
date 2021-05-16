@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.vertx;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.slf4j.LoggerFactory;
@@ -9,13 +10,13 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -33,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppVertx&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -98,7 +98,6 @@ CREATE TABLE TrafficPerson(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
-	, trafficStopKey bigint references TrafficStop(pk)
 	, personAge integer
 	, personTypeId text
 	, personGenderId text

@@ -61,12 +61,9 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: TrafficStop.personKeys
-	 * HtmlRow: 3
-	 * HtmlCell: 1
-	 * DisplayName.enUS: traffic stop key
+	 * DisplayName.enUS: traffic stop Id
 	 */          
-	protected void _trafficStopKey(Wrap<Long> c) {
+	protected void _stopId(Wrap<String> c) {
 	}
 
 	/**
@@ -75,9 +72,9 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 */ 
 	protected void _trafficStopSearch(Promise<SearchList<TrafficStop>> promise) {
 		SearchList<TrafficStop> l = new SearchList<>();
-		if(trafficStopKey != null) {
+		if(stopId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("pk_indexed_long:" + trafficStopKey);
+			l.addFilterQuery("inheritPk_indexed_long:" + stopId);
 			l.setC(TrafficStop.class);
 			l.setStore(true);
 		}

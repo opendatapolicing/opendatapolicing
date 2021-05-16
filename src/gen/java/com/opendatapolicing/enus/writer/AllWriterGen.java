@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.writer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import java.io.PrintWriter;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import java.io.StringWriter;
 import io.vertx.core.Promise;
@@ -39,7 +40,6 @@ import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.AllWriter&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -55,6 +55,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
@@ -97,6 +98,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity tabStr
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String tabStr;
 	@JsonIgnore
@@ -166,6 +168,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity file
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected File file;
 	@JsonIgnore
@@ -208,6 +211,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity stringWriter
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected StringWriter stringWriter;
 	@JsonIgnore
@@ -250,6 +254,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity buffer
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Buffer buffer;
 	@JsonIgnore
@@ -292,6 +297,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity printWriter
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected PrintWriter printWriter;
 	@JsonIgnore
@@ -334,6 +340,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 	/**	 The entity empty
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean empty;
 	@JsonIgnore
@@ -355,6 +362,7 @@ public abstract class AllWriterGen<DEV> extends Object {
 		this.empty = empty;
 		this.emptyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setEmpty(String o) {
 		this.empty = AllWriter.staticSetEmpty(siteRequest_, o);
 		this.emptyWrap.alreadyInitialized = true;

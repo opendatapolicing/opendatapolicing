@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.agency;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Date;
 import org.slf4j.LoggerFactory;
@@ -7,11 +8,11 @@ import com.opendatapolicing.enus.state.SiteState;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.lang.Long;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -48,7 +49,6 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -67,6 +67,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity agencyKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long agencyKey;
@@ -89,6 +90,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		this.agencyKey = agencyKey;
 		this.agencyKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setAgencyKey(String o) {
 		this.agencyKey = SiteAgency.staticSetAgencyKey(siteRequest_, o);
 		this.agencyKeyWrap.alreadyInitialized = true;
@@ -144,6 +146,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity agencyName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyName;
 	@JsonIgnore
@@ -272,6 +275,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity state_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteState state_;
 	@JsonIgnore
@@ -314,6 +318,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity stateKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long stateKey;
@@ -336,6 +341,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		this.stateKey = stateKey;
 		this.stateKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStateKey(String o) {
 		this.stateKey = SiteAgency.staticSetStateKey(siteRequest_, o);
 		this.stateKeyWrap.alreadyInitialized = true;
@@ -391,6 +397,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity imageLeft
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageLeft;
@@ -413,6 +420,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		this.imageLeft = imageLeft;
 		this.imageLeftWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setImageLeft(String o) {
 		this.imageLeft = SiteAgency.staticSetImageLeft(siteRequest_, o);
 		this.imageLeftWrap.alreadyInitialized = true;
@@ -468,6 +476,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity imageTop
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer imageTop;
@@ -490,6 +499,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		this.imageTop = imageTop;
 		this.imageTopWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setImageTop(String o) {
 		this.imageTop = SiteAgency.staticSetImageTop(siteRequest_, o);
 		this.imageTopWrap.alreadyInitialized = true;
@@ -545,6 +555,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity imageCoords
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String imageCoords;
 	@JsonIgnore
@@ -614,6 +625,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity stateId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateId;
 	@JsonIgnore
@@ -683,6 +695,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity stateName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateName;
 	@JsonIgnore
@@ -752,6 +765,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity stateAbbreviation
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stateAbbreviation;
 	@JsonIgnore
@@ -821,6 +835,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity agencyOnlyName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyOnlyName;
 	@JsonIgnore
@@ -890,6 +905,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	/**	 The entity agencyCompleteName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyCompleteName;
 	@JsonIgnore

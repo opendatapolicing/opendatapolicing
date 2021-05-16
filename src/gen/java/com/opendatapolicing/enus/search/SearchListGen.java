@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.search;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.apache.solr.common.SolrDocumentList;
@@ -10,7 +11,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
@@ -19,6 +19,7 @@ import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import io.vertx.core.Promise;
@@ -40,7 +41,6 @@ import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.search.SearchList&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -56,6 +56,8 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity c
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected Class<?> c;
 	@JsonIgnore
@@ -141,6 +143,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity store
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean store;
 	@JsonIgnore
@@ -162,6 +165,7 @@ public abstract class SearchListGen<DEV> {
 		this.store = store;
 		this.storeWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStore(String o) {
 		this.store = SearchList.staticSetStore(siteRequest_, o);
 		this.storeWrap.alreadyInitialized = true;
@@ -215,6 +219,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity populate
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean populate;
 	@JsonIgnore
@@ -236,6 +241,7 @@ public abstract class SearchListGen<DEV> {
 		this.populate = populate;
 		this.populateWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPopulate(String o) {
 		this.populate = SearchList.staticSetPopulate(siteRequest_, o);
 		this.populateWrap.alreadyInitialized = true;
@@ -289,6 +295,8 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity fields
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> fields = new ArrayList<String>();
 	@JsonIgnore
@@ -324,6 +332,7 @@ public abstract class SearchListGen<DEV> {
 			this.fields.add(o);
 		return (SearchList)this;
 	}
+	@JsonIgnore
 	public void setFields(JsonArray objets) {
 		fields.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -378,6 +387,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity solrQuery
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut SolrQuery(). 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrQuery solrQuery = new SolrQuery();
 	@JsonIgnore
@@ -417,6 +427,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity queryResponse
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected QueryResponse queryResponse;
 	@JsonIgnore
@@ -464,6 +475,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity solrDocumentList
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocumentList solrDocumentList;
 	@JsonIgnore
@@ -506,6 +518,8 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity list
 	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<DEV>(). 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<DEV> list = new ArrayList<DEV>();
 	@JsonIgnore
@@ -553,6 +567,7 @@ public abstract class SearchListGen<DEV> {
 	/**	 The entity first
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Object first;
 	@JsonIgnore

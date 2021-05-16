@@ -2,7 +2,6 @@ package com.opendatapolicing.enus.vertx;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,6 @@ import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
-import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
@@ -824,7 +822,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 		try {
 			SimpleModule module = new SimpleModule();
-			module.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer());
 			module.addSerializer(LocalDate.class, new LocalDateSerializer());
 			module.addSerializer(LocalTime.class, new LocalTimeSerializer());
 			DatabindCodec.mapper().registerModule(module);

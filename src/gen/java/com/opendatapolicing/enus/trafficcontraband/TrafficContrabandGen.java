@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.trafficcontraband;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Date;
 import java.time.ZonedDateTime;
@@ -8,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.math.BigDecimal;
 import java.lang.Long;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
@@ -16,6 +16,7 @@ import java.time.ZoneOffset;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import java.util.Set;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -59,7 +60,6 @@ import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -78,6 +78,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long contrabandKey;
@@ -100,6 +101,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandKey = contrabandKey;
 		this.contrabandKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandKey(String o) {
 		this.contrabandKey = TrafficContraband.staticSetContrabandKey(siteRequest_, o);
 		this.contrabandKeyWrap.alreadyInitialized = true;
@@ -155,6 +157,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchKey
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Long searchKey;
@@ -177,6 +180,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchKey = searchKey;
 		this.searchKeyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchKey(String o) {
 		this.searchKey = TrafficContraband.staticSetSearchKey(siteRequest_, o);
 		this.searchKeyWrap.alreadyInitialized = true;
@@ -291,6 +295,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity trafficSearch_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected TrafficSearch trafficSearch_;
 	@JsonIgnore
@@ -333,6 +338,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity agencyTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String agencyTitle;
 	@JsonIgnore
@@ -402,7 +408,10 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopDateTime
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
 	@JsonIgnore
@@ -424,18 +433,24 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopDateTime = stopDateTime;
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDateTime(Instant o) {
 		this.stopDateTime = o == null ? null : ZonedDateTime.from(o).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	/** Example: 2011-12-03T10:15:30+01:00 **/
+	@JsonIgnore
 	public void setStopDateTime(String o) {
 		this.stopDateTime = TrafficContraband.staticSetStopDateTime(siteRequest_, o);
 		this.stopDateTimeWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetStopDateTime(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		if(StringUtils.endsWith(o, "Z"))
+			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
 	}
+	@JsonIgnore
 	public void setStopDateTime(Date o) {
 		this.stopDateTime = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.stopDateTimeWrap.alreadyInitialized = true;
@@ -486,6 +501,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopPurposeNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopPurposeNum;
@@ -508,6 +524,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopPurposeNum = stopPurposeNum;
 		this.stopPurposeNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPurposeNum(String o) {
 		this.stopPurposeNum = TrafficContraband.staticSetStopPurposeNum(siteRequest_, o);
 		this.stopPurposeNumWrap.alreadyInitialized = true;
@@ -563,6 +580,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopPurposeTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopPurposeTitle;
 	@JsonIgnore
@@ -632,6 +650,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopActionNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer stopActionNum;
@@ -654,6 +673,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopActionNum = stopActionNum;
 		this.stopActionNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopActionNum(String o) {
 		this.stopActionNum = TrafficContraband.staticSetStopActionNum(siteRequest_, o);
 		this.stopActionNumWrap.alreadyInitialized = true;
@@ -709,6 +729,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopActionTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopActionTitle;
 	@JsonIgnore
@@ -778,6 +799,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopDriverArrest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverArrest;
 	@JsonIgnore
@@ -799,6 +821,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopDriverArrest = stopDriverArrest;
 		this.stopDriverArrestWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDriverArrest(String o) {
 		this.stopDriverArrest = TrafficContraband.staticSetStopDriverArrest(siteRequest_, o);
 		this.stopDriverArrestWrap.alreadyInitialized = true;
@@ -852,6 +875,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopPassengerArrest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerArrest;
 	@JsonIgnore
@@ -873,6 +897,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopPassengerArrest = stopPassengerArrest;
 		this.stopPassengerArrestWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPassengerArrest(String o) {
 		this.stopPassengerArrest = TrafficContraband.staticSetStopPassengerArrest(siteRequest_, o);
 		this.stopPassengerArrestWrap.alreadyInitialized = true;
@@ -926,6 +951,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopEncounterForce
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEncounterForce;
 	@JsonIgnore
@@ -947,6 +973,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopEncounterForce = stopEncounterForce;
 		this.stopEncounterForceWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopEncounterForce(String o) {
 		this.stopEncounterForce = TrafficContraband.staticSetStopEncounterForce(siteRequest_, o);
 		this.stopEncounterForceWrap.alreadyInitialized = true;
@@ -1000,6 +1027,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopEngageForce
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopEngageForce;
 	@JsonIgnore
@@ -1021,6 +1049,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopEngageForce = stopEngageForce;
 		this.stopEngageForceWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopEngageForce(String o) {
 		this.stopEngageForce = TrafficContraband.staticSetStopEngageForce(siteRequest_, o);
 		this.stopEngageForceWrap.alreadyInitialized = true;
@@ -1074,6 +1103,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopOfficerInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopOfficerInjury;
 	@JsonIgnore
@@ -1095,6 +1125,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopOfficerInjury = stopOfficerInjury;
 		this.stopOfficerInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopOfficerInjury(String o) {
 		this.stopOfficerInjury = TrafficContraband.staticSetStopOfficerInjury(siteRequest_, o);
 		this.stopOfficerInjuryWrap.alreadyInitialized = true;
@@ -1148,6 +1179,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopDriverInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopDriverInjury;
 	@JsonIgnore
@@ -1169,6 +1201,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopDriverInjury = stopDriverInjury;
 		this.stopDriverInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopDriverInjury(String o) {
 		this.stopDriverInjury = TrafficContraband.staticSetStopDriverInjury(siteRequest_, o);
 		this.stopDriverInjuryWrap.alreadyInitialized = true;
@@ -1222,6 +1255,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopPassengerInjury
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean stopPassengerInjury;
 	@JsonIgnore
@@ -1243,6 +1277,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.stopPassengerInjury = stopPassengerInjury;
 		this.stopPassengerInjuryWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setStopPassengerInjury(String o) {
 		this.stopPassengerInjury = TrafficContraband.staticSetStopPassengerInjury(siteRequest_, o);
 		this.stopPassengerInjuryWrap.alreadyInitialized = true;
@@ -1296,6 +1331,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopOfficerId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopOfficerId;
 	@JsonIgnore
@@ -1365,6 +1401,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopLocationId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopLocationId;
 	@JsonIgnore
@@ -1434,6 +1471,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity stopCityId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String stopCityId;
 	@JsonIgnore
@@ -1503,6 +1541,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personAge
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer personAge;
@@ -1525,6 +1564,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.personAge = personAge;
 		this.personAgeWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonAge(String o) {
 		this.personAge = TrafficContraband.staticSetPersonAge(siteRequest_, o);
 		this.personAgeWrap.alreadyInitialized = true;
@@ -1580,6 +1620,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personTypeId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeId;
 	@JsonIgnore
@@ -1649,6 +1690,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personTypeTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personTypeTitle;
 	@JsonIgnore
@@ -1718,6 +1760,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personTypeDriver
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypeDriver;
 	@JsonIgnore
@@ -1739,6 +1782,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.personTypeDriver = personTypeDriver;
 		this.personTypeDriverWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonTypeDriver(String o) {
 		this.personTypeDriver = TrafficContraband.staticSetPersonTypeDriver(siteRequest_, o);
 		this.personTypeDriverWrap.alreadyInitialized = true;
@@ -1792,6 +1836,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personTypePassenger
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personTypePassenger;
 	@JsonIgnore
@@ -1813,6 +1858,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.personTypePassenger = personTypePassenger;
 		this.personTypePassengerWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonTypePassenger(String o) {
 		this.personTypePassenger = TrafficContraband.staticSetPersonTypePassenger(siteRequest_, o);
 		this.personTypePassengerWrap.alreadyInitialized = true;
@@ -1866,6 +1912,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personGenderId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderId;
 	@JsonIgnore
@@ -1935,6 +1982,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personGenderTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personGenderTitle;
 	@JsonIgnore
@@ -2004,6 +2052,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personGenderFemale
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderFemale;
 	@JsonIgnore
@@ -2025,6 +2074,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.personGenderFemale = personGenderFemale;
 		this.personGenderFemaleWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonGenderFemale(String o) {
 		this.personGenderFemale = TrafficContraband.staticSetPersonGenderFemale(siteRequest_, o);
 		this.personGenderFemaleWrap.alreadyInitialized = true;
@@ -2078,6 +2128,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personGenderMale
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean personGenderMale;
 	@JsonIgnore
@@ -2099,6 +2150,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.personGenderMale = personGenderMale;
 		this.personGenderMaleWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setPersonGenderMale(String o) {
 		this.personGenderMale = TrafficContraband.staticSetPersonGenderMale(siteRequest_, o);
 		this.personGenderMaleWrap.alreadyInitialized = true;
@@ -2152,6 +2204,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personEthnicityId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityId;
 	@JsonIgnore
@@ -2221,6 +2274,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personEthnicityTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personEthnicityTitle;
 	@JsonIgnore
@@ -2290,6 +2344,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personRaceId
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceId;
 	@JsonIgnore
@@ -2359,6 +2414,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity personRaceTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String personRaceTitle;
 	@JsonIgnore
@@ -2421,81 +2477,74 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return personRaceTitle == null ? "" : personRaceTitle;
 	}
 
-	////////////////////
-	// trafficStopKey //
-	////////////////////
+	////////////
+	// stopId //
+	////////////
 
-	/**	 The entity trafficStopKey
+	/**	 The entity stopId
 	 *	 is defined as null before being initialized. 
 	 */
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
-	protected Long trafficStopKey;
+	protected String stopId;
 	@JsonIgnore
-	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().var("trafficStopKey").o(trafficStopKey);
+	public Wrap<String> stopIdWrap = new Wrap<String>().var("stopId").o(stopId);
 
-	/**	<br/> The entity trafficStopKey
+	/**	<br/> The entity stopId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficStopKey">Find the entity trafficStopKey in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stopId">Find the entity stopId in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _trafficStopKey(Wrap<Long> w);
+	protected abstract void _stopId(Wrap<String> w);
 
-	public Long getTrafficStopKey() {
-		return trafficStopKey;
+	public String getStopId() {
+		return stopId;
 	}
-
-	public void setTrafficStopKey(Long trafficStopKey) {
-		this.trafficStopKey = trafficStopKey;
-		this.trafficStopKeyWrap.alreadyInitialized = true;
+	public void setStopId(String o) {
+		this.stopId = TrafficContraband.staticSetStopId(siteRequest_, o);
+		this.stopIdWrap.alreadyInitialized = true;
 	}
-	public void setTrafficStopKey(String o) {
-		this.trafficStopKey = TrafficContraband.staticSetTrafficStopKey(siteRequest_, o);
-		this.trafficStopKeyWrap.alreadyInitialized = true;
+	public static String staticSetStopId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
-	public static Long staticSetTrafficStopKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected TrafficContraband trafficStopKeyInit() {
-		if(!trafficStopKeyWrap.alreadyInitialized) {
-			_trafficStopKey(trafficStopKeyWrap);
-			if(trafficStopKey == null)
-				setTrafficStopKey(trafficStopKeyWrap.o);
-			trafficStopKeyWrap.o(null);
+	protected TrafficContraband stopIdInit() {
+		if(!stopIdWrap.alreadyInitialized) {
+			_stopId(stopIdWrap);
+			if(stopId == null)
+				setStopId(stopIdWrap.o);
+			stopIdWrap.o(null);
 		}
-		trafficStopKeyWrap.alreadyInitialized(true);
+		stopIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
 	}
 
-	public static Long staticSolrTrafficStopKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStopId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrTrafficStopKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStrStopId(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqTrafficStopKey(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficContraband.staticSolrStrTrafficStopKey(siteRequest_, TrafficContraband.staticSolrTrafficStopKey(siteRequest_, TrafficContraband.staticSetTrafficStopKey(siteRequest_, o)));
+	public static String staticSolrFqStopId(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficContraband.staticSolrStrStopId(siteRequest_, TrafficContraband.staticSolrStopId(siteRequest_, TrafficContraband.staticSetStopId(siteRequest_, o)));
 	}
 
-	public Long solrTrafficStopKey() {
-		return TrafficContraband.staticSolrTrafficStopKey(siteRequest_, trafficStopKey);
+	public String solrStopId() {
+		return TrafficContraband.staticSolrStopId(siteRequest_, stopId);
 	}
 
-	public String strTrafficStopKey() {
-		return trafficStopKey == null ? "" : trafficStopKey.toString();
+	public String strStopId() {
+		return stopId == null ? "" : stopId;
 	}
 
-	public Long sqlTrafficStopKey() {
-		return trafficStopKey;
+	public String sqlStopId() {
+		return stopId;
 	}
 
-	public String jsonTrafficStopKey() {
-		return trafficStopKey == null ? "" : trafficStopKey.toString();
+	public String jsonStopId() {
+		return stopId == null ? "" : stopId;
 	}
 
 	///////////////////
@@ -2505,6 +2554,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchTypeNum
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer searchTypeNum;
@@ -2527,6 +2577,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchTypeNum = searchTypeNum;
 		this.searchTypeNumWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchTypeNum(String o) {
 		this.searchTypeNum = TrafficContraband.staticSetSearchTypeNum(siteRequest_, o);
 		this.searchTypeNumWrap.alreadyInitialized = true;
@@ -2582,6 +2633,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchTypeTitle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String searchTypeTitle;
 	@JsonIgnore
@@ -2651,6 +2703,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchVehicle
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicle;
 	@JsonIgnore
@@ -2672,6 +2725,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchVehicle = searchVehicle;
 		this.searchVehicleWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchVehicle(String o) {
 		this.searchVehicle = TrafficContraband.staticSetSearchVehicle(siteRequest_, o);
 		this.searchVehicleWrap.alreadyInitialized = true;
@@ -2725,6 +2779,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchDriver
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchDriver;
 	@JsonIgnore
@@ -2746,6 +2801,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchDriver = searchDriver;
 		this.searchDriverWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchDriver(String o) {
 		this.searchDriver = TrafficContraband.staticSetSearchDriver(siteRequest_, o);
 		this.searchDriverWrap.alreadyInitialized = true;
@@ -2799,6 +2855,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchPassenger
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPassenger;
 	@JsonIgnore
@@ -2820,6 +2877,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchPassenger = searchPassenger;
 		this.searchPassengerWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchPassenger(String o) {
 		this.searchPassenger = TrafficContraband.staticSetSearchPassenger(siteRequest_, o);
 		this.searchPassengerWrap.alreadyInitialized = true;
@@ -2873,6 +2931,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchProperty
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchProperty;
 	@JsonIgnore
@@ -2894,6 +2953,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchProperty = searchProperty;
 		this.searchPropertyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchProperty(String o) {
 		this.searchProperty = TrafficContraband.staticSetSearchProperty(siteRequest_, o);
 		this.searchPropertyWrap.alreadyInitialized = true;
@@ -2947,6 +3007,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchVehicleSiezed
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchVehicleSiezed;
 	@JsonIgnore
@@ -2968,6 +3029,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchVehicleSiezed = searchVehicleSiezed;
 		this.searchVehicleSiezedWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchVehicleSiezed(String o) {
 		this.searchVehicleSiezed = TrafficContraband.staticSetSearchVehicleSiezed(siteRequest_, o);
 		this.searchVehicleSiezedWrap.alreadyInitialized = true;
@@ -3021,6 +3083,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchPersonalPropertySiezed
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchPersonalPropertySiezed;
 	@JsonIgnore
@@ -3042,6 +3105,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchPersonalPropertySiezed = searchPersonalPropertySiezed;
 		this.searchPersonalPropertySiezedWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchPersonalPropertySiezed(String o) {
 		this.searchPersonalPropertySiezed = TrafficContraband.staticSetSearchPersonalPropertySiezed(siteRequest_, o);
 		this.searchPersonalPropertySiezedWrap.alreadyInitialized = true;
@@ -3095,6 +3159,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity searchOtherPropertySiezed
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean searchOtherPropertySiezed;
 	@JsonIgnore
@@ -3116,6 +3181,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.searchOtherPropertySiezed = searchOtherPropertySiezed;
 		this.searchOtherPropertySiezedWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setSearchOtherPropertySiezed(String o) {
 		this.searchOtherPropertySiezed = TrafficContraband.staticSetSearchOtherPropertySiezed(siteRequest_, o);
 		this.searchOtherPropertySiezedWrap.alreadyInitialized = true;
@@ -3169,6 +3235,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandOunces
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandOunces;
@@ -3191,6 +3258,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandOunces = contrabandOunces;
 		this.contrabandOuncesWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandOunces(String o) {
 		this.contrabandOunces = TrafficContraband.staticSetContrabandOunces(siteRequest_, o);
 		this.contrabandOuncesWrap.alreadyInitialized = true;
@@ -3201,10 +3269,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandOunces(Double o) {
 			this.contrabandOunces = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandOuncesWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandOunces(Integer o) {
 			this.contrabandOunces = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandOuncesWrap.alreadyInitialized = true;
@@ -3255,6 +3325,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandPounds
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandPounds;
@@ -3277,6 +3348,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandPounds = contrabandPounds;
 		this.contrabandPoundsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandPounds(String o) {
 		this.contrabandPounds = TrafficContraband.staticSetContrabandPounds(siteRequest_, o);
 		this.contrabandPoundsWrap.alreadyInitialized = true;
@@ -3287,10 +3359,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandPounds(Double o) {
 			this.contrabandPounds = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandPoundsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandPounds(Integer o) {
 			this.contrabandPounds = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandPoundsWrap.alreadyInitialized = true;
@@ -3341,6 +3415,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandPints
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandPints;
@@ -3363,6 +3438,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandPints = contrabandPints;
 		this.contrabandPintsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandPints(String o) {
 		this.contrabandPints = TrafficContraband.staticSetContrabandPints(siteRequest_, o);
 		this.contrabandPintsWrap.alreadyInitialized = true;
@@ -3373,10 +3449,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandPints(Double o) {
 			this.contrabandPints = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandPintsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandPints(Integer o) {
 			this.contrabandPints = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandPintsWrap.alreadyInitialized = true;
@@ -3427,6 +3505,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandGallons
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandGallons;
@@ -3449,6 +3528,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandGallons = contrabandGallons;
 		this.contrabandGallonsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandGallons(String o) {
 		this.contrabandGallons = TrafficContraband.staticSetContrabandGallons(siteRequest_, o);
 		this.contrabandGallonsWrap.alreadyInitialized = true;
@@ -3459,10 +3539,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandGallons(Double o) {
 			this.contrabandGallons = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandGallonsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandGallons(Integer o) {
 			this.contrabandGallons = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandGallonsWrap.alreadyInitialized = true;
@@ -3513,6 +3595,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandDosages
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandDosages;
@@ -3535,6 +3618,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandDosages = contrabandDosages;
 		this.contrabandDosagesWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandDosages(String o) {
 		this.contrabandDosages = TrafficContraband.staticSetContrabandDosages(siteRequest_, o);
 		this.contrabandDosagesWrap.alreadyInitialized = true;
@@ -3545,10 +3629,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandDosages(Double o) {
 			this.contrabandDosages = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandDosagesWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandDosages(Integer o) {
 			this.contrabandDosages = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandDosagesWrap.alreadyInitialized = true;
@@ -3599,6 +3685,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandGrams
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandGrams;
@@ -3621,6 +3708,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandGrams = contrabandGrams;
 		this.contrabandGramsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandGrams(String o) {
 		this.contrabandGrams = TrafficContraband.staticSetContrabandGrams(siteRequest_, o);
 		this.contrabandGramsWrap.alreadyInitialized = true;
@@ -3631,10 +3719,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandGrams(Double o) {
 			this.contrabandGrams = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandGramsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandGrams(Integer o) {
 			this.contrabandGrams = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandGramsWrap.alreadyInitialized = true;
@@ -3685,6 +3775,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandKilos
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandKilos;
@@ -3707,6 +3798,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandKilos = contrabandKilos;
 		this.contrabandKilosWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandKilos(String o) {
 		this.contrabandKilos = TrafficContraband.staticSetContrabandKilos(siteRequest_, o);
 		this.contrabandKilosWrap.alreadyInitialized = true;
@@ -3717,10 +3809,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandKilos(Double o) {
 			this.contrabandKilos = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandKilosWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandKilos(Integer o) {
 			this.contrabandKilos = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandKilosWrap.alreadyInitialized = true;
@@ -3771,6 +3865,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandMoney
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandMoney;
@@ -3793,6 +3888,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandMoney = contrabandMoney;
 		this.contrabandMoneyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandMoney(String o) {
 		this.contrabandMoney = TrafficContraband.staticSetContrabandMoney(siteRequest_, o);
 		this.contrabandMoneyWrap.alreadyInitialized = true;
@@ -3803,10 +3899,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandMoney(Double o) {
 			this.contrabandMoney = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandMoneyWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandMoney(Integer o) {
 			this.contrabandMoney = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandMoneyWrap.alreadyInitialized = true;
@@ -3857,6 +3955,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandWeapons
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandWeapons;
@@ -3879,6 +3978,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandWeapons = contrabandWeapons;
 		this.contrabandWeaponsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandWeapons(String o) {
 		this.contrabandWeapons = TrafficContraband.staticSetContrabandWeapons(siteRequest_, o);
 		this.contrabandWeaponsWrap.alreadyInitialized = true;
@@ -3889,10 +3989,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandWeapons(Double o) {
 			this.contrabandWeapons = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandWeaponsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandWeapons(Integer o) {
 			this.contrabandWeapons = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandWeaponsWrap.alreadyInitialized = true;
@@ -3943,6 +4045,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	/**	 The entity contrabandDollarAmount
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected BigDecimal contrabandDollarAmount;
@@ -3965,6 +4068,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		this.contrabandDollarAmount = contrabandDollarAmount;
 		this.contrabandDollarAmountWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandDollarAmount(String o) {
 		this.contrabandDollarAmount = TrafficContraband.staticSetContrabandDollarAmount(siteRequest_, o);
 		this.contrabandDollarAmountWrap.alreadyInitialized = true;
@@ -3975,10 +4079,12 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		return null;
 	}
+	@JsonIgnore
 	public void setContrabandDollarAmount(Double o) {
 			this.contrabandDollarAmount = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandDollarAmountWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContrabandDollarAmount(Integer o) {
 			this.contrabandDollarAmount = new BigDecimal(o, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
 		this.contrabandDollarAmountWrap.alreadyInitialized = true;
@@ -4106,7 +4212,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				personEthnicityTitleInit();
 				personRaceIdInit();
 				personRaceTitleInit();
-				trafficStopKeyInit();
+				stopIdInit();
 				searchTypeNumInit();
 				searchTypeTitleInit();
 				searchVehicleInit();
@@ -4247,8 +4353,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				return oTrafficContraband.personRaceId;
 			case "personRaceTitle":
 				return oTrafficContraband.personRaceTitle;
-			case "trafficStopKey":
-				return oTrafficContraband.trafficStopKey;
+			case "stopId":
+				return oTrafficContraband.stopId;
 			case "searchTypeNum":
 				return oTrafficContraband.searchTypeNum;
 			case "searchTypeTitle":
@@ -4394,8 +4500,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSetPersonRaceId(siteRequest_, o);
 		case "personRaceTitle":
 			return TrafficContraband.staticSetPersonRaceTitle(siteRequest_, o);
-		case "trafficStopKey":
-			return TrafficContraband.staticSetTrafficStopKey(siteRequest_, o);
+		case "stopId":
+			return TrafficContraband.staticSetStopId(siteRequest_, o);
 		case "searchTypeNum":
 			return TrafficContraband.staticSetSearchTypeNum(siteRequest_, o);
 		case "searchTypeTitle":
@@ -4510,8 +4616,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSolrPersonRaceId(siteRequest_, (String)o);
 		case "personRaceTitle":
 			return TrafficContraband.staticSolrPersonRaceTitle(siteRequest_, (String)o);
-		case "trafficStopKey":
-			return TrafficContraband.staticSolrTrafficStopKey(siteRequest_, (Long)o);
+		case "stopId":
+			return TrafficContraband.staticSolrStopId(siteRequest_, (String)o);
 		case "searchTypeNum":
 			return TrafficContraband.staticSolrSearchTypeNum(siteRequest_, (Integer)o);
 		case "searchTypeTitle":
@@ -4626,8 +4732,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSolrStrPersonRaceId(siteRequest_, (String)o);
 		case "personRaceTitle":
 			return TrafficContraband.staticSolrStrPersonRaceTitle(siteRequest_, (String)o);
-		case "trafficStopKey":
-			return TrafficContraband.staticSolrStrTrafficStopKey(siteRequest_, (Long)o);
+		case "stopId":
+			return TrafficContraband.staticSolrStrStopId(siteRequest_, (String)o);
 		case "searchTypeNum":
 			return TrafficContraband.staticSolrStrSearchTypeNum(siteRequest_, (Integer)o);
 		case "searchTypeTitle":
@@ -4742,8 +4848,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			return TrafficContraband.staticSolrFqPersonRaceId(siteRequest_, o);
 		case "personRaceTitle":
 			return TrafficContraband.staticSolrFqPersonRaceTitle(siteRequest_, o);
-		case "trafficStopKey":
-			return TrafficContraband.staticSolrFqTrafficStopKey(siteRequest_, o);
+		case "stopId":
+			return TrafficContraband.staticSolrFqStopId(siteRequest_, o);
 		case "searchTypeNum":
 			return TrafficContraband.staticSolrFqSearchTypeNum(siteRequest_, o);
 		case "searchTypeTitle":
@@ -5141,10 +5247,10 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 					oTrafficContraband.setPersonRaceTitle(personRaceTitle);
 			}
 
-			if(saves.contains("trafficStopKey")) {
-				Long trafficStopKey = (Long)solrDocument.get("trafficStopKey_stored_long");
-				if(trafficStopKey != null)
-					oTrafficContraband.setTrafficStopKey(trafficStopKey);
+			if(saves.contains("stopId")) {
+				String stopId = (String)solrDocument.get("stopId_stored_string");
+				if(stopId != null)
+					oTrafficContraband.setStopId(stopId);
 			}
 
 			if(saves.contains("searchTypeNum")) {
@@ -5390,9 +5496,9 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			document.addField("personRaceTitle_indexed_string", personRaceTitle);
 			document.addField("personRaceTitle_stored_string", personRaceTitle);
 		}
-		if(trafficStopKey != null) {
-			document.addField("trafficStopKey_indexed_long", trafficStopKey);
-			document.addField("trafficStopKey_stored_long", trafficStopKey);
+		if(stopId != null) {
+			document.addField("stopId_indexed_string", stopId);
+			document.addField("stopId_stored_string", stopId);
 		}
 		if(searchTypeNum != null) {
 			document.addField("searchTypeNum_indexed_int", searchTypeNum);
@@ -5538,8 +5644,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				return "personRaceId_indexed_string";
 			case "personRaceTitle":
 				return "personRaceTitle_indexed_string";
-			case "trafficStopKey":
-				return "trafficStopKey_indexed_long";
+			case "stopId":
+				return "stopId_indexed_string";
 			case "searchTypeNum":
 				return "searchTypeNum_indexed_int";
 			case "searchTypeTitle":
@@ -5638,7 +5744,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		oTrafficContraband.setPersonEthnicityTitle(Optional.ofNullable(solrDocument.get("personEthnicityTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setPersonRaceId(Optional.ofNullable(solrDocument.get("personRaceId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setPersonRaceTitle(Optional.ofNullable(solrDocument.get("personRaceTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficContraband.setTrafficStopKey(Optional.ofNullable(solrDocument.get("trafficStopKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setStopId(Optional.ofNullable(solrDocument.get("stopId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setSearchTypeNum(Optional.ofNullable(solrDocument.get("searchTypeNum_stored_int")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setSearchTypeTitle(Optional.ofNullable(solrDocument.get("searchTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setSearchVehicle(Optional.ofNullable(solrDocument.get("searchVehicle_stored_boolean")).map(v -> v.toString()).orElse(null));
@@ -5733,8 +5839,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				apiRequest.addVars("personRaceId");
 			if(!Objects.equals(personRaceTitle, original.getPersonRaceTitle()))
 				apiRequest.addVars("personRaceTitle");
-			if(!Objects.equals(trafficStopKey, original.getTrafficStopKey()))
-				apiRequest.addVars("trafficStopKey");
+			if(!Objects.equals(stopId, original.getStopId()))
+				apiRequest.addVars("stopId");
 			if(!Objects.equals(searchTypeNum, original.getSearchTypeNum()))
 				apiRequest.addVars("searchTypeNum");
 			if(!Objects.equals(searchTypeTitle, original.getSearchTypeTitle()))
@@ -5782,7 +5888,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), contrabandKey, searchKey, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, trafficStopKey, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, contrabandOunces, contrabandPounds, contrabandPints, contrabandGallons, contrabandDosages, contrabandGrams, contrabandKilos, contrabandMoney, contrabandWeapons, contrabandDollarAmount);
+		return Objects.hash(super.hashCode(), contrabandKey, searchKey, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, contrabandOunces, contrabandPounds, contrabandPints, contrabandGallons, contrabandDosages, contrabandGrams, contrabandKilos, contrabandMoney, contrabandWeapons, contrabandDollarAmount);
 	}
 
 	////////////
@@ -5827,7 +5933,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 				&& Objects.equals( personEthnicityTitle, that.personEthnicityTitle )
 				&& Objects.equals( personRaceId, that.personRaceId )
 				&& Objects.equals( personRaceTitle, that.personRaceTitle )
-				&& Objects.equals( trafficStopKey, that.trafficStopKey )
+				&& Objects.equals( stopId, that.stopId )
 				&& Objects.equals( searchTypeNum, that.searchTypeNum )
 				&& Objects.equals( searchTypeTitle, that.searchTypeTitle )
 				&& Objects.equals( searchVehicle, that.searchVehicle )
@@ -5888,7 +5994,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		sb.append( ", personEthnicityTitle: \"" ).append(personEthnicityTitle).append( "\"" );
 		sb.append( ", personRaceId: \"" ).append(personRaceId).append( "\"" );
 		sb.append( ", personRaceTitle: \"" ).append(personRaceTitle).append( "\"" );
-		sb.append( ", trafficStopKey: " ).append(trafficStopKey);
+		sb.append( ", stopId: \"" ).append(stopId).append( "\"" );
 		sb.append( ", searchTypeNum: " ).append(searchTypeNum);
 		sb.append( ", searchTypeTitle: \"" ).append(searchTypeTitle).append( "\"" );
 		sb.append( ", searchVehicle: " ).append(searchVehicle);
@@ -5945,7 +6051,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	public static final String VAR_personEthnicityTitle = "personEthnicityTitle";
 	public static final String VAR_personRaceId = "personRaceId";
 	public static final String VAR_personRaceTitle = "personRaceTitle";
-	public static final String VAR_trafficStopKey = "trafficStopKey";
+	public static final String VAR_stopId = "stopId";
 	public static final String VAR_searchTypeNum = "searchTypeNum";
 	public static final String VAR_searchTypeTitle = "searchTypeTitle";
 	public static final String VAR_searchVehicle = "searchVehicle";

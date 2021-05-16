@@ -412,11 +412,11 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * DisplayName.enUS: traffic stop key
+	 * DisplayName.enUS: traffic stop ID
 	 */          
-	protected void _trafficStopKey(Wrap<Long> w) {
+	protected void _stopId(Wrap<String> w) {
 		if(trafficSearch_ != null)
-			w.o(trafficSearch_.getTrafficStopKey());
+			w.o(trafficSearch_.getStopId());
 	}
 
 	/**    

@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.writer;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.lang.Boolean;
@@ -21,6 +21,7 @@ import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -42,7 +43,6 @@ import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -58,6 +58,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
@@ -100,6 +101,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSolrDocument
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument classSolrDocument;
 	@JsonIgnore
@@ -142,6 +144,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity contextRows
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer contextRows;
@@ -164,6 +167,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.contextRows = contextRows;
 		this.contextRowsWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setContextRows(String o) {
 		this.contextRows = ApiWriter.staticSetContextRows(siteRequest_, o);
 		this.contextRowsWrap.alreadyInitialized = true;
@@ -219,6 +223,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMethod;
 	@JsonIgnore
@@ -288,6 +293,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity openApiVersion
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String openApiVersion;
 	@JsonIgnore
@@ -357,6 +363,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity appSwagger2
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AppSwagger2 appSwagger2;
 	@JsonIgnore
@@ -401,6 +408,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classUris
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classUris;
 	@JsonIgnore
@@ -436,6 +445,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classUris.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassUris(JsonArray objets) {
 		classUris.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -493,6 +503,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity openApiVersionNumber
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer openApiVersionNumber;
@@ -515,6 +526,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.openApiVersionNumber = openApiVersionNumber;
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setOpenApiVersionNumber(String o) {
 		this.openApiVersionNumber = ApiWriter.staticSetOpenApiVersionNumber(siteRequest_, o);
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
@@ -570,6 +582,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity tabsSchema
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsSchema;
@@ -592,6 +605,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.tabsSchema = tabsSchema;
 		this.tabsSchemaWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setTabsSchema(String o) {
 		this.tabsSchema = ApiWriter.staticSetTabsSchema(siteRequest_, o);
 		this.tabsSchemaWrap.alreadyInitialized = true;
@@ -647,6 +661,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity tabsResponses
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsResponses;
@@ -669,6 +684,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.tabsResponses = tabsResponses;
 		this.tabsResponsesWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setTabsResponses(String o) {
 		this.tabsResponses = ApiWriter.staticSetTabsResponses(siteRequest_, o);
 		this.tabsResponsesWrap.alreadyInitialized = true;
@@ -724,6 +740,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wPaths
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wPaths;
 	@JsonIgnore
@@ -768,6 +785,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestBodies
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBodies;
 	@JsonIgnore
@@ -812,6 +830,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wSchemas
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wSchemas;
 	@JsonIgnore
@@ -856,6 +875,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject config;
 	@JsonIgnore
@@ -898,6 +918,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity solrClientComputate
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrClient solrClientComputate;
 	@JsonIgnore
@@ -940,6 +961,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestHeaders
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestHeaders;
 	@JsonIgnore
@@ -984,6 +1006,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestDescription
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestDescription;
 	@JsonIgnore
@@ -1028,6 +1051,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wResponseDescription
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseDescription;
 	@JsonIgnore
@@ -1072,6 +1096,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestBody
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBody;
 	@JsonIgnore
@@ -1116,6 +1141,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wResponseBody
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseBody;
 	@JsonIgnore
@@ -1160,6 +1186,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wRequestSchema
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestSchema;
 	@JsonIgnore
@@ -1204,6 +1231,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity wResponseSchema
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wResponseSchema;
 	@JsonIgnore
@@ -1248,6 +1276,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity writers
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriters writers;
 	@JsonIgnore
@@ -1292,6 +1321,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiTag
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiTag;
 	@JsonIgnore
@@ -1361,6 +1391,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classExtendsBase
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classExtendsBase;
 	@JsonIgnore
@@ -1382,6 +1413,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classExtendsBase = classExtendsBase;
 		this.classExtendsBaseWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassExtendsBase(String o) {
 		this.classExtendsBase = ApiWriter.staticSetClassExtendsBase(siteRequest_, o);
 		this.classExtendsBaseWrap.alreadyInitialized = true;
@@ -1435,6 +1467,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classIsBase
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classIsBase;
 	@JsonIgnore
@@ -1456,6 +1489,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classIsBase = classIsBase;
 		this.classIsBaseWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassIsBase(String o) {
 		this.classIsBase = ApiWriter.staticSetClassIsBase(siteRequest_, o);
 		this.classIsBaseWrap.alreadyInitialized = true;
@@ -1509,6 +1543,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSimpleName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSimpleName;
 	@JsonIgnore
@@ -1578,6 +1613,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity appName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String appName;
 	@JsonIgnore
@@ -1647,6 +1683,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classAbsolutePath
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classAbsolutePath;
 	@JsonIgnore
@@ -1716,6 +1753,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiUriMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiUriMethod;
 	@JsonIgnore
@@ -1785,6 +1823,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoleUserMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleUserMethod;
 	@JsonIgnore
@@ -1806,6 +1845,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRoleUserMethod = classRoleUserMethod;
 		this.classRoleUserMethodWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRoleUserMethod(String o) {
 		this.classRoleUserMethod = ApiWriter.staticSetClassRoleUserMethod(siteRequest_, o);
 		this.classRoleUserMethodWrap.alreadyInitialized = true;
@@ -1859,6 +1899,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiMethodMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMethodMethod;
 	@JsonIgnore
@@ -1928,6 +1969,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiMediaType200Method
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiMediaType200Method;
 	@JsonIgnore
@@ -1997,6 +2039,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiOperationIdMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethod;
 	@JsonIgnore
@@ -2066,6 +2109,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiOperationIdMethodRequest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethodRequest;
 	@JsonIgnore
@@ -2135,6 +2179,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classApiOperationIdMethodResponse
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classApiOperationIdMethodResponse;
 	@JsonIgnore
@@ -2204,6 +2249,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSuperApiOperationIdMethodRequest
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSuperApiOperationIdMethodRequest;
 	@JsonIgnore
@@ -2273,6 +2319,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classSuperApiOperationIdMethodResponse
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classSuperApiOperationIdMethodResponse;
 	@JsonIgnore
@@ -2342,6 +2389,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classPageCanonicalNameMethod
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String classPageCanonicalNameMethod;
 	@JsonIgnore
@@ -2411,6 +2459,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classKeywordsFound
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classKeywordsFound;
 	@JsonIgnore
@@ -2432,6 +2481,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classKeywordsFound = classKeywordsFound;
 		this.classKeywordsFoundWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassKeywordsFound(String o) {
 		this.classKeywordsFound = ApiWriter.staticSetClassKeywordsFound(siteRequest_, o);
 		this.classKeywordsFoundWrap.alreadyInitialized = true;
@@ -2485,6 +2535,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classKeywords
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classKeywords;
 	@JsonIgnore
@@ -2520,6 +2572,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classKeywords.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassKeywords(JsonArray objets) {
 		classKeywords.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -2577,6 +2630,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classPublicRead
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classPublicRead;
 	@JsonIgnore
@@ -2598,6 +2652,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classPublicRead = classPublicRead;
 		this.classPublicReadWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassPublicRead(String o) {
 		this.classPublicRead = ApiWriter.staticSetClassPublicRead(siteRequest_, o);
 		this.classPublicReadWrap.alreadyInitialized = true;
@@ -2651,6 +2706,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoleSession
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleSession;
 	@JsonIgnore
@@ -2672,6 +2728,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRoleSession = classRoleSession;
 		this.classRoleSessionWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRoleSession(String o) {
 		this.classRoleSession = ApiWriter.staticSetClassRoleSession(siteRequest_, o);
 		this.classRoleSessionWrap.alreadyInitialized = true;
@@ -2725,6 +2782,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoleUtilisateur
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRoleUtilisateur;
 	@JsonIgnore
@@ -2746,6 +2804,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRoleUtilisateur = classRoleUtilisateur;
 		this.classRoleUtilisateurWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRoleUtilisateur(String o) {
 		this.classRoleUtilisateur = ApiWriter.staticSetClassRoleUtilisateur(siteRequest_, o);
 		this.classRoleUtilisateurWrap.alreadyInitialized = true;
@@ -2799,6 +2858,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRolesFound
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected Boolean classRolesFound;
 	@JsonIgnore
@@ -2820,6 +2880,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		this.classRolesFound = classRolesFound;
 		this.classRolesFoundWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setClassRolesFound(String o) {
 		this.classRolesFound = ApiWriter.staticSetClassRolesFound(siteRequest_, o);
 		this.classRolesFoundWrap.alreadyInitialized = true;
@@ -2873,6 +2934,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRoles
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classRoles;
 	@JsonIgnore
@@ -2908,6 +2971,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classRoles.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassRoles(JsonArray objets) {
 		classRoles.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -2965,6 +3029,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity classRolesLanguage
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
+	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 	@JsonInclude(Include.NON_NULL)
 	protected List<String> classRolesLanguage;
 	@JsonIgnore
@@ -3000,6 +3066,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			this.classRolesLanguage.add(o);
 		return (ApiWriter)this;
 	}
+	@JsonIgnore
 	public void setClassRolesLanguage(JsonArray objets) {
 		classRolesLanguage.clear();
 		for(int i = 0; i < objets.size(); i++) {
@@ -3057,6 +3124,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity languageName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String languageName;
 	@JsonIgnore
@@ -3126,6 +3194,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	/**	 The entity entitySolrDocument
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrDocument entitySolrDocument;
 	@JsonIgnore

@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.vertx;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.json.JsonObject;
@@ -19,6 +19,7 @@ import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -38,7 +39,6 @@ import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -54,6 +54,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity solrClientComputate
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SolrClient solrClientComputate;
 	@JsonIgnore
@@ -96,6 +97,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity siteRequest_
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected SiteRequestEnUS siteRequest_;
 	@JsonIgnore
@@ -138,6 +140,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity config
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected JsonObject config;
 	@JsonIgnore
@@ -180,6 +183,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity appPath
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String appPath;
 	@JsonIgnore
@@ -249,6 +253,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity appName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String appName;
 	@JsonIgnore
@@ -318,6 +323,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity languageName
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String languageName;
 	@JsonIgnore
@@ -387,6 +393,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity openApiVersion
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String openApiVersion;
 	@JsonIgnore
@@ -456,6 +463,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity openApiVersionNumber
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer openApiVersionNumber;
@@ -478,6 +486,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		this.openApiVersionNumber = openApiVersionNumber;
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setOpenApiVersionNumber(String o) {
 		this.openApiVersionNumber = AppSwagger2.staticSetOpenApiVersionNumber(siteRequest_, o);
 		this.openApiVersionNumberWrap.alreadyInitialized = true;
@@ -533,6 +542,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity tabsSchema
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
 	protected Integer tabsSchema;
@@ -555,6 +565,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 		this.tabsSchema = tabsSchema;
 		this.tabsSchemaWrap.alreadyInitialized = true;
 	}
+	@JsonIgnore
 	public void setTabsSchema(String o) {
 		this.tabsSchema = AppSwagger2.staticSetTabsSchema(siteRequest_, o);
 		this.tabsSchemaWrap.alreadyInitialized = true;
@@ -610,6 +621,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity apiVersion
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String apiVersion;
 	@JsonIgnore
@@ -679,6 +691,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity openApiYamlPath
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected String openApiYamlPath;
 	@JsonIgnore
@@ -748,6 +761,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity openApiYamlFile
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected File openApiYamlFile;
 	@JsonIgnore
@@ -790,6 +804,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity w
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter w;
 	@JsonIgnore
@@ -834,6 +849,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity wPaths
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wPaths;
 	@JsonIgnore
@@ -878,6 +894,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity wRequestBodies
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wRequestBodies;
 	@JsonIgnore
@@ -922,6 +939,7 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	/**	 The entity wSchemas
 	 *	 is defined as null before being initialized. 
 	 */
+	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
 	protected AllWriter wSchemas;
 	@JsonIgnore
