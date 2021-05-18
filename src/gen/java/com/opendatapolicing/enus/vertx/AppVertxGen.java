@@ -78,6 +78,7 @@ CREATE TABLE TrafficStop(
 	, inheritPk text
 	, created timestamp with time zone
 	, stateAbbreviation text
+	, stateName text
 	, agencyTitle text
 	, stopDateTime timestamp with time zone
 	, stopYear integer

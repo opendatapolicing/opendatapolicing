@@ -150,6 +150,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		String clusterHost = System.getenv("clusterHost");
 		Integer clusterPublicPort = System.getenv("clusterPublicPort") == null ? null : Integer.parseInt(System.getenv("clusterPublicPort"));
 		Integer siteInstances = System.getenv("siteInstances") == null ? 1 : Integer.parseInt(System.getenv("siteInstances"));
+		Long vertxWarningExceptionSeconds = System.getenv("vertxWarningExceptionSeconds") == null ? 10 : Long.parseLong(System.getenv("vertxWarningExceptionSeconds"));
 		String clusterPublicHost = System.getenv("clusterPublicHost");
 		String zookeeperHosts = zookeeperHostName + ":" + zookeeperPort;
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
@@ -195,6 +196,8 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		}
 		vertxOptions.setEventBusOptions(eventBusOptions);
 		vertxOptions.setClusterManager(gestionnaireCluster);
+		vertxOptions.setWarningExceptionTime(vertxWarningExceptionSeconds);
+		vertxOptions.setWarningExceptionTimeUnit(TimeUnit.SECONDS);
 		vertxOptions.setWorkerPoolSize(System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? 5 : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE)));
 		DeploymentOptions deploymentOptions = new DeploymentOptions();
 
@@ -709,6 +712,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		try {
 			String staticPath = config.getString(ConfigKeys.STATIC_PATH);
 			String staticBaseUrl = config.getString(ConfigKeys.STATIC_BASE_URL);
+			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
 			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
 			TemplateHandler templateHandler = TemplateHandler.create(engine, staticPath + "/template", "text/html");
 
@@ -780,7 +784,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 			router.get("/template/*").handler(ctx -> {
 				ctx.put(ConfigKeys.STATIC_BASE_URL, staticBaseUrl);
-				ctx.put(ConfigKeys.SITE_BASE_URL, staticBaseUrl);
+				ctx.put(ConfigKeys.SITE_BASE_URL, siteBaseUrl);
 				ctx.next();
 			});
 

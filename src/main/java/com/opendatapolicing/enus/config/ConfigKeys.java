@@ -369,4 +369,9 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String WORKER_POOL_SIZE = "workerPoolSize";
+
+	/**
+	 * 
+	 **/
+	public static final String VERTX_WARNING_EXCEPTION_SECONDS = "vertxWarningExceptionSeconds";
 }

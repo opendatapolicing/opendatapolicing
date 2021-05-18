@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.time.ZonedDateTime;
 import org.slf4j.LoggerFactory;
-import com.opendatapolicing.enus.state.SiteState;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
 import java.lang.Long;
@@ -60,7 +59,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
 /**	
@@ -72,85 +70,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public static final List<String> ROLES = Arrays.asList("SiteService");
 	public static final List<String> ROLE_READS = Arrays.asList("");
-
-	////////////////////
-	// trafficStopKey //
-	////////////////////
-
-	/**	 The entity trafficStopKey
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonSerialize(using = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected Long trafficStopKey;
-	@JsonIgnore
-	public Wrap<Long> trafficStopKeyWrap = new Wrap<Long>().var("trafficStopKey").o(trafficStopKey);
-
-	/**	<br/> The entity trafficStopKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficStopKey">Find the entity trafficStopKey in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _trafficStopKey(Wrap<Long> c);
-
-	public Long getTrafficStopKey() {
-		return trafficStopKey;
-	}
-
-	public void setTrafficStopKey(Long trafficStopKey) {
-		this.trafficStopKey = trafficStopKey;
-		this.trafficStopKeyWrap.alreadyInitialized = true;
-	}
-	@JsonIgnore
-	public void setTrafficStopKey(String o) {
-		this.trafficStopKey = TrafficStop.staticSetTrafficStopKey(siteRequest_, o);
-		this.trafficStopKeyWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetTrafficStopKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected TrafficStop trafficStopKeyInit() {
-		if(!trafficStopKeyWrap.alreadyInitialized) {
-			_trafficStopKey(trafficStopKeyWrap);
-			if(trafficStopKey == null)
-				setTrafficStopKey(trafficStopKeyWrap.o);
-			trafficStopKeyWrap.o(null);
-		}
-		trafficStopKeyWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
-	}
-
-	public static Long staticSolrTrafficStopKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrTrafficStopKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqTrafficStopKey(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficStop.staticSolrStrTrafficStopKey(siteRequest_, TrafficStop.staticSolrTrafficStopKey(siteRequest_, TrafficStop.staticSetTrafficStopKey(siteRequest_, o)));
-	}
-
-	public Long solrTrafficStopKey() {
-		return TrafficStop.staticSolrTrafficStopKey(siteRequest_, trafficStopKey);
-	}
-
-	public String strTrafficStopKey() {
-		return trafficStopKey == null ? "" : trafficStopKey.toString();
-	}
-
-	public Long sqlTrafficStopKey() {
-		return trafficStopKey;
-	}
-
-	public String jsonTrafficStopKey() {
-		return trafficStopKey == null ? "" : trafficStopKey.toString();
-	}
 
 	///////////////////////
 	// stateAbbreviation //
@@ -222,187 +141,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return stateAbbreviation == null ? "" : stateAbbreviation;
 	}
 
-	/////////////////
-	// stateSearch //
-	/////////////////
-
-	/**	 The entity stateSearch
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonIgnore
-	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteState> stateSearch;
-	@JsonIgnore
-	public Wrap<SearchList<SiteState>> stateSearchWrap = new Wrap<SearchList<SiteState>>().var("stateSearch").o(stateSearch);
-
-	/**	<br/> The entity stateSearch
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateSearch">Find the entity stateSearch in Solr</a>
-	 * <br/>
-	 * @param promise is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _stateSearch(Promise<SearchList<SiteState>> promise);
-
-	public SearchList<SiteState> getStateSearch() {
-		return stateSearch;
-	}
-
-	public void setStateSearch(SearchList<SiteState> stateSearch) {
-		this.stateSearch = stateSearch;
-		this.stateSearchWrap.alreadyInitialized = true;
-	}
-	public static SearchList<SiteState> staticSetStateSearch(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected Future<SearchList<SiteState>> stateSearchPromise() {
-		Promise<SearchList<SiteState>> promise = Promise.promise();
-		if(!stateSearchWrap.alreadyInitialized) {
-			Promise<SearchList<SiteState>> promise2 = Promise.promise();
-			_stateSearch(promise2);
-			promise2.future().onSuccess(o -> {
-				if(o != null && stateSearch == null) {
-					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
-						setStateSearch(o);
-						stateSearchWrap.alreadyInitialized(true);
-						promise.complete(o);
-					}).onFailure(ex -> {
-						promise.fail(ex);
-					});
-				} else {
-					stateSearchWrap.alreadyInitialized(true);
-					promise.complete(o);
-				}
-			}).onFailure(ex -> {
-				promise.fail(ex);
-			});
-		} else {
-			promise.complete();
-		}
-		return promise.future();
-	}
-
-	////////////
-	// state_ //
-	////////////
-
-	/**	 The entity state_
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected SiteState state_;
-	@JsonIgnore
-	public Wrap<SiteState> state_Wrap = new Wrap<SiteState>().var("state_").o(state_);
-
-	/**	<br/> The entity state_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:state_">Find the entity state_ in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _state_(Wrap<SiteState> w);
-
-	public SiteState getState_() {
-		return state_;
-	}
-
-	public void setState_(SiteState state_) {
-		this.state_ = state_;
-		this.state_Wrap.alreadyInitialized = true;
-	}
-	public static SiteState staticSetState_(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected TrafficStop state_Init() {
-		if(!state_Wrap.alreadyInitialized) {
-			_state_(state_Wrap);
-			if(state_ == null)
-				setState_(state_Wrap.o);
-			state_Wrap.o(null);
-		}
-		state_Wrap.alreadyInitialized(true);
-		return (TrafficStop)this;
-	}
-
-	//////////////
-	// stateKey //
-	//////////////
-
-	/**	 The entity stateKey
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonSerialize(using = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected Long stateKey;
-	@JsonIgnore
-	public Wrap<Long> stateKeyWrap = new Wrap<Long>().var("stateKey").o(stateKey);
-
-	/**	<br/> The entity stateKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateKey">Find the entity stateKey in Solr</a>
-	 * <br/>
-	 * @param w is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _stateKey(Wrap<Long> w);
-
-	public Long getStateKey() {
-		return stateKey;
-	}
-
-	public void setStateKey(Long stateKey) {
-		this.stateKey = stateKey;
-		this.stateKeyWrap.alreadyInitialized = true;
-	}
-	@JsonIgnore
-	public void setStateKey(String o) {
-		this.stateKey = TrafficStop.staticSetStateKey(siteRequest_, o);
-		this.stateKeyWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetStateKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected TrafficStop stateKeyInit() {
-		if(!stateKeyWrap.alreadyInitialized) {
-			_stateKey(stateKeyWrap);
-			if(stateKey == null)
-				setStateKey(stateKeyWrap.o);
-			stateKeyWrap.o(null);
-		}
-		stateKeyWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
-	}
-
-	public static Long staticSolrStateKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrStateKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqStateKey(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficStop.staticSolrStrStateKey(siteRequest_, TrafficStop.staticSolrStateKey(siteRequest_, TrafficStop.staticSetStateKey(siteRequest_, o)));
-	}
-
-	public Long solrStateKey() {
-		return TrafficStop.staticSolrStateKey(siteRequest_, stateKey);
-	}
-
-	public String strStateKey() {
-		return stateKey == null ? "" : stateKey.toString();
-	}
-
-	public Long sqlStateKey() {
-		return stateKey;
-	}
-
-	public String jsonStateKey() {
-		return stateKey == null ? "" : stateKey.toString();
-	}
-
 	///////////////
 	// stateName //
 	///////////////
@@ -471,187 +209,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public String jsonStateName() {
 		return stateName == null ? "" : stateName;
-	}
-
-	///////////////
-	// agencyKey //
-	///////////////
-
-	/**	 The entity agencyKey
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonSerialize(using = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected Long agencyKey;
-	@JsonIgnore
-	public Wrap<Long> agencyKeyWrap = new Wrap<Long>().var("agencyKey").o(agencyKey);
-
-	/**	<br/> The entity agencyKey
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyKey">Find the entity agencyKey in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _agencyKey(Wrap<Long> c);
-
-	public Long getAgencyKey() {
-		return agencyKey;
-	}
-
-	public void setAgencyKey(Long agencyKey) {
-		this.agencyKey = agencyKey;
-		this.agencyKeyWrap.alreadyInitialized = true;
-	}
-	@JsonIgnore
-	public void setAgencyKey(String o) {
-		this.agencyKey = TrafficStop.staticSetAgencyKey(siteRequest_, o);
-		this.agencyKeyWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetAgencyKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected TrafficStop agencyKeyInit() {
-		if(!agencyKeyWrap.alreadyInitialized) {
-			_agencyKey(agencyKeyWrap);
-			if(agencyKey == null)
-				setAgencyKey(agencyKeyWrap.o);
-			agencyKeyWrap.o(null);
-		}
-		agencyKeyWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
-	}
-
-	public static Long staticSolrAgencyKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrAgencyKey(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqAgencyKey(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficStop.staticSolrStrAgencyKey(siteRequest_, TrafficStop.staticSolrAgencyKey(siteRequest_, TrafficStop.staticSetAgencyKey(siteRequest_, o)));
-	}
-
-	public Long solrAgencyKey() {
-		return TrafficStop.staticSolrAgencyKey(siteRequest_, agencyKey);
-	}
-
-	public String strAgencyKey() {
-		return agencyKey == null ? "" : agencyKey.toString();
-	}
-
-	public Long sqlAgencyKey() {
-		return agencyKey;
-	}
-
-	public String jsonAgencyKey() {
-		return agencyKey == null ? "" : agencyKey.toString();
-	}
-
-	//////////////////
-	// agencySearch //
-	//////////////////
-
-	/**	 The entity agencySearch
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonIgnore
-	@JsonInclude(Include.NON_NULL)
-	protected SearchList<SiteAgency> agencySearch;
-	@JsonIgnore
-	public Wrap<SearchList<SiteAgency>> agencySearchWrap = new Wrap<SearchList<SiteAgency>>().var("agencySearch").o(agencySearch);
-
-	/**	<br/> The entity agencySearch
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencySearch">Find the entity agencySearch in Solr</a>
-	 * <br/>
-	 * @param promise is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _agencySearch(Promise<SearchList<SiteAgency>> promise);
-
-	public SearchList<SiteAgency> getAgencySearch() {
-		return agencySearch;
-	}
-
-	public void setAgencySearch(SearchList<SiteAgency> agencySearch) {
-		this.agencySearch = agencySearch;
-		this.agencySearchWrap.alreadyInitialized = true;
-	}
-	public static SearchList<SiteAgency> staticSetAgencySearch(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected Future<SearchList<SiteAgency>> agencySearchPromise() {
-		Promise<SearchList<SiteAgency>> promise = Promise.promise();
-		if(!agencySearchWrap.alreadyInitialized) {
-			Promise<SearchList<SiteAgency>> promise2 = Promise.promise();
-			_agencySearch(promise2);
-			promise2.future().onSuccess(o -> {
-				if(o != null && agencySearch == null) {
-					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
-						setAgencySearch(o);
-						agencySearchWrap.alreadyInitialized(true);
-						promise.complete(o);
-					}).onFailure(ex -> {
-						promise.fail(ex);
-					});
-				} else {
-					agencySearchWrap.alreadyInitialized(true);
-					promise.complete(o);
-				}
-			}).onFailure(ex -> {
-				promise.fail(ex);
-			});
-		} else {
-			promise.complete();
-		}
-		return promise.future();
-	}
-
-	/////////////
-	// agency_ //
-	/////////////
-
-	/**	 The entity agency_
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected SiteAgency agency_;
-	@JsonIgnore
-	public Wrap<SiteAgency> agency_Wrap = new Wrap<SiteAgency>().var("agency_").o(agency_);
-
-	/**	<br/> The entity agency_
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agency_">Find the entity agency_ in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _agency_(Wrap<SiteAgency> c);
-
-	public SiteAgency getAgency_() {
-		return agency_;
-	}
-
-	public void setAgency_(SiteAgency agency_) {
-		this.agency_ = agency_;
-		this.agency_Wrap.alreadyInitialized = true;
-	}
-	public static SiteAgency staticSetAgency_(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected TrafficStop agency_Init() {
-		if(!agency_Wrap.alreadyInitialized) {
-			_agency_(agency_Wrap);
-			if(agency_ == null)
-				setAgency_(agency_Wrap.o);
-			agency_Wrap.o(null);
-		}
-		agency_Wrap.alreadyInitialized(true);
-		return (TrafficStop)this;
 	}
 
 	/////////////////
@@ -2383,45 +1940,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
-				trafficStopKeyInit();
 				stateAbbreviationInit();
-				promise2.complete();
-			} catch(Exception ex) {
-				promise2.fail(ex);
-			}
-			return promise2.future();
-		}).compose(a -> {
-			Promise<Void> promise2 = Promise.promise();
-			stateSearchPromise().onSuccess(stateSearch -> {
-				promise2.complete();
-			}).onFailure(ex -> {
-				promise2.fail(ex);
-			});
-			return promise2.future();
-		}).compose(a -> {
-			Promise<Void> promise2 = Promise.promise();
-			try {
-				state_Init();
-				stateKeyInit();
 				stateNameInit();
-				agencyKeyInit();
-				promise2.complete();
-			} catch(Exception ex) {
-				promise2.fail(ex);
-			}
-			return promise2.future();
-		}).compose(a -> {
-			Promise<Void> promise2 = Promise.promise();
-			agencySearchPromise().onSuccess(agencySearch -> {
-				promise2.complete();
-			}).onFailure(ex -> {
-				promise2.fail(ex);
-			});
-			return promise2.future();
-		}).compose(a -> {
-			Promise<Void> promise2 = Promise.promise();
-			try {
-				agency_Init();
 				agencyTitleInit();
 				stopDateTimeInit();
 				stopYearInit();
@@ -2497,10 +2017,6 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public void siteRequestTrafficStop(SiteRequestEnUS siteRequest_) {
 			super.siteRequestCluster(siteRequest_);
-		if(stateSearch != null)
-			stateSearch.setSiteRequest_(siteRequest_);
-		if(agencySearch != null)
-			agencySearch.setSiteRequest_(siteRequest_);
 		if(personSearch != null)
 			personSearch.setSiteRequest_(siteRequest_);
 		if(trafficSearchSearch != null)
@@ -2535,24 +2051,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public Object obtainTrafficStop(String var) {
 		TrafficStop oTrafficStop = (TrafficStop)this;
 		switch(var) {
-			case "trafficStopKey":
-				return oTrafficStop.trafficStopKey;
 			case "stateAbbreviation":
 				return oTrafficStop.stateAbbreviation;
-			case "stateSearch":
-				return oTrafficStop.stateSearch;
-			case "state_":
-				return oTrafficStop.state_;
-			case "stateKey":
-				return oTrafficStop.stateKey;
 			case "stateName":
 				return oTrafficStop.stateName;
-			case "agencyKey":
-				return oTrafficStop.agencyKey;
-			case "agencySearch":
-				return oTrafficStop.agencySearch;
-			case "agency_":
-				return oTrafficStop.agency_;
 			case "agencyTitle":
 				return oTrafficStop.agencyTitle;
 			case "stopDateTime":
@@ -2636,16 +2138,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public static Object staticSetTrafficStop(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
-		case "trafficStopKey":
-			return TrafficStop.staticSetTrafficStopKey(siteRequest_, o);
 		case "stateAbbreviation":
 			return TrafficStop.staticSetStateAbbreviation(siteRequest_, o);
-		case "stateKey":
-			return TrafficStop.staticSetStateKey(siteRequest_, o);
 		case "stateName":
 			return TrafficStop.staticSetStateName(siteRequest_, o);
-		case "agencyKey":
-			return TrafficStop.staticSetAgencyKey(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficStop.staticSetAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -2700,16 +2196,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public static Object staticSolrTrafficStop(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
-		case "trafficStopKey":
-			return TrafficStop.staticSolrTrafficStopKey(siteRequest_, (Long)o);
 		case "stateAbbreviation":
 			return TrafficStop.staticSolrStateAbbreviation(siteRequest_, (String)o);
-		case "stateKey":
-			return TrafficStop.staticSolrStateKey(siteRequest_, (Long)o);
 		case "stateName":
 			return TrafficStop.staticSolrStateName(siteRequest_, (String)o);
-		case "agencyKey":
-			return TrafficStop.staticSolrAgencyKey(siteRequest_, (Long)o);
 		case "agencyTitle":
 			return TrafficStop.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -2764,16 +2254,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public static String staticSolrStrTrafficStop(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
-		case "trafficStopKey":
-			return TrafficStop.staticSolrStrTrafficStopKey(siteRequest_, (Long)o);
 		case "stateAbbreviation":
 			return TrafficStop.staticSolrStrStateAbbreviation(siteRequest_, (String)o);
-		case "stateKey":
-			return TrafficStop.staticSolrStrStateKey(siteRequest_, (Long)o);
 		case "stateName":
 			return TrafficStop.staticSolrStrStateName(siteRequest_, (String)o);
-		case "agencyKey":
-			return TrafficStop.staticSolrStrAgencyKey(siteRequest_, (Long)o);
 		case "agencyTitle":
 			return TrafficStop.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -2828,16 +2312,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 	public static String staticSolrFqTrafficStop(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
-		case "trafficStopKey":
-			return TrafficStop.staticSolrFqTrafficStopKey(siteRequest_, o);
 		case "stateAbbreviation":
 			return TrafficStop.staticSolrFqStateAbbreviation(siteRequest_, o);
-		case "stateKey":
-			return TrafficStop.staticSolrFqStateKey(siteRequest_, o);
 		case "stateName":
 			return TrafficStop.staticSolrFqStateName(siteRequest_, o);
-		case "agencyKey":
-			return TrafficStop.staticSolrFqAgencyKey(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficStop.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -2908,6 +2386,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 				if(val != null)
 					setStateAbbreviation(val);
 				saves.add("stateAbbreviation");
+				return val;
+			case "statename":
+				if(val != null)
+					setStateName(val);
+				saves.add("stateName");
 				return val;
 			case "agencytitle":
 				if(val != null)
@@ -3011,6 +2494,11 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 					setStateAbbreviation((String)val);
 				saves.add("stateAbbreviation");
 				return val;
+			case "statename":
+				if(val instanceof String)
+					setStateName((String)val);
+				saves.add("stateName");
+				return val;
 			case "agencytitle":
 				if(val instanceof String)
 					setAgencyTitle((String)val);
@@ -3105,34 +2593,16 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
 
-			if(saves.contains("trafficStopKey")) {
-				Long trafficStopKey = (Long)solrDocument.get("trafficStopKey_stored_long");
-				if(trafficStopKey != null)
-					oTrafficStop.setTrafficStopKey(trafficStopKey);
-			}
-
 			if(saves.contains("stateAbbreviation")) {
 				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
 				if(stateAbbreviation != null)
 					oTrafficStop.setStateAbbreviation(stateAbbreviation);
 			}
 
-			if(saves.contains("stateKey")) {
-				Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
-				if(stateKey != null)
-					oTrafficStop.setStateKey(stateKey);
-			}
-
 			if(saves.contains("stateName")) {
 				String stateName = (String)solrDocument.get("stateName_stored_string");
 				if(stateName != null)
 					oTrafficStop.setStateName(stateName);
-			}
-
-			if(saves.contains("agencyKey")) {
-				Long agencyKey = (Long)solrDocument.get("agencyKey_stored_long");
-				if(agencyKey != null)
-					oTrafficStop.setAgencyKey(agencyKey);
 			}
 
 			if(saves.contains("agencyTitle")) {
@@ -3260,25 +2730,13 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	}
 
 	public void indexTrafficStop(SolrInputDocument document) {
-		if(trafficStopKey != null) {
-			document.addField("trafficStopKey_indexed_long", trafficStopKey);
-			document.addField("trafficStopKey_stored_long", trafficStopKey);
-		}
 		if(stateAbbreviation != null) {
 			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
 			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
 		}
-		if(stateKey != null) {
-			document.addField("stateKey_indexed_long", stateKey);
-			document.addField("stateKey_stored_long", stateKey);
-		}
 		if(stateName != null) {
 			document.addField("stateName_indexed_string", stateName);
 			document.addField("stateName_stored_string", stateName);
-		}
-		if(agencyKey != null) {
-			document.addField("agencyKey_indexed_long", agencyKey);
-			document.addField("agencyKey_stored_long", agencyKey);
 		}
 		if(agencyTitle != null) {
 			document.addField("agencyTitle_indexed_string", agencyTitle);
@@ -3378,16 +2836,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 
 	public static String varIndexedTrafficStop(String entityVar) {
 		switch(entityVar) {
-			case "trafficStopKey":
-				return "trafficStopKey_indexed_long";
 			case "stateAbbreviation":
 				return "stateAbbreviation_indexed_string";
-			case "stateKey":
-				return "stateKey_indexed_long";
 			case "stateName":
 				return "stateName_indexed_string";
-			case "agencyKey":
-				return "agencyKey_indexed_long";
 			case "agencyTitle":
 				return "agencyTitle_indexed_string";
 			case "stopDateTime":
@@ -3457,11 +2909,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	public void storeTrafficStop(SolrDocument solrDocument) {
 		TrafficStop oTrafficStop = (TrafficStop)this;
 
-		oTrafficStop.setTrafficStopKey(Optional.ofNullable(solrDocument.get("trafficStopKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oTrafficStop.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficStop.setStateKey(Optional.ofNullable(solrDocument.get("stateKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oTrafficStop.setStateName(Optional.ofNullable(solrDocument.get("stateName_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficStop.setAgencyKey(Optional.ofNullable(solrDocument.get("agencyKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oTrafficStop.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficStop.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
 		oTrafficStop.setStopYear(Optional.ofNullable(solrDocument.get("stopYear_stored_int")).map(v -> v.toString()).orElse(null));
@@ -3495,16 +2944,10 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
 		if(o != null && o instanceof TrafficStop) {
 			TrafficStop original = (TrafficStop)o;
-			if(!Objects.equals(trafficStopKey, original.getTrafficStopKey()))
-				apiRequest.addVars("trafficStopKey");
 			if(!Objects.equals(stateAbbreviation, original.getStateAbbreviation()))
 				apiRequest.addVars("stateAbbreviation");
-			if(!Objects.equals(stateKey, original.getStateKey()))
-				apiRequest.addVars("stateKey");
 			if(!Objects.equals(stateName, original.getStateName()))
 				apiRequest.addVars("stateName");
-			if(!Objects.equals(agencyKey, original.getAgencyKey()))
-				apiRequest.addVars("agencyKey");
 			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
 				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
@@ -3554,7 +2997,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), trafficStopKey, stateAbbreviation, stateKey, stateName, agencyKey, agencyTitle, stopDateTime, stopYear, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personKeys, personRaceTitles, trafficSearchRaceTitles);
+		return Objects.hash(super.hashCode(), stateAbbreviation, stateName, agencyTitle, stopDateTime, stopYear, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personKeys, personRaceTitles, trafficSearchRaceTitles);
 	}
 
 	////////////
@@ -3568,11 +3011,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 			return false;
 		TrafficStop that = (TrafficStop)o;
 		return super.equals(o)
-				&& Objects.equals( trafficStopKey, that.trafficStopKey )
 				&& Objects.equals( stateAbbreviation, that.stateAbbreviation )
-				&& Objects.equals( stateKey, that.stateKey )
 				&& Objects.equals( stateName, that.stateName )
-				&& Objects.equals( agencyKey, that.agencyKey )
 				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
 				&& Objects.equals( stopYear, that.stopYear )
@@ -3603,11 +3043,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString() + "\n");
 		sb.append("TrafficStop { ");
-		sb.append( "trafficStopKey: " ).append(trafficStopKey);
-		sb.append( ", stateAbbreviation: \"" ).append(stateAbbreviation).append( "\"" );
-		sb.append( ", stateKey: " ).append(stateKey);
+		sb.append( "stateAbbreviation: \"" ).append(stateAbbreviation).append( "\"" );
 		sb.append( ", stateName: \"" ).append(stateName).append( "\"" );
-		sb.append( ", agencyKey: " ).append(agencyKey);
 		sb.append( ", agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);
 		sb.append( ", stopYear: " ).append(stopYear);
@@ -3632,15 +3069,8 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		return sb.toString();
 	}
 
-	public static final String VAR_trafficStopKey = "trafficStopKey";
 	public static final String VAR_stateAbbreviation = "stateAbbreviation";
-	public static final String VAR_stateSearch = "stateSearch";
-	public static final String VAR_state_ = "state_";
-	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateName = "stateName";
-	public static final String VAR_agencyKey = "agencyKey";
-	public static final String VAR_agencySearch = "agencySearch";
-	public static final String VAR_agency_ = "agency_";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stopDateTime = "stopDateTime";
 	public static final String VAR_stopYear = "stopYear";

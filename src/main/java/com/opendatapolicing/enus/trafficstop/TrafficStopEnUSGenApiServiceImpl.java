@@ -813,6 +813,15 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						num++;
 						bParams.add(o2.sqlStateAbbreviation());
 						break;
+					case TrafficStop.VAR_stateName:
+						o2.setStateName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(TrafficStop.VAR_stateName + "=$" + num);
+						num++;
+						bParams.add(o2.sqlStateName());
+						break;
 					case TrafficStop.VAR_agencyTitle:
 						o2.setAgencyTitle(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
@@ -1186,6 +1195,15 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						bSql.append(TrafficStop.VAR_stateAbbreviation + "=$" + num);
 						num++;
 						bParams.add(o2.sqlStateAbbreviation());
+						break;
+					case TrafficStop.VAR_stateName:
+						o2.setStateName(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(TrafficStop.VAR_stateName + "=$" + num);
+						num++;
+						bParams.add(o2.sqlStateName());
 						break;
 					case TrafficStop.VAR_agencyTitle:
 						o2.setAgencyTitle(jsonObject.getString(entityVar));
@@ -1639,6 +1657,14 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							num++;
 							bParams.add(o2.sqlStateAbbreviation());
 						break;
+					case "setStateName":
+							o2.setStateName(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(TrafficStop.VAR_stateName + "=$" + num);
+							num++;
+							bParams.add(o2.sqlStateName());
+						break;
 					case "setAgencyTitle":
 							o2.setAgencyTitle(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
@@ -2037,15 +2063,12 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject rangeFacetJson = new JsonObject();
 					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
-					JsonArray rangeFacetCountsList = new JsonArray();
-					rangeFacetJson.put("counts", rangeFacetCountsList);
+					JsonObject rangeFacetCountsObject = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsObject);
 					List<?> rangeFacetCounts = rangeFacet.getCounts();
 					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
-						countJson.put("value", count.getValue());
-						countJson.put("count", count.getCount());
-						rangeFacetCountsList.add(countJson);
+						rangeFacetCountsObject.put(count.getValue(), count.getCount());
 					}
 				}
 			}
@@ -2227,15 +2250,12 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject rangeFacetJson = new JsonObject();
 					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
-					JsonArray rangeFacetCountsList = new JsonArray();
-					rangeFacetJson.put("counts", rangeFacetCountsList);
+					JsonObject rangeFacetCountsObject = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsObject);
 					List<?> rangeFacetCounts = rangeFacet.getCounts();
 					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
-						countJson.put("value", count.getValue());
-						countJson.put("count", count.getCount());
-						rangeFacetCountsList.add(countJson);
+						rangeFacetCountsObject.put(count.getValue(), count.getCount());
 					}
 				}
 			}
@@ -2246,15 +2266,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			}
 		}
 	}
-	public static final String VAR_trafficStopKey = "trafficStopKey";
 	public static final String VAR_stateAbbreviation = "stateAbbreviation";
-	public static final String VAR_stateSearch = "stateSearch";
-	public static final String VAR_state_ = "state_";
-	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateName = "stateName";
-	public static final String VAR_agencyKey = "agencyKey";
-	public static final String VAR_agencySearch = "agencySearch";
-	public static final String VAR_agency_ = "agency_";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stopDateTime = "stopDateTime";
 	public static final String VAR_stopYear = "stopYear";

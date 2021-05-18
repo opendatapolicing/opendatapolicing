@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficstop;                                           
+package com.opendatapolicing.enus.trafficstop;                                            
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -57,16 +57,6 @@ import io.vertx.core.Promise;
  **/            
 public class TrafficStop extends TrafficStopGen<Cluster> {
 
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Description.enUS: The primary key of the traffic stop in the database. 
-	 */           
-	protected void _trafficStopKey(Wrap<Long> c) {
-		c.o(pk);
-	}
-
 	////////////////
 	// SiteState //
 	////////////////
@@ -81,79 +71,13 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	protected void _stateAbbreviation(Wrap<String> w) {
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * Ignore: true
-	 */ 
-	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {   
-		SearchList<SiteState> l = new SearchList<>();
-		if(stateAbbreviation != null) {
-			l.setQuery("*:*");
-			l.addFilterQuery("stateAbbreviation_indexed_string:" + stateAbbreviation);
-			l.setC(SiteState.class);
-			l.setStore(true);
-		}
-		promise.complete(l);
-	}
-
-	protected void _state_(Wrap<SiteState> w) {
-		if(stateSearch.size() > 0)
-			w.o(stateSearch.get(0));
-	}
-
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * DisplayName.enUS: state
-	 */       
-	protected void _stateKey(Wrap<Long> w) {
-		if(state_ != null)
-			w.o(state_.getPk());
-	}
-
 	/**    
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 */
 	protected void _stateName(Wrap<String> w) {
-		if(state_ != null)
-			w.o(state_.getStateName());
-	}
-
-	////////////////
-	// SiteAgency //
-	////////////////
-
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * DisplayName.enUS: agency
-	 */       
-	protected void _agencyKey(Wrap<Long> c) {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Ignore: true
-	 */ 
-	protected void _agencySearch(Promise<SearchList<SiteAgency>> promise) {
-		SearchList<SiteAgency> l = new SearchList<>();
-		if(agencyKey != null) {
-			l.setQuery("*:*");
-			l.addFilterQuery("pk_indexed_long:" + agencyKey);
-			l.setC(SiteAgency.class);
-			l.setStore(true);
-		}
-		promise.complete(l);
-	}
-
-	protected void _agency_(Wrap<SiteAgency> c) {
-		if(agencySearch.size() > 0) {
-			c.o(agencySearch.get(0));
-		}
 	}
 
 	/**    
@@ -418,7 +342,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	protected void _personSearch(Promise<SearchList<TrafficPerson>> promise) {
 		SearchList<TrafficPerson> l = new SearchList<>();
 		l.setQuery("*:*");
-		l.addFilterQuery("trafficStopKey_indexed_long:" + pk);
+		l.addFilterQuery("stopId_indexed_string:" + inheritPk);
 		l.setC(TrafficPerson.class);
 		l.setRows(0);
 		l.addFacetField("personRaceTitle_indexed_string");
@@ -448,7 +372,7 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	protected void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise) { 
 		SearchList<TrafficSearch> l = new SearchList<>();
 		l.setQuery("*:*");
-		l.addFilterQuery("trafficStopKey_indexed_long:" + pk);
+		l.addFilterQuery("stopId_indexed_string:" + inheritPk);
 		l.setC(TrafficSearch.class);
 		l.setRows(0);
 		l.addFacetField("personRaceTitle_indexed_string");
