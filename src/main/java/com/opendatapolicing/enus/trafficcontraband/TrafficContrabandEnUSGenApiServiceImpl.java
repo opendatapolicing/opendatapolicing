@@ -1,7 +1,5 @@
 package com.opendatapolicing.enus.trafficcontraband;
 
-import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSApiServiceImpl;
-import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
@@ -804,18 +802,14 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case TrafficContraband.VAR_searchKey:
-						{
-							Long l = Long.parseLong(jsonObject.getString(entityVar));
-							if(l != null) {
-								if(bParams.size() > 0) {
-									bSql.append(", ");
-								}
-								bSql.append(TrafficContraband.VAR_searchKey + "=$" + num);
-								num++;
-								bParams.add(l);
-							}
+					case TrafficContraband.VAR_searchId:
+						o2.setSearchId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
 						}
+						bSql.append(TrafficContraband.VAR_searchId + "=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchId());
 						break;
 					case TrafficContraband.VAR_contrabandOunces:
 						o2.setContrabandOunces(jsonObject.getString(entityVar));
@@ -1137,20 +1131,14 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case TrafficContraband.VAR_searchKey:
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures1.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficSearch.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficContraband.class, pk).set(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
+					case TrafficContraband.VAR_searchId:
+						o2.setSearchId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(TrafficContraband.VAR_searchId + "=$" + num);
+						num++;
+						bParams.add(o2.sqlSearchId());
 						break;
 					case TrafficContraband.VAR_contrabandOunces:
 						o2.setContrabandOunces(jsonObject.getString(entityVar));
@@ -1397,7 +1385,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						Long pk = o.getPk();
 
 						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject());
+						params.put("body", siteRequest.getJsonObject().put(TrafficContraband.VAR_pk, pk.toString()));
 						params.put("path", new JsonObject());
 						params.put("cookie", new JsonObject());
 						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
@@ -1551,20 +1539,14 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							num++;
 							bParams.add(o2.sqlInheritPk());
 						break;
-					case "setSearchKey":
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures1.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficSearch.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficContraband.class, pk).set(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
+					case "setSearchId":
+							o2.setSearchId(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(TrafficContraband.VAR_searchId + "=$" + num);
+							num++;
+							bParams.add(o2.sqlSearchId());
+						break;
 					case "setContrabandOunces":
 							o2.setContrabandOunces(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
@@ -2133,7 +2115,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		}
 	}
 	public static final String VAR_contrabandKey = "contrabandKey";
-	public static final String VAR_searchKey = "searchKey";
+	public static final String VAR_searchId = "searchId";
 	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
 	public static final String VAR_trafficSearch_ = "trafficSearch_";
 	public static final String VAR_agencyTitle = "agencyTitle";
@@ -2488,33 +2470,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 	public Future<Void> attributeTrafficContraband(TrafficContraband o) {
 		Promise<Void> promise = Promise.promise();
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-			Long pk = o.getPk();
-			sqlConnection.preparedQuery("SELECT searchKey as pk1, 'searchKey' from TrafficContraband where pk=$1")
-					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk)
-					).onSuccess(result -> {
-				try {
-					if(result != null) {
-						for(Row definition : result.value()) {
-							o.attributeForClass(definition.getString(1), definition.getLong(0));
-						}
-					}
-					promise.complete();
-				} catch(Exception ex) {
-					LOG.error(String.format("attributeTrafficContraband failed. "), ex);
-					promise.fail(ex);
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("attributeTrafficContraband failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("attributeTrafficContraband failed. "), ex);
-			promise.fail(ex);
-		}
+			promise.complete();
 		return promise.future();
 	}
 
@@ -2562,36 +2518,6 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
-
-					if("TrafficSearch".equals(classSimpleName2) && pk2 != null) {
-						SearchList<TrafficSearch> searchList2 = new SearchList<TrafficSearch>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(TrafficSearch.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						futures.add(Future.future(promise2 -> {
-							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-								TrafficSearch o2 = searchList2.getList().stream().findFirst().orElse(null);
-								if(o2 != null) {
-									JsonObject params = new JsonObject();
-									params.put("body", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("path", new JsonObject());
-									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
-									JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
-									JsonObject json = new JsonObject().put("context", context);
-									eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "patchTrafficSearch")).onSuccess(c -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}
-							}).onFailure(ex -> {
-								promise2.fail(ex);
-							});
-						}));
-					}
 				}
 
 				CompositeFuture.all(futures).onSuccess(b -> {

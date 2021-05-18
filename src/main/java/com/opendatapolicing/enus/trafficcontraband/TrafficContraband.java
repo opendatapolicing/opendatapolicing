@@ -60,12 +60,10 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: TrafficSearch.contrabandKeys
-	 * HtmlRow: 4
-	 * HtmlCell: 1
-	 * DisplayName.enUS: search key
+	 * Define: true
+	 * DisplayName.enUS: search ID
 	 */          
-	protected void _searchKey(Wrap<Long> w) {
+	protected void _searchId(Wrap<String> w) {
 	}
 
 	/**
@@ -73,14 +71,14 @@ public class TrafficContraband extends TrafficContrabandGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise) {
-		if(searchKey != null) {
-			SearchList<TrafficSearch> l = new SearchList<>();
+		SearchList<TrafficSearch> l = new SearchList<>();
+		if(searchId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("pk_indexed_long:" + searchKey);
+			l.addFilterQuery("inheritPk_indexed_string:" + searchId);
 			l.setC(TrafficSearch.class);
 			l.setStore(true);
-			promise.complete(l);
 		}
+		promise.complete(l);
 	}
 
 	protected void _trafficSearch_(Wrap<TrafficSearch> w) {

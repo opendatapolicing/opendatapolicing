@@ -72,10 +72,26 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String syncDbToSolrSkip1 = "Skip syncing database to Solr. ";
 	public static final String syncDbToSolrSkip = syncDbToSolrSkip1;
 
-	public static final String syncTrafficStopsComplete1 = "TrafficStop data sync completed. ";
-	public static final String syncTrafficStopsComplete = syncTrafficStopsComplete1;
-	public static final String syncTrafficStopsFail1 = "TrafficStop data sync failed. ";
-	public static final String syncTrafficStopsFail = syncTrafficStopsFail1;
+	public static final String syncDataComplete1 = "%s data sync completed. ";
+	public static final String syncDataComplete = syncDataComplete1;
+	public static final String syncDataFail1 = "%s data sync failed. ";
+	public static final String syncDataFail = syncDataFail1;
+	public static final String syncDataSkip1 = "%s data sync skipped. ";
+	public static final String syncDataSkip = syncDataSkip1;
+
+	public static final String refreshAllDataComplete1 = "Refresh all data completed. ";
+	public static final String refreshAllDataComplete = refreshAllDataComplete1;
+	public static final String refreshAllDataFail1 = "Refresh all data failed. ";
+	public static final String refreshAllDataFail = refreshAllDataFail1;
+	public static final String refreshAllDataSkip1 = "Refresh all data skipped. ";
+	public static final String refreshAllDataSkip = refreshAllDataSkip1;
+
+	public static final String refreshDataComplete1 = "%s refresh completed. ";
+	public static final String refreshDataComplete = refreshDataComplete1;
+	public static final String refreshDataFail1 = "%s refresh failed. ";
+	public static final String refreshDataFail = refreshDataFail1;
+	public static final String refreshDataSkip1 = "%s refresh skipped. ";
+	public static final String refreshDataSkip = refreshDataSkip1;
 
 
 	//////////////
@@ -293,6 +309,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncTrafficStopsComplete1, syncTrafficStopsFail1 };
+	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDataComplete1, syncDataFail1, syncDataSkip1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1 };
 
 }

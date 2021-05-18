@@ -1,7 +1,5 @@
 package com.opendatapolicing.enus.trafficsearch;
 
-import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSApiServiceImpl;
-import com.opendatapolicing.enus.trafficperson.TrafficPerson;
 import com.opendatapolicing.enus.trafficcontraband.TrafficContrabandEnUSApiServiceImpl;
 import com.opendatapolicing.enus.trafficcontraband.TrafficContraband;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSApiServiceImpl;
@@ -808,60 +806,14 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case TrafficSearch.VAR_personKey:
-						{
-							Long l = Long.parseLong(jsonObject.getString(entityVar));
-							if(l != null) {
-								if(bParams.size() > 0) {
-									bSql.append(", ");
-								}
-								bSql.append(TrafficSearch.VAR_personKey + "=$" + num);
-								num++;
-								bParams.add(l);
-							}
+					case TrafficSearch.VAR_personId:
+						o2.setPersonId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
 						}
-						break;
-					case TrafficSearch.VAR_contrabandKeys:
-						{
-							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-								futures.add(Future.future(a -> {
-									sqlConnection.preparedQuery("UPDATE TrafficContraband SET searchKey=$1 WHERE pk=$2")
-											.execute(Tuple.of(pk, l)
-											, b
-									-> {
-										if(b.succeeded())
-											a.handle(Future.succeededFuture());
-										else
-											a.handle(Future.failedFuture(new Exception("value TrafficSearch.contrabandKeys failed", b.cause())));
-									});
-								}));
-								if(!pks.contains(l)) {
-									pks.add(l);
-									classes.add("TrafficContraband");
-								}
-							}
-						}
-						break;
-					case TrafficSearch.VAR_searchBasisKeys:
-						{
-							for(Long l : Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> Long.parseLong((String)a)).collect(Collectors.toList())) {
-								futures.add(Future.future(a -> {
-									sqlConnection.preparedQuery("UPDATE SearchBasis SET searchKey=$1 WHERE pk=$2")
-											.execute(Tuple.of(pk, l)
-											, b
-									-> {
-										if(b.succeeded())
-											a.handle(Future.succeededFuture());
-										else
-											a.handle(Future.failedFuture(new Exception("value TrafficSearch.searchBasisKeys failed", b.cause())));
-									});
-								}));
-								if(!pks.contains(l)) {
-									pks.add(l);
-									classes.add("SearchBasis");
-								}
-							}
-						}
+						bSql.append(TrafficSearch.VAR_personId + "=$" + num);
+						num++;
+						bParams.add(o2.sqlPersonId());
 						break;
 					case TrafficSearch.VAR_searchTypeNum:
 						o2.setSearchTypeNum(jsonObject.getString(entityVar));
@@ -1165,50 +1117,14 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
-					case TrafficSearch.VAR_personKey:
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures1.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficPerson.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficSearch.class, pk).set(TrafficSearch.VAR_personKey, TrafficPerson.class, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						break;
-					case TrafficSearch.VAR_contrabandKeys:
-						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficContraband.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficContraband.class, pk2).set(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						break;
-					case TrafficSearch.VAR_searchBasisKeys:
-						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SearchBasis.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(SearchBasis.class, pk2).set(SearchBasis.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
+					case TrafficSearch.VAR_personId:
+						o2.setPersonId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(TrafficSearch.VAR_personId + "=$" + num);
+						num++;
+						bParams.add(o2.sqlPersonId());
 						break;
 					case TrafficSearch.VAR_searchTypeNum:
 						o2.setSearchTypeNum(jsonObject.getString(entityVar));
@@ -1437,7 +1353,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						Long pk = o.getPk();
 
 						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject());
+						params.put("body", siteRequest.getJsonObject().put(TrafficSearch.VAR_pk, pk.toString()));
 						params.put("path", new JsonObject());
 						params.put("cookie", new JsonObject());
 						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
@@ -1591,146 +1507,14 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							num++;
 							bParams.add(o2.sqlInheritPk());
 						break;
-					case "setPersonKey":
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures1.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficPerson.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficSearch.class, pk).set(TrafficSearch.VAR_personKey, TrafficPerson.class, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "setContrabandKeys":
-						JsonArray setContrabandKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-						setContrabandKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficContraband.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficContraband.class, pk2).set(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						Optional.ofNullable(o.getContrabandKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setContrabandKeysValues.contains(oVal.toString())).forEach(pk2 -> {
-							futures2.add(Future.future(promise2 -> {
-								sql(siteRequest).update(TrafficContraband.class, pk2).setToNull(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk2).onSuccess(a -> {
-									promise2.complete();
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "addAllContrabandKeys":
-						JsonArray addAllContrabandKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-						addAllContrabandKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficContraband.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficContraband.class, pk2).set(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "addContrabandKeys":
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(TrafficContraband.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(TrafficContraband.class, pk2).set(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "removeContrabandKeys":
-						Optional.ofNullable(jsonObject.getLong(entityVar)).ifPresent(pk2 -> {
-							futures2.add(Future.future(promise2 -> {
-								sql(siteRequest).update(TrafficContraband.class, pk2).setToNull(TrafficContraband.VAR_searchKey, TrafficSearch.class, pk2).onSuccess(a -> {
-									promise2.complete();
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "setSearchBasisKeys":
-						JsonArray setSearchBasisKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-						setSearchBasisKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SearchBasis.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(SearchBasis.class, pk2).set(SearchBasis.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-						Optional.ofNullable(o.getSearchBasisKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setSearchBasisKeysValues.contains(oVal.toString())).forEach(pk2 -> {
-							futures2.add(Future.future(promise2 -> {
-								sql(siteRequest).update(SearchBasis.class, pk2).setToNull(SearchBasis.VAR_searchKey, TrafficSearch.class, pk2).onSuccess(a -> {
-									promise2.complete();
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "addAllSearchBasisKeys":
-						JsonArray addAllSearchBasisKeysValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-						addAllSearchBasisKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SearchBasis.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(SearchBasis.class, pk2).set(SearchBasis.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "addSearchBasisKeys":
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures2.add(Future.future(promise2 -> {
-								search(siteRequest).query(SearchBasis.class, val, inheritPk).onSuccess(pk2 -> {
-									sql(siteRequest).update(SearchBasis.class, pk2).set(SearchBasis.VAR_searchKey, TrafficSearch.class, pk).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
-					case "removeSearchBasisKeys":
-						Optional.ofNullable(jsonObject.getLong(entityVar)).ifPresent(pk2 -> {
-							futures2.add(Future.future(promise2 -> {
-								sql(siteRequest).update(SearchBasis.class, pk2).setToNull(SearchBasis.VAR_searchKey, TrafficSearch.class, pk2).onSuccess(a -> {
-									promise2.complete();
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
+					case "setPersonId":
+							o2.setPersonId(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(TrafficSearch.VAR_personId + "=$" + num);
+							num++;
+							bParams.add(o2.sqlPersonId());
+						break;
 					case "setSearchTypeNum":
 							o2.setSearchTypeNum(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
@@ -2283,7 +2067,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		}
 	}
 	public static final String VAR_trafficSearchKey = "trafficSearchKey";
-	public static final String VAR_personKey = "personKey";
+	public static final String VAR_personId = "personId";
 	public static final String VAR_trafficPersonSearch = "trafficPersonSearch";
 	public static final String VAR_trafficPerson_ = "trafficPerson_";
 	public static final String VAR_contrabandKeys = "contrabandKeys";
@@ -2630,33 +2414,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	public Future<Void> attributeTrafficSearch(TrafficSearch o) {
 		Promise<Void> promise = Promise.promise();
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-			Long pk = o.getPk();
-			sqlConnection.preparedQuery("SELECT personKey as pk2, 'personKey' from TrafficSearch where pk=$1 UNION SELECT pk as pk2, 'contrabandKeys' from TrafficContraband where searchKey=$2 UNION SELECT pk as pk2, 'searchBasisKeys' from SearchBasis where searchKey=$3")
-					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk, pk, pk)
-					).onSuccess(result -> {
-				try {
-					if(result != null) {
-						for(Row definition : result.value()) {
-							o.attributeForClass(definition.getString(1), definition.getLong(0));
-						}
-					}
-					promise.complete();
-				} catch(Exception ex) {
-					LOG.error(String.format("attributeTrafficSearch failed. "), ex);
-					promise.fail(ex);
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("attributeTrafficSearch failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("attributeTrafficSearch failed. "), ex);
-			promise.fail(ex);
-		}
+			promise.complete();
 		return promise.future();
 	}
 
@@ -2704,96 +2462,6 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
-
-					if("TrafficPerson".equals(classSimpleName2) && pk2 != null) {
-						SearchList<TrafficPerson> searchList2 = new SearchList<TrafficPerson>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(TrafficPerson.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						futures.add(Future.future(promise2 -> {
-							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-								TrafficPerson o2 = searchList2.getList().stream().findFirst().orElse(null);
-								if(o2 != null) {
-									JsonObject params = new JsonObject();
-									params.put("body", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("path", new JsonObject());
-									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
-									JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
-									JsonObject json = new JsonObject().put("context", context);
-									eventBus.request("opendatapolicing-enUS-TrafficPerson", json, new DeliveryOptions().addHeader("action", "patchTrafficPerson")).onSuccess(c -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}
-							}).onFailure(ex -> {
-								promise2.fail(ex);
-							});
-						}));
-					}
-
-					if("TrafficContraband".equals(classSimpleName2) && pk2 != null) {
-						SearchList<TrafficContraband> searchList2 = new SearchList<TrafficContraband>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(TrafficContraband.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						futures.add(Future.future(promise2 -> {
-							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-								TrafficContraband o2 = searchList2.getList().stream().findFirst().orElse(null);
-								if(o2 != null) {
-									JsonObject params = new JsonObject();
-									params.put("body", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("path", new JsonObject());
-									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
-									JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
-									JsonObject json = new JsonObject().put("context", context);
-									eventBus.request("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "patchTrafficContraband")).onSuccess(c -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}
-							}).onFailure(ex -> {
-								promise2.fail(ex);
-							});
-						}));
-					}
-
-					if("SearchBasis".equals(classSimpleName2) && pk2 != null) {
-						SearchList<SearchBasis> searchList2 = new SearchList<SearchBasis>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(SearchBasis.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						futures.add(Future.future(promise2 -> {
-							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-								SearchBasis o2 = searchList2.getList().stream().findFirst().orElse(null);
-								if(o2 != null) {
-									JsonObject params = new JsonObject();
-									params.put("body", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("path", new JsonObject());
-									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
-									JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
-									JsonObject json = new JsonObject().put("context", context);
-									eventBus.request("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "patchSearchBasis")).onSuccess(c -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}
-							}).onFailure(ex -> {
-								promise2.fail(ex);
-							});
-						}));
-					}
 				}
 
 				CompositeFuture.all(futures).onSuccess(b -> {

@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficsearch;              
+package com.opendatapolicing.enus.trafficsearch;               
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -63,12 +63,10 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: TrafficPerson.trafficSearchKeys
-	 * HtmlRow: 3
-	 * HtmlCell: 1
-	 * DisplayName.enUS: person key
+	 * Define: true
+	 * DisplayName.enUS: person ID
 	 */         
-	protected void _personKey(Wrap<Long> w) {
+	protected void _personId(Wrap<String> w) {
 	}
 
 	/**
@@ -76,14 +74,14 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _trafficPersonSearch(Promise<SearchList<TrafficPerson>> promise) {
-		if(personKey != null) {
-			SearchList<TrafficPerson> l = new SearchList<>();
+		SearchList<TrafficPerson> l = new SearchList<>();
+		if(personId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("pk_indexed_long:" + personKey);
+			l.addFilterQuery("inheritPk_indexed_string:" + personId);
 			l.setC(TrafficPerson.class);
 			l.setStore(true);
-			promise.complete(l);
 		}
+		promise.complete(l);
 	}
 
 	protected void _trafficPerson_(Wrap<TrafficPerson> w) {
@@ -465,17 +463,19 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 	 * DisplayName.enUS: search type title
 	 */ 
 	protected void _searchTypeTitle(Wrap<String> w) {
-		switch(searchTypeNum) {
-		case 1:
-			w.o("Consent"); break;
-		case 2:
-			w.o("Search Warrant"); break;
-		case 3:
-			w.o("Probable Cause"); break;
-		case 4:
-			w.o("Search Incident to Arrest"); break;
-		case 5:
-			w.o("Protective Frisk"); break;
+		if(searchTypeNum != null) {
+			switch(searchTypeNum) {
+			case 1:
+				w.o("Consent"); break;
+			case 2:
+				w.o("Search Warrant"); break;
+			case 3:
+				w.o("Probable Cause"); break;
+			case 4:
+				w.o("Search Incident to Arrest"); break;
+			case 5:
+				w.o("Protective Frisk"); break;
+			}
 		}
 	}
 

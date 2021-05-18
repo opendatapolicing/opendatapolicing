@@ -54,7 +54,7 @@ import io.vertx.core.Promise;
  * PublicRead: true
  * 
  * Map.hackathonMission: to create a new Java class TrafficStop to define the TrafficStop Java class that collects stop, search, and use-of-force police data publicly available to ensure transparency
- **/             
+ **/            
 public class TrafficStop extends TrafficStopGen<Cluster> {
 
 	/**

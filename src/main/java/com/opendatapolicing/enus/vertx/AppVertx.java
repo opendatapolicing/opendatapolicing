@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.vertx;    
+package com.opendatapolicing.enus.vertx;          
 
 import java.time.LocalDate;
 import java.time.LocalTime;

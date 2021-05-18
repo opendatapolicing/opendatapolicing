@@ -149,83 +149,74 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		return searchBasisKey == null ? "" : searchBasisKey.toString();
 	}
 
-	///////////////
-	// searchKey //
-	///////////////
+	//////////////
+	// searchId //
+	//////////////
 
-	/**	 The entity searchKey
+	/**	 The entity searchId
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
-	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
-	protected Long searchKey;
+	protected String searchId;
 	@JsonIgnore
-	public Wrap<Long> searchKeyWrap = new Wrap<Long>().var("searchKey").o(searchKey);
+	public Wrap<String> searchIdWrap = new Wrap<String>().var("searchId").o(searchId);
 
-	/**	<br/> The entity searchKey
+	/**	<br/> The entity searchId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchKey">Find the entity searchKey in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.searchbasis.SearchBasis&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchId">Find the entity searchId in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _searchKey(Wrap<Long> w);
+	protected abstract void _searchId(Wrap<String> w);
 
-	public Long getSearchKey() {
-		return searchKey;
+	public String getSearchId() {
+		return searchId;
 	}
-
-	public void setSearchKey(Long searchKey) {
-		this.searchKey = searchKey;
-		this.searchKeyWrap.alreadyInitialized = true;
+	public void setSearchId(String o) {
+		this.searchId = SearchBasis.staticSetSearchId(siteRequest_, o);
+		this.searchIdWrap.alreadyInitialized = true;
 	}
-	@JsonIgnore
-	public void setSearchKey(String o) {
-		this.searchKey = SearchBasis.staticSetSearchKey(siteRequest_, o);
-		this.searchKeyWrap.alreadyInitialized = true;
+	public static String staticSetSearchId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
-	public static Long staticSetSearchKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected SearchBasis searchKeyInit() {
-		if(!searchKeyWrap.alreadyInitialized) {
-			_searchKey(searchKeyWrap);
-			if(searchKey == null)
-				setSearchKey(searchKeyWrap.o);
-			searchKeyWrap.o(null);
+	protected SearchBasis searchIdInit() {
+		if(!searchIdWrap.alreadyInitialized) {
+			_searchId(searchIdWrap);
+			if(searchId == null)
+				setSearchId(searchIdWrap.o);
+			searchIdWrap.o(null);
 		}
-		searchKeyWrap.alreadyInitialized(true);
+		searchIdWrap.alreadyInitialized(true);
 		return (SearchBasis)this;
 	}
 
-	public static Long staticSolrSearchKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrSearchId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrSearchKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStrSearchId(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqSearchKey(SiteRequestEnUS siteRequest_, String o) {
-		return SearchBasis.staticSolrStrSearchKey(siteRequest_, SearchBasis.staticSolrSearchKey(siteRequest_, SearchBasis.staticSetSearchKey(siteRequest_, o)));
+	public static String staticSolrFqSearchId(SiteRequestEnUS siteRequest_, String o) {
+		return SearchBasis.staticSolrStrSearchId(siteRequest_, SearchBasis.staticSolrSearchId(siteRequest_, SearchBasis.staticSetSearchId(siteRequest_, o)));
 	}
 
-	public Long solrSearchKey() {
-		return SearchBasis.staticSolrSearchKey(siteRequest_, searchKey);
+	public String solrSearchId() {
+		return SearchBasis.staticSolrSearchId(siteRequest_, searchId);
 	}
 
-	public String strSearchKey() {
-		return searchKey == null ? "" : searchKey.toString();
+	public String strSearchId() {
+		return searchId == null ? "" : searchId;
 	}
 
-	public Long sqlSearchKey() {
-		return searchKey;
+	public String sqlSearchId() {
+		return searchId;
 	}
 
-	public String jsonSearchKey() {
-		return searchKey == null ? "" : searchKey.toString();
+	public String jsonSearchId() {
+		return searchId == null ? "" : searchId;
 	}
 
 	/////////////////////////
@@ -3404,7 +3395,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				searchBasisKeyInit();
-				searchKeyInit();
+				searchIdInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -3520,8 +3511,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		switch(var) {
 			case "searchBasisKey":
 				return oSearchBasis.searchBasisKey;
-			case "searchKey":
-				return oSearchBasis.searchKey;
+			case "searchId":
+				return oSearchBasis.searchId;
 			case "trafficSearchSearch":
 				return oSearchBasis.trafficSearchSearch;
 			case "trafficSearch_":
@@ -3633,12 +3624,6 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	public Object attributeSearchBasis(String var, Object val) {
 		SearchBasis oSearchBasis = (SearchBasis)this;
 		switch(var) {
-			case "searchKey":
-				if(oSearchBasis.getSearchKey() == null)
-					oSearchBasis.setSearchKey((Long)val);
-				if(!saves.contains("searchKey"))
-					saves.add("searchKey");
-				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -3655,8 +3640,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "searchBasisKey":
 			return SearchBasis.staticSetSearchBasisKey(siteRequest_, o);
-		case "searchKey":
-			return SearchBasis.staticSetSearchKey(siteRequest_, o);
+		case "searchId":
+			return SearchBasis.staticSetSearchId(siteRequest_, o);
 		case "agencyTitle":
 			return SearchBasis.staticSetAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -3755,8 +3740,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "searchBasisKey":
 			return SearchBasis.staticSolrSearchBasisKey(siteRequest_, (Long)o);
-		case "searchKey":
-			return SearchBasis.staticSolrSearchKey(siteRequest_, (Long)o);
+		case "searchId":
+			return SearchBasis.staticSolrSearchId(siteRequest_, (String)o);
 		case "agencyTitle":
 			return SearchBasis.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -3855,8 +3840,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "searchBasisKey":
 			return SearchBasis.staticSolrStrSearchBasisKey(siteRequest_, (Long)o);
-		case "searchKey":
-			return SearchBasis.staticSolrStrSearchKey(siteRequest_, (Long)o);
+		case "searchId":
+			return SearchBasis.staticSolrStrSearchId(siteRequest_, (String)o);
 		case "agencyTitle":
 			return SearchBasis.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -3955,8 +3940,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "searchBasisKey":
 			return SearchBasis.staticSolrFqSearchBasisKey(siteRequest_, o);
-		case "searchKey":
-			return SearchBasis.staticSolrFqSearchKey(siteRequest_, o);
+		case "searchId":
+			return SearchBasis.staticSolrFqSearchId(siteRequest_, o);
 		case "agencyTitle":
 			return SearchBasis.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -4065,20 +4050,15 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 	public Object defineSearchBasis(String var, String val) {
 		switch(var.toLowerCase()) {
-			case "searchkey":
+			case "searchid":
 				if(val != null)
-					setSearchKey(val);
-				saves.add("searchKey");
+					setSearchId(val);
+				saves.add("searchId");
 				return val;
 			case "searchbasisid":
 				if(val != null)
 					setSearchBasisId(val);
 				saves.add("searchBasisId");
-				return val;
-			case "searchbasistitle":
-				if(val != null)
-					setSearchBasisTitle(val);
-				saves.add("searchBasisTitle");
 				return val;
 			default:
 				return super.defineCluster(var, val);
@@ -4102,20 +4082,15 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 	public Object defineSearchBasis(String var, Object val) {
 		switch(var.toLowerCase()) {
-			case "searchkey":
-				if(val instanceof Long)
-					setSearchKey((Long)val);
-				saves.add("searchKey");
+			case "searchid":
+				if(val instanceof String)
+					setSearchId((String)val);
+				saves.add("searchId");
 				return val;
 			case "searchbasisid":
 				if(val instanceof String)
 					setSearchBasisId((String)val);
 				saves.add("searchBasisId");
-				return val;
-			case "searchbasistitle":
-				if(val instanceof String)
-					setSearchBasisTitle((String)val);
-				saves.add("searchBasisTitle");
 				return val;
 			default:
 				return super.defineCluster(var, val);
@@ -4140,9 +4115,11 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 					oSearchBasis.setSearchBasisKey(searchBasisKey);
 			}
 
-			Long searchKey = (Long)solrDocument.get("searchKey_stored_long");
-			if(searchKey != null)
-				oSearchBasis.setSearchKey(searchKey);
+			if(saves.contains("searchId")) {
+				String searchId = (String)solrDocument.get("searchId_stored_string");
+				if(searchId != null)
+					oSearchBasis.setSearchId(searchId);
+			}
 
 			if(saves.contains("agencyTitle")) {
 				String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
@@ -4399,9 +4376,9 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			document.addField("searchBasisKey_indexed_long", searchBasisKey);
 			document.addField("searchBasisKey_stored_long", searchBasisKey);
 		}
-		if(searchKey != null) {
-			document.addField("searchKey_indexed_long", searchKey);
-			document.addField("searchKey_stored_long", searchKey);
+		if(searchId != null) {
+			document.addField("searchId_indexed_string", searchId);
+			document.addField("searchId_stored_string", searchId);
 		}
 		if(agencyTitle != null) {
 			document.addField("agencyTitle_indexed_string", agencyTitle);
@@ -4575,8 +4552,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		switch(entityVar) {
 			case "searchBasisKey":
 				return "searchBasisKey_indexed_long";
-			case "searchKey":
-				return "searchKey_indexed_long";
+			case "searchId":
+				return "searchId_indexed_string";
 			case "agencyTitle":
 				return "agencyTitle_indexed_string";
 			case "stopDateTime":
@@ -4689,7 +4666,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		SearchBasis oSearchBasis = (SearchBasis)this;
 
 		oSearchBasis.setSearchBasisKey(Optional.ofNullable(solrDocument.get("searchBasisKey_stored_long")).map(v -> v.toString()).orElse(null));
-		oSearchBasis.setSearchKey(Optional.ofNullable(solrDocument.get("searchKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oSearchBasis.setSearchId(Optional.ofNullable(solrDocument.get("searchId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
 		oSearchBasis.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
@@ -4746,8 +4723,8 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 			SearchBasis original = (SearchBasis)o;
 			if(!Objects.equals(searchBasisKey, original.getSearchBasisKey()))
 				apiRequest.addVars("searchBasisKey");
-			if(!Objects.equals(searchKey, original.getSearchKey()))
-				apiRequest.addVars("searchKey");
+			if(!Objects.equals(searchId, original.getSearchId()))
+				apiRequest.addVars("searchId");
 			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
 				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
@@ -4839,7 +4816,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), searchBasisKey, searchKey, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle);
+		return Objects.hash(super.hashCode(), searchBasisKey, searchId, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, searchBasisId, searchBasisTitle);
 	}
 
 	////////////
@@ -4854,7 +4831,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		SearchBasis that = (SearchBasis)o;
 		return super.equals(o)
 				&& Objects.equals( searchBasisKey, that.searchBasisKey )
-				&& Objects.equals( searchKey, that.searchKey )
+				&& Objects.equals( searchId, that.searchId )
 				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
 				&& Objects.equals( stopPurposeNum, that.stopPurposeNum )
@@ -4907,7 +4884,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 		sb.append(super.toString() + "\n");
 		sb.append("SearchBasis { ");
 		sb.append( "searchBasisKey: " ).append(searchBasisKey);
-		sb.append( ", searchKey: " ).append(searchKey);
+		sb.append( ", searchId: \"" ).append(searchId).append( "\"" );
 		sb.append( ", agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);
 		sb.append( ", stopPurposeNum: " ).append(stopPurposeNum);
@@ -4954,7 +4931,7 @@ public abstract class SearchBasisGen<DEV> extends Cluster {
 	}
 
 	public static final String VAR_searchBasisKey = "searchBasisKey";
-	public static final String VAR_searchKey = "searchKey";
+	public static final String VAR_searchId = "searchId";
 	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
 	public static final String VAR_trafficSearch_ = "trafficSearch_";
 	public static final String VAR_agencyTitle = "agencyTitle";

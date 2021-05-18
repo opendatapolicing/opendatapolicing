@@ -98,6 +98,7 @@ CREATE TABLE TrafficPerson(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
+	, stopId text
 	, personAge integer
 	, personTypeId text
 	, personGenderId text
@@ -108,7 +109,7 @@ CREATE TABLE TrafficSearch(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
-	, personKey bigint references TrafficPerson(pk)
+	, personId text
 	, searchTypeNum integer
 	, searchVehicle boolean
 	, searchDriver boolean
@@ -122,7 +123,7 @@ CREATE TABLE TrafficContraband(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
-	, searchKey bigint references TrafficSearch(pk)
+	, searchId text
 	, contrabandOunces decimal
 	, contrabandPounds decimal
 	, contrabandPints decimal
@@ -138,9 +139,8 @@ CREATE TABLE SearchBasis(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
-	, searchKey bigint references TrafficSearch(pk)
+	, searchId text
 	, searchBasisId text
-	, searchBasisTitle text
 	);
 
 DROP TABLE SiteUser CASCADE;

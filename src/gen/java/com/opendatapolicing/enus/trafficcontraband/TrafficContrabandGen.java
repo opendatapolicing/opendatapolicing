@@ -150,83 +150,74 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		return contrabandKey == null ? "" : contrabandKey.toString();
 	}
 
-	///////////////
-	// searchKey //
-	///////////////
+	//////////////
+	// searchId //
+	//////////////
 
-	/**	 The entity searchKey
+	/**	 The entity searchId
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
-	@JsonSerialize(using = ToStringSerializer.class)
 	@JsonInclude(Include.NON_NULL)
-	protected Long searchKey;
+	protected String searchId;
 	@JsonIgnore
-	public Wrap<Long> searchKeyWrap = new Wrap<Long>().var("searchKey").o(searchKey);
+	public Wrap<String> searchIdWrap = new Wrap<String>().var("searchId").o(searchId);
 
-	/**	<br/> The entity searchKey
+	/**	<br/> The entity searchId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchKey">Find the entity searchKey in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficcontraband.TrafficContraband&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchId">Find the entity searchId in Solr</a>
 	 * <br/>
 	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _searchKey(Wrap<Long> w);
+	protected abstract void _searchId(Wrap<String> w);
 
-	public Long getSearchKey() {
-		return searchKey;
+	public String getSearchId() {
+		return searchId;
 	}
-
-	public void setSearchKey(Long searchKey) {
-		this.searchKey = searchKey;
-		this.searchKeyWrap.alreadyInitialized = true;
+	public void setSearchId(String o) {
+		this.searchId = TrafficContraband.staticSetSearchId(siteRequest_, o);
+		this.searchIdWrap.alreadyInitialized = true;
 	}
-	@JsonIgnore
-	public void setSearchKey(String o) {
-		this.searchKey = TrafficContraband.staticSetSearchKey(siteRequest_, o);
-		this.searchKeyWrap.alreadyInitialized = true;
+	public static String staticSetSearchId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
 	}
-	public static Long staticSetSearchKey(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	protected TrafficContraband searchKeyInit() {
-		if(!searchKeyWrap.alreadyInitialized) {
-			_searchKey(searchKeyWrap);
-			if(searchKey == null)
-				setSearchKey(searchKeyWrap.o);
-			searchKeyWrap.o(null);
+	protected TrafficContraband searchIdInit() {
+		if(!searchIdWrap.alreadyInitialized) {
+			_searchId(searchIdWrap);
+			if(searchId == null)
+				setSearchId(searchIdWrap.o);
+			searchIdWrap.o(null);
 		}
-		searchKeyWrap.alreadyInitialized(true);
+		searchIdWrap.alreadyInitialized(true);
 		return (TrafficContraband)this;
 	}
 
-	public static Long staticSolrSearchKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrSearchId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrSearchKey(SiteRequestEnUS siteRequest_, Long o) {
+	public static String staticSolrStrSearchId(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqSearchKey(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficContraband.staticSolrStrSearchKey(siteRequest_, TrafficContraband.staticSolrSearchKey(siteRequest_, TrafficContraband.staticSetSearchKey(siteRequest_, o)));
+	public static String staticSolrFqSearchId(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficContraband.staticSolrStrSearchId(siteRequest_, TrafficContraband.staticSolrSearchId(siteRequest_, TrafficContraband.staticSetSearchId(siteRequest_, o)));
 	}
 
-	public Long solrSearchKey() {
-		return TrafficContraband.staticSolrSearchKey(siteRequest_, searchKey);
+	public String solrSearchId() {
+		return TrafficContraband.staticSolrSearchId(siteRequest_, searchId);
 	}
 
-	public String strSearchKey() {
-		return searchKey == null ? "" : searchKey.toString();
+	public String strSearchId() {
+		return searchId == null ? "" : searchId;
 	}
 
-	public Long sqlSearchKey() {
-		return searchKey;
+	public String sqlSearchId() {
+		return searchId;
 	}
 
-	public String jsonSearchKey() {
-		return searchKey == null ? "" : searchKey.toString();
+	public String jsonSearchId() {
+		return searchId == null ? "" : searchId;
 	}
 
 	/////////////////////////
@@ -4165,7 +4156,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				contrabandKeyInit();
-				searchKeyInit();
+				searchIdInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -4289,8 +4280,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		switch(var) {
 			case "contrabandKey":
 				return oTrafficContraband.contrabandKey;
-			case "searchKey":
-				return oTrafficContraband.searchKey;
+			case "searchId":
+				return oTrafficContraband.searchId;
 			case "trafficSearchSearch":
 				return oTrafficContraband.trafficSearchSearch;
 			case "trafficSearch_":
@@ -4418,12 +4409,6 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	public Object attributeTrafficContraband(String var, Object val) {
 		TrafficContraband oTrafficContraband = (TrafficContraband)this;
 		switch(var) {
-			case "searchKey":
-				if(oTrafficContraband.getSearchKey() == null)
-					oTrafficContraband.setSearchKey((Long)val);
-				if(!saves.contains("searchKey"))
-					saves.add("searchKey");
-				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -4440,8 +4425,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "contrabandKey":
 			return TrafficContraband.staticSetContrabandKey(siteRequest_, o);
-		case "searchKey":
-			return TrafficContraband.staticSetSearchKey(siteRequest_, o);
+		case "searchId":
+			return TrafficContraband.staticSetSearchId(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficContraband.staticSetAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -4556,8 +4541,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "contrabandKey":
 			return TrafficContraband.staticSolrContrabandKey(siteRequest_, (Long)o);
-		case "searchKey":
-			return TrafficContraband.staticSolrSearchKey(siteRequest_, (Long)o);
+		case "searchId":
+			return TrafficContraband.staticSolrSearchId(siteRequest_, (String)o);
 		case "agencyTitle":
 			return TrafficContraband.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -4672,8 +4657,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "contrabandKey":
 			return TrafficContraband.staticSolrStrContrabandKey(siteRequest_, (Long)o);
-		case "searchKey":
-			return TrafficContraband.staticSolrStrSearchKey(siteRequest_, (Long)o);
+		case "searchId":
+			return TrafficContraband.staticSolrStrSearchId(siteRequest_, (String)o);
 		case "agencyTitle":
 			return TrafficContraband.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -4788,8 +4773,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "contrabandKey":
 			return TrafficContraband.staticSolrFqContrabandKey(siteRequest_, o);
-		case "searchKey":
-			return TrafficContraband.staticSolrFqSearchKey(siteRequest_, o);
+		case "searchId":
+			return TrafficContraband.staticSolrFqSearchId(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficContraband.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -4914,10 +4899,10 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficContraband(String var, String val) {
 		switch(var.toLowerCase()) {
-			case "searchkey":
+			case "searchid":
 				if(val != null)
-					setSearchKey(val);
-				saves.add("searchKey");
+					setSearchId(val);
+				saves.add("searchId");
 				return val;
 			case "contrabandounces":
 				if(val != null)
@@ -4991,10 +4976,10 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficContraband(String var, Object val) {
 		switch(var.toLowerCase()) {
-			case "searchkey":
-				if(val instanceof Long)
-					setSearchKey((Long)val);
-				saves.add("searchKey");
+			case "searchid":
+				if(val instanceof String)
+					setSearchId((String)val);
+				saves.add("searchId");
 				return val;
 			case "contrabandounces":
 				if(val instanceof BigDecimal)
@@ -5069,9 +5054,11 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 					oTrafficContraband.setContrabandKey(contrabandKey);
 			}
 
-			Long searchKey = (Long)solrDocument.get("searchKey_stored_long");
-			if(searchKey != null)
-				oTrafficContraband.setSearchKey(searchKey);
+			if(saves.contains("searchId")) {
+				String searchId = (String)solrDocument.get("searchId_stored_string");
+				if(searchId != null)
+					oTrafficContraband.setSearchId(searchId);
+			}
 
 			if(saves.contains("agencyTitle")) {
 				String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
@@ -5376,9 +5363,9 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			document.addField("contrabandKey_indexed_long", contrabandKey);
 			document.addField("contrabandKey_stored_long", contrabandKey);
 		}
-		if(searchKey != null) {
-			document.addField("searchKey_indexed_long", searchKey);
-			document.addField("searchKey_stored_long", searchKey);
+		if(searchId != null) {
+			document.addField("searchId_indexed_string", searchId);
+			document.addField("searchId_stored_string", searchId);
 		}
 		if(agencyTitle != null) {
 			document.addField("agencyTitle_indexed_string", agencyTitle);
@@ -5584,8 +5571,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		switch(entityVar) {
 			case "contrabandKey":
 				return "contrabandKey_indexed_long";
-			case "searchKey":
-				return "searchKey_indexed_long";
+			case "searchId":
+				return "searchId_indexed_string";
 			case "agencyTitle":
 				return "agencyTitle_indexed_string";
 			case "stopDateTime":
@@ -5714,7 +5701,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		TrafficContraband oTrafficContraband = (TrafficContraband)this;
 
 		oTrafficContraband.setContrabandKey(Optional.ofNullable(solrDocument.get("contrabandKey_stored_long")).map(v -> v.toString()).orElse(null));
-		oTrafficContraband.setSearchKey(Optional.ofNullable(solrDocument.get("searchKey_stored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficContraband.setSearchId(Optional.ofNullable(solrDocument.get("searchId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
 		oTrafficContraband.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
@@ -5779,8 +5766,8 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 			TrafficContraband original = (TrafficContraband)o;
 			if(!Objects.equals(contrabandKey, original.getContrabandKey()))
 				apiRequest.addVars("contrabandKey");
-			if(!Objects.equals(searchKey, original.getSearchKey()))
-				apiRequest.addVars("searchKey");
+			if(!Objects.equals(searchId, original.getSearchId()))
+				apiRequest.addVars("searchId");
 			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
 				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
@@ -5888,7 +5875,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), contrabandKey, searchKey, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, contrabandOunces, contrabandPounds, contrabandPints, contrabandGallons, contrabandDosages, contrabandGrams, contrabandKilos, contrabandMoney, contrabandWeapons, contrabandDollarAmount);
+		return Objects.hash(super.hashCode(), contrabandKey, searchId, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed, contrabandOunces, contrabandPounds, contrabandPints, contrabandGallons, contrabandDosages, contrabandGrams, contrabandKilos, contrabandMoney, contrabandWeapons, contrabandDollarAmount);
 	}
 
 	////////////
@@ -5903,7 +5890,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		TrafficContraband that = (TrafficContraband)o;
 		return super.equals(o)
 				&& Objects.equals( contrabandKey, that.contrabandKey )
-				&& Objects.equals( searchKey, that.searchKey )
+				&& Objects.equals( searchId, that.searchId )
 				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
 				&& Objects.equals( stopPurposeNum, that.stopPurposeNum )
@@ -5964,7 +5951,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 		sb.append(super.toString() + "\n");
 		sb.append("TrafficContraband { ");
 		sb.append( "contrabandKey: " ).append(contrabandKey);
-		sb.append( ", searchKey: " ).append(searchKey);
+		sb.append( ", searchId: \"" ).append(searchId).append( "\"" );
 		sb.append( ", agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);
 		sb.append( ", stopPurposeNum: " ).append(stopPurposeNum);
@@ -6019,7 +6006,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	}
 
 	public static final String VAR_contrabandKey = "contrabandKey";
-	public static final String VAR_searchKey = "searchKey";
+	public static final String VAR_searchId = "searchId";
 	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
 	public static final String VAR_trafficSearch_ = "trafficSearch_";
 	public static final String VAR_agencyTitle = "agencyTitle";

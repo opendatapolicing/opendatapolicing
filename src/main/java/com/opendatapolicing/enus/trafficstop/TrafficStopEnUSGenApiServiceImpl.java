@@ -1477,7 +1477,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						Long pk = o.getPk();
 
 						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject());
+						params.put("body", siteRequest.getJsonObject().put(TrafficStop.VAR_pk, pk.toString()));
 						params.put("path", new JsonObject());
 						params.put("cookie", new JsonObject());
 						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));

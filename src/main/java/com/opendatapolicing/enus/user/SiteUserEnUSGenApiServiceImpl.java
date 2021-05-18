@@ -390,7 +390,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 						Long pk = o.getPk();
 
 						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject());
+						params.put("body", siteRequest.getJsonObject().put(SiteUser.VAR_pk, pk.toString()));
 						params.put("path", new JsonObject());
 						params.put("cookie", new JsonObject());
 						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));

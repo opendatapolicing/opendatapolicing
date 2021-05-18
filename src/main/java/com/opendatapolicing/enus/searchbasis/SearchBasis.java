@@ -43,7 +43,7 @@ import io.vertx.core.Promise;
  * PublicRead: true
  * 
  * Map.hackathonMission: to create a new Java class SearchBasis to define the SearchBasis Java class that collects search, search, and use-of-force police data publicly available to ensure transparency
- **/     
+ **/      
 public class SearchBasis extends SearchBasisGen<Cluster> {
 
 	/**
@@ -60,12 +60,10 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: TrafficSearch.searchBasisKeys
-	 * HtmlRow: 4
-	 * HtmlCell: 1
-	 * DisplayName.enUS: search key
+	 * Define: true
+	 * DisplayName.enUS: search ID
 	 */          
-	protected void _searchKey(Wrap<Long> w) {
+	protected void _searchId(Wrap<String> w) {
 	}
 
 	/**
@@ -73,14 +71,14 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * Ignore: true
 	 */ 
 	protected void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise) {
-		if(searchKey != null) {
-			SearchList<TrafficSearch> l = new SearchList<>();
+		SearchList<TrafficSearch> l = new SearchList<>();
+		if(searchId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("pk_indexed_long:" + searchKey);
+			l.addFilterQuery("inheritPk_indexed_string:" + searchId);
 			l.setC(TrafficSearch.class);
 			l.setStore(true);
-			promise.complete(l);
 		}
+		promise.complete(l);
 	}
 
 	protected void _trafficSearch_(Wrap<TrafficSearch> w) {
@@ -532,25 +530,24 @@ public class SearchBasis extends SearchBasisGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 3
-	 * HtmlCell: 1
 	 * DisplayName.enUS: search basis title
 	 */ 
 	protected void _searchBasisTitle(Wrap<String> w) {
-		switch(searchBasisId) {
-		case "ER":
-			w.o("Erratic/Suspicious Behavior"); break;
-		case "OB":
-			w.o("Observation of Suspected Contraband"); break;
-		case "OI":
-			w.o("Other Official Information"); break;
-		case "SM":
-			w.o("Suspicious Movement"); break;
-		case "TIP":
-			w.o("Informant Tip"); break;
-		case "WTNS":
-			w.o("Witness Observation"); break;
+		if(searchBasisId != null) {
+			switch(searchBasisId) {
+			case "ER":
+				w.o("Erratic/Suspicious Behavior"); break;
+			case "OB":
+				w.o("Observation of Suspected Contraband"); break;
+			case "OI":
+				w.o("Other Official Information"); break;
+			case "SM":
+				w.o("Suspicious Movement"); break;
+			case "TIP":
+				w.o("Informant Tip"); break;
+			case "WTNS":
+				w.o("Witness Observation"); break;
+			}
 		}
 	}
 //

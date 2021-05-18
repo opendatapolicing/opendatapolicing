@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficperson;                                                    
+package com.opendatapolicing.enus.trafficperson;                                                     
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -61,6 +61,7 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * Define: true
 	 * DisplayName.enUS: traffic stop Id
 	 */          
 	protected void _stopId(Wrap<String> c) {

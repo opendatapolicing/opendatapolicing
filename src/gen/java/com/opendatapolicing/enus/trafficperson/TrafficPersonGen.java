@@ -2810,11 +2810,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	public Object attributeTrafficPerson(String var, Object val) {
 		TrafficPerson oTrafficPerson = (TrafficPerson)this;
 		switch(var) {
-			case "trafficSearchKeys":
-				oTrafficPerson.addTrafficSearchKeys((Long)val);
-				if(!saves.contains("trafficSearchKeys"))
-					saves.add("trafficSearchKeys");
-				return val;
 			default:
 				return super.attributeCluster(var, val);
 		}
@@ -3153,6 +3148,11 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficPerson(String var, String val) {
 		switch(var.toLowerCase()) {
+			case "stopid":
+				if(val != null)
+					setStopId(val);
+				saves.add("stopId");
+				return val;
 			case "personage":
 				if(val != null)
 					setPersonAge(val);
@@ -3200,6 +3200,11 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	}
 	public Object defineTrafficPerson(String var, Object val) {
 		switch(var.toLowerCase()) {
+			case "stopid":
+				if(val instanceof String)
+					setStopId((String)val);
+				saves.add("stopId");
+				return val;
 			case "personage":
 				if(val instanceof Integer)
 					setPersonAge((Integer)val);
@@ -3350,9 +3355,11 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 					oTrafficPerson.setStopCityId(stopCityId);
 			}
 
-			List<Long> trafficSearchKeys = (List<Long>)solrDocument.get("trafficSearchKeys_stored_longs");
-			if(trafficSearchKeys != null)
-				oTrafficPerson.trafficSearchKeys.addAll(trafficSearchKeys);
+			if(saves.contains("trafficSearchKeys")) {
+				List<Long> trafficSearchKeys = (List<Long>)solrDocument.get("trafficSearchKeys_stored_longs");
+				if(trafficSearchKeys != null)
+					oTrafficPerson.trafficSearchKeys.addAll(trafficSearchKeys);
+			}
 
 			if(saves.contains("personAge")) {
 				Integer personAge = (Integer)solrDocument.get("personAge_stored_int");

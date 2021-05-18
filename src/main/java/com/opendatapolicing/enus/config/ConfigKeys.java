@@ -358,6 +358,11 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String ENABLE_REFRESH_DATA = "enableRefreshData";
+
+	/**
+	 * 
+	 **/
 	public static final String SEMAPHORE_PERMITS = "semaphorePermits";
 
 	/**

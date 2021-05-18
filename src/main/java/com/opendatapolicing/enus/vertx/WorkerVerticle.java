@@ -11,6 +11,7 @@ import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.state.SiteStateEnUSApiServiceImpl;
+import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSApiServiceImpl;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSApiServiceImpl;
 
 import io.vertx.config.ConfigRetriever;
@@ -69,7 +70,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					configureSharedWorkerExecutor().compose(c -> 
 						configureEmail().compose(d -> 
 							syncDbToSolr().compose(e -> 
-								importData()
+								refreshAllData().compose(f -> 
+									importData()
+								)
 							)
 						)
 					)
@@ -245,7 +248,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	}
 
 	/**	
-	 * Import initial data
 	 * Val.Complete.enUS:Syncing database to Solr completed. 
 	 * Val.Fail.enUS:Syncing database to Solr failed. 
 	 * Val.Skip.enUS:Skip syncing database to Solr. 
@@ -254,9 +256,29 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		if(config.getBoolean(ConfigKeys.ENABLE_DB_SOLR_SYNC, false)) {
 			vertx.setTimer(1000 * 10, a -> {
-				syncTrafficStops().onSuccess(b -> {
-					LOG.info(syncDbToSolrComplete);
-					promise.complete();
+				syncData("TrafficStop").onSuccess(b -> {
+					syncData("TrafficPerson").onSuccess(c -> {
+						syncData("TrafficSearch").onSuccess(d -> {
+							syncData("SearchBasis").onSuccess(e -> {
+								syncData("TrafficContraband").onSuccess(f -> {
+									LOG.info(syncDbToSolrComplete);
+									promise.complete();
+								}).onFailure(ex -> {
+									LOG.error(syncDbToSolrFail, ex);
+									promise.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(syncDbToSolrFail, ex);
+								promise.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(syncDbToSolrFail, ex);
+							promise.fail(ex);
+						});
+					}).onFailure(ex -> {
+						LOG.error(syncDbToSolrFail, ex);
+						promise.fail(ex);
+					});
 				}).onFailure(ex -> {
 					LOG.error(syncDbToSolrFail, ex);
 					promise.fail(ex);
@@ -270,64 +292,147 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	}
 
 	/**	
-	 * Sync TrafficStop data from the database to Solr. 
-	 * Val.Complete.enUS:TrafficStop data sync completed. 
-	 * Val.Fail.enUS:TrafficStop data sync failed. 
+	 * Sync %s data from the database to Solr. 
+	 * Val.Complete.enUS:%s data sync completed. 
+	 * Val.Fail.enUS:%s data sync failed. 
+	 * Val.Skip.enUS:%s data sync skipped. 
 	 **/
-	private Future<Void> syncTrafficStops() {
+	private Future<Void> syncData(String tableName) {
 		Promise<Void> promise = Promise.promise();
 		try {
-			TrafficStopEnUSApiServiceImpl api = new TrafficStopEnUSApiServiceImpl(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, null, null);
-			pgPool.withTransaction(sqlConnection -> {
-				Promise<Void> promise1 = Promise.promise();
-				sqlConnection.prepare("SELECT * FROM TrafficStop").onSuccess(preparedStatement -> {
-					try {
-						RowStream<Row> stream = preparedStatement.createStream(2);
-						stream.exceptionHandler(ex -> {
-							LOG.error(syncTrafficStopsFail, ex);
+			if(config.getBoolean(String.format("%s%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, tableName), true)) {
+				pgPool.withTransaction(sqlConnection -> {
+					Promise<Void> promise1 = Promise.promise();
+					sqlConnection.prepare(String.format("SELECT * FROM %s", tableName)).onSuccess(preparedStatement -> {
+						try {
+							RowStream<Row> stream = preparedStatement.createStream(2);
+							stream.exceptionHandler(ex -> {
+								LOG.error(String.format(syncDataFail, tableName), ex);
+								promise.fail(ex);
+							});
+							stream.endHandler(v -> {
+								LOG.info(String.format(syncDataComplete, tableName));
+								promise.complete();
+							});
+							stream.handler(row -> {
+								try {
+									semaphore.acquire();
+									Long pk = row.getLong(0);
+	
+									JsonObject params = new JsonObject();
+									params.put("body", new JsonObject().put("pk", pk.toString()));
+									params.put("path", new JsonObject());
+									params.put("cookie", new JsonObject());
+									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+									JsonObject context = new JsonObject().put("params", params);
+									JsonObject json = new JsonObject().put("context", context);
+									vertx.eventBus().send(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%sFuture", tableName)));
+								} catch (Exception ex) {
+									LOG.error(String.format(syncDataFail, tableName), ex);
+									promise1.fail(ex);
+									LOG.info("release: {}", semaphore.availablePermits());
+								}
+							});
+						} catch (Exception ex) {
+							LOG.error(String.format(syncDataFail, tableName), ex);
+							promise1.fail(ex);
+						}
+					}).onFailure(ex -> {
+						LOG.error(String.format(syncDataFail, tableName), ex);
+						promise1.fail(ex);
+					});
+					return promise1.future();
+				}).onFailure(ex -> {
+					LOG.error(String.format(syncDataFail, tableName), ex);
+					promise.fail(ex);
+				});
+			} else {
+				LOG.info(String.format(syncDataSkip, tableName));
+				promise.complete();
+			}
+		} catch (Exception ex) {
+			LOG.error(String.format(syncDataFail, tableName), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+
+	/**	
+	 * Val.Complete.enUS:Refresh all data completed. 
+	 * Val.Fail.enUS:Refresh all data failed. 
+	 * Val.Skip.enUS:Refresh all data skipped. 
+	 **/
+	private Future<Void> refreshAllData() {
+		Promise<Void> promise = Promise.promise();
+		if(config.getBoolean(ConfigKeys.ENABLE_REFRESH_DATA, false)) {
+			vertx.setTimer(1000 * 10, a -> {
+				refreshData("TrafficContraband").onSuccess(b -> {
+					refreshData("SearchBasis").onSuccess(c -> {
+						refreshData("TrafficSearch").onSuccess(d -> {
+							refreshData("TrafficPerson").onSuccess(e -> {
+								refreshData("TrafficStop").onSuccess(f -> {
+									LOG.info(refreshAllDataComplete);
+									promise.complete();
+								}).onFailure(ex -> {
+									LOG.error(refreshAllDataFail, ex);
+									promise.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(refreshAllDataFail, ex);
+								promise.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(refreshAllDataFail, ex);
 							promise.fail(ex);
 						});
-						stream.endHandler(v -> {
-							LOG.info(syncTrafficStopsComplete);
-							promise.complete();
-						});
-						stream.handler(row -> {
-							try {
-								semaphore.acquire();
-								Long pk = row.getLong(0);
-
-								JsonObject params = new JsonObject();
-								params.put("body", new JsonObject().put("pk", pk.toString()));
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								vertx.eventBus().send("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "patchTrafficStopFuture"));
-							} catch (Exception ex) {
-								LOG.error(syncTrafficStopsFail, ex);
-								promise1.fail(ex);
-								LOG.info("release: {}", semaphore.availablePermits());
-							}
-						});
-					} catch (Exception ex) {
-						LOG.error(syncTrafficStopsFail, ex);
-						promise1.fail(ex);
-					}
+					}).onFailure(ex -> {
+						LOG.error(refreshAllDataFail, ex);
+						promise.fail(ex);
+					});
 				}).onFailure(ex -> {
-					LOG.error(syncTrafficStopsFail, ex);
-					promise1.fail(ex);
+					LOG.error(refreshAllDataFail, ex);
+					promise.fail(ex);
 				});
-				return promise1.future();
-			}).onFailure(ex -> {
-				LOG.error(syncTrafficStopsFail, ex);
-				promise.fail(ex);
 			});
+		} else {
+			LOG.info(refreshAllDataSkip);
+			promise.complete();
+		}
+		return promise.future();
+	}
+
+	/**	
+	 * Refresh %s data from the database to Solr. 
+	 * Val.Complete.enUS:%s refresh completed. 
+	 * Val.Fail.enUS:%s refresh failed. 
+	 * Val.Skip.enUS:%s refresh skipped. 
+	 **/
+	private Future<Void> refreshData(String tableName) {
+		Promise<Void> promise = Promise.promise();
+		try {
+			if(config.getBoolean(String.format("%s%s", ConfigKeys.ENABLE_REFRESH_DATA, tableName), true)) {
+				JsonObject params = new JsonObject();
+				params.put("body", new JsonObject());
+				params.put("path", new JsonObject());
+				params.put("cookie", new JsonObject());
+				params.put("query", new JsonObject().put("q", "*:*"));
+				JsonObject context = new JsonObject().put("params", params);
+				JsonObject json = new JsonObject().put("context", context);
+				vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%s", tableName))).onSuccess(a -> {
+					LOG.info(String.format(refreshDataComplete, tableName));
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format(refreshDataFail, tableName), ex);
+					promise.fail(ex);
+				});
+			} else {
+				LOG.info(String.format(refreshDataSkip, tableName));
+				promise.complete();
+			}
 		} catch (Exception ex) {
-			LOG.error(syncTrafficStopsFail, ex);
+			LOG.error(String.format(refreshDataFail, tableName), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
 	}
 }
-

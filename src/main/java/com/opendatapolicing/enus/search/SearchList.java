@@ -208,6 +208,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 				facetCounts.add("facet_ranges", facetRanges);
 				((Map<String, Map<String, Object>>)facetRangesJson).forEach((key1, value1) -> {
 					NamedList<Object> namedList1 = new NamedList<>();
+					facetRanges.add(key1, namedList1);
 					List<Object> countsJson = (List<Object>)value1.get("counts");
 					NamedList<Integer> counts = new NamedList<>();
 					namedList1.add("counts", counts);
@@ -223,7 +224,6 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 					for(Integer i = 0; i < countsJson.size(); i+=2) {
 						counts.add((String)countsJson.get(i), (Integer)countsJson.get(i + 1));
 					}
-					facetRanges.add(key1, namedList1);
 				});
 			});
 
@@ -254,6 +254,29 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 								});
 							});
 							
+						});
+						Optional.ofNullable(pivotJson1.get("ranges")).ifPresent(facetRangesJson -> {
+							NamedList<Object> facetRanges = new NamedList<Object>();
+							namedList1.add("ranges", facetRanges);
+							((Map<String, Map<String, Object>>)facetRangesJson).forEach((key2, value2) -> {
+								NamedList<Object> namedList2 = new NamedList<>();
+								facetRanges.add(key2, namedList2);
+								List<Object> countsJson = (List<Object>)value2.get("counts");
+								NamedList<Integer> counts = new NamedList<>();
+								namedList2.add("counts", counts);
+								Optional.ofNullable((String)value2.get("gap")).ifPresent(gap -> {
+									namedList2.add("gap", gap);
+								});
+								Optional.ofNullable((String)value2.get("start")).ifPresent(start -> {
+									namedList2.add("start", start);
+								});
+								Optional.ofNullable((String)value2.get("end")).ifPresent(end -> {
+									namedList2.add("end", end);
+								});
+								for(Integer i = 0; i < countsJson.size(); i+=2) {
+									counts.add((String)countsJson.get(i), (Integer)countsJson.get(i + 1));
+								}
+							});
 						});
 					}
 				});
