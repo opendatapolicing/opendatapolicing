@@ -11,6 +11,7 @@ import java.lang.Long;
 import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
@@ -290,7 +291,7 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 	 */
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using = ZonedDateTimeSerializer.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
@@ -2928,9 +2929,15 @@ public abstract class TrafficStopGen<DEV> extends Cluster {
 		oTrafficStop.setStopOfficerId(Optional.ofNullable(solrDocument.get("stopOfficerId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficStop.setStopLocationId(Optional.ofNullable(solrDocument.get("stopLocationId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficStop.setStopCityId(Optional.ofNullable(solrDocument.get("stopCityId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficStop.addPersonKeys(Optional.ofNullable(solrDocument.get("personKeys_stored_longs")).map(v -> v.toString()).orElse(null));
-		oTrafficStop.addPersonRaceTitles(Optional.ofNullable(solrDocument.get("personRaceTitles_stored_strings")).map(v -> v.toString()).orElse(null));
-		oTrafficStop.addTrafficSearchRaceTitles(Optional.ofNullable(solrDocument.get("trafficSearchRaceTitles_stored_strings")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("personKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oTrafficStop.addPersonKeys(v.toString());
+		});
+		Optional.ofNullable((List<?>)solrDocument.get("personRaceTitles_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oTrafficStop.addPersonRaceTitles(v.toString());
+		});
+		Optional.ofNullable((List<?>)solrDocument.get("trafficSearchRaceTitles_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oTrafficStop.addTrafficSearchRaceTitles(v.toString());
+		});
 
 		super.storeCluster(solrDocument);
 	}

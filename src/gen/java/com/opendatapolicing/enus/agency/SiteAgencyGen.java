@@ -10,6 +10,7 @@ import java.lang.Integer;
 import java.lang.Long;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;

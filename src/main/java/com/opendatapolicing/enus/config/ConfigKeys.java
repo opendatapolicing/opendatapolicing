@@ -353,6 +353,11 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String TIMER_DB_SOLR_SYNC_IN_SECONDS = "timerDbSolrSyncInSeconds";
+
+	/**
+	 * 
+	 **/
 	public static final String ENABLE_DB_SOLR_SYNC = "enableDbSolrSync";
 
 	/**

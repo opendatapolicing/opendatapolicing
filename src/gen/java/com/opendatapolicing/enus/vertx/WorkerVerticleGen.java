@@ -12,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -78,6 +79,8 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String syncDataFail = syncDataFail1;
 	public static final String syncDataSkip1 = "%s data sync skipped. ";
 	public static final String syncDataSkip = syncDataSkip1;
+	public static final String syncDataStarted1 = "%s data sync started. ";
+	public static final String syncDataStarted = syncDataStarted1;
 
 	public static final String refreshAllDataComplete1 = "Refresh all data completed. ";
 	public static final String refreshAllDataComplete = refreshAllDataComplete1;
@@ -309,6 +312,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDataComplete1, syncDataFail1, syncDataSkip1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1 };
+	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorError1, configureSharedWorkerExecutorSuccess1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDataComplete1, syncDataFail1, syncDataSkip1, syncDataStarted1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1 };
 
 }

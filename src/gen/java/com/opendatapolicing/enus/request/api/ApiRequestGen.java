@@ -2,51 +2,52 @@ package com.opendatapolicing.enus.request.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
 import java.time.ZonedDateTime;
 import org.slf4j.LoggerFactory;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import org.apache.commons.collections.CollectionUtils;
 import java.lang.Long;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Locale;
 import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.opendatapolicing.enus.config.ConfigKeys;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
-import java.lang.String;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
-import org.slf4j.Logger;
 import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
-import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
-import org.apache.commons.text.StringEscapeUtils;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
 import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
-import io.vertx.core.json.JsonArray;
 import java.util.List;
-import java.time.temporal.ChronoUnit;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import java.lang.Object;
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import org.apache.commons.collections.CollectionUtils;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opendatapolicing.enus.config.ConfigKeys;
+import java.lang.String;
+import org.slf4j.Logger;
+import io.vertx.core.Promise;
+import org.apache.commons.text.StringEscapeUtils;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import io.vertx.core.json.JsonArray;
+import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.lang.Object;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
 /**	
@@ -108,7 +109,7 @@ public abstract class ApiRequestGen<DEV> extends Object {
 	 */
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using = ZonedDateTimeSerializer.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;

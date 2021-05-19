@@ -255,7 +255,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private Future<Void> syncDbToSolr() {
 		Promise<Void> promise = Promise.promise();
 		if(config.getBoolean(ConfigKeys.ENABLE_DB_SOLR_SYNC, false)) {
-			vertx.setTimer(1000 * 10, a -> {
+			Long millis = 1000L * config.getInteger(ConfigKeys.TIMER_DB_SOLR_SYNC_IN_SECONDS, 30);
+			vertx.setTimer(millis, a -> {
 				syncData("TrafficStop").onSuccess(b -> {
 					syncData("TrafficPerson").onSuccess(c -> {
 						syncData("TrafficSearch").onSuccess(d -> {
@@ -296,11 +297,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * Val.Complete.enUS:%s data sync completed. 
 	 * Val.Fail.enUS:%s data sync failed. 
 	 * Val.Skip.enUS:%s data sync skipped. 
+	 * Val.Started.enUS:%s data sync started. 
 	 **/
 	private Future<Void> syncData(String tableName) {
 		Promise<Void> promise = Promise.promise();
 		try {
 			if(config.getBoolean(String.format("%s%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, tableName), true)) {
+				LOG.info(String.format(syncDataStarted, tableName));
 				pgPool.withTransaction(sqlConnection -> {
 					Promise<Void> promise1 = Promise.promise();
 					sqlConnection.prepare(String.format("SELECT * FROM %s", tableName)).onSuccess(preparedStatement -> {
@@ -315,23 +318,27 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								promise.complete();
 							});
 							stream.handler(row -> {
-								try {
-									semaphore.acquire();
-									Long pk = row.getLong(0);
-	
-									JsonObject params = new JsonObject();
-									params.put("body", new JsonObject().put("pk", pk.toString()));
-									params.put("path", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-									JsonObject context = new JsonObject().put("params", params);
-									JsonObject json = new JsonObject().put("context", context);
-									vertx.eventBus().send(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%sFuture", tableName)));
-								} catch (Exception ex) {
+								workerExecutor.executeBlocking(blockingCodeHandler -> {
+									try {
+										semaphore.acquire();
+										Long pk = row.getLong(0);
+		
+										JsonObject params = new JsonObject();
+										params.put("body", new JsonObject().put("pk", pk.toString()));
+										params.put("path", new JsonObject());
+										params.put("cookie", new JsonObject());
+										params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+										JsonObject context = new JsonObject().put("params", params);
+										JsonObject json = new JsonObject().put("context", context);
+										vertx.eventBus().send(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%sFuture", tableName)));
+									} catch (Exception ex) {
+										LOG.error(String.format(syncDataFail, tableName), ex);
+										blockingCodeHandler.fail(ex);
+									}
+								}).onFailure(ex -> {
 									LOG.error(String.format(syncDataFail, tableName), ex);
 									promise1.fail(ex);
-									LOG.info("release: {}", semaphore.availablePermits());
-								}
+								});
 							});
 						} catch (Exception ex) {
 							LOG.error(String.format(syncDataFail, tableName), ex);

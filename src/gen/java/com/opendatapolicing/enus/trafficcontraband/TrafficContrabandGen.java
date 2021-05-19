@@ -12,6 +12,7 @@ import java.lang.Long;
 import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
@@ -401,7 +402,7 @@ public abstract class TrafficContrabandGen<DEV> extends Cluster {
 	 */
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using = ZonedDateTimeSerializer.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;

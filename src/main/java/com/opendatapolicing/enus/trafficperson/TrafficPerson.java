@@ -75,7 +75,7 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 		SearchList<TrafficStop> l = new SearchList<>();
 		if(stopId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("inheritPk_indexed_long:" + stopId);
+			l.addFilterQuery("inheritPk_indexed_string:" + stopId);
 			l.setC(TrafficStop.class);
 			l.setStore(true);
 		}

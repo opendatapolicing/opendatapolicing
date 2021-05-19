@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.lang.Long;
 import java.util.Locale;
 import java.util.Map;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -336,7 +337,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	 */
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using = ZonedDateTimeSerializer.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
@@ -429,7 +430,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	 */
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using = ZonedDateTimeSerializer.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime modified;
@@ -1471,8 +1472,12 @@ public abstract class ClusterGen<DEV> extends Object {
 		oCluster.setModified(Optional.ofNullable(solrDocument.get("modified_stored_date")).map(v -> v.toString()).orElse(null));
 		oCluster.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_stored_string")).map(v -> v.toString()).orElse(null));
 		oCluster.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_stored_string")).map(v -> v.toString()).orElse(null));
-		oCluster.addClassCanonicalNames(Optional.ofNullable(solrDocument.get("classCanonicalNames_stored_strings")).map(v -> v.toString()).orElse(null));
-		oCluster.addSaves(Optional.ofNullable(solrDocument.get("saves_stored_strings")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("classCanonicalNames_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oCluster.addClassCanonicalNames(v.toString());
+		});
+		Optional.ofNullable((List<?>)solrDocument.get("saves_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oCluster.addSaves(v.toString());
+		});
 		oCluster.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oCluster.setObjectId(Optional.ofNullable(solrDocument.get("objectId_stored_string")).map(v -> v.toString()).orElse(null));
 	}

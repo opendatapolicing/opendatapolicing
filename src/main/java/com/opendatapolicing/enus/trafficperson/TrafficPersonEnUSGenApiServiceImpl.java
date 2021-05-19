@@ -1777,15 +1777,12 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					JsonObject rangeFacetJson = new JsonObject();
 					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
-					JsonArray rangeFacetCountsList = new JsonArray();
-					rangeFacetJson.put("counts", rangeFacetCountsList);
+					JsonObject rangeFacetCountsObject = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsObject);
 					List<?> rangeFacetCounts = rangeFacet.getCounts();
 					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
-						countJson.put("value", count.getValue());
-						countJson.put("count", count.getCount());
-						rangeFacetCountsList.add(countJson);
+						rangeFacetCountsObject.put(count.getValue(), count.getCount());
 					}
 				}
 			}
@@ -1967,15 +1964,12 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					JsonObject rangeFacetJson = new JsonObject();
 					String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_indexed_");
 					rangeJson.put(rangeFacetVar, rangeFacetJson);
-					JsonArray rangeFacetCountsList = new JsonArray();
-					rangeFacetJson.put("counts", rangeFacetCountsList);
+					JsonObject rangeFacetCountsObject = new JsonObject();
+					rangeFacetJson.put("counts", rangeFacetCountsObject);
 					List<?> rangeFacetCounts = rangeFacet.getCounts();
 					for(Integer i = 0; i < rangeFacetCounts.size(); i+= 1) {
-						JsonObject countJson = new JsonObject();
 						RangeFacet.Count count = (RangeFacet.Count)rangeFacetCounts.get(i);
-						countJson.put("value", count.getValue());
-						countJson.put("count", count.getCount());
-						rangeFacetCountsList.add(countJson);
+						rangeFacetCountsObject.put(count.getValue(), count.getCount());
 					}
 				}
 			}

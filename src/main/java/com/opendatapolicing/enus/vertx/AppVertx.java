@@ -2,6 +2,7 @@ package com.opendatapolicing.enus.vertx;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,8 @@ import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.java.LocalTimeSerializer;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
@@ -205,7 +208,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 //		mailVerticleDeploymentOptions.setWorker(true);
 
 		DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
-//		mailVerticleDeploymentOptions.setWorker(true);
+//		workerVerticleDeploymentOptions.setWorker(true);
 
 		Consumer<Vertx> runner = vertx -> {
 			for(Integer i = 0; i < siteInstances; i++) {
@@ -825,11 +828,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 
 		try {
-			SimpleModule module = new SimpleModule();
-			module.addSerializer(LocalDate.class, new LocalDateSerializer());
-			module.addSerializer(LocalTime.class, new LocalTimeSerializer());
-			DatabindCodec.mapper().registerModule(module);
-	
 			Boolean sslPassthrough = config.getBoolean(ConfigKeys.SSL_PASSTHROUGH, false);
 			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
 			Integer sitePort = config.getInteger(ConfigKeys.SITE_PORT);

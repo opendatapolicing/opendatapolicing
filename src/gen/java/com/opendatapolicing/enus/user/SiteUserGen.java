@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
 import java.math.RoundingMode;
@@ -1199,7 +1200,9 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		SiteUser oSiteUser = (SiteUser)this;
 
 		oSiteUser.setUserKey(Optional.ofNullable(solrDocument.get("userKey_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteUser.addUserKeys(Optional.ofNullable(solrDocument.get("userKeys_stored_longs")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("userKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oSiteUser.addUserKeys(v.toString());
+		});
 		oSiteUser.setUserId(Optional.ofNullable(solrDocument.get("userId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setUserName(Optional.ofNullable(solrDocument.get("userName_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setUserEmail(Optional.ofNullable(solrDocument.get("userEmail_stored_string")).map(v -> v.toString()).orElse(null));

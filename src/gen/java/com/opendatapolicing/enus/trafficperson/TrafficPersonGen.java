@@ -11,6 +11,7 @@ import java.lang.Long;
 import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
@@ -401,7 +402,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	 */
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using = ZonedDateTimeSerializer.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
@@ -3693,7 +3694,9 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		oTrafficPerson.setStopOfficerId(Optional.ofNullable(solrDocument.get("stopOfficerId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setStopLocationId(Optional.ofNullable(solrDocument.get("stopLocationId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setStopCityId(Optional.ofNullable(solrDocument.get("stopCityId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.addTrafficSearchKeys(Optional.ofNullable(solrDocument.get("trafficSearchKeys_stored_longs")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("trafficSearchKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oTrafficPerson.addTrafficSearchKeys(v.toString());
+		});
 		oTrafficPerson.setPersonAge(Optional.ofNullable(solrDocument.get("personAge_stored_int")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setPersonTypeId(Optional.ofNullable(solrDocument.get("personTypeId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setPersonTypeTitle(Optional.ofNullable(solrDocument.get("personTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));

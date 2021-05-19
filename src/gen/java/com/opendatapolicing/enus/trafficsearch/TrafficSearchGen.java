@@ -11,6 +11,7 @@ import java.lang.Long;
 import java.util.Locale;
 import java.util.Map;
 import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -620,7 +621,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	 */
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
-	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonSerialize(using = ZonedDateTimeSerializer.class)
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
@@ -4825,8 +4826,12 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 		oTrafficSearch.setTrafficSearchKey(Optional.ofNullable(solrDocument.get("trafficSearchKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setPersonId(Optional.ofNullable(solrDocument.get("personId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficSearch.addContrabandKeys(Optional.ofNullable(solrDocument.get("contrabandKeys_stored_longs")).map(v -> v.toString()).orElse(null));
-		oTrafficSearch.addSearchBasisKeys(Optional.ofNullable(solrDocument.get("searchBasisKeys_stored_longs")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("contrabandKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oTrafficSearch.addContrabandKeys(v.toString());
+		});
+		Optional.ofNullable((List<?>)solrDocument.get("searchBasisKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+			oTrafficSearch.addSearchBasisKeys(v.toString());
+		});
 		oTrafficSearch.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
