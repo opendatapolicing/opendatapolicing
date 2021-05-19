@@ -13,7 +13,6 @@ import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
-import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
@@ -1526,115 +1525,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		return stopCityId == null ? "" : stopCityId;
 	}
 
-	///////////////////////
-	// trafficSearchKeys //
-	///////////////////////
-
-	/**	 The entity trafficSearchKeys
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonSerialize(contentUsing = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected List<Long> trafficSearchKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> trafficSearchKeysWrap = new Wrap<List<Long>>().var("trafficSearchKeys").o(trafficSearchKeys);
-
-	/**	<br/> The entity trafficSearchKeys
-	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficperson.TrafficPerson&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchKeys">Find the entity trafficSearchKeys in Solr</a>
-	 * <br/>
-	 * @param trafficSearchKeys is the entity already constructed. 
-	 **/
-	protected abstract void _trafficSearchKeys(List<Long> c);
-
-	public List<Long> getTrafficSearchKeys() {
-		return trafficSearchKeys;
-	}
-
-	public void setTrafficSearchKeys(List<Long> trafficSearchKeys) {
-		this.trafficSearchKeys = trafficSearchKeys;
-		this.trafficSearchKeysWrap.alreadyInitialized = true;
-	}
-	@JsonIgnore
-	public void setTrafficSearchKeys(String o) {
-		Long l = TrafficPerson.staticSetTrafficSearchKeys(siteRequest_, o);
-		if(l != null)
-			addTrafficSearchKeys(l);
-		this.trafficSearchKeysWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetTrafficSearchKeys(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	public TrafficPerson addTrafficSearchKeys(Long...objets) {
-		for(Long o : objets) {
-			addTrafficSearchKeys(o);
-		}
-		return (TrafficPerson)this;
-	}
-	public TrafficPerson addTrafficSearchKeys(Long o) {
-		if(o != null && !trafficSearchKeys.contains(o))
-			this.trafficSearchKeys.add(o);
-		return (TrafficPerson)this;
-	}
-	@JsonIgnore
-	public void setTrafficSearchKeys(JsonArray objets) {
-		trafficSearchKeys.clear();
-		for(int i = 0; i < objets.size(); i++) {
-			Long o = objets.getLong(i);
-			addTrafficSearchKeys(o);
-		}
-	}
-	public TrafficPerson addTrafficSearchKeys(String o) {
-		if(NumberUtils.isParsable(o)) {
-			Long p = Long.parseLong(o);
-			addTrafficSearchKeys(p);
-		}
-		return (TrafficPerson)this;
-	}
-	protected TrafficPerson trafficSearchKeysInit() {
-		if(!trafficSearchKeysWrap.alreadyInitialized) {
-			_trafficSearchKeys(trafficSearchKeys);
-		}
-		trafficSearchKeysWrap.alreadyInitialized(true);
-		return (TrafficPerson)this;
-	}
-
-	public static Long staticSolrTrafficSearchKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrTrafficSearchKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqTrafficSearchKeys(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficPerson.staticSolrStrTrafficSearchKeys(siteRequest_, TrafficPerson.staticSolrTrafficSearchKeys(siteRequest_, TrafficPerson.staticSetTrafficSearchKeys(siteRequest_, o)));
-	}
-
-	public List<Long> solrTrafficSearchKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : trafficSearchKeys) {
-			l.add(TrafficPerson.staticSolrTrafficSearchKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strTrafficSearchKeys() {
-		return trafficSearchKeys == null ? "" : trafficSearchKeys.toString();
-	}
-
-	public List<Long> sqlTrafficSearchKeys() {
-		return trafficSearchKeys;
-	}
-
-	public String jsonTrafficSearchKeys() {
-		return trafficSearchKeys == null ? "" : trafficSearchKeys.toString();
-	}
-
 	///////////////
 	// personAge //
 	///////////////
@@ -2649,7 +2539,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				stopOfficerIdInit();
 				stopLocationIdInit();
 				stopCityIdInit();
-				trafficSearchKeysInit();
 				personAgeInit();
 				personTypeIdInit();
 				personTypeTitleInit();
@@ -2758,8 +2647,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				return oTrafficPerson.stopLocationId;
 			case "stopCityId":
 				return oTrafficPerson.stopCityId;
-			case "trafficSearchKeys":
-				return oTrafficPerson.trafficSearchKeys;
 			case "personAge":
 				return oTrafficPerson.personAge;
 			case "personTypeId":
@@ -2861,8 +2748,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSetStopLocationId(siteRequest_, o);
 		case "stopCityId":
 			return TrafficPerson.staticSetStopCityId(siteRequest_, o);
-		case "trafficSearchKeys":
-			return TrafficPerson.staticSetTrafficSearchKeys(siteRequest_, o);
 		case "personAge":
 			return TrafficPerson.staticSetPersonAge(siteRequest_, o);
 		case "personTypeId":
@@ -2939,8 +2824,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSolrStopLocationId(siteRequest_, (String)o);
 		case "stopCityId":
 			return TrafficPerson.staticSolrStopCityId(siteRequest_, (String)o);
-		case "trafficSearchKeys":
-			return TrafficPerson.staticSolrTrafficSearchKeys(siteRequest_, (Long)o);
 		case "personAge":
 			return TrafficPerson.staticSolrPersonAge(siteRequest_, (Integer)o);
 		case "personTypeId":
@@ -3017,8 +2900,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSolrStrStopLocationId(siteRequest_, (String)o);
 		case "stopCityId":
 			return TrafficPerson.staticSolrStrStopCityId(siteRequest_, (String)o);
-		case "trafficSearchKeys":
-			return TrafficPerson.staticSolrStrTrafficSearchKeys(siteRequest_, (Long)o);
 		case "personAge":
 			return TrafficPerson.staticSolrStrPersonAge(siteRequest_, (Integer)o);
 		case "personTypeId":
@@ -3095,8 +2976,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			return TrafficPerson.staticSolrFqStopLocationId(siteRequest_, o);
 		case "stopCityId":
 			return TrafficPerson.staticSolrFqStopCityId(siteRequest_, o);
-		case "trafficSearchKeys":
-			return TrafficPerson.staticSolrFqTrafficSearchKeys(siteRequest_, o);
 		case "personAge":
 			return TrafficPerson.staticSolrFqPersonAge(siteRequest_, o);
 		case "personTypeId":
@@ -3356,12 +3235,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 					oTrafficPerson.setStopCityId(stopCityId);
 			}
 
-			if(saves.contains("trafficSearchKeys")) {
-				List<Long> trafficSearchKeys = (List<Long>)solrDocument.get("trafficSearchKeys_stored_longs");
-				if(trafficSearchKeys != null)
-					oTrafficPerson.trafficSearchKeys.addAll(trafficSearchKeys);
-			}
-
 			if(saves.contains("personAge")) {
 				Integer personAge = (Integer)solrDocument.get("personAge_stored_int");
 				if(personAge != null)
@@ -3517,14 +3390,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			document.addField("stopCityId_indexed_string", stopCityId);
 			document.addField("stopCityId_stored_string", stopCityId);
 		}
-		if(trafficSearchKeys != null) {
-			for(java.lang.Long o : trafficSearchKeys) {
-				document.addField("trafficSearchKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : trafficSearchKeys) {
-				document.addField("trafficSearchKeys_stored_longs", o);
-			}
-		}
 		if(personAge != null) {
 			document.addField("personAge_indexed_int", personAge);
 			document.addField("personAge_stored_int", personAge);
@@ -3619,8 +3484,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				return "stopLocationId_indexed_string";
 			case "stopCityId":
 				return "stopCityId_indexed_string";
-			case "trafficSearchKeys":
-				return "trafficSearchKeys_indexed_longs";
 			case "personAge":
 				return "personAge_indexed_int";
 			case "personTypeId":
@@ -3694,9 +3557,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		oTrafficPerson.setStopOfficerId(Optional.ofNullable(solrDocument.get("stopOfficerId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setStopLocationId(Optional.ofNullable(solrDocument.get("stopLocationId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setStopCityId(Optional.ofNullable(solrDocument.get("stopCityId_stored_string")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("trafficSearchKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oTrafficPerson.addTrafficSearchKeys(v.toString());
-		});
 		oTrafficPerson.setPersonAge(Optional.ofNullable(solrDocument.get("personAge_stored_int")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setPersonTypeId(Optional.ofNullable(solrDocument.get("personTypeId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setPersonTypeTitle(Optional.ofNullable(solrDocument.get("personTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
@@ -3759,8 +3619,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				apiRequest.addVars("stopLocationId");
 			if(!Objects.equals(stopCityId, original.getStopCityId()))
 				apiRequest.addVars("stopCityId");
-			if(!Objects.equals(trafficSearchKeys, original.getTrafficSearchKeys()))
-				apiRequest.addVars("trafficSearchKeys");
 			if(!Objects.equals(personAge, original.getPersonAge()))
 				apiRequest.addVars("personAge");
 			if(!Objects.equals(personTypeId, original.getPersonTypeId()))
@@ -3796,7 +3654,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), personKey, stopId, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, trafficSearchKeys, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle);
+		return Objects.hash(super.hashCode(), personKey, stopId, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle);
 	}
 
 	////////////
@@ -3828,7 +3686,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				&& Objects.equals( stopOfficerId, that.stopOfficerId )
 				&& Objects.equals( stopLocationId, that.stopLocationId )
 				&& Objects.equals( stopCityId, that.stopCityId )
-				&& Objects.equals( trafficSearchKeys, that.trafficSearchKeys )
 				&& Objects.equals( personAge, that.personAge )
 				&& Objects.equals( personTypeId, that.personTypeId )
 				&& Objects.equals( personTypeTitle, that.personTypeTitle )
@@ -3870,7 +3727,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		sb.append( ", stopOfficerId: \"" ).append(stopOfficerId).append( "\"" );
 		sb.append( ", stopLocationId: \"" ).append(stopLocationId).append( "\"" );
 		sb.append( ", stopCityId: \"" ).append(stopCityId).append( "\"" );
-		sb.append( ", trafficSearchKeys: " ).append(trafficSearchKeys);
 		sb.append( ", personAge: " ).append(personAge);
 		sb.append( ", personTypeId: \"" ).append(personTypeId).append( "\"" );
 		sb.append( ", personTypeTitle: \"" ).append(personTypeTitle).append( "\"" );
@@ -3908,7 +3764,6 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	public static final String VAR_stopOfficerId = "stopOfficerId";
 	public static final String VAR_stopLocationId = "stopLocationId";
 	public static final String VAR_stopCityId = "stopCityId";
-	public static final String VAR_trafficSearchKeys = "trafficSearchKeys";
 	public static final String VAR_personAge = "personAge";
 	public static final String VAR_personTypeId = "personTypeId";
 	public static final String VAR_personTypeTitle = "personTypeTitle";

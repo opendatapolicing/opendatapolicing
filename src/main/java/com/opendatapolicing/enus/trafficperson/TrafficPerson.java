@@ -264,18 +264,6 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 			w.o(trafficStop_.getStopCityId());
 	}
 
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Attribute: TrafficSearch.personKey
-	 * HtmlRow: 3
-	 * HtmlCell: 2
-	 * DisplayName.enUS: traffic search keys
-	 */          
-	protected void _trafficSearchKeys(List<Long> c) {
-	}
-
 	/**    
 	 * {@inheritDoc}
 	 * Indexed: true

@@ -26,7 +26,6 @@ import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.List;
-import com.opendatapolicing.enus.searchbasis.SearchBasis;
 import java.time.OffsetDateTime;
 import org.apache.solr.client.solrj.SolrQuery;
 import java.util.Optional;
@@ -57,7 +56,6 @@ import org.apache.solr.client.solrj.SolrClient;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
 import java.time.temporal.ChronoUnit;
-import com.opendatapolicing.enus.trafficcontraband.TrafficContraband;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -322,224 +320,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		}
 		trafficPerson_Wrap.alreadyInitialized(true);
 		return (TrafficSearch)this;
-	}
-
-	////////////////////
-	// contrabandKeys //
-	////////////////////
-
-	/**	 The entity contrabandKeys
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonSerialize(contentUsing = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected List<Long> contrabandKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> contrabandKeysWrap = new Wrap<List<Long>>().var("contrabandKeys").o(contrabandKeys);
-
-	/**	<br/> The entity contrabandKeys
-	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearch&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:contrabandKeys">Find the entity contrabandKeys in Solr</a>
-	 * <br/>
-	 * @param contrabandKeys is the entity already constructed. 
-	 **/
-	protected abstract void _contrabandKeys(List<Long> w);
-
-	public List<Long> getContrabandKeys() {
-		return contrabandKeys;
-	}
-
-	public void setContrabandKeys(List<Long> contrabandKeys) {
-		this.contrabandKeys = contrabandKeys;
-		this.contrabandKeysWrap.alreadyInitialized = true;
-	}
-	@JsonIgnore
-	public void setContrabandKeys(String o) {
-		Long l = TrafficSearch.staticSetContrabandKeys(siteRequest_, o);
-		if(l != null)
-			addContrabandKeys(l);
-		this.contrabandKeysWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetContrabandKeys(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	public TrafficSearch addContrabandKeys(Long...objets) {
-		for(Long o : objets) {
-			addContrabandKeys(o);
-		}
-		return (TrafficSearch)this;
-	}
-	public TrafficSearch addContrabandKeys(Long o) {
-		if(o != null && !contrabandKeys.contains(o))
-			this.contrabandKeys.add(o);
-		return (TrafficSearch)this;
-	}
-	@JsonIgnore
-	public void setContrabandKeys(JsonArray objets) {
-		contrabandKeys.clear();
-		for(int i = 0; i < objets.size(); i++) {
-			Long o = objets.getLong(i);
-			addContrabandKeys(o);
-		}
-	}
-	public TrafficSearch addContrabandKeys(String o) {
-		if(NumberUtils.isParsable(o)) {
-			Long p = Long.parseLong(o);
-			addContrabandKeys(p);
-		}
-		return (TrafficSearch)this;
-	}
-	protected TrafficSearch contrabandKeysInit() {
-		if(!contrabandKeysWrap.alreadyInitialized) {
-			_contrabandKeys(contrabandKeys);
-		}
-		contrabandKeysWrap.alreadyInitialized(true);
-		return (TrafficSearch)this;
-	}
-
-	public static Long staticSolrContrabandKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrContrabandKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqContrabandKeys(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficSearch.staticSolrStrContrabandKeys(siteRequest_, TrafficSearch.staticSolrContrabandKeys(siteRequest_, TrafficSearch.staticSetContrabandKeys(siteRequest_, o)));
-	}
-
-	public List<Long> solrContrabandKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : contrabandKeys) {
-			l.add(TrafficSearch.staticSolrContrabandKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strContrabandKeys() {
-		return contrabandKeys == null ? "" : contrabandKeys.toString();
-	}
-
-	public List<Long> sqlContrabandKeys() {
-		return contrabandKeys;
-	}
-
-	public String jsonContrabandKeys() {
-		return contrabandKeys == null ? "" : contrabandKeys.toString();
-	}
-
-	/////////////////////
-	// searchBasisKeys //
-	/////////////////////
-
-	/**	 The entity searchBasisKeys
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonSerialize(contentUsing = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected List<Long> searchBasisKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> searchBasisKeysWrap = new Wrap<List<Long>>().var("searchBasisKeys").o(searchBasisKeys);
-
-	/**	<br/> The entity searchBasisKeys
-	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearch&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:searchBasisKeys">Find the entity searchBasisKeys in Solr</a>
-	 * <br/>
-	 * @param searchBasisKeys is the entity already constructed. 
-	 **/
-	protected abstract void _searchBasisKeys(List<Long> w);
-
-	public List<Long> getSearchBasisKeys() {
-		return searchBasisKeys;
-	}
-
-	public void setSearchBasisKeys(List<Long> searchBasisKeys) {
-		this.searchBasisKeys = searchBasisKeys;
-		this.searchBasisKeysWrap.alreadyInitialized = true;
-	}
-	@JsonIgnore
-	public void setSearchBasisKeys(String o) {
-		Long l = TrafficSearch.staticSetSearchBasisKeys(siteRequest_, o);
-		if(l != null)
-			addSearchBasisKeys(l);
-		this.searchBasisKeysWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetSearchBasisKeys(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	public TrafficSearch addSearchBasisKeys(Long...objets) {
-		for(Long o : objets) {
-			addSearchBasisKeys(o);
-		}
-		return (TrafficSearch)this;
-	}
-	public TrafficSearch addSearchBasisKeys(Long o) {
-		if(o != null && !searchBasisKeys.contains(o))
-			this.searchBasisKeys.add(o);
-		return (TrafficSearch)this;
-	}
-	@JsonIgnore
-	public void setSearchBasisKeys(JsonArray objets) {
-		searchBasisKeys.clear();
-		for(int i = 0; i < objets.size(); i++) {
-			Long o = objets.getLong(i);
-			addSearchBasisKeys(o);
-		}
-	}
-	public TrafficSearch addSearchBasisKeys(String o) {
-		if(NumberUtils.isParsable(o)) {
-			Long p = Long.parseLong(o);
-			addSearchBasisKeys(p);
-		}
-		return (TrafficSearch)this;
-	}
-	protected TrafficSearch searchBasisKeysInit() {
-		if(!searchBasisKeysWrap.alreadyInitialized) {
-			_searchBasisKeys(searchBasisKeys);
-		}
-		searchBasisKeysWrap.alreadyInitialized(true);
-		return (TrafficSearch)this;
-	}
-
-	public static Long staticSolrSearchBasisKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrSearchBasisKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqSearchBasisKeys(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficSearch.staticSolrStrSearchBasisKeys(siteRequest_, TrafficSearch.staticSolrSearchBasisKeys(siteRequest_, TrafficSearch.staticSetSearchBasisKeys(siteRequest_, o)));
-	}
-
-	public List<Long> solrSearchBasisKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : searchBasisKeys) {
-			l.add(TrafficSearch.staticSolrSearchBasisKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strSearchBasisKeys() {
-		return searchBasisKeys == null ? "" : searchBasisKeys.toString();
-	}
-
-	public List<Long> sqlSearchBasisKeys() {
-		return searchBasisKeys;
-	}
-
-	public String jsonSearchBasisKeys() {
-		return searchBasisKeys == null ? "" : searchBasisKeys.toString();
 	}
 
 	/////////////////
@@ -3494,8 +3274,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				trafficPerson_Init();
-				contrabandKeysInit();
-				searchBasisKeysInit();
 				agencyTitleInit();
 				stopDateTimeInit();
 				stopPurposeNumInit();
@@ -3598,10 +3376,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				return oTrafficSearch.trafficPersonSearch;
 			case "trafficPerson_":
 				return oTrafficSearch.trafficPerson_;
-			case "contrabandKeys":
-				return oTrafficSearch.contrabandKeys;
-			case "searchBasisKeys":
-				return oTrafficSearch.searchBasisKeys;
 			case "agencyTitle":
 				return oTrafficSearch.agencyTitle;
 			case "stopDateTime":
@@ -3723,10 +3497,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSetTrafficSearchKey(siteRequest_, o);
 		case "personId":
 			return TrafficSearch.staticSetPersonId(siteRequest_, o);
-		case "contrabandKeys":
-			return TrafficSearch.staticSetContrabandKeys(siteRequest_, o);
-		case "searchBasisKeys":
-			return TrafficSearch.staticSetSearchBasisKeys(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficSearch.staticSetAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -3823,10 +3593,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrTrafficSearchKey(siteRequest_, (Long)o);
 		case "personId":
 			return TrafficSearch.staticSolrPersonId(siteRequest_, (String)o);
-		case "contrabandKeys":
-			return TrafficSearch.staticSolrContrabandKeys(siteRequest_, (Long)o);
-		case "searchBasisKeys":
-			return TrafficSearch.staticSolrSearchBasisKeys(siteRequest_, (Long)o);
 		case "agencyTitle":
 			return TrafficSearch.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -3923,10 +3689,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrStrTrafficSearchKey(siteRequest_, (Long)o);
 		case "personId":
 			return TrafficSearch.staticSolrStrPersonId(siteRequest_, (String)o);
-		case "contrabandKeys":
-			return TrafficSearch.staticSolrStrContrabandKeys(siteRequest_, (Long)o);
-		case "searchBasisKeys":
-			return TrafficSearch.staticSolrStrSearchBasisKeys(siteRequest_, (Long)o);
 		case "agencyTitle":
 			return TrafficSearch.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -4023,10 +3785,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrFqTrafficSearchKey(siteRequest_, o);
 		case "personId":
 			return TrafficSearch.staticSolrFqPersonId(siteRequest_, o);
-		case "contrabandKeys":
-			return TrafficSearch.staticSolrFqContrabandKeys(siteRequest_, o);
-		case "searchBasisKeys":
-			return TrafficSearch.staticSolrFqSearchBasisKeys(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficSearch.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -4270,18 +4028,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				String personId = (String)solrDocument.get("personId_stored_string");
 				if(personId != null)
 					oTrafficSearch.setPersonId(personId);
-			}
-
-			if(saves.contains("contrabandKeys")) {
-				List<Long> contrabandKeys = (List<Long>)solrDocument.get("contrabandKeys_stored_longs");
-				if(contrabandKeys != null)
-					oTrafficSearch.contrabandKeys.addAll(contrabandKeys);
-			}
-
-			if(saves.contains("searchBasisKeys")) {
-				List<Long> searchBasisKeys = (List<Long>)solrDocument.get("searchBasisKeys_stored_longs");
-				if(searchBasisKeys != null)
-					oTrafficSearch.searchBasisKeys.addAll(searchBasisKeys);
 			}
 
 			if(saves.contains("agencyTitle")) {
@@ -4531,22 +4277,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			document.addField("personId_indexed_string", personId);
 			document.addField("personId_stored_string", personId);
 		}
-		if(contrabandKeys != null) {
-			for(java.lang.Long o : contrabandKeys) {
-				document.addField("contrabandKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : contrabandKeys) {
-				document.addField("contrabandKeys_stored_longs", o);
-			}
-		}
-		if(searchBasisKeys != null) {
-			for(java.lang.Long o : searchBasisKeys) {
-				document.addField("searchBasisKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : searchBasisKeys) {
-				document.addField("searchBasisKeys_stored_longs", o);
-			}
-		}
 		if(agencyTitle != null) {
 			document.addField("agencyTitle_indexed_string", agencyTitle);
 			document.addField("agencyTitle_stored_string", agencyTitle);
@@ -4713,10 +4443,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				return "trafficSearchKey_indexed_long";
 			case "personId":
 				return "personId_indexed_string";
-			case "contrabandKeys":
-				return "contrabandKeys_indexed_longs";
-			case "searchBasisKeys":
-				return "searchBasisKeys_indexed_longs";
 			case "agencyTitle":
 				return "agencyTitle_indexed_string";
 			case "stopDateTime":
@@ -4826,12 +4552,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 		oTrafficSearch.setTrafficSearchKey(Optional.ofNullable(solrDocument.get("trafficSearchKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setPersonId(Optional.ofNullable(solrDocument.get("personId_stored_string")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("contrabandKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oTrafficSearch.addContrabandKeys(v.toString());
-		});
-		Optional.ofNullable((List<?>)solrDocument.get("searchBasisKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oTrafficSearch.addSearchBasisKeys(v.toString());
-		});
 		oTrafficSearch.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
@@ -4888,10 +4608,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				apiRequest.addVars("trafficSearchKey");
 			if(!Objects.equals(personId, original.getPersonId()))
 				apiRequest.addVars("personId");
-			if(!Objects.equals(contrabandKeys, original.getContrabandKeys()))
-				apiRequest.addVars("contrabandKeys");
-			if(!Objects.equals(searchBasisKeys, original.getSearchBasisKeys()))
-				apiRequest.addVars("searchBasisKeys");
 			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
 				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
@@ -4979,7 +4695,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), trafficSearchKey, personId, contrabandKeys, searchBasisKeys, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed);
+		return Objects.hash(super.hashCode(), trafficSearchKey, personId, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed);
 	}
 
 	////////////
@@ -4995,8 +4711,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return super.equals(o)
 				&& Objects.equals( trafficSearchKey, that.trafficSearchKey )
 				&& Objects.equals( personId, that.personId )
-				&& Objects.equals( contrabandKeys, that.contrabandKeys )
-				&& Objects.equals( searchBasisKeys, that.searchBasisKeys )
 				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
 				&& Objects.equals( stopPurposeNum, that.stopPurposeNum )
@@ -5048,8 +4762,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		sb.append("TrafficSearch { ");
 		sb.append( "trafficSearchKey: " ).append(trafficSearchKey);
 		sb.append( ", personId: \"" ).append(personId).append( "\"" );
-		sb.append( ", contrabandKeys: " ).append(contrabandKeys);
-		sb.append( ", searchBasisKeys: " ).append(searchBasisKeys);
 		sb.append( ", agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);
 		sb.append( ", stopPurposeNum: " ).append(stopPurposeNum);
@@ -5097,8 +4809,6 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	public static final String VAR_personId = "personId";
 	public static final String VAR_trafficPersonSearch = "trafficPersonSearch";
 	public static final String VAR_trafficPerson_ = "trafficPerson_";
-	public static final String VAR_contrabandKeys = "contrabandKeys";
-	public static final String VAR_searchBasisKeys = "searchBasisKeys";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stopDateTime = "stopDateTime";
 	public static final String VAR_stopPurposeNum = "stopPurposeNum";

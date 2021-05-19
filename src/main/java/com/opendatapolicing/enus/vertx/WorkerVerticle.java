@@ -318,27 +318,22 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								promise.complete();
 							});
 							stream.handler(row -> {
-								workerExecutor.executeBlocking(blockingCodeHandler -> {
-									try {
-										semaphore.acquire();
-										Long pk = row.getLong(0);
-		
-										JsonObject params = new JsonObject();
-										params.put("body", new JsonObject().put("pk", pk.toString()));
-										params.put("path", new JsonObject());
-										params.put("cookie", new JsonObject());
-										params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-										JsonObject context = new JsonObject().put("params", params);
-										JsonObject json = new JsonObject().put("context", context);
-										vertx.eventBus().send(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%sFuture", tableName)));
-									} catch (Exception ex) {
-										LOG.error(String.format(syncDataFail, tableName), ex);
-										blockingCodeHandler.fail(ex);
-									}
-								}).onFailure(ex -> {
+								try {
+									semaphore.acquire();
+									Long pk = row.getLong(0);
+	
+									JsonObject params = new JsonObject();
+									params.put("body", new JsonObject().put("pk", pk.toString()));
+									params.put("path", new JsonObject());
+									params.put("cookie", new JsonObject());
+									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+									JsonObject context = new JsonObject().put("params", params);
+									JsonObject json = new JsonObject().put("context", context);
+									vertx.eventBus().send(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%sFuture", tableName)));
+								} catch (Exception ex) {
 									LOG.error(String.format(syncDataFail, tableName), ex);
 									promise1.fail(ex);
-								});
+								}
 							});
 						} catch (Exception ex) {
 							LOG.error(String.format(syncDataFail, tableName), ex);

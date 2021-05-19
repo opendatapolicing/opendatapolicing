@@ -1,7 +1,5 @@
 package com.opendatapolicing.enus.trafficperson;
 
-import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSApiServiceImpl;
-import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
@@ -2000,7 +1998,6 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public static final String VAR_stopOfficerId = "stopOfficerId";
 	public static final String VAR_stopLocationId = "stopLocationId";
 	public static final String VAR_stopCityId = "stopCityId";
-	public static final String VAR_trafficSearchKeys = "trafficSearchKeys";
 	public static final String VAR_personAge = "personAge";
 	public static final String VAR_personTypeId = "personTypeId";
 	public static final String VAR_personTypeTitle = "personTypeTitle";

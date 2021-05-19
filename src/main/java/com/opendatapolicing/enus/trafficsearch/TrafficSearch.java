@@ -90,30 +90,6 @@ public class TrafficSearch extends TrafficSearchGen<Cluster> {
 		}
 	}
 
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Attribute: TrafficContraband.searchKey
-	 * HtmlRow: 3
-	 * HtmlCell: 2
-	 * DisplayName.enUS: contrabands
-	 */          
-	protected void _contrabandKeys(List<Long> w) {
-	}
-
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Attribute: SearchBasis.searchKey
-	 * HtmlRow: 3
-	 * HtmlCell: 3
-	 * DisplayName.enUS: search bases
-	 */          
-	protected void _searchBasisKeys(List<Long> w) {
-	}
-
 	/**    
 	 * {@inheritDoc}
 	 * Indexed: true

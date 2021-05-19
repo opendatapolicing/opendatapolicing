@@ -1096,6 +1096,10 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
 							futures1.add(Future.future(promise2 -> {
 								search(siteRequest).query(SiteState.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteState");
+									}
 									sql(siteRequest).update(SiteAgency.class, pk).set(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
 										promise2.complete();
 									}).onFailure(ex -> {
@@ -1455,6 +1459,10 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
 							futures1.add(Future.future(promise2 -> {
 								search(siteRequest).query(SiteState.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteState");
+									}
 									sql(siteRequest).update(SiteAgency.class, pk).set(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
 										promise2.complete();
 									}).onFailure(ex -> {

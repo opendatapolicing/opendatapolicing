@@ -1,9 +1,5 @@
 package com.opendatapolicing.enus.trafficsearch;
 
-import com.opendatapolicing.enus.trafficcontraband.TrafficContrabandEnUSApiServiceImpl;
-import com.opendatapolicing.enus.trafficcontraband.TrafficContraband;
-import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSApiServiceImpl;
-import com.opendatapolicing.enus.searchbasis.SearchBasis;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
@@ -2064,8 +2060,6 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public static final String VAR_personId = "personId";
 	public static final String VAR_trafficPersonSearch = "trafficPersonSearch";
 	public static final String VAR_trafficPerson_ = "trafficPerson_";
-	public static final String VAR_contrabandKeys = "contrabandKeys";
-	public static final String VAR_searchBasisKeys = "searchBasisKeys";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stopDateTime = "stopDateTime";
 	public static final String VAR_stopPurposeNum = "stopPurposeNum";

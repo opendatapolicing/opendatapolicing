@@ -1131,6 +1131,10 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
 							futures2.add(Future.future(promise2 -> {
 								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteAgency");
+									}
 									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
 										promise2.complete();
 									}).onFailure(ex -> {
@@ -1488,6 +1492,10 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						setAgencyKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
 							futures2.add(Future.future(promise2 -> {
 								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteAgency");
+									}
 									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
 										promise2.complete();
 									}).onFailure(ex -> {
@@ -1499,6 +1507,10 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							}));
 						});
 						Optional.ofNullable(o.getAgencyKeys()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setAgencyKeysValues.contains(oVal.toString())).forEach(pk2 -> {
+							if(!pks.contains(pk2)) {
+								pks.add(pk2);
+								classes.add("SiteAgency");
+							}
 							futures2.add(Future.future(promise2 -> {
 								sql(siteRequest).update(SiteAgency.class, pk2).setToNull(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
 									promise2.complete();
@@ -1512,6 +1524,10 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						addAllAgencyKeysValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
 							futures2.add(Future.future(promise2 -> {
 								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteAgency");
+									}
 									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
 										promise2.complete();
 									}).onFailure(ex -> {
@@ -1526,6 +1542,10 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
 							futures2.add(Future.future(promise2 -> {
 								search(siteRequest).query(SiteAgency.class, val, inheritPk).onSuccess(pk2 -> {
+									if(!pks.contains(pk2)) {
+										pks.add(pk2);
+										classes.add("SiteAgency");
+									}
 									sql(siteRequest).update(SiteAgency.class, pk2).set(SiteAgency.VAR_stateKey, SiteState.class, pk).onSuccess(a -> {
 										promise2.complete();
 									}).onFailure(ex -> {
@@ -1538,6 +1558,10 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						});
 					case "removeAgencyKeys":
 						Optional.ofNullable(jsonObject.getLong(entityVar)).ifPresent(pk2 -> {
+							if(!pks.contains(pk2)) {
+								pks.add(pk2);
+								classes.add("SiteAgency");
+							}
 							futures2.add(Future.future(promise2 -> {
 								sql(siteRequest).update(SiteAgency.class, pk2).setToNull(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
 									promise2.complete();

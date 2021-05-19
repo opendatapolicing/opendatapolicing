@@ -323,18 +323,6 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	protected void _stopCityId(Wrap<String> w) {
 	}
 
-	/** 
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Attribute: TrafficPerson.trafficStopKey
-	 * HtmlRow: 7
-	 * HtmlCell: 3
-	 * DisplayName.enUS: people
-	 */ 
-	protected void _personKeys(List<Long> c) {
-	}
-
 	/**
 	 * {@inheritDoc}
 	 * Ignore: true
