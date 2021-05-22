@@ -178,76 +178,6 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	}
 
 	/////////////
-	// appPath //
-	/////////////
-
-	/**	 The entity appPath
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected String appPath;
-	@JsonIgnore
-	public Wrap<String> appPathWrap = new Wrap<String>().var("appPath").o(appPath);
-
-	/**	<br/> The entity appPath
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appPath">Find the entity appPath in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _appPath(Wrap<String> c);
-
-	public String getAppPath() {
-		return appPath;
-	}
-	public void setAppPath(String o) {
-		this.appPath = AppSwagger2.staticSetAppPath(siteRequest_, o);
-		this.appPathWrap.alreadyInitialized = true;
-	}
-	public static String staticSetAppPath(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected AppSwagger2 appPathInit() {
-		if(!appPathWrap.alreadyInitialized) {
-			_appPath(appPathWrap);
-			if(appPath == null)
-				setAppPath(appPathWrap.o);
-			appPathWrap.o(null);
-		}
-		appPathWrap.alreadyInitialized(true);
-		return (AppSwagger2)this;
-	}
-
-	public static String staticSolrAppPath(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrAppPath(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqAppPath(SiteRequestEnUS siteRequest_, String o) {
-		return AppSwagger2.staticSolrStrAppPath(siteRequest_, AppSwagger2.staticSolrAppPath(siteRequest_, AppSwagger2.staticSetAppPath(siteRequest_, o)));
-	}
-
-	public String solrAppPath() {
-		return AppSwagger2.staticSolrAppPath(siteRequest_, appPath);
-	}
-
-	public String strAppPath() {
-		return appPath == null ? "" : appPath;
-	}
-
-	public String sqlAppPath() {
-		return appPath;
-	}
-
-	public String jsonAppPath() {
-		return appPath == null ? "" : appPath;
-	}
-
-	/////////////
 	// appName //
 	/////////////
 
@@ -385,6 +315,76 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 
 	public String jsonLanguageName() {
 		return languageName == null ? "" : languageName;
+	}
+
+	/////////////
+	// appPath //
+	/////////////
+
+	/**	 The entity appPath
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String appPath;
+	@JsonIgnore
+	public Wrap<String> appPathWrap = new Wrap<String>().var("appPath").o(appPath);
+
+	/**	<br/> The entity appPath
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppSwagger2&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:appPath">Find the entity appPath in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _appPath(Wrap<String> c);
+
+	public String getAppPath() {
+		return appPath;
+	}
+	public void setAppPath(String o) {
+		this.appPath = AppSwagger2.staticSetAppPath(siteRequest_, o);
+		this.appPathWrap.alreadyInitialized = true;
+	}
+	public static String staticSetAppPath(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected AppSwagger2 appPathInit() {
+		if(!appPathWrap.alreadyInitialized) {
+			_appPath(appPathWrap);
+			if(appPath == null)
+				setAppPath(appPathWrap.o);
+			appPathWrap.o(null);
+		}
+		appPathWrap.alreadyInitialized(true);
+		return (AppSwagger2)this;
+	}
+
+	public static String staticSolrAppPath(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrAppPath(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAppPath(SiteRequestEnUS siteRequest_, String o) {
+		return AppSwagger2.staticSolrStrAppPath(siteRequest_, AppSwagger2.staticSolrAppPath(siteRequest_, AppSwagger2.staticSetAppPath(siteRequest_, o)));
+	}
+
+	public String solrAppPath() {
+		return AppSwagger2.staticSolrAppPath(siteRequest_, appPath);
+	}
+
+	public String strAppPath() {
+		return appPath == null ? "" : appPath;
+	}
+
+	public String sqlAppPath() {
+		return appPath;
+	}
+
+	public String jsonAppPath() {
+		return appPath == null ? "" : appPath;
 	}
 
 	////////////////////
@@ -1001,9 +1001,9 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 				solrClientComputateInit();
 				siteRequest_Init();
 				configInit();
-				appPathInit();
 				appNameInit();
 				languageNameInit();
+				appPathInit();
 				openApiVersionInit();
 				openApiVersionNumberInit();
 				tabsSchemaInit();
@@ -1069,12 +1069,12 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 				return oAppSwagger2.siteRequest_;
 			case "config":
 				return oAppSwagger2.config;
-			case "appPath":
-				return oAppSwagger2.appPath;
 			case "appName":
 				return oAppSwagger2.appName;
 			case "languageName":
 				return oAppSwagger2.languageName;
+			case "appPath":
+				return oAppSwagger2.appPath;
 			case "openApiVersion":
 				return oAppSwagger2.openApiVersion;
 			case "openApiVersionNumber":
@@ -1134,12 +1134,12 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	}
 	public static Object staticSetAppSwagger2(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
-		case "appPath":
-			return AppSwagger2.staticSetAppPath(siteRequest_, o);
 		case "appName":
 			return AppSwagger2.staticSetAppName(siteRequest_, o);
 		case "languageName":
 			return AppSwagger2.staticSetLanguageName(siteRequest_, o);
+		case "appPath":
+			return AppSwagger2.staticSetAppPath(siteRequest_, o);
 		case "openApiVersion":
 			return AppSwagger2.staticSetOpenApiVersion(siteRequest_, o);
 		case "openApiVersionNumber":
@@ -1164,12 +1164,12 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	}
 	public static Object staticSolrAppSwagger2(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
-		case "appPath":
-			return AppSwagger2.staticSolrAppPath(siteRequest_, (String)o);
 		case "appName":
 			return AppSwagger2.staticSolrAppName(siteRequest_, (String)o);
 		case "languageName":
 			return AppSwagger2.staticSolrLanguageName(siteRequest_, (String)o);
+		case "appPath":
+			return AppSwagger2.staticSolrAppPath(siteRequest_, (String)o);
 		case "openApiVersion":
 			return AppSwagger2.staticSolrOpenApiVersion(siteRequest_, (String)o);
 		case "openApiVersionNumber":
@@ -1194,12 +1194,12 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	}
 	public static String staticSolrStrAppSwagger2(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
-		case "appPath":
-			return AppSwagger2.staticSolrStrAppPath(siteRequest_, (String)o);
 		case "appName":
 			return AppSwagger2.staticSolrStrAppName(siteRequest_, (String)o);
 		case "languageName":
 			return AppSwagger2.staticSolrStrLanguageName(siteRequest_, (String)o);
+		case "appPath":
+			return AppSwagger2.staticSolrStrAppPath(siteRequest_, (String)o);
 		case "openApiVersion":
 			return AppSwagger2.staticSolrStrOpenApiVersion(siteRequest_, (String)o);
 		case "openApiVersionNumber":
@@ -1224,12 +1224,12 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	}
 	public static String staticSolrFqAppSwagger2(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
-		case "appPath":
-			return AppSwagger2.staticSolrFqAppPath(siteRequest_, o);
 		case "appName":
 			return AppSwagger2.staticSolrFqAppName(siteRequest_, o);
 		case "languageName":
 			return AppSwagger2.staticSolrFqLanguageName(siteRequest_, o);
+		case "appPath":
+			return AppSwagger2.staticSolrFqAppPath(siteRequest_, o);
 		case "openApiVersion":
 			return AppSwagger2.staticSolrFqOpenApiVersion(siteRequest_, o);
 		case "openApiVersionNumber":
@@ -1340,9 +1340,9 @@ public abstract class AppSwagger2Gen<DEV> extends Object {
 	public static final String VAR_solrClientComputate = "solrClientComputate";
 	public static final String VAR_siteRequest_ = "siteRequest_";
 	public static final String VAR_config = "config";
-	public static final String VAR_appPath = "appPath";
 	public static final String VAR_appName = "appName";
 	public static final String VAR_languageName = "languageName";
+	public static final String VAR_appPath = "appPath";
 	public static final String VAR_openApiVersion = "openApiVersion";
 	public static final String VAR_openApiVersionNumber = "openApiVersionNumber";
 	public static final String VAR_tabsSchema = "tabsSchema";

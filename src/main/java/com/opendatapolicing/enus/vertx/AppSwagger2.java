@@ -41,16 +41,16 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 	protected void _config(Wrap<JsonObject> c) {
 	}
 
-	protected void _appPath(Wrap<String> c) {
-		c.o(config.getString(ConfigKeys.APP_PATH));
-	}
-
 	protected void _appName(Wrap<String> c) {
-		c.o("rhedar-rp");
+		c.o("opendatapolicing");
 	}
 
 	protected void _languageName(Wrap<String> c) {
 		c.o("enUS");
+	}
+
+	protected void _appPath(Wrap<String> c) {
+		c.o(config.getString(ConfigKeys.APP_PATH + "_" + languageName));
 	}
 
 	protected void _openApiVersion(Wrap<String> c) {
@@ -251,7 +251,7 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 					SolrQuery searchEntites = new SolrQuery();
 					searchEntites.setQuery("*:*");
 					searchEntites.setRows(1000000);
-					searchEntites.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(config.getString(ConfigKeys.APP_PATH)));
+					searchEntites.addFilterQuery("appliChemin_indexed_string:" + ClientUtils.escapeQueryChars(appPath));
 					searchEntites.addFilterQuery("classeCheminAbsolu_indexed_string:" + ClientUtils.escapeQueryChars(classAbsolutePath));
 					searchEntites.addFilterQuery("partEstEntite_indexed_boolean:true");
 					searchEntites.addSort("partNumero_indexed_int", ORDER.asc);

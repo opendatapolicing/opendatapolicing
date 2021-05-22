@@ -1,11 +1,11 @@
 package com.opendatapolicing.enus.vertx;          
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -19,13 +19,10 @@ import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
 import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
 import com.opendatapolicing.enus.config.ConfigKeys;
-import com.opendatapolicing.enus.java.LocalDateSerializer;
-import com.opendatapolicing.enus.java.LocalTimeSerializer;
-import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
-import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
@@ -56,7 +53,6 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.shareddata.AsyncMap;
 import io.vertx.core.shareddata.SharedData;
@@ -717,7 +713,16 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			String staticBaseUrl = config.getString(ConfigKeys.STATIC_BASE_URL);
 			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
 			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
+			Handlebars handlebars = (Handlebars)engine.unwrap();
 			TemplateHandler templateHandler = TemplateHandler.create(engine, staticPath + "/template", "text/html");
+
+			handlebars.registerHelper("urlencode", (Helper<String>) (value, options) -> {
+				try {
+					return URLEncoder.encode(value, "UTF-8");
+				} catch (Exception ex) {
+					throw new RuntimeException(ex);
+				}
+			});
 
 			router.get("/").handler(a -> {
 				a.reroute("/template/home-page");
@@ -777,12 +782,19 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 				});
 			});
 
-			router.get("/api").handler(a -> {
-				a.reroute("/template/openapi");
+			router.get("/template/traffic-stop-report").handler(ctx -> {
+				putVarsInRoutingContext(ctx);
+				ctx.next();
 			});
 
-			router.get("/report").handler(a -> {
-				a.reroute("/template/traffic-stop-report");
+
+			router.get("/api").handler(ctx -> {
+				ctx.reroute("/template/openapi");
+			});
+
+			router.get("/report").handler(ctx -> {
+				ctx.put("queryParams", ctx.queryParams());
+				ctx.reroute("/template/traffic-stop-report");
 			});
 
 			router.get("/template/*").handler(ctx -> {
@@ -792,10 +804,10 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			});
 
 			router.get("/template/*").handler(templateHandler);
-			router.errorHandler(500,  a -> {
-				Throwable ex = a.failure();
+			router.errorHandler(500,  ctx -> {
+				Throwable ex = ctx.failure();
 				LOG.error("Error occured. ", ex);
-				a.json(new JsonObject().put("error", new JsonObject().put("message", ex.getMessage())));
+				ctx.json(new JsonObject().put("error", new JsonObject().put("message", ex.getMessage())));
 			});
 
 			StaticHandler staticHandler = StaticHandler.create().setCachingEnabled(false).setFilesReadOnly(false);
@@ -809,6 +821,30 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			promise.complete();
 		} catch(Exception ex) {
 			LOG.error(configureUiFail);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+
+	public Future<SearchList<TrafficStop>> putVarsInRoutingContext(RoutingContext ctx) {
+		Promise<SearchList<TrafficStop>> promise = Promise.promise();
+		try {
+			for(Entry<String, String> entry : ctx.queryParams()) {
+				String paramName = entry.getKey();
+				String paramObject = entry.getValue();
+				String entityVar = null;
+				String valueIndexed = null;
+
+				switch(paramName) {
+					case "var":
+						entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+						valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+						ctx.put(entityVar, valueIndexed);
+						break;
+				}
+			}
+		} catch(Exception ex) {
+			LOG.error(String.format("searchTrafficStop failed. "), ex);
 			promise.fail(ex);
 		}
 		return promise.future();

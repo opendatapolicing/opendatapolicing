@@ -14,34 +14,26 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Indexed: true
  * Map.Integer.sqlSort: 3
  * 
- * ApiTag.frFR: Utilisateur
- * ApiUri.frFR: /api/utilisateur
- * 
  * ApiTag.enUS: User
  * ApiUri.enUS: /api/user
  * 
- * ApiMethod.frFR: Recherche
  * ApiMethod.enUS: Search
  * ApiMethod: PATCH
  * ApiMethod: POST
  * 
  * Keyword: classSimpleNameSiteUser
- * Role.frFR: SiteAdmin
  * Role.enUS: SiteAdmin
  * Filter: utilisateurId
  * Saves: true
  * 
- * AName.frFR: un utilisateur du site
  * AName.enUS: a site user
- * PluralName.frFR: utilisateurs du site
- * Coulor: gray
+ * Color: gray
  * IconGroup: regular
  * IconName: user-cog
  * 
  * RoleUser: true
- * Role.frFR: SiteAdmin
  * Role.enUS: SiteAdmin
- */           
+ */
 public class SiteUser extends SiteUserGen<Cluster> {   
 
 	/**   

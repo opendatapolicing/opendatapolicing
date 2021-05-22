@@ -5,8 +5,7 @@ import java.util.ArrayList;
 
 /**
  * Keyword: classSimpleNameWrap
- **/ 
-
+ **/
 public class Wrap<DEV> implements Serializable {
 
 	public String var;
@@ -30,5 +29,3 @@ public class Wrap<DEV> implements Serializable {
 		return this;
 	}
 }
-
-

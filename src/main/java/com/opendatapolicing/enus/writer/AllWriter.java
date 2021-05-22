@@ -19,7 +19,6 @@ import io.vertx.core.buffer.Buffer;
 /**
  * Keyword: classSimpleNameAllWriter
  **/
-
 public class AllWriter extends AllWriterGen<Object> {
 
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
