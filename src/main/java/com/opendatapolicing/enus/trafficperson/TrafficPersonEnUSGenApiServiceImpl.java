@@ -204,6 +204,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							params.put("body", obj);
 							params.put("path", new JsonObject());
 							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
 							params.put("query", new JsonObject());
 							JsonObject context = new JsonObject().put("params", params);
 							JsonObject json = new JsonObject().put("context", context);
@@ -236,38 +238,38 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	}
 
 	@Override
-	public void putimportTrafficPersonFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public void putimportTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 			ApiRequest apiRequest = new ApiRequest();
 			apiRequest.setRows(1);
 			apiRequest.setNumFound(1L);
 			apiRequest.setNumPATCH(0L);
 			apiRequest.initDeepApiRequest(siteRequest);
 			siteRequest.setApiRequest_(apiRequest);
-			json.put("inheritPk", json.getValue("pk"));
+			body.put("inheritPk", body.getValue("pk"));
 
 			SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
 			searchList.setStore(true);
 			searchList.setQuery("*:*");
 			searchList.setC(TrafficPerson.class);
-			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(json.getString("pk")));
+			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				try {
 					if(searchList.size() == 1) {
 						TrafficPerson o = searchList.getList().stream().findFirst().orElse(null);
 						TrafficPerson o2 = new TrafficPerson();
-						JsonObject json2 = new JsonObject();
-						for(String f : json.fieldNames()) {
-							Object jsonVal = json.getValue(f);
-							if(jsonVal instanceof JsonArray) {
-								JsonArray jsonVals = (JsonArray)jsonVal;
+						JsonObject body2 = new JsonObject();
+						for(String f : body.fieldNames()) {
+							Object bodyVal = body.getValue(f);
+							if(bodyVal instanceof JsonArray) {
+								JsonArray bodyVals = (JsonArray)bodyVal;
 								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(jsonVals.size() == vals.size()) {
+								if(bodyVals.size() == vals.size()) {
 									Boolean match = true;
 									for(Object val : vals) {
 										if(val != null) {
-											if(!jsonVals.contains(val.toString())) {
+											if(!bodyVals.contains(val.toString())) {
 												match = false;
 												break;
 											}
@@ -277,23 +279,23 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 										}
 									}
 									if(!match) {
-										json2.put("set" + StringUtils.capitalize(f), jsonVal);
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 									}
 								} else {
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
 							} else {
-								o2.defineForClass(f, jsonVal);
+								o2.defineForClass(f, bodyVal);
 								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
 						}
 						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+							if(!body.fieldNames().contains(f))
+								body2.putNull("set" + StringUtils.capitalize(f));
 						}
-						if(json2.size() > 0) {
-							siteRequest.setJsonObject(json2);
+						if(body2.size() > 0) {
+							siteRequest.setJsonObject(body2);
 							patchTrafficPersonFuture(o, true).onSuccess(b -> {
 								semaphore.release();
 								eventHandler.handle(Future.succeededFuture());
@@ -433,6 +435,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							params.put("body", obj);
 							params.put("path", new JsonObject());
 							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
 							params.put("query", new JsonObject());
 							JsonObject context = new JsonObject().put("params", params);
 							JsonObject json = new JsonObject().put("context", context);
@@ -465,38 +469,38 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	}
 
 	@Override
-	public void putmergeTrafficPersonFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public void putmergeTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 			ApiRequest apiRequest = new ApiRequest();
 			apiRequest.setRows(1);
 			apiRequest.setNumFound(1L);
 			apiRequest.setNumPATCH(0L);
 			apiRequest.initDeepApiRequest(siteRequest);
 			siteRequest.setApiRequest_(apiRequest);
-			json.put("inheritPk", json.getValue("pk"));
+			body.put("inheritPk", body.getValue("pk"));
 
 			SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
 			searchList.setStore(true);
 			searchList.setQuery("*:*");
 			searchList.setC(TrafficPerson.class);
-			searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(json.getString("pk")));
+			searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				try {
 					if(searchList.size() == 1) {
 						TrafficPerson o = searchList.getList().stream().findFirst().orElse(null);
 						TrafficPerson o2 = new TrafficPerson();
-						JsonObject json2 = new JsonObject();
-						for(String f : json.fieldNames()) {
-							Object jsonVal = json.getValue(f);
-							if(jsonVal instanceof JsonArray) {
-								JsonArray jsonVals = (JsonArray)jsonVal;
+						JsonObject body2 = new JsonObject();
+						for(String f : body.fieldNames()) {
+							Object bodyVal = body.getValue(f);
+							if(bodyVal instanceof JsonArray) {
+								JsonArray bodyVals = (JsonArray)bodyVal;
 								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(jsonVals.size() == vals.size()) {
+								if(bodyVals.size() == vals.size()) {
 									Boolean match = true;
 									for(Object val : vals) {
 										if(val != null) {
-											if(!jsonVals.contains(val.toString())) {
+											if(!bodyVals.contains(val.toString())) {
 												match = false;
 												break;
 											}
@@ -506,23 +510,23 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 										}
 									}
 									if(!match) {
-										json2.put("set" + StringUtils.capitalize(f), jsonVal);
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 									}
 								} else {
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
 							} else {
-								o2.defineForClass(f, jsonVal);
+								o2.defineForClass(f, bodyVal);
 								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
 						}
 						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+							if(!body.fieldNames().contains(f))
+								body2.putNull("set" + StringUtils.capitalize(f));
 						}
-						if(json2.size() > 0) {
-							siteRequest.setJsonObject(json2);
+						if(body2.size() > 0) {
+							siteRequest.setJsonObject(body2);
 							patchTrafficPersonFuture(o, false).onSuccess(b -> {
 								semaphore.release();
 								eventHandler.handle(Future.succeededFuture());
@@ -969,8 +973,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 
 	@Override
-	public void postTrafficPersonFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+	public void postTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 		ApiRequest apiRequest = new ApiRequest();
 		apiRequest.setRows(1);
 		apiRequest.setNumFound(1L);
@@ -1298,6 +1302,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						params.put("body", siteRequest.getJsonObject().put(TrafficPerson.VAR_pk, pk.toString()));
 						params.put("path", new JsonObject());
 						params.put("cookie", new JsonObject());
+						params.put("header", new JsonObject());
+						params.put("form", new JsonObject());
 						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
 						JsonObject context = new JsonObject().put("params", params);
 						JsonObject json = new JsonObject().put("context", context);
@@ -1340,8 +1346,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	}
 
 	@Override
-	public void patchTrafficPersonFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+	public void patchTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 		TrafficPerson o = new TrafficPerson();
 		o.setSiteRequest_(siteRequest);
 		ApiRequest apiRequest = new ApiRequest();
@@ -1350,7 +1356,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
-		o.setPk(json.getString(TrafficPerson.VAR_pk));
+		o.setPk(body.getString(TrafficPerson.VAR_pk));
 		patchTrafficPersonFuture(o, false).onSuccess(a -> {
 			semaphore.release();
 			eventHandler.handle(Future.succeededFuture());
@@ -1982,6 +1988,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public static final String VAR_stopId = "stopId";
 	public static final String VAR_trafficStopSearch = "trafficStopSearch";
 	public static final String VAR_trafficStop_ = "trafficStop_";
+	public static final String VAR_stateAbbreviation = "stateAbbreviation";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stopDateTime = "stopDateTime";
 	public static final String VAR_stopPurposeNum = "stopPurposeNum";
@@ -2368,6 +2375,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					JsonObject params = new JsonObject();
 					params.put("body", new JsonObject());
 					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
 					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());

@@ -738,15 +738,15 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 				stateSearch.setStore(true);
 				stateSearch.setQuery("*:*");
 				stateSearch.setC(SiteState.class);
+				stateSearch.addFilterQuery("stateAbbreviation_indexed_string[* TO *]");
 				stateSearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
 					JsonArray states = new JsonArray();
 					ctx.put("states", states);
-					stateSearch.getList().stream().forEach(s -> states.add(JsonObject.mapFrom(s)));
 
 					SearchList<TrafficStop> stopSearch = new SearchList<TrafficStop>();
 					stopSearch.setStore(true);
 					stopSearch.setQuery("*:*");
-					stopSearch.setC(SiteState.class);
+					stopSearch.setC(TrafficStop.class);
 					stopSearch.addFacetField("stateAbbreviation_indexed_string");
 					stopSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
 						stateSearch.getList().stream().forEach(state -> {
@@ -756,11 +756,11 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 								Long stopCount = count.getCount();
 								String stopCountStr;
 								if(stopCount > 1000000000)
-									stopCountStr = Math.floor(stopCount / 1000000000) + "+ billion";
+									stopCountStr = new Double(Math.floor(stopCount / 1000000000)).intValue() + "+ billion";
 								else if(stopCount > 1000000)
-									stopCountStr = Math.floor(stopCount / 1000000) + "+ million";
+									stopCountStr = new Double(Math.floor(stopCount / 1000000)).intValue() + "+ million";
 								else if(stopCount > 1000)
-									stopCountStr = Math.floor(stopCount / 1000) + "+ thousand";
+									stopCountStr = new Double(Math.floor(stopCount / 1000)).intValue() + "+ thousand";
 								else
 									stopCountStr = stopCount.toString();
 		

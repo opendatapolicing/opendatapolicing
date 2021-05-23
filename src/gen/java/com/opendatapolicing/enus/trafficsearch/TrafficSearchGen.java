@@ -322,6 +322,76 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return (TrafficSearch)this;
 	}
 
+	///////////////////////
+	// stateAbbreviation //
+	///////////////////////
+
+	/**	 The entity stateAbbreviation
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String stateAbbreviation;
+	@JsonIgnore
+	public Wrap<String> stateAbbreviationWrap = new Wrap<String>().var("stateAbbreviation").o(stateAbbreviation);
+
+	/**	<br/> The entity stateAbbreviation
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficsearch.TrafficSearch&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateAbbreviation">Find the entity stateAbbreviation in Solr</a>
+	 * <br/>
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _stateAbbreviation(Wrap<String> w);
+
+	public String getStateAbbreviation() {
+		return stateAbbreviation;
+	}
+	public void setStateAbbreviation(String o) {
+		this.stateAbbreviation = TrafficSearch.staticSetStateAbbreviation(siteRequest_, o);
+		this.stateAbbreviationWrap.alreadyInitialized = true;
+	}
+	public static String staticSetStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected TrafficSearch stateAbbreviationInit() {
+		if(!stateAbbreviationWrap.alreadyInitialized) {
+			_stateAbbreviation(stateAbbreviationWrap);
+			if(stateAbbreviation == null)
+				setStateAbbreviation(stateAbbreviationWrap.o);
+			stateAbbreviationWrap.o(null);
+		}
+		stateAbbreviationWrap.alreadyInitialized(true);
+		return (TrafficSearch)this;
+	}
+
+	public static String staticSolrStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqStateAbbreviation(SiteRequestEnUS siteRequest_, String o) {
+		return TrafficSearch.staticSolrStrStateAbbreviation(siteRequest_, TrafficSearch.staticSolrStateAbbreviation(siteRequest_, TrafficSearch.staticSetStateAbbreviation(siteRequest_, o)));
+	}
+
+	public String solrStateAbbreviation() {
+		return TrafficSearch.staticSolrStateAbbreviation(siteRequest_, stateAbbreviation);
+	}
+
+	public String strStateAbbreviation() {
+		return stateAbbreviation == null ? "" : stateAbbreviation;
+	}
+
+	public String sqlStateAbbreviation() {
+		return stateAbbreviation;
+	}
+
+	public String jsonStateAbbreviation() {
+		return stateAbbreviation == null ? "" : stateAbbreviation;
+	}
+
 	/////////////////
 	// agencyTitle //
 	/////////////////
@@ -3274,6 +3344,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				trafficPerson_Init();
+				stateAbbreviationInit();
 				agencyTitleInit();
 				stopDateTimeInit();
 				stopPurposeNumInit();
@@ -3376,6 +3447,8 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				return oTrafficSearch.trafficPersonSearch;
 			case "trafficPerson_":
 				return oTrafficSearch.trafficPerson_;
+			case "stateAbbreviation":
+				return oTrafficSearch.stateAbbreviation;
 			case "agencyTitle":
 				return oTrafficSearch.agencyTitle;
 			case "stopDateTime":
@@ -3497,6 +3570,8 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSetTrafficSearchKey(siteRequest_, o);
 		case "personId":
 			return TrafficSearch.staticSetPersonId(siteRequest_, o);
+		case "stateAbbreviation":
+			return TrafficSearch.staticSetStateAbbreviation(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficSearch.staticSetAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -3593,6 +3668,8 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrTrafficSearchKey(siteRequest_, (Long)o);
 		case "personId":
 			return TrafficSearch.staticSolrPersonId(siteRequest_, (String)o);
+		case "stateAbbreviation":
+			return TrafficSearch.staticSolrStateAbbreviation(siteRequest_, (String)o);
 		case "agencyTitle":
 			return TrafficSearch.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -3689,6 +3766,8 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrStrTrafficSearchKey(siteRequest_, (Long)o);
 		case "personId":
 			return TrafficSearch.staticSolrStrPersonId(siteRequest_, (String)o);
+		case "stateAbbreviation":
+			return TrafficSearch.staticSolrStrStateAbbreviation(siteRequest_, (String)o);
 		case "agencyTitle":
 			return TrafficSearch.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "stopDateTime":
@@ -3785,6 +3864,8 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			return TrafficSearch.staticSolrFqTrafficSearchKey(siteRequest_, o);
 		case "personId":
 			return TrafficSearch.staticSolrFqPersonId(siteRequest_, o);
+		case "stateAbbreviation":
+			return TrafficSearch.staticSolrFqStateAbbreviation(siteRequest_, o);
 		case "agencyTitle":
 			return TrafficSearch.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "stopDateTime":
@@ -4028,6 +4109,12 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				String personId = (String)solrDocument.get("personId_stored_string");
 				if(personId != null)
 					oTrafficSearch.setPersonId(personId);
+			}
+
+			if(saves.contains("stateAbbreviation")) {
+				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+				if(stateAbbreviation != null)
+					oTrafficSearch.setStateAbbreviation(stateAbbreviation);
 			}
 
 			if(saves.contains("agencyTitle")) {
@@ -4277,6 +4364,10 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 			document.addField("personId_indexed_string", personId);
 			document.addField("personId_stored_string", personId);
 		}
+		if(stateAbbreviation != null) {
+			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
+			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
+		}
 		if(agencyTitle != null) {
 			document.addField("agencyTitle_indexed_string", agencyTitle);
 			document.addField("agencyTitle_stored_string", agencyTitle);
@@ -4443,6 +4534,8 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				return "trafficSearchKey_indexed_long";
 			case "personId":
 				return "personId_indexed_string";
+			case "stateAbbreviation":
+				return "stateAbbreviation_indexed_string";
 			case "agencyTitle":
 				return "agencyTitle_indexed_string";
 			case "stopDateTime":
@@ -4552,6 +4645,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 
 		oTrafficSearch.setTrafficSearchKey(Optional.ofNullable(solrDocument.get("trafficSearchKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setPersonId(Optional.ofNullable(solrDocument.get("personId_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficSearch.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
 		oTrafficSearch.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
@@ -4608,6 +4702,8 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 				apiRequest.addVars("trafficSearchKey");
 			if(!Objects.equals(personId, original.getPersonId()))
 				apiRequest.addVars("personId");
+			if(!Objects.equals(stateAbbreviation, original.getStateAbbreviation()))
+				apiRequest.addVars("stateAbbreviation");
 			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
 				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(stopDateTime, original.getStopDateTime()))
@@ -4695,7 +4791,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), trafficSearchKey, personId, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed);
+		return Objects.hash(super.hashCode(), trafficSearchKey, personId, stateAbbreviation, agencyTitle, stopDateTime, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personAge, personTypeId, personTypeTitle, personTypeDriver, personTypePassenger, personGenderId, personGenderTitle, personGenderFemale, personGenderMale, personEthnicityId, personEthnicityTitle, personRaceId, personRaceTitle, stopId, searchTypeNum, searchTypeTitle, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed);
 	}
 
 	////////////
@@ -4711,6 +4807,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		return super.equals(o)
 				&& Objects.equals( trafficSearchKey, that.trafficSearchKey )
 				&& Objects.equals( personId, that.personId )
+				&& Objects.equals( stateAbbreviation, that.stateAbbreviation )
 				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( stopDateTime, that.stopDateTime )
 				&& Objects.equals( stopPurposeNum, that.stopPurposeNum )
@@ -4762,6 +4859,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 		sb.append("TrafficSearch { ");
 		sb.append( "trafficSearchKey: " ).append(trafficSearchKey);
 		sb.append( ", personId: \"" ).append(personId).append( "\"" );
+		sb.append( ", stateAbbreviation: \"" ).append(stateAbbreviation).append( "\"" );
 		sb.append( ", agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", stopDateTime: " ).append(stopDateTime);
 		sb.append( ", stopPurposeNum: " ).append(stopPurposeNum);
@@ -4809,6 +4907,7 @@ public abstract class TrafficSearchGen<DEV> extends Cluster {
 	public static final String VAR_personId = "personId";
 	public static final String VAR_trafficPersonSearch = "trafficPersonSearch";
 	public static final String VAR_trafficPerson_ = "trafficPerson_";
+	public static final String VAR_stateAbbreviation = "stateAbbreviation";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stopDateTime = "stopDateTime";
 	public static final String VAR_stopPurposeNum = "stopPurposeNum";

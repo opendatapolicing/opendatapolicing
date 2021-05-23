@@ -204,6 +204,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							params.put("body", obj);
 							params.put("path", new JsonObject());
 							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
 							params.put("query", new JsonObject());
 							JsonObject context = new JsonObject().put("params", params);
 							JsonObject json = new JsonObject().put("context", context);
@@ -236,38 +238,38 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	}
 
 	@Override
-	public void putimportTrafficContrabandFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public void putimportTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 			ApiRequest apiRequest = new ApiRequest();
 			apiRequest.setRows(1);
 			apiRequest.setNumFound(1L);
 			apiRequest.setNumPATCH(0L);
 			apiRequest.initDeepApiRequest(siteRequest);
 			siteRequest.setApiRequest_(apiRequest);
-			json.put("inheritPk", json.getValue("pk"));
+			body.put("inheritPk", body.getValue("pk"));
 
 			SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 			searchList.setStore(true);
 			searchList.setQuery("*:*");
 			searchList.setC(TrafficContraband.class);
-			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(json.getString("pk")));
+			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				try {
 					if(searchList.size() == 1) {
 						TrafficContraband o = searchList.getList().stream().findFirst().orElse(null);
 						TrafficContraband o2 = new TrafficContraband();
-						JsonObject json2 = new JsonObject();
-						for(String f : json.fieldNames()) {
-							Object jsonVal = json.getValue(f);
-							if(jsonVal instanceof JsonArray) {
-								JsonArray jsonVals = (JsonArray)jsonVal;
+						JsonObject body2 = new JsonObject();
+						for(String f : body.fieldNames()) {
+							Object bodyVal = body.getValue(f);
+							if(bodyVal instanceof JsonArray) {
+								JsonArray bodyVals = (JsonArray)bodyVal;
 								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(jsonVals.size() == vals.size()) {
+								if(bodyVals.size() == vals.size()) {
 									Boolean match = true;
 									for(Object val : vals) {
 										if(val != null) {
-											if(!jsonVals.contains(val.toString())) {
+											if(!bodyVals.contains(val.toString())) {
 												match = false;
 												break;
 											}
@@ -277,23 +279,23 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 										}
 									}
 									if(!match) {
-										json2.put("set" + StringUtils.capitalize(f), jsonVal);
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 									}
 								} else {
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
 							} else {
-								o2.defineForClass(f, jsonVal);
+								o2.defineForClass(f, bodyVal);
 								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
 						}
 						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+							if(!body.fieldNames().contains(f))
+								body2.putNull("set" + StringUtils.capitalize(f));
 						}
-						if(json2.size() > 0) {
-							siteRequest.setJsonObject(json2);
+						if(body2.size() > 0) {
+							siteRequest.setJsonObject(body2);
 							patchTrafficContrabandFuture(o, true).onSuccess(b -> {
 								semaphore.release();
 								eventHandler.handle(Future.succeededFuture());
@@ -433,6 +435,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							params.put("body", obj);
 							params.put("path", new JsonObject());
 							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
 							params.put("query", new JsonObject());
 							JsonObject context = new JsonObject().put("params", params);
 							JsonObject json = new JsonObject().put("context", context);
@@ -465,38 +469,38 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	}
 
 	@Override
-	public void putmergeTrafficContrabandFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+	public void putmergeTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 			ApiRequest apiRequest = new ApiRequest();
 			apiRequest.setRows(1);
 			apiRequest.setNumFound(1L);
 			apiRequest.setNumPATCH(0L);
 			apiRequest.initDeepApiRequest(siteRequest);
 			siteRequest.setApiRequest_(apiRequest);
-			json.put("inheritPk", json.getValue("pk"));
+			body.put("inheritPk", body.getValue("pk"));
 
 			SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 			searchList.setStore(true);
 			searchList.setQuery("*:*");
 			searchList.setC(TrafficContraband.class);
-			searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(json.getString("pk")));
+			searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				try {
 					if(searchList.size() == 1) {
 						TrafficContraband o = searchList.getList().stream().findFirst().orElse(null);
 						TrafficContraband o2 = new TrafficContraband();
-						JsonObject json2 = new JsonObject();
-						for(String f : json.fieldNames()) {
-							Object jsonVal = json.getValue(f);
-							if(jsonVal instanceof JsonArray) {
-								JsonArray jsonVals = (JsonArray)jsonVal;
+						JsonObject body2 = new JsonObject();
+						for(String f : body.fieldNames()) {
+							Object bodyVal = body.getValue(f);
+							if(bodyVal instanceof JsonArray) {
+								JsonArray bodyVals = (JsonArray)bodyVal;
 								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(jsonVals.size() == vals.size()) {
+								if(bodyVals.size() == vals.size()) {
 									Boolean match = true;
 									for(Object val : vals) {
 										if(val != null) {
-											if(!jsonVals.contains(val.toString())) {
+											if(!bodyVals.contains(val.toString())) {
 												match = false;
 												break;
 											}
@@ -506,23 +510,23 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 										}
 									}
 									if(!match) {
-										json2.put("set" + StringUtils.capitalize(f), jsonVal);
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 									}
 								} else {
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
 							} else {
-								o2.defineForClass(f, jsonVal);
+								o2.defineForClass(f, bodyVal);
 								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									json2.put("set" + StringUtils.capitalize(f), jsonVal);
+									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
 						}
 						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!json.fieldNames().contains(f))
-								json2.putNull("set" + StringUtils.capitalize(f));
+							if(!body.fieldNames().contains(f))
+								body2.putNull("set" + StringUtils.capitalize(f));
 						}
-						if(json2.size() > 0) {
-							siteRequest.setJsonObject(json2);
+						if(body2.size() > 0) {
+							siteRequest.setJsonObject(body2);
 							patchTrafficContrabandFuture(o, false).onSuccess(b -> {
 								semaphore.release();
 								eventHandler.handle(Future.succeededFuture());
@@ -1014,8 +1018,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 
 
 	@Override
-	public void postTrafficContrabandFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+	public void postTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 		ApiRequest apiRequest = new ApiRequest();
 		apiRequest.setRows(1);
 		apiRequest.setNumFound(1L);
@@ -1388,6 +1392,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						params.put("body", siteRequest.getJsonObject().put(TrafficContraband.VAR_pk, pk.toString()));
 						params.put("path", new JsonObject());
 						params.put("cookie", new JsonObject());
+						params.put("header", new JsonObject());
+						params.put("form", new JsonObject());
 						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
 						JsonObject context = new JsonObject().put("params", params);
 						JsonObject json = new JsonObject().put("context", context);
@@ -1430,8 +1436,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	}
 
 	@Override
-	public void patchTrafficContrabandFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+	public void patchTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 		TrafficContraband o = new TrafficContraband();
 		o.setSiteRequest_(siteRequest);
 		ApiRequest apiRequest = new ApiRequest();
@@ -1440,7 +1446,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
-		o.setPk(json.getString(TrafficContraband.VAR_pk));
+		o.setPk(body.getString(TrafficContraband.VAR_pk));
 		patchTrafficContrabandFuture(o, false).onSuccess(a -> {
 			semaphore.release();
 			eventHandler.handle(Future.succeededFuture());
@@ -2112,6 +2118,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	public static final String VAR_searchId = "searchId";
 	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
 	public static final String VAR_trafficSearch_ = "trafficSearch_";
+	public static final String VAR_stateAbbreviation = "stateAbbreviation";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stopDateTime = "stopDateTime";
 	public static final String VAR_stopPurposeNum = "stopPurposeNum";
@@ -2518,6 +2525,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 					JsonObject params = new JsonObject();
 					params.put("body", new JsonObject());
 					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
 					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());

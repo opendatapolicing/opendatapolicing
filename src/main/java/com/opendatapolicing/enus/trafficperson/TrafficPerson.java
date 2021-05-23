@@ -92,6 +92,17 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
+	 * DisplayName.enUS: state abbreviation
+	 */ 
+	protected void _stateAbbreviation(Wrap<String> w) {
+		if(trafficStop_ != null)
+			w.o(trafficStop_.getStateAbbreviation());
+	}
+
+	/**    
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
 	 * DisplayName.enUS: agency title
 	 */ 
 	protected void _agencyTitle(Wrap<String> w) {
