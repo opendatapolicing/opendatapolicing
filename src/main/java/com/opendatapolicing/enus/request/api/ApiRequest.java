@@ -74,11 +74,11 @@ public class ApiRequest extends ApiRequestGen<Object> {
 		Long hours = ((Double) (remainingSeconds / 60 / 60)).longValue();
 
 		// Calculating the difference in Minutes
-		Long minutes = ((Double) (remainingSeconds / 60)).longValue();
+		Long minutes = ((Double) ((remainingSeconds / 60) % 60)).longValue();
 
 		// Calculating the difference in Seconds
 		Long seconds = ((Double) (remainingSeconds % 60)).longValue();
 
-		return (hours > 0L ? hours + " hours " : "") + (minutes > 0L ? minutes + " minutes " : "") + seconds + " seconds.";
+		return (hours > 0L ? hours + " hours " : "") + (minutes > 0L ? minutes + " minutes " : "") + (hours == 0L && minutes <= 1L ? seconds + " seconds." : "");
 	}
 }

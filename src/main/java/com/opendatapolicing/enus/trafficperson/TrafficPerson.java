@@ -468,7 +468,11 @@ public class TrafficPerson extends TrafficPersonGen<Cluster> {
 			case "I":
 				w.o("Indigenous"); break;
 			case "U":
-				w.o("Other"); break;
+				if("H".equals(personEthnicityId))
+					w.o("Latinx"); 
+				else
+					w.o("Other"); 
+				break;
 			case "W":
 				w.o("White"); break;
 			}
