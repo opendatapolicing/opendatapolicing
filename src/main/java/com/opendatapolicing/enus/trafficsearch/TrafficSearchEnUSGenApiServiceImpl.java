@@ -10,7 +10,6 @@ import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
-import java.util.concurrent.Semaphore;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -107,8 +106,8 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficSearchEnUSGenApiServiceImpl.class);
 
-	public TrafficSearchEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public TrafficSearchEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
@@ -196,37 +195,16 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		try {
 			jsonArray.forEach(obj -> {
 				futures.add(Future.future(promise1 -> {
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-							try {
-								JsonObject params = new JsonObject();
-								params.put("body", obj);
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("header", new JsonObject());
-								params.put("form", new JsonObject());
-								params.put("query", new JsonObject());
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "putimportTrafficSearchFuture")).onSuccess(a -> {
-									blockingCodeHandler.complete();
-									semaphore.release();
-								}).onFailure(ex -> {
-									LOG.error(String.format("listPUTImportTrafficSearch failed. "), ex);
-									blockingCodeHandler.fail(ex);
-									semaphore.release();
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("listPUTImportTrafficSearch failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							}
-						} catch(Exception ex) {
-							LOG.error(String.format("listPUTImportTrafficSearch failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}, false).onSuccess(a -> {
+					JsonObject params = new JsonObject();
+					params.put("body", obj);
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params);
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "putimportTrafficSearchFuture")).onSuccess(a -> {
 						promise1.complete();
 					}).onFailure(ex -> {
 						LOG.error(String.format("listPUTImportTrafficSearch failed. "), ex);
@@ -388,50 +366,20 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					apiRequest.initDeepApiRequest(siteRequest);
 					siteRequest.setApiRequest_(apiRequest);
 					eventBus.publish("websocketTrafficSearch", JsonObject.mapFrom(apiRequest).toString());
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-							try {
-								JsonObject params = new JsonObject();
-								params.put("body", siteRequest.getJsonObject());
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("header", new JsonObject());
-								params.put("form", new JsonObject());
-								params.put("query", new JsonObject());
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "postTrafficSearchFuture")).onSuccess(a -> {
-									blockingCodeHandler.complete();
-									semaphore.release();
-								}).onFailure(ex -> {
-									LOG.error(String.format("postTrafficSearch failed. "), ex);
-									blockingCodeHandler.fail(ex);
-									semaphore.release();
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("postTrafficSearch failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							}
-						} catch(Exception ex) {
-							LOG.error(String.format("postTrafficSearch failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}, false).onSuccess(a -> {
-						postTrafficSearchFuture(siteRequest, false).onSuccess(trafficSearch -> {
-							apiRequest.setPk(trafficSearch.getPk());
-							response200POSTTrafficSearch(trafficSearch).onSuccess(response -> {
-								eventHandler.handle(Future.succeededFuture(response));
-								LOG.debug(String.format("postTrafficSearch succeeded. "));
-							}).onFailure(ex -> {
-								LOG.error(String.format("postTrafficSearch failed. "), ex);
-								error(siteRequest, eventHandler, ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("postTrafficSearch failed. "), ex);
-							error(siteRequest, eventHandler, ex);
-						});
+					JsonObject params = new JsonObject();
+					params.put("body", siteRequest.getJsonObject());
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params);
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "postTrafficSearchFuture")).onSuccess(a -> {
+						JsonObject responseBody = (JsonObject)a.body();
+						apiRequest.setPk(Long.parseLong(responseBody.getString("pk")));
+						eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
+						LOG.debug(String.format("postTrafficSearch succeeded. "));
 					}).onFailure(ex -> {
 						LOG.error(String.format("postTrafficSearch failed. "), ex);
 						error(siteRequest, eventHandler, ex);
@@ -806,39 +754,18 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		SiteRequestEnUS siteRequest = listTrafficSearch.getSiteRequest_();
 		listTrafficSearch.getList().forEach(o -> {
 			futures.add(Future.future(promise1 -> {
-				workerExecutor.executeBlocking(blockingCodeHandler -> {
-					try {
-						semaphore.acquire();
-						try {
-							Long pk = o.getPk();
+				Long pk = o.getPk();
 
-							JsonObject params = new JsonObject();
-							params.put("body", siteRequest.getJsonObject().put(TrafficSearch.VAR_pk, pk.toString()));
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "patchTrafficSearchFuture")).onSuccess(a -> {
-								blockingCodeHandler.complete();
-								semaphore.release();
-							}).onFailure(ex -> {
-								LOG.error(String.format("listPATCHTrafficSearch failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							});
-						} catch(Exception ex) {
-							LOG.error(String.format("listPATCHTrafficSearch failed. "), ex);
-							blockingCodeHandler.fail(ex);
-							semaphore.release();
-						}
-					} catch(Exception ex) {
-						LOG.error(String.format("listPATCHTrafficSearch failed. "), ex);
-						blockingCodeHandler.fail(ex);
-					}
-				}, false).onSuccess(a -> {
+				JsonObject params = new JsonObject();
+				params.put("body", siteRequest.getJsonObject().put(TrafficSearch.VAR_pk, pk.toString()));
+				params.put("path", new JsonObject());
+				params.put("cookie", new JsonObject());
+				params.put("header", new JsonObject());
+				params.put("form", new JsonObject());
+				params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+				JsonObject context = new JsonObject().put("params", params);
+				JsonObject json = new JsonObject().put("context", context);
+				eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "patchTrafficSearchFuture")).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHTrafficSearch failed. "), ex);

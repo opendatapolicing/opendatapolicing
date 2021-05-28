@@ -64,7 +64,7 @@ public class BaseApiServiceImpl {
 
 	protected AuthorizationProvider authorizationProvider;
 
-	public BaseApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+	public BaseApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
 		this.semaphore = semaphore;
 		this.eventBus = eventBus;
 		this.config = config;
@@ -145,7 +145,7 @@ public class BaseApiServiceImpl {
 							searchList.addFilterQuery("userId_indexed_string:" + ClientUtils.escapeQueryChars(userId));
 							searchList.promiseDeepSearchList(siteRequest).onSuccess(c -> {
 								SiteUser siteUser1 = searchList.getList().stream().findFirst().orElse(null);
-								SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+								SiteUserEnUSApiServiceImpl userService = new SiteUserEnUSApiServiceImpl(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 
 								if(siteUser1 == null) {
 									JsonObject jsonObject = new JsonObject();

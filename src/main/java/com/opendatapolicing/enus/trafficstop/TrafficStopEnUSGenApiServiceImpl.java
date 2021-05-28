@@ -10,7 +10,6 @@ import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
-import java.util.concurrent.Semaphore;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -107,8 +106,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficStopEnUSGenApiServiceImpl.class);
 
-	public TrafficStopEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public TrafficStopEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
@@ -196,37 +195,16 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		try {
 			jsonArray.forEach(obj -> {
 				futures.add(Future.future(promise1 -> {
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-							try {
-								JsonObject params = new JsonObject();
-								params.put("body", obj);
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("header", new JsonObject());
-								params.put("form", new JsonObject());
-								params.put("query", new JsonObject());
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "putimportTrafficStopFuture")).onSuccess(a -> {
-									blockingCodeHandler.complete();
-									semaphore.release();
-								}).onFailure(ex -> {
-									LOG.error(String.format("listPUTImportTrafficStop failed. "), ex);
-									blockingCodeHandler.fail(ex);
-									semaphore.release();
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("listPUTImportTrafficStop failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							}
-						} catch(Exception ex) {
-							LOG.error(String.format("listPUTImportTrafficStop failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}, false).onSuccess(a -> {
+					JsonObject params = new JsonObject();
+					params.put("body", obj);
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params);
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "putimportTrafficStopFuture")).onSuccess(a -> {
 						promise1.complete();
 					}).onFailure(ex -> {
 						LOG.error(String.format("listPUTImportTrafficStop failed. "), ex);
@@ -388,50 +366,20 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					apiRequest.initDeepApiRequest(siteRequest);
 					siteRequest.setApiRequest_(apiRequest);
 					eventBus.publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-							try {
-								JsonObject params = new JsonObject();
-								params.put("body", siteRequest.getJsonObject());
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("header", new JsonObject());
-								params.put("form", new JsonObject());
-								params.put("query", new JsonObject());
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "postTrafficStopFuture")).onSuccess(a -> {
-									blockingCodeHandler.complete();
-									semaphore.release();
-								}).onFailure(ex -> {
-									LOG.error(String.format("postTrafficStop failed. "), ex);
-									blockingCodeHandler.fail(ex);
-									semaphore.release();
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("postTrafficStop failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							}
-						} catch(Exception ex) {
-							LOG.error(String.format("postTrafficStop failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}, false).onSuccess(a -> {
-						postTrafficStopFuture(siteRequest, false).onSuccess(trafficStop -> {
-							apiRequest.setPk(trafficStop.getPk());
-							response200POSTTrafficStop(trafficStop).onSuccess(response -> {
-								eventHandler.handle(Future.succeededFuture(response));
-								LOG.debug(String.format("postTrafficStop succeeded. "));
-							}).onFailure(ex -> {
-								LOG.error(String.format("postTrafficStop failed. "), ex);
-								error(siteRequest, eventHandler, ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("postTrafficStop failed. "), ex);
-							error(siteRequest, eventHandler, ex);
-						});
+					JsonObject params = new JsonObject();
+					params.put("body", siteRequest.getJsonObject());
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params);
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "postTrafficStopFuture")).onSuccess(a -> {
+						JsonObject responseBody = (JsonObject)a.body();
+						apiRequest.setPk(Long.parseLong(responseBody.getString("pk")));
+						eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
+						LOG.debug(String.format("postTrafficStop succeeded. "));
 					}).onFailure(ex -> {
 						LOG.error(String.format("postTrafficStop failed. "), ex);
 						error(siteRequest, eventHandler, ex);
@@ -878,39 +826,18 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		SiteRequestEnUS siteRequest = listTrafficStop.getSiteRequest_();
 		listTrafficStop.getList().forEach(o -> {
 			futures.add(Future.future(promise1 -> {
-				workerExecutor.executeBlocking(blockingCodeHandler -> {
-					try {
-						semaphore.acquire();
-						try {
-							Long pk = o.getPk();
+				Long pk = o.getPk();
 
-							JsonObject params = new JsonObject();
-							params.put("body", siteRequest.getJsonObject().put(TrafficStop.VAR_pk, pk.toString()));
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "patchTrafficStopFuture")).onSuccess(a -> {
-								blockingCodeHandler.complete();
-								semaphore.release();
-							}).onFailure(ex -> {
-								LOG.error(String.format("listPATCHTrafficStop failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							});
-						} catch(Exception ex) {
-							LOG.error(String.format("listPATCHTrafficStop failed. "), ex);
-							blockingCodeHandler.fail(ex);
-							semaphore.release();
-						}
-					} catch(Exception ex) {
-						LOG.error(String.format("listPATCHTrafficStop failed. "), ex);
-						blockingCodeHandler.fail(ex);
-					}
-				}, false).onSuccess(a -> {
+				JsonObject params = new JsonObject();
+				params.put("body", siteRequest.getJsonObject().put(TrafficStop.VAR_pk, pk.toString()));
+				params.put("path", new JsonObject());
+				params.put("cookie", new JsonObject());
+				params.put("header", new JsonObject());
+				params.put("form", new JsonObject());
+				params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+				JsonObject context = new JsonObject().put("params", params);
+				JsonObject json = new JsonObject().put("context", context);
+				eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "patchTrafficStopFuture")).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHTrafficStop failed. "), ex);

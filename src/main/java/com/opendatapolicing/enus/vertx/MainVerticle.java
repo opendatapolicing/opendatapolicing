@@ -486,8 +486,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							RouterBuilder routerBuilder = b.result();
 							routerBuilder.mountServicesFromExtensions();
 			
-							Function<RoutingContext, JsonObject> extraPayloadMapper = routingContext -> new JsonObject().put("uri", routingContext.request().uri()).put("method", routingContext.request().method().name());
-							routerBuilder.serviceExtraPayloadMapper(extraPayloadMapper);
+							routerBuilder.serviceExtraPayloadMapper(routingContext -> new JsonObject()
+									.put("uri", routingContext.request().uri())
+									.put("method", routingContext.request().method().name())
+									);
 							routerBuilder.rootHandler(sessionHandler);
 							routerBuilder.securityHandler("openIdConnect", oauth2AuthHandler);
 							routerBuilder.operation("callback").handler(ctx -> {
@@ -724,14 +726,14 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	private Future<Void> configureApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteUserEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteStateEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteAgencyEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SearchBasisEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficContrabandEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficPersonEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficSearchEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficStopEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteUserEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteStateEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteAgencyEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SearchBasisEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficContrabandEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficPersonEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficSearchEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficStopEnUSGenApiService.registerService(vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 
 			LOG.info(configureApiComplete);
 			promise.complete();

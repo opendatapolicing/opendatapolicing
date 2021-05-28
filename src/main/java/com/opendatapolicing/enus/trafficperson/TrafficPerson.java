@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficperson;        
+package com.opendatapolicing.enus.trafficperson;              
 
 import java.time.ZonedDateTime;
 import java.util.List;

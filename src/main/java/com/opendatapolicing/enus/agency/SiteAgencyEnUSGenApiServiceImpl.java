@@ -12,7 +12,6 @@ import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
-import java.util.concurrent.Semaphore;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
@@ -109,8 +108,8 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteAgencyEnUSGenApiServiceImpl.class);
 
-	public SiteAgencyEnUSGenApiServiceImpl(Semaphore semaphore, EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		super(semaphore, eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
+	public SiteAgencyEnUSGenApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
+		super(eventBus, config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider);
 	}
 
 	// PUTImport //
@@ -198,37 +197,16 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		try {
 			jsonArray.forEach(obj -> {
 				futures.add(Future.future(promise1 -> {
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-							try {
-								JsonObject params = new JsonObject();
-								params.put("body", obj);
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("header", new JsonObject());
-								params.put("form", new JsonObject());
-								params.put("query", new JsonObject());
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "putimportSiteAgencyFuture")).onSuccess(a -> {
-									blockingCodeHandler.complete();
-									semaphore.release();
-								}).onFailure(ex -> {
-									LOG.error(String.format("listPUTImportSiteAgency failed. "), ex);
-									blockingCodeHandler.fail(ex);
-									semaphore.release();
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("listPUTImportSiteAgency failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							}
-						} catch(Exception ex) {
-							LOG.error(String.format("listPUTImportSiteAgency failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}, false).onSuccess(a -> {
+					JsonObject params = new JsonObject();
+					params.put("body", obj);
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params);
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "putimportSiteAgencyFuture")).onSuccess(a -> {
 						promise1.complete();
 					}).onFailure(ex -> {
 						LOG.error(String.format("listPUTImportSiteAgency failed. "), ex);
@@ -390,50 +368,20 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 					apiRequest.initDeepApiRequest(siteRequest);
 					siteRequest.setApiRequest_(apiRequest);
 					eventBus.publish("websocketSiteAgency", JsonObject.mapFrom(apiRequest).toString());
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-							try {
-								JsonObject params = new JsonObject();
-								params.put("body", siteRequest.getJsonObject());
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("header", new JsonObject());
-								params.put("form", new JsonObject());
-								params.put("query", new JsonObject());
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "postSiteAgencyFuture")).onSuccess(a -> {
-									blockingCodeHandler.complete();
-									semaphore.release();
-								}).onFailure(ex -> {
-									LOG.error(String.format("postSiteAgency failed. "), ex);
-									blockingCodeHandler.fail(ex);
-									semaphore.release();
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("postSiteAgency failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							}
-						} catch(Exception ex) {
-							LOG.error(String.format("postSiteAgency failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}, false).onSuccess(a -> {
-						postSiteAgencyFuture(siteRequest, false).onSuccess(siteAgency -> {
-							apiRequest.setPk(siteAgency.getPk());
-							response200POSTSiteAgency(siteAgency).onSuccess(response -> {
-								eventHandler.handle(Future.succeededFuture(response));
-								LOG.debug(String.format("postSiteAgency succeeded. "));
-							}).onFailure(ex -> {
-								LOG.error(String.format("postSiteAgency failed. "), ex);
-								error(siteRequest, eventHandler, ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("postSiteAgency failed. "), ex);
-							error(siteRequest, eventHandler, ex);
-						});
+					JsonObject params = new JsonObject();
+					params.put("body", siteRequest.getJsonObject());
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
+					params.put("query", new JsonObject());
+					JsonObject context = new JsonObject().put("params", params);
+					JsonObject json = new JsonObject().put("context", context);
+					eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "postSiteAgencyFuture")).onSuccess(a -> {
+						JsonObject responseBody = (JsonObject)a.body();
+						apiRequest.setPk(Long.parseLong(responseBody.getString("pk")));
+						eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
+						LOG.debug(String.format("postSiteAgency succeeded. "));
 					}).onFailure(ex -> {
 						LOG.error(String.format("postSiteAgency failed. "), ex);
 						error(siteRequest, eventHandler, ex);
@@ -782,39 +730,18 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		SiteRequestEnUS siteRequest = listSiteAgency.getSiteRequest_();
 		listSiteAgency.getList().forEach(o -> {
 			futures.add(Future.future(promise1 -> {
-				workerExecutor.executeBlocking(blockingCodeHandler -> {
-					try {
-						semaphore.acquire();
-						try {
-							Long pk = o.getPk();
+				Long pk = o.getPk();
 
-							JsonObject params = new JsonObject();
-							params.put("body", siteRequest.getJsonObject().put(SiteAgency.VAR_pk, pk.toString()));
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "patchSiteAgencyFuture")).onSuccess(a -> {
-								blockingCodeHandler.complete();
-								semaphore.release();
-							}).onFailure(ex -> {
-								LOG.error(String.format("listPATCHSiteAgency failed. "), ex);
-								blockingCodeHandler.fail(ex);
-								semaphore.release();
-							});
-						} catch(Exception ex) {
-							LOG.error(String.format("listPATCHSiteAgency failed. "), ex);
-							blockingCodeHandler.fail(ex);
-							semaphore.release();
-						}
-					} catch(Exception ex) {
-						LOG.error(String.format("listPATCHSiteAgency failed. "), ex);
-						blockingCodeHandler.fail(ex);
-					}
-				}, false).onSuccess(a -> {
+				JsonObject params = new JsonObject();
+				params.put("body", siteRequest.getJsonObject().put(SiteAgency.VAR_pk, pk.toString()));
+				params.put("path", new JsonObject());
+				params.put("cookie", new JsonObject());
+				params.put("header", new JsonObject());
+				params.put("form", new JsonObject());
+				params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+				JsonObject context = new JsonObject().put("params", params);
+				JsonObject json = new JsonObject().put("context", context);
+				eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "patchSiteAgencyFuture")).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHSiteAgency failed. "), ex);
