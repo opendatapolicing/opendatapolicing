@@ -199,23 +199,34 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 					workerExecutor.executeBlocking(blockingCodeHandler -> {
 						try {
 							semaphore.acquire();
-
-							JsonObject params = new JsonObject();
-							params.put("body", obj);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject());
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.send("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "putimportTrafficContrabandFuture"));
-							blockingCodeHandler.complete();
+							try {
+								JsonObject params = new JsonObject();
+								params.put("body", obj);
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								eventBus.request("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "putimportTrafficContrabandFuture")).onSuccess(a -> {
+									blockingCodeHandler.complete();
+									semaphore.release();
+								}).onFailure(ex -> {
+									LOG.error(String.format("listPUTImportTrafficContraband failed. "), ex);
+									blockingCodeHandler.fail(ex);
+									semaphore.release();
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("listPUTImportTrafficContraband failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							}
 						} catch(Exception ex) {
 							LOG.error(String.format("listPUTImportTrafficContraband failed. "), ex);
 							blockingCodeHandler.fail(ex);
 						}
-					}).onSuccess(a -> {
+					}, false).onSuccess(a -> {
 						promise1.complete();
 					}).onFailure(ex -> {
 						LOG.error(String.format("listPUTImportTrafficContraband failed. "), ex);
@@ -248,6 +259,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			apiRequest.initDeepApiRequest(siteRequest);
 			siteRequest.setApiRequest_(apiRequest);
 			body.put("inheritPk", body.getValue("pk"));
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
 
 			SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
 			searchList.setStore(true);
@@ -286,7 +300,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								}
 							} else {
 								o2.defineForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
 						}
@@ -297,35 +311,33 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						if(body2.size() > 0) {
 							siteRequest.setJsonObject(body2);
 							patchTrafficContrabandFuture(o, true).onSuccess(b -> {
-								semaphore.release();
+								LOG.info("Import TrafficContraband {} succeeded, modified TrafficContraband. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportTrafficContrabandFuture failed. "), ex);
 							});
+						} else {
+							eventHandler.handle(Future.succeededFuture());
 						}
 					} else {
 						postTrafficContrabandFuture(siteRequest, true).onSuccess(b -> {
-							semaphore.release();
+							LOG.info("Import TrafficContraband {} succeeded, created new TrafficContraband. ", body.getValue("pk"));
 							eventHandler.handle(Future.succeededFuture());
 						}).onFailure(ex -> {
 							LOG.error(String.format("putimportTrafficContrabandFuture failed. "), ex);
-							semaphore.release();
 							eventHandler.handle(Future.failedFuture(ex));
 						});
 					}
 				} catch(Exception ex) {
 					LOG.error(String.format("putimportTrafficContrabandFuture failed. "), ex);
-					semaphore.release();
 					eventHandler.handle(Future.failedFuture(ex));
 				}
 			}).onFailure(ex -> {
 				LOG.error(String.format("putimportTrafficContrabandFuture failed. "), ex);
-				semaphore.release();
 				eventHandler.handle(Future.failedFuture(ex));
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("putimportTrafficContrabandFuture failed. "), ex);
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		}
 	}
@@ -337,613 +349,6 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
 		} catch(Exception ex) {
 			LOG.error(String.format("response200PUTImportTrafficContraband failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	// PUTMerge //
-
-	@Override
-	public void putmergeTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.debug(String.format("putmergeTrafficContraband started. "));
-		user(serviceRequest).onSuccess(siteRequest -> {
-			try {
-				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/contraband/merge");
-				siteRequest.setRequestMethod("PUTMerge");
-
-				List<String> roles = Arrays.asList("SiteService");
-				if(
-						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-						) {
-					eventHandler.handle(Future.succeededFuture(
-						new ServiceResponse(401, "UNAUTHORIZED", 
-							Buffer.buffer().appendString(
-								new JsonObject()
-									.put("errorCode", "401")
-									.put("errorMessage", "roles required: " + String.join(", ", roles))
-									.encodePrettily()
-								), MultiMap.caseInsensitiveMultiMap()
-						)
-					));
-				} else {
-					try {
-						ApiRequest apiRequest = new ApiRequest();
-						JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-						apiRequest.setRows(jsonArray.size());
-						apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
-						apiRequest.setNumPATCH(0L);
-						apiRequest.initDeepApiRequest(siteRequest);
-						siteRequest.setApiRequest_(apiRequest);
-						eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
-						varsTrafficContraband(siteRequest).onSuccess(d -> {
-							listPUTMergeTrafficContraband(apiRequest, siteRequest).onSuccess(e -> {
-								response200PUTMergeTrafficContraband(siteRequest).onSuccess(response -> {
-									LOG.debug(String.format("putmergeTrafficContraband succeeded. "));
-									eventHandler.handle(Future.succeededFuture(response));
-								}).onFailure(ex -> {
-									LOG.error(String.format("putmergeTrafficContraband failed. "), ex);
-									error(siteRequest, eventHandler, ex);
-								});
-							}).onFailure(ex -> {
-								LOG.error(String.format("putmergeTrafficContraband failed. "), ex);
-								error(siteRequest, eventHandler, ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("putmergeTrafficContraband failed. "), ex);
-							error(siteRequest, eventHandler, ex);
-						});
-					} catch(Exception ex) {
-						LOG.error(String.format("putmergeTrafficContraband failed. "), ex);
-						error(siteRequest, eventHandler, ex);
-					}
-				}
-			} catch(Exception ex) {
-				LOG.error(String.format("putmergeTrafficContraband failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		}).onFailure(ex -> {
-			if("Inactive Token".equals(ex.getMessage())) {
-				try {
-					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-				} catch(Exception ex2) {
-					LOG.error(String.format("putmergeTrafficContraband failed. ", ex2));
-					error(null, eventHandler, ex2);
-				}
-			} else {
-				LOG.error(String.format("putmergeTrafficContraband failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		});
-	}
-
-
-	public Future<Void> listPUTMergeTrafficContraband(ApiRequest apiRequest, SiteRequestEnUS siteRequest) {
-		Promise<Void> promise = Promise.promise();
-		List<Future> futures = new ArrayList<>();
-		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-		try {
-			jsonArray.forEach(obj -> {
-				futures.add(Future.future(promise1 -> {
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-
-							JsonObject params = new JsonObject();
-							params.put("body", obj);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject());
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.send("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "putmergeTrafficContrabandFuture"));
-							blockingCodeHandler.complete();
-						} catch(Exception ex) {
-							LOG.error(String.format("listPUTMergeTrafficContraband failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}).onSuccess(a -> {
-						promise1.complete();
-					}).onFailure(ex -> {
-						LOG.error(String.format("listPUTMergeTrafficContraband failed. "), ex);
-						promise1.fail(ex);
-					});
-				}));
-			});
-			CompositeFuture.all(futures).onSuccess(a -> {
-				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-				promise.complete();
-			}).onFailure(ex -> {
-				LOG.error(String.format("listPUTMergeTrafficContraband failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("listPUTMergeTrafficContraband failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	@Override
-	public void putmergeTrafficContrabandFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-			ApiRequest apiRequest = new ApiRequest();
-			apiRequest.setRows(1);
-			apiRequest.setNumFound(1L);
-			apiRequest.setNumPATCH(0L);
-			apiRequest.initDeepApiRequest(siteRequest);
-			siteRequest.setApiRequest_(apiRequest);
-			body.put("inheritPk", body.getValue("pk"));
-
-			SearchList<TrafficContraband> searchList = new SearchList<TrafficContraband>();
-			searchList.setStore(true);
-			searchList.setQuery("*:*");
-			searchList.setC(TrafficContraband.class);
-			searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
-			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
-				try {
-					if(searchList.size() == 1) {
-						TrafficContraband o = searchList.getList().stream().findFirst().orElse(null);
-						TrafficContraband o2 = new TrafficContraband();
-						JsonObject body2 = new JsonObject();
-						for(String f : body.fieldNames()) {
-							Object bodyVal = body.getValue(f);
-							if(bodyVal instanceof JsonArray) {
-								JsonArray bodyVals = (JsonArray)bodyVal;
-								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(bodyVals.size() == vals.size()) {
-									Boolean match = true;
-									for(Object val : vals) {
-										if(val != null) {
-											if(!bodyVals.contains(val.toString())) {
-												match = false;
-												break;
-											}
-										} else {
-											match = false;
-											break;
-										}
-									}
-									if(!match) {
-										body2.put("set" + StringUtils.capitalize(f), bodyVal);
-									}
-								} else {
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
-								}
-							} else {
-								o2.defineForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
-							}
-						}
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!body.fieldNames().contains(f))
-								body2.putNull("set" + StringUtils.capitalize(f));
-						}
-						if(body2.size() > 0) {
-							siteRequest.setJsonObject(body2);
-							patchTrafficContrabandFuture(o, false).onSuccess(b -> {
-								semaphore.release();
-								eventHandler.handle(Future.succeededFuture());
-							}).onFailure(ex -> {
-								LOG.error(String.format("putmergeTrafficContrabandFuture failed. "), ex);
-							});
-						}
-					} else {
-						postTrafficContrabandFuture(siteRequest, false).onSuccess(b -> {
-							semaphore.release();
-							eventHandler.handle(Future.succeededFuture());
-						}).onFailure(ex -> {
-							LOG.error(String.format("putmergeTrafficContrabandFuture failed. "), ex);
-							semaphore.release();
-							eventHandler.handle(Future.failedFuture(ex));
-						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("putmergeTrafficContrabandFuture failed. "), ex);
-					semaphore.release();
-					eventHandler.handle(Future.failedFuture(ex));
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("putmergeTrafficContrabandFuture failed. "), ex);
-				semaphore.release();
-				eventHandler.handle(Future.failedFuture(ex));
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putmergeTrafficContrabandFuture failed. "), ex);
-			semaphore.release();
-			eventHandler.handle(Future.failedFuture(ex));
-		}
-	}
-
-	public Future<ServiceResponse> response200PUTMergeTrafficContraband(SiteRequestEnUS siteRequest) {
-		Promise<ServiceResponse> promise = Promise.promise();
-		try {
-			JsonObject json = new JsonObject();
-			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-		} catch(Exception ex) {
-			LOG.error(String.format("response200PUTMergeTrafficContraband failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	// PUTCopy //
-
-	@Override
-	public void putcopyTrafficContraband(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.debug(String.format("putcopyTrafficContraband started. "));
-		user(serviceRequest).onSuccess(siteRequest -> {
-			try {
-				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/contraband/copy");
-				siteRequest.setRequestMethod("PUTCopy");
-
-				List<String> roles = Arrays.asList("SiteService");
-				if(
-						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-						) {
-					eventHandler.handle(Future.succeededFuture(
-						new ServiceResponse(401, "UNAUTHORIZED", 
-							Buffer.buffer().appendString(
-								new JsonObject()
-									.put("errorCode", "401")
-									.put("errorMessage", "roles required: " + String.join(", ", roles))
-									.encodePrettily()
-								), MultiMap.caseInsensitiveMultiMap()
-						)
-					));
-				} else {
-					response200PUTCopyTrafficContraband(siteRequest).onSuccess(response -> {
-						eventHandler.handle(Future.succeededFuture(response));
-						workerExecutor.executeBlocking(blockingCodeHandler -> {
-							try {
-								semaphore.acquire();
-								searchTrafficContrabandList(siteRequest, false, true, true, "/api/contraband/copy", "PUTCopy").onSuccess(listTrafficContraband -> {
-									ApiRequest apiRequest = new ApiRequest();
-									apiRequest.setRows(listTrafficContraband.getRows());
-									apiRequest.setNumFound(listTrafficContraband.getQueryResponse().getResults().getNumFound());
-									apiRequest.setNumPATCH(0L);
-									apiRequest.initDeepApiRequest(siteRequest);
-									siteRequest.setApiRequest_(apiRequest);
-									eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
-									listPUTCopyTrafficContraband(apiRequest, listTrafficContraband).onSuccess(e -> {
-										response200PUTCopyTrafficContraband(siteRequest).onSuccess(f -> {
-											LOG.debug(String.format("putcopyTrafficContraband succeeded. "));
-											blockingCodeHandler.complete();
-										}).onFailure(ex -> {
-											LOG.error(String.format("putcopyTrafficContraband failed. "), ex);
-											blockingCodeHandler.fail(ex);
-										});
-									}).onFailure(ex -> {
-										LOG.error(String.format("putcopyTrafficContraband failed. "), ex);
-										blockingCodeHandler.fail(ex);
-									});
-								}).onFailure(ex -> {
-									LOG.error(String.format("putcopyTrafficContraband failed. "), ex);
-									blockingCodeHandler.fail(ex);
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("putcopyTrafficContraband failed. "), ex);
-								blockingCodeHandler.fail(ex);
-							}
-						}, resultHandler -> {
-							semaphore.release();
-						});
-					}).onFailure(ex -> {
-						LOG.error(String.format("putcopyTrafficContraband failed. "), ex);
-						error(siteRequest, eventHandler, ex);
-					});
-				}
-			} catch(Exception ex) {
-				LOG.error(String.format("putcopyTrafficContraband failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		}).onFailure(ex -> {
-			if("Inactive Token".equals(ex.getMessage())) {
-				try {
-					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-				} catch(Exception ex2) {
-					LOG.error(String.format("putcopyTrafficContraband failed. ", ex2));
-					error(null, eventHandler, ex2);
-				}
-			} else {
-				LOG.error(String.format("putcopyTrafficContraband failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		});
-	}
-
-
-	public Future<Void> listPUTCopyTrafficContraband(ApiRequest apiRequest, SearchList<TrafficContraband> listTrafficContraband) {
-		Promise<Void> promise = Promise.promise();
-		List<Future> futures = new ArrayList<>();
-		SiteRequestEnUS siteRequest = listTrafficContraband.getSiteRequest_();
-		listTrafficContraband.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = siteRequest.copy();
-			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
-			o.setSiteRequest_(siteRequest2);
-			futures.add(
-				putcopyTrafficContrabandFuture(siteRequest2, JsonObject.mapFrom(o)).onFailure(ex -> {
-					LOG.error(String.format("listPUTCopyTrafficContraband failed. "), ex);
-					error(siteRequest, null, ex);
-				})
-			);
-		});
-		CompositeFuture.all(futures).onSuccess(a -> {
-			apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listTrafficContraband.size());
-			listTrafficContraband.next().onSuccess(next -> {
-				if(next) {
-					listPUTCopyTrafficContraband(apiRequest, listTrafficContraband);
-				} else {
-					promise.complete();
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("listPUTCopyTrafficContraband failed. "), ex);
-				error(listTrafficContraband.getSiteRequest_(), null, ex);
-			});
-		}).onFailure(ex -> {
-			LOG.error(String.format("listPUTCopyTrafficContraband failed. "), ex);
-			error(listTrafficContraband.getSiteRequest_(), null, ex);
-		});
-		return promise.future();
-	}
-
-	public Future<TrafficContraband> putcopyTrafficContrabandFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject) {
-		Promise<TrafficContraband> promise = Promise.promise();
-
-		try {
-
-			jsonObject.put("saves", Optional.ofNullable(jsonObject.getJsonArray("saves")).orElse(new JsonArray()));
-			JsonObject jsonPatch = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonObject("patch")).orElse(new JsonObject());
-			jsonPatch.stream().forEach(o -> {
-				if(o.getValue() == null)
-					jsonObject.remove(o.getKey());
-				else
-					jsonObject.put(o.getKey(), o.getValue());
-				if(!jsonObject.getJsonArray("saves").contains(o.getKey()))
-					jsonObject.getJsonArray("saves").add(o.getKey());
-			});
-
-			pgPool.withTransaction(sqlConnection -> {
-				Promise<TrafficContraband> promise1 = Promise.promise();
-				siteRequest.setSqlConnection(sqlConnection);
-				createTrafficContraband(siteRequest).onSuccess(trafficContraband -> {
-					sqlPUTCopyTrafficContraband(trafficContraband, jsonObject).onSuccess(b -> {
-						defineTrafficContraband(trafficContraband).onSuccess(c -> {
-							attributeTrafficContraband(trafficContraband).onSuccess(d -> {
-								indexTrafficContraband(trafficContraband).onSuccess(e -> {
-									promise1.complete(trafficContraband);
-								}).onFailure(ex -> {
-									LOG.error(String.format("putcopyTrafficContrabandFuture failed. "), ex);
-									promise1.fail(ex);
-								});
-							}).onFailure(ex -> {
-								LOG.error(String.format("putcopyTrafficContrabandFuture failed. "), ex);
-								promise1.fail(ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("putcopyTrafficContrabandFuture failed. "), ex);
-							promise1.fail(ex);
-						});
-					}).onFailure(ex -> {
-						LOG.error(String.format("putcopyTrafficContrabandFuture failed. "), ex);
-						promise1.fail(ex);
-					});
-				}).onFailure(ex -> {
-					LOG.error(String.format("putcopyTrafficContrabandFuture failed. "), ex);
-					promise1.fail(ex);
-				});
-				return promise1.future();
-			}).onSuccess(a -> {
-				siteRequest.setSqlConnection(null);
-			}).onFailure(ex -> {
-				promise.fail(ex);
-				error(siteRequest, null, ex);
-			}).compose(trafficContraband -> {
-				Promise<TrafficContraband> promise2 = Promise.promise();
-				refreshTrafficContraband(trafficContraband).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						trafficContraband.apiRequestTrafficContraband();
-						eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
-					}
-					promise2.complete(trafficContraband);
-				}).onFailure(ex -> {
-					LOG.error(String.format("putcopyTrafficContrabandFuture failed. "), ex);
-					promise2.fail(ex);
-				});
-				return promise2.future();
-			}).onSuccess(trafficContraband -> {
-				promise.complete(trafficContraband);
-				LOG.debug(String.format("putcopyTrafficContrabandFuture succeeded. "));
-			}).onFailure(ex -> {
-				promise.fail(ex);
-				error(siteRequest, null, ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putcopyTrafficContrabandFuture failed. "), ex);
-			promise.fail(ex);
-			error(siteRequest, null, ex);
-		}
-		return promise.future();
-	}
-
-	public Future<Void> sqlPUTCopyTrafficContraband(TrafficContraband o, JsonObject jsonObject) {
-		Promise<Void> promise = Promise.promise();
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-			Integer num = 1;
-			StringBuilder bSql = new StringBuilder("UPDATE TrafficContraband SET ");
-			List<Object> bParams = new ArrayList<Object>();
-			TrafficContraband o2 = new TrafficContraband();
-			o2.setSiteRequest_(siteRequest);
-			Long pk = o.getPk();
-			List<Future> futures = new ArrayList<>();
-
-			if(jsonObject != null) {
-				JsonArray entityVars = jsonObject.getJsonArray("saves");
-				for(Integer i = 0; i < entityVars.size(); i++) {
-					String entityVar = entityVars.getString(i);
-					switch(entityVar) {
-					case TrafficContraband.VAR_inheritPk:
-						o2.setInheritPk(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_inheritPk + "=$" + num);
-						num++;
-						bParams.add(o2.sqlInheritPk());
-						break;
-					case TrafficContraband.VAR_searchId:
-						o2.setSearchId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_searchId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlSearchId());
-						break;
-					case TrafficContraband.VAR_contrabandOunces:
-						o2.setContrabandOunces(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandOunces + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandOunces());
-						break;
-					case TrafficContraband.VAR_contrabandPounds:
-						o2.setContrabandPounds(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandPounds + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandPounds());
-						break;
-					case TrafficContraband.VAR_contrabandPints:
-						o2.setContrabandPints(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandPints + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandPints());
-						break;
-					case TrafficContraband.VAR_contrabandGallons:
-						o2.setContrabandGallons(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandGallons + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandGallons());
-						break;
-					case TrafficContraband.VAR_contrabandDosages:
-						o2.setContrabandDosages(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandDosages + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandDosages());
-						break;
-					case TrafficContraband.VAR_contrabandGrams:
-						o2.setContrabandGrams(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandGrams + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandGrams());
-						break;
-					case TrafficContraband.VAR_contrabandKilos:
-						o2.setContrabandKilos(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandKilos + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandKilos());
-						break;
-					case TrafficContraband.VAR_contrabandMoney:
-						o2.setContrabandMoney(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandMoney + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandMoney());
-						break;
-					case TrafficContraband.VAR_contrabandWeapons:
-						o2.setContrabandWeapons(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandWeapons + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandWeapons());
-						break;
-					case TrafficContraband.VAR_contrabandDollarAmount:
-						o2.setContrabandDollarAmount(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficContraband.VAR_contrabandDollarAmount + "=$" + num);
-						num++;
-						bParams.add(o2.sqlContrabandDollarAmount());
-						break;
-					}
-				}
-			}
-			bSql.append(" WHERE pk=$" + num);
-			if(bParams.size() > 0) {
-			bParams.add(pk);
-			num++;
-				futures.add(Future.future(a -> {
-					sqlConnection.preparedQuery(bSql.toString())
-							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			CompositeFuture.all(futures).onSuccess(a -> {
-				promise.complete();
-			}).onFailure(ex -> {
-				LOG.error(String.format("sqlPUTCopyTrafficContraband failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("sqlPUTCopyTrafficContraband failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	public Future<ServiceResponse> response200PUTCopyTrafficContraband(SiteRequestEnUS siteRequest) {
-		Promise<ServiceResponse> promise = Promise.promise();
-		try {
-			JsonObject json = new JsonObject();
-			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-		} catch(Exception ex) {
-			LOG.error(String.format("response200PUTCopyTrafficContraband failed. "), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -983,11 +388,46 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 					apiRequest.initDeepApiRequest(siteRequest);
 					siteRequest.setApiRequest_(apiRequest);
 					eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
-					postTrafficContrabandFuture(siteRequest, false).onSuccess(trafficContraband -> {
-						apiRequest.setPk(trafficContraband.getPk());
-						response200POSTTrafficContraband(trafficContraband).onSuccess(response -> {
-							eventHandler.handle(Future.succeededFuture(response));
-							LOG.debug(String.format("postTrafficContraband succeeded. "));
+					workerExecutor.executeBlocking(blockingCodeHandler -> {
+						try {
+							semaphore.acquire();
+							try {
+								JsonObject params = new JsonObject();
+								params.put("body", siteRequest.getJsonObject());
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								eventBus.request("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "postTrafficContrabandFuture")).onSuccess(a -> {
+									blockingCodeHandler.complete();
+									semaphore.release();
+								}).onFailure(ex -> {
+									LOG.error(String.format("postTrafficContraband failed. "), ex);
+									blockingCodeHandler.fail(ex);
+									semaphore.release();
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("postTrafficContraband failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							}
+						} catch(Exception ex) {
+							LOG.error(String.format("postTrafficContraband failed. "), ex);
+							blockingCodeHandler.fail(ex);
+						}
+					}, false).onSuccess(a -> {
+						postTrafficContrabandFuture(siteRequest, false).onSuccess(trafficContraband -> {
+							apiRequest.setPk(trafficContraband.getPk());
+							response200POSTTrafficContraband(trafficContraband).onSuccess(response -> {
+								eventHandler.handle(Future.succeededFuture(response));
+								LOG.debug(String.format("postTrafficContraband succeeded. "));
+							}).onFailure(ex -> {
+								LOG.error(String.format("postTrafficContraband failed. "), ex);
+								error(siteRequest, eventHandler, ex);
+							});
 						}).onFailure(ex -> {
 							LOG.error(String.format("postTrafficContraband failed. "), ex);
 							error(siteRequest, eventHandler, ex);
@@ -1026,11 +466,12 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
 		postTrafficContrabandFuture(siteRequest, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}
@@ -1386,24 +827,36 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					try {
 						semaphore.acquire();
-						Long pk = o.getPk();
+						try {
+							Long pk = o.getPk();
 
-						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject().put(TrafficContraband.VAR_pk, pk.toString()));
-						params.put("path", new JsonObject());
-						params.put("cookie", new JsonObject());
-						params.put("header", new JsonObject());
-						params.put("form", new JsonObject());
-						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-						JsonObject context = new JsonObject().put("params", params);
-						JsonObject json = new JsonObject().put("context", context);
-						eventBus.send("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "patchTrafficContrabandFuture"));
-						blockingCodeHandler.complete();
+							JsonObject params = new JsonObject();
+							params.put("body", siteRequest.getJsonObject().put(TrafficContraband.VAR_pk, pk.toString()));
+							params.put("path", new JsonObject());
+							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
+							params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+							JsonObject context = new JsonObject().put("params", params);
+							JsonObject json = new JsonObject().put("context", context);
+							eventBus.request("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "patchTrafficContrabandFuture")).onSuccess(a -> {
+								blockingCodeHandler.complete();
+								semaphore.release();
+							}).onFailure(ex -> {
+								LOG.error(String.format("listPATCHTrafficContraband failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							});
+						} catch(Exception ex) {
+							LOG.error(String.format("listPATCHTrafficContraband failed. "), ex);
+							blockingCodeHandler.fail(ex);
+							semaphore.release();
+						}
 					} catch(Exception ex) {
 						LOG.error(String.format("listPATCHTrafficContraband failed. "), ex);
 						blockingCodeHandler.fail(ex);
 					}
-				}).onSuccess(a -> {
+				}, false).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHTrafficContraband failed. "), ex);
@@ -1446,12 +899,13 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
 		o.setPk(body.getString(TrafficContraband.VAR_pk));
 		patchTrafficContrabandFuture(o, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}

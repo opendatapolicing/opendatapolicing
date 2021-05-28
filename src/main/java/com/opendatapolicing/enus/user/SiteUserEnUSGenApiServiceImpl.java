@@ -384,22 +384,36 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					try {
 						semaphore.acquire();
-						Long pk = o.getPk();
+						try {
+							Long pk = o.getPk();
 
-						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject().put(SiteUser.VAR_pk, pk.toString()));
-						params.put("path", new JsonObject());
-						params.put("cookie", new JsonObject());
-						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-						JsonObject context = new JsonObject().put("params", params);
-						JsonObject json = new JsonObject().put("context", context);
-						eventBus.send("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture"));
-						blockingCodeHandler.complete();
+							JsonObject params = new JsonObject();
+							params.put("body", siteRequest.getJsonObject().put(SiteUser.VAR_pk, pk.toString()));
+							params.put("path", new JsonObject());
+							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
+							params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+							JsonObject context = new JsonObject().put("params", params);
+							JsonObject json = new JsonObject().put("context", context);
+							eventBus.request("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture")).onSuccess(a -> {
+								blockingCodeHandler.complete();
+								semaphore.release();
+							}).onFailure(ex -> {
+								LOG.error(String.format("listPATCHSiteUser failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							});
+						} catch(Exception ex) {
+							LOG.error(String.format("listPATCHSiteUser failed. "), ex);
+							blockingCodeHandler.fail(ex);
+							semaphore.release();
+						}
 					} catch(Exception ex) {
 						LOG.error(String.format("listPATCHSiteUser failed. "), ex);
 						blockingCodeHandler.fail(ex);
 					}
-				}).onSuccess(a -> {
+				}, false).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHSiteUser failed. "), ex);
@@ -432,8 +446,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 	}
 
 	@Override
-	public void patchSiteUserFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+	public void patchSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 		SiteUser o = new SiteUser();
 		o.setSiteRequest_(siteRequest);
 		ApiRequest apiRequest = new ApiRequest();
@@ -442,12 +456,13 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
-		o.setPk(json.getString(SiteUser.VAR_pk));
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
+		o.setPk(body.getString(SiteUser.VAR_pk));
 		patchSiteUserFuture(o, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}
@@ -658,11 +673,46 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					apiRequest.initDeepApiRequest(siteRequest);
 					siteRequest.setApiRequest_(apiRequest);
 					eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
-					postSiteUserFuture(siteRequest, false).onSuccess(siteUser -> {
-						apiRequest.setPk(siteUser.getPk());
-						response200POSTSiteUser(siteUser).onSuccess(response -> {
-							eventHandler.handle(Future.succeededFuture(response));
-							LOG.debug(String.format("postSiteUser succeeded. "));
+					workerExecutor.executeBlocking(blockingCodeHandler -> {
+						try {
+							semaphore.acquire();
+							try {
+								JsonObject params = new JsonObject();
+								params.put("body", siteRequest.getJsonObject());
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								eventBus.request("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "postSiteUserFuture")).onSuccess(a -> {
+									blockingCodeHandler.complete();
+									semaphore.release();
+								}).onFailure(ex -> {
+									LOG.error(String.format("postSiteUser failed. "), ex);
+									blockingCodeHandler.fail(ex);
+									semaphore.release();
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("postSiteUser failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							}
+						} catch(Exception ex) {
+							LOG.error(String.format("postSiteUser failed. "), ex);
+							blockingCodeHandler.fail(ex);
+						}
+					}, false).onSuccess(a -> {
+						postSiteUserFuture(siteRequest, false).onSuccess(siteUser -> {
+							apiRequest.setPk(siteUser.getPk());
+							response200POSTSiteUser(siteUser).onSuccess(response -> {
+								eventHandler.handle(Future.succeededFuture(response));
+								LOG.debug(String.format("postSiteUser succeeded. "));
+							}).onFailure(ex -> {
+								LOG.error(String.format("postSiteUser failed. "), ex);
+								error(siteRequest, eventHandler, ex);
+							});
 						}).onFailure(ex -> {
 							LOG.error(String.format("postSiteUser failed. "), ex);
 							error(siteRequest, eventHandler, ex);
@@ -693,19 +743,20 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 
 	@Override
-	public void postSiteUserFuture(JsonObject json, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, json);
+	public void postSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
 		ApiRequest apiRequest = new ApiRequest();
 		apiRequest.setRows(1);
 		apiRequest.setNumFound(1L);
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
 		postSiteUserFuture(siteRequest, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}
@@ -1290,6 +1341,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					JsonObject params = new JsonObject();
 					params.put("body", new JsonObject());
 					params.put("cookie", new JsonObject());
+					params.put("header", new JsonObject());
+					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
 					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());

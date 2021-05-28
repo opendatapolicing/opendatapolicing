@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficperson;                                                     
+package com.opendatapolicing.enus.trafficperson;        
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -21,8 +21,6 @@ import io.vertx.core.Promise;
  * ApiUri.enUS: /api/person
  * 
  * ApiMethod.enUS: PUTImport
- * ApiMethod.enUS: PUTMerge
- * ApiMethod.enUS: PUTCopy
 
  * ApiMethod: POST
  * ApiMethod: PATCH

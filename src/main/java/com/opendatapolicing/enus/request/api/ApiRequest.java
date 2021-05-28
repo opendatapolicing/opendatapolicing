@@ -1,9 +1,14 @@
 package com.opendatapolicing.enus.request.api;
 
+import java.time.Period;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.wrap.Wrap;
 
@@ -19,7 +24,7 @@ public class ApiRequest extends ApiRequestGen<Object> {
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {}
 	
 	protected void _created(Wrap<ZonedDateTime> c) {
-		c.o(ZonedDateTime.now());
+		c.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
 	}
 
 	protected void _rows(Wrap<Integer> c) {
@@ -53,5 +58,27 @@ public class ApiRequest extends ApiRequestGen<Object> {
 	}
 
 	protected void _vars(List<String> c) {
+	}
+
+	protected void _timeRemaining(Wrap<String> w) {
+		w.o(calculateTimeRemaining());
+	}
+
+	public String calculateTimeRemaining() {
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE)));
+		Long timeDifferenceNow = ChronoUnit.SECONDS.between(created, now);
+		Double ratio = ((double) numPATCH / numFound);
+		Double remainingSeconds = ((double) timeDifferenceNow) / ratio - ((double) timeDifferenceNow);
+
+		// Calculating the difference in Hours
+		Long hours = ((Double) (remainingSeconds / 60 / 60)).longValue();
+
+		// Calculating the difference in Minutes
+		Long minutes = ((Double) (remainingSeconds / 60)).longValue();
+
+		// Calculating the difference in Seconds
+		Long seconds = ((Double) (remainingSeconds % 60)).longValue();
+
+		return (hours > 0L ? hours + " hours " : "") + (minutes > 0L ? minutes + " minutes " : "") + seconds + " seconds.";
 	}
 }

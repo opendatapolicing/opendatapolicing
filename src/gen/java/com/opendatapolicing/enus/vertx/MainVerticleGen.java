@@ -37,10 +37,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
 /**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.AppVertx&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.MainVerticle&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class AppVertxGen<DEV> extends AbstractVerticle {
+public abstract class MainVerticleGen<DEV> extends AbstractVerticle {
 
 /*
 CREATE TABLE SiteUser(
@@ -155,7 +155,12 @@ DROP TABLE TrafficContraband CASCADE;
 DROP TABLE SearchBasis CASCADE;
 */
 
-	protected static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
+	public static final String configureConfigComplete1 = "The config was configured successfully. ";
+	public static final String configureConfigComplete = configureConfigComplete1;
+	public static final String configureConfigFail1 = "Could not configure the config(). ";
+	public static final String configureConfigFail = configureConfigFail1;
+
 	public static final String configureDataConnectionError1 = "Could not open the database client connection. ";
 	public static final String configureDataConnectionError = configureDataConnectionError1;
 	public static final String configureDataConnectionSuccess1 = "The database client connection was successful. ";
@@ -165,11 +170,6 @@ DROP TABLE SearchBasis CASCADE;
 	public static final String configureDataInitSuccess1 = "The database tables were created successfully. ";
 	public static final String configureDataInitSuccess = configureDataInitSuccess1;
 
-	public static final String configureClusterDataError1 = "Could not configure the shared cluster data. ";
-	public static final String configureClusterDataError = configureClusterDataError1;
-	public static final String configureClusterDataSuccess1 = "The shared cluster data was configured successfully. ";
-	public static final String configureClusterDataSuccess = configureClusterDataSuccess1;
-
 	public static final String configureOpenApiError1 = "Could not configure the auth server and API. ";
 	public static final String configureOpenApiError = configureOpenApiError1;
 	public static final String configureOpenApiSuccess1 = "The auth server and API was configured successfully. ";
@@ -177,7 +177,7 @@ DROP TABLE SearchBasis CASCADE;
 
 	public static final String configureSharedWorkerExecutorFail1 = "Could not configure the shared worker executor. ";
 	public static final String configureSharedWorkerExecutorFail = configureSharedWorkerExecutorFail1;
-	public static final String configureSharedWorkerExecutorComplete1 = "The shared worker executor was configured successfully. ";
+	public static final String configureSharedWorkerExecutorComplete1 = "The shared worker executor \"{}\" was configured successfully. ";
 	public static final String configureSharedWorkerExecutorComplete = configureSharedWorkerExecutorComplete1;
 
 	public static final String configureHealthChecksComplete1 = "The health checks were configured successfully. ";
@@ -232,25 +232,25 @@ DROP TABLE SearchBasis CASCADE;
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedAppVertx = false;
+	protected boolean alreadyInitializedMainVerticle = false;
 
-	public AppVertx initDeepAppVertx(SiteRequestEnUS siteRequest_) {
-		if(!alreadyInitializedAppVertx) {
-			alreadyInitializedAppVertx = true;
-			initDeepAppVertx();
+	public MainVerticle initDeepMainVerticle(SiteRequestEnUS siteRequest_) {
+		if(!alreadyInitializedMainVerticle) {
+			alreadyInitializedMainVerticle = true;
+			initDeepMainVerticle();
 		}
-		return (AppVertx)this;
+		return (MainVerticle)this;
 	}
 
-	public void initDeepAppVertx() {
-		initAppVertx();
+	public void initDeepMainVerticle() {
+		initMainVerticle();
 	}
 
-	public void initAppVertx() {
+	public void initMainVerticle() {
 	}
 
 	public void initDeepForClass(SiteRequestEnUS siteRequest_) {
-		initDeepAppVertx(siteRequest_);
+		initDeepMainVerticle(siteRequest_);
 	}
 
 	/////////////
@@ -262,7 +262,7 @@ DROP TABLE SearchBasis CASCADE;
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = obtainAppVertx(v);
+				o = obtainMainVerticle(v);
 			else if(o instanceof Cluster) {
 				Cluster cluster = (Cluster)o;
 				o = cluster.obtainForClass(v);
@@ -274,8 +274,8 @@ DROP TABLE SearchBasis CASCADE;
 		}
 		return o;
 	}
-	public Object obtainAppVertx(String var) {
-		AppVertx oAppVertx = (AppVertx)this;
+	public Object obtainMainVerticle(String var) {
+		MainVerticle oMainVerticle = (MainVerticle)this;
 		switch(var) {
 			default:
 				return null;
@@ -291,7 +291,7 @@ DROP TABLE SearchBasis CASCADE;
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeAppVertx(v, val);
+				o = attributeMainVerticle(v, val);
 			else if(o instanceof Cluster) {
 				Cluster cluster = (Cluster)o;
 				o = cluster.attributeForClass(v, val);
@@ -299,8 +299,8 @@ DROP TABLE SearchBasis CASCADE;
 		}
 		return o != null;
 	}
-	public Object attributeAppVertx(String var, Object val) {
-		AppVertx oAppVertx = (AppVertx)this;
+	public Object attributeMainVerticle(String var, Object val) {
+		MainVerticle oMainVerticle = (MainVerticle)this;
 		switch(var) {
 			default:
 				return null;
@@ -312,9 +312,9 @@ DROP TABLE SearchBasis CASCADE;
 	///////////////
 
 	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSetAppVertx(entityVar,  siteRequest_, o);
+		return staticSetMainVerticle(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSetAppVertx(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static Object staticSetMainVerticle(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 			default:
 				return null;
@@ -326,9 +326,9 @@ DROP TABLE SearchBasis CASCADE;
 	////////////////
 
 	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrAppVertx(entityVar,  siteRequest_, o);
+		return staticSolrMainVerticle(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSolrAppVertx(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static Object staticSolrMainVerticle(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 			default:
 				return null;
@@ -340,9 +340,9 @@ DROP TABLE SearchBasis CASCADE;
 	///////////////////
 
 	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrStrAppVertx(entityVar,  siteRequest_, o);
+		return staticSolrStrMainVerticle(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrStrAppVertx(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static String staticSolrStrMainVerticle(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 			default:
 				return null;
@@ -354,9 +354,9 @@ DROP TABLE SearchBasis CASCADE;
 	//////////////////
 
 	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSolrFqAppVertx(entityVar,  siteRequest_, o);
+		return staticSolrFqMainVerticle(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrFqAppVertx(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrFqMainVerticle(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 			default:
 				return null;
@@ -373,7 +373,7 @@ DROP TABLE SearchBasis CASCADE;
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineAppVertx(v, val);
+					o = defineMainVerticle(v, val);
 				else if(o instanceof Cluster) {
 					Cluster oCluster = (Cluster)o;
 					o = oCluster.defineForClass(v, val);
@@ -382,7 +382,7 @@ DROP TABLE SearchBasis CASCADE;
 		}
 		return o != null;
 	}
-	public Object defineAppVertx(String var, String val) {
+	public Object defineMainVerticle(String var, String val) {
 		switch(var.toLowerCase()) {
 			default:
 				return null;
@@ -395,7 +395,7 @@ DROP TABLE SearchBasis CASCADE;
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineAppVertx(v, val);
+					o = defineMainVerticle(v, val);
 				else if(o instanceof Cluster) {
 					Cluster oCluster = (Cluster)o;
 					o = oCluster.defineForClass(v, val);
@@ -404,7 +404,7 @@ DROP TABLE SearchBasis CASCADE;
 		}
 		return o != null;
 	}
-	public Object defineAppVertx(String var, Object val) {
+	public Object defineMainVerticle(String var, Object val) {
 		switch(var.toLowerCase()) {
 			default:
 				return null;
@@ -426,9 +426,9 @@ DROP TABLE SearchBasis CASCADE;
 	@Override public boolean equals(Object o) {
 		if(this == o)
 			return true;
-		if(!(o instanceof AppVertx))
+		if(!(o instanceof MainVerticle))
 			return false;
-		AppVertx that = (AppVertx)o;
+		MainVerticle that = (MainVerticle)o;
 		return true;
 	}
 
@@ -438,11 +438,11 @@ DROP TABLE SearchBasis CASCADE;
 
 	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("AppVertx { ");
+		sb.append("MainVerticle { ");
 		sb.append(" }");
 		return sb.toString();
 	}
 
-	public static final String[] AppVertxVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureClusterDataError1, configureClusterDataSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureHealthChecksComplete1, configureHealthChecksFail1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, stopFail1, stopComplete1 };
+	public static final String[] MainVerticleVals = new String[] { configureConfigComplete1, configureConfigFail1, configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureHealthChecksComplete1, configureHealthChecksFail1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, stopFail1, stopComplete1 };
 
 }

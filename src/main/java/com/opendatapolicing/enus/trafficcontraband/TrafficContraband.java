@@ -21,8 +21,6 @@ import io.vertx.core.Promise;
  * ApiUri.enUS: /api/contraband
  * 
  * ApiMethod.enUS: PUTImport
- * ApiMethod.enUS: PUTMerge
- * ApiMethod.enUS: PUTCopy
 
  * ApiMethod: POST
  * ApiMethod: PATCH

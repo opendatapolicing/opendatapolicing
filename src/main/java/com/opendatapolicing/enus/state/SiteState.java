@@ -16,8 +16,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * ApiUri.enUS: /api/state
  * 
  * ApiMethod.enUS: PUTImport
- * ApiMethod.enUS: PUTMerge
- * ApiMethod.enUS: PUTCopy
 
  * ApiMethod: POST
  * ApiMethod: PATCH

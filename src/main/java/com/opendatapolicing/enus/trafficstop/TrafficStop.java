@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficstop;                                                
+package com.opendatapolicing.enus.trafficstop;                                                                
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -32,8 +32,6 @@ import io.vertx.core.Promise;
  * ApiUri.enUS: /api/traffic-stop
  * 
  * ApiMethod.enUS: PUTImport
- * ApiMethod.enUS: PUTMerge
- * ApiMethod.enUS: PUTCopy
 
  * ApiMethod: POST
  * ApiMethod: PATCH

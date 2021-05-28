@@ -199,23 +199,34 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					workerExecutor.executeBlocking(blockingCodeHandler -> {
 						try {
 							semaphore.acquire();
-
-							JsonObject params = new JsonObject();
-							params.put("body", obj);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject());
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.send("opendatapolicing-enUS-TrafficPerson", json, new DeliveryOptions().addHeader("action", "putimportTrafficPersonFuture"));
-							blockingCodeHandler.complete();
+							try {
+								JsonObject params = new JsonObject();
+								params.put("body", obj);
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								eventBus.request("opendatapolicing-enUS-TrafficPerson", json, new DeliveryOptions().addHeader("action", "putimportTrafficPersonFuture")).onSuccess(a -> {
+									blockingCodeHandler.complete();
+									semaphore.release();
+								}).onFailure(ex -> {
+									LOG.error(String.format("listPUTImportTrafficPerson failed. "), ex);
+									blockingCodeHandler.fail(ex);
+									semaphore.release();
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("listPUTImportTrafficPerson failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							}
 						} catch(Exception ex) {
 							LOG.error(String.format("listPUTImportTrafficPerson failed. "), ex);
 							blockingCodeHandler.fail(ex);
 						}
-					}).onSuccess(a -> {
+					}, false).onSuccess(a -> {
 						promise1.complete();
 					}).onFailure(ex -> {
 						LOG.error(String.format("listPUTImportTrafficPerson failed. "), ex);
@@ -248,6 +259,9 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 			apiRequest.initDeepApiRequest(siteRequest);
 			siteRequest.setApiRequest_(apiRequest);
 			body.put("inheritPk", body.getValue("pk"));
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
 
 			SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
 			searchList.setStore(true);
@@ -286,7 +300,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								}
 							} else {
 								o2.defineForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
 						}
@@ -297,35 +311,33 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 						if(body2.size() > 0) {
 							siteRequest.setJsonObject(body2);
 							patchTrafficPersonFuture(o, true).onSuccess(b -> {
-								semaphore.release();
+								LOG.info("Import TrafficPerson {} succeeded, modified TrafficPerson. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportTrafficPersonFuture failed. "), ex);
 							});
+						} else {
+							eventHandler.handle(Future.succeededFuture());
 						}
 					} else {
 						postTrafficPersonFuture(siteRequest, true).onSuccess(b -> {
-							semaphore.release();
+							LOG.info("Import TrafficPerson {} succeeded, created new TrafficPerson. ", body.getValue("pk"));
 							eventHandler.handle(Future.succeededFuture());
 						}).onFailure(ex -> {
 							LOG.error(String.format("putimportTrafficPersonFuture failed. "), ex);
-							semaphore.release();
 							eventHandler.handle(Future.failedFuture(ex));
 						});
 					}
 				} catch(Exception ex) {
 					LOG.error(String.format("putimportTrafficPersonFuture failed. "), ex);
-					semaphore.release();
 					eventHandler.handle(Future.failedFuture(ex));
 				}
 			}).onFailure(ex -> {
 				LOG.error(String.format("putimportTrafficPersonFuture failed. "), ex);
-				semaphore.release();
 				eventHandler.handle(Future.failedFuture(ex));
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("putimportTrafficPersonFuture failed. "), ex);
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		}
 	}
@@ -337,568 +349,6 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
 		} catch(Exception ex) {
 			LOG.error(String.format("response200PUTImportTrafficPerson failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	// PUTMerge //
-
-	@Override
-	public void putmergeTrafficPerson(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.debug(String.format("putmergeTrafficPerson started. "));
-		user(serviceRequest).onSuccess(siteRequest -> {
-			try {
-				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/person/merge");
-				siteRequest.setRequestMethod("PUTMerge");
-
-				List<String> roles = Arrays.asList("SiteService");
-				if(
-						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-						) {
-					eventHandler.handle(Future.succeededFuture(
-						new ServiceResponse(401, "UNAUTHORIZED", 
-							Buffer.buffer().appendString(
-								new JsonObject()
-									.put("errorCode", "401")
-									.put("errorMessage", "roles required: " + String.join(", ", roles))
-									.encodePrettily()
-								), MultiMap.caseInsensitiveMultiMap()
-						)
-					));
-				} else {
-					try {
-						ApiRequest apiRequest = new ApiRequest();
-						JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-						apiRequest.setRows(jsonArray.size());
-						apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
-						apiRequest.setNumPATCH(0L);
-						apiRequest.initDeepApiRequest(siteRequest);
-						siteRequest.setApiRequest_(apiRequest);
-						eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
-						varsTrafficPerson(siteRequest).onSuccess(d -> {
-							listPUTMergeTrafficPerson(apiRequest, siteRequest).onSuccess(e -> {
-								response200PUTMergeTrafficPerson(siteRequest).onSuccess(response -> {
-									LOG.debug(String.format("putmergeTrafficPerson succeeded. "));
-									eventHandler.handle(Future.succeededFuture(response));
-								}).onFailure(ex -> {
-									LOG.error(String.format("putmergeTrafficPerson failed. "), ex);
-									error(siteRequest, eventHandler, ex);
-								});
-							}).onFailure(ex -> {
-								LOG.error(String.format("putmergeTrafficPerson failed. "), ex);
-								error(siteRequest, eventHandler, ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("putmergeTrafficPerson failed. "), ex);
-							error(siteRequest, eventHandler, ex);
-						});
-					} catch(Exception ex) {
-						LOG.error(String.format("putmergeTrafficPerson failed. "), ex);
-						error(siteRequest, eventHandler, ex);
-					}
-				}
-			} catch(Exception ex) {
-				LOG.error(String.format("putmergeTrafficPerson failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		}).onFailure(ex -> {
-			if("Inactive Token".equals(ex.getMessage())) {
-				try {
-					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-				} catch(Exception ex2) {
-					LOG.error(String.format("putmergeTrafficPerson failed. ", ex2));
-					error(null, eventHandler, ex2);
-				}
-			} else {
-				LOG.error(String.format("putmergeTrafficPerson failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		});
-	}
-
-
-	public Future<Void> listPUTMergeTrafficPerson(ApiRequest apiRequest, SiteRequestEnUS siteRequest) {
-		Promise<Void> promise = Promise.promise();
-		List<Future> futures = new ArrayList<>();
-		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-		try {
-			jsonArray.forEach(obj -> {
-				futures.add(Future.future(promise1 -> {
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-
-							JsonObject params = new JsonObject();
-							params.put("body", obj);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject());
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.send("opendatapolicing-enUS-TrafficPerson", json, new DeliveryOptions().addHeader("action", "putmergeTrafficPersonFuture"));
-							blockingCodeHandler.complete();
-						} catch(Exception ex) {
-							LOG.error(String.format("listPUTMergeTrafficPerson failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}).onSuccess(a -> {
-						promise1.complete();
-					}).onFailure(ex -> {
-						LOG.error(String.format("listPUTMergeTrafficPerson failed. "), ex);
-						promise1.fail(ex);
-					});
-				}));
-			});
-			CompositeFuture.all(futures).onSuccess(a -> {
-				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-				promise.complete();
-			}).onFailure(ex -> {
-				LOG.error(String.format("listPUTMergeTrafficPerson failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("listPUTMergeTrafficPerson failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	@Override
-	public void putmergeTrafficPersonFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-			ApiRequest apiRequest = new ApiRequest();
-			apiRequest.setRows(1);
-			apiRequest.setNumFound(1L);
-			apiRequest.setNumPATCH(0L);
-			apiRequest.initDeepApiRequest(siteRequest);
-			siteRequest.setApiRequest_(apiRequest);
-			body.put("inheritPk", body.getValue("pk"));
-
-			SearchList<TrafficPerson> searchList = new SearchList<TrafficPerson>();
-			searchList.setStore(true);
-			searchList.setQuery("*:*");
-			searchList.setC(TrafficPerson.class);
-			searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
-			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
-				try {
-					if(searchList.size() == 1) {
-						TrafficPerson o = searchList.getList().stream().findFirst().orElse(null);
-						TrafficPerson o2 = new TrafficPerson();
-						JsonObject body2 = new JsonObject();
-						for(String f : body.fieldNames()) {
-							Object bodyVal = body.getValue(f);
-							if(bodyVal instanceof JsonArray) {
-								JsonArray bodyVals = (JsonArray)bodyVal;
-								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(bodyVals.size() == vals.size()) {
-									Boolean match = true;
-									for(Object val : vals) {
-										if(val != null) {
-											if(!bodyVals.contains(val.toString())) {
-												match = false;
-												break;
-											}
-										} else {
-											match = false;
-											break;
-										}
-									}
-									if(!match) {
-										body2.put("set" + StringUtils.capitalize(f), bodyVal);
-									}
-								} else {
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
-								}
-							} else {
-								o2.defineForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
-							}
-						}
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!body.fieldNames().contains(f))
-								body2.putNull("set" + StringUtils.capitalize(f));
-						}
-						if(body2.size() > 0) {
-							siteRequest.setJsonObject(body2);
-							patchTrafficPersonFuture(o, false).onSuccess(b -> {
-								semaphore.release();
-								eventHandler.handle(Future.succeededFuture());
-							}).onFailure(ex -> {
-								LOG.error(String.format("putmergeTrafficPersonFuture failed. "), ex);
-							});
-						}
-					} else {
-						postTrafficPersonFuture(siteRequest, false).onSuccess(b -> {
-							semaphore.release();
-							eventHandler.handle(Future.succeededFuture());
-						}).onFailure(ex -> {
-							LOG.error(String.format("putmergeTrafficPersonFuture failed. "), ex);
-							semaphore.release();
-							eventHandler.handle(Future.failedFuture(ex));
-						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("putmergeTrafficPersonFuture failed. "), ex);
-					semaphore.release();
-					eventHandler.handle(Future.failedFuture(ex));
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("putmergeTrafficPersonFuture failed. "), ex);
-				semaphore.release();
-				eventHandler.handle(Future.failedFuture(ex));
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putmergeTrafficPersonFuture failed. "), ex);
-			semaphore.release();
-			eventHandler.handle(Future.failedFuture(ex));
-		}
-	}
-
-	public Future<ServiceResponse> response200PUTMergeTrafficPerson(SiteRequestEnUS siteRequest) {
-		Promise<ServiceResponse> promise = Promise.promise();
-		try {
-			JsonObject json = new JsonObject();
-			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-		} catch(Exception ex) {
-			LOG.error(String.format("response200PUTMergeTrafficPerson failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	// PUTCopy //
-
-	@Override
-	public void putcopyTrafficPerson(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.debug(String.format("putcopyTrafficPerson started. "));
-		user(serviceRequest).onSuccess(siteRequest -> {
-			try {
-				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/person/copy");
-				siteRequest.setRequestMethod("PUTCopy");
-
-				List<String> roles = Arrays.asList("SiteService");
-				if(
-						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-						) {
-					eventHandler.handle(Future.succeededFuture(
-						new ServiceResponse(401, "UNAUTHORIZED", 
-							Buffer.buffer().appendString(
-								new JsonObject()
-									.put("errorCode", "401")
-									.put("errorMessage", "roles required: " + String.join(", ", roles))
-									.encodePrettily()
-								), MultiMap.caseInsensitiveMultiMap()
-						)
-					));
-				} else {
-					response200PUTCopyTrafficPerson(siteRequest).onSuccess(response -> {
-						eventHandler.handle(Future.succeededFuture(response));
-						workerExecutor.executeBlocking(blockingCodeHandler -> {
-							try {
-								semaphore.acquire();
-								searchTrafficPersonList(siteRequest, false, true, true, "/api/person/copy", "PUTCopy").onSuccess(listTrafficPerson -> {
-									ApiRequest apiRequest = new ApiRequest();
-									apiRequest.setRows(listTrafficPerson.getRows());
-									apiRequest.setNumFound(listTrafficPerson.getQueryResponse().getResults().getNumFound());
-									apiRequest.setNumPATCH(0L);
-									apiRequest.initDeepApiRequest(siteRequest);
-									siteRequest.setApiRequest_(apiRequest);
-									eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
-									listPUTCopyTrafficPerson(apiRequest, listTrafficPerson).onSuccess(e -> {
-										response200PUTCopyTrafficPerson(siteRequest).onSuccess(f -> {
-											LOG.debug(String.format("putcopyTrafficPerson succeeded. "));
-											blockingCodeHandler.complete();
-										}).onFailure(ex -> {
-											LOG.error(String.format("putcopyTrafficPerson failed. "), ex);
-											blockingCodeHandler.fail(ex);
-										});
-									}).onFailure(ex -> {
-										LOG.error(String.format("putcopyTrafficPerson failed. "), ex);
-										blockingCodeHandler.fail(ex);
-									});
-								}).onFailure(ex -> {
-									LOG.error(String.format("putcopyTrafficPerson failed. "), ex);
-									blockingCodeHandler.fail(ex);
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("putcopyTrafficPerson failed. "), ex);
-								blockingCodeHandler.fail(ex);
-							}
-						}, resultHandler -> {
-							semaphore.release();
-						});
-					}).onFailure(ex -> {
-						LOG.error(String.format("putcopyTrafficPerson failed. "), ex);
-						error(siteRequest, eventHandler, ex);
-					});
-				}
-			} catch(Exception ex) {
-				LOG.error(String.format("putcopyTrafficPerson failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		}).onFailure(ex -> {
-			if("Inactive Token".equals(ex.getMessage())) {
-				try {
-					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-				} catch(Exception ex2) {
-					LOG.error(String.format("putcopyTrafficPerson failed. ", ex2));
-					error(null, eventHandler, ex2);
-				}
-			} else {
-				LOG.error(String.format("putcopyTrafficPerson failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		});
-	}
-
-
-	public Future<Void> listPUTCopyTrafficPerson(ApiRequest apiRequest, SearchList<TrafficPerson> listTrafficPerson) {
-		Promise<Void> promise = Promise.promise();
-		List<Future> futures = new ArrayList<>();
-		SiteRequestEnUS siteRequest = listTrafficPerson.getSiteRequest_();
-		listTrafficPerson.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = siteRequest.copy();
-			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
-			o.setSiteRequest_(siteRequest2);
-			futures.add(
-				putcopyTrafficPersonFuture(siteRequest2, JsonObject.mapFrom(o)).onFailure(ex -> {
-					LOG.error(String.format("listPUTCopyTrafficPerson failed. "), ex);
-					error(siteRequest, null, ex);
-				})
-			);
-		});
-		CompositeFuture.all(futures).onSuccess(a -> {
-			apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listTrafficPerson.size());
-			listTrafficPerson.next().onSuccess(next -> {
-				if(next) {
-					listPUTCopyTrafficPerson(apiRequest, listTrafficPerson);
-				} else {
-					promise.complete();
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("listPUTCopyTrafficPerson failed. "), ex);
-				error(listTrafficPerson.getSiteRequest_(), null, ex);
-			});
-		}).onFailure(ex -> {
-			LOG.error(String.format("listPUTCopyTrafficPerson failed. "), ex);
-			error(listTrafficPerson.getSiteRequest_(), null, ex);
-		});
-		return promise.future();
-	}
-
-	public Future<TrafficPerson> putcopyTrafficPersonFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject) {
-		Promise<TrafficPerson> promise = Promise.promise();
-
-		try {
-
-			jsonObject.put("saves", Optional.ofNullable(jsonObject.getJsonArray("saves")).orElse(new JsonArray()));
-			JsonObject jsonPatch = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonObject("patch")).orElse(new JsonObject());
-			jsonPatch.stream().forEach(o -> {
-				if(o.getValue() == null)
-					jsonObject.remove(o.getKey());
-				else
-					jsonObject.put(o.getKey(), o.getValue());
-				if(!jsonObject.getJsonArray("saves").contains(o.getKey()))
-					jsonObject.getJsonArray("saves").add(o.getKey());
-			});
-
-			pgPool.withTransaction(sqlConnection -> {
-				Promise<TrafficPerson> promise1 = Promise.promise();
-				siteRequest.setSqlConnection(sqlConnection);
-				createTrafficPerson(siteRequest).onSuccess(trafficPerson -> {
-					sqlPUTCopyTrafficPerson(trafficPerson, jsonObject).onSuccess(b -> {
-						defineTrafficPerson(trafficPerson).onSuccess(c -> {
-							attributeTrafficPerson(trafficPerson).onSuccess(d -> {
-								indexTrafficPerson(trafficPerson).onSuccess(e -> {
-									promise1.complete(trafficPerson);
-								}).onFailure(ex -> {
-									LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
-									promise1.fail(ex);
-								});
-							}).onFailure(ex -> {
-								LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
-								promise1.fail(ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
-							promise1.fail(ex);
-						});
-					}).onFailure(ex -> {
-						LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
-						promise1.fail(ex);
-					});
-				}).onFailure(ex -> {
-					LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
-					promise1.fail(ex);
-				});
-				return promise1.future();
-			}).onSuccess(a -> {
-				siteRequest.setSqlConnection(null);
-			}).onFailure(ex -> {
-				promise.fail(ex);
-				error(siteRequest, null, ex);
-			}).compose(trafficPerson -> {
-				Promise<TrafficPerson> promise2 = Promise.promise();
-				refreshTrafficPerson(trafficPerson).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						trafficPerson.apiRequestTrafficPerson();
-						eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
-					}
-					promise2.complete(trafficPerson);
-				}).onFailure(ex -> {
-					LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
-					promise2.fail(ex);
-				});
-				return promise2.future();
-			}).onSuccess(trafficPerson -> {
-				promise.complete(trafficPerson);
-				LOG.debug(String.format("putcopyTrafficPersonFuture succeeded. "));
-			}).onFailure(ex -> {
-				promise.fail(ex);
-				error(siteRequest, null, ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putcopyTrafficPersonFuture failed. "), ex);
-			promise.fail(ex);
-			error(siteRequest, null, ex);
-		}
-		return promise.future();
-	}
-
-	public Future<Void> sqlPUTCopyTrafficPerson(TrafficPerson o, JsonObject jsonObject) {
-		Promise<Void> promise = Promise.promise();
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-			Integer num = 1;
-			StringBuilder bSql = new StringBuilder("UPDATE TrafficPerson SET ");
-			List<Object> bParams = new ArrayList<Object>();
-			TrafficPerson o2 = new TrafficPerson();
-			o2.setSiteRequest_(siteRequest);
-			Long pk = o.getPk();
-			List<Future> futures = new ArrayList<>();
-
-			if(jsonObject != null) {
-				JsonArray entityVars = jsonObject.getJsonArray("saves");
-				for(Integer i = 0; i < entityVars.size(); i++) {
-					String entityVar = entityVars.getString(i);
-					switch(entityVar) {
-					case TrafficPerson.VAR_inheritPk:
-						o2.setInheritPk(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficPerson.VAR_inheritPk + "=$" + num);
-						num++;
-						bParams.add(o2.sqlInheritPk());
-						break;
-					case TrafficPerson.VAR_stopId:
-						o2.setStopId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficPerson.VAR_stopId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlStopId());
-						break;
-					case TrafficPerson.VAR_personAge:
-						o2.setPersonAge(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficPerson.VAR_personAge + "=$" + num);
-						num++;
-						bParams.add(o2.sqlPersonAge());
-						break;
-					case TrafficPerson.VAR_personTypeId:
-						o2.setPersonTypeId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficPerson.VAR_personTypeId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlPersonTypeId());
-						break;
-					case TrafficPerson.VAR_personGenderId:
-						o2.setPersonGenderId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficPerson.VAR_personGenderId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlPersonGenderId());
-						break;
-					case TrafficPerson.VAR_personEthnicityId:
-						o2.setPersonEthnicityId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficPerson.VAR_personEthnicityId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlPersonEthnicityId());
-						break;
-					case TrafficPerson.VAR_personRaceId:
-						o2.setPersonRaceId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficPerson.VAR_personRaceId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlPersonRaceId());
-						break;
-					}
-				}
-			}
-			bSql.append(" WHERE pk=$" + num);
-			if(bParams.size() > 0) {
-			bParams.add(pk);
-			num++;
-				futures.add(Future.future(a -> {
-					sqlConnection.preparedQuery(bSql.toString())
-							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			CompositeFuture.all(futures).onSuccess(a -> {
-				promise.complete();
-			}).onFailure(ex -> {
-				LOG.error(String.format("sqlPUTCopyTrafficPerson failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("sqlPUTCopyTrafficPerson failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	public Future<ServiceResponse> response200PUTCopyTrafficPerson(SiteRequestEnUS siteRequest) {
-		Promise<ServiceResponse> promise = Promise.promise();
-		try {
-			JsonObject json = new JsonObject();
-			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-		} catch(Exception ex) {
-			LOG.error(String.format("response200PUTCopyTrafficPerson failed. "), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -938,11 +388,46 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					apiRequest.initDeepApiRequest(siteRequest);
 					siteRequest.setApiRequest_(apiRequest);
 					eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
-					postTrafficPersonFuture(siteRequest, false).onSuccess(trafficPerson -> {
-						apiRequest.setPk(trafficPerson.getPk());
-						response200POSTTrafficPerson(trafficPerson).onSuccess(response -> {
-							eventHandler.handle(Future.succeededFuture(response));
-							LOG.debug(String.format("postTrafficPerson succeeded. "));
+					workerExecutor.executeBlocking(blockingCodeHandler -> {
+						try {
+							semaphore.acquire();
+							try {
+								JsonObject params = new JsonObject();
+								params.put("body", siteRequest.getJsonObject());
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								eventBus.request("opendatapolicing-enUS-TrafficPerson", json, new DeliveryOptions().addHeader("action", "postTrafficPersonFuture")).onSuccess(a -> {
+									blockingCodeHandler.complete();
+									semaphore.release();
+								}).onFailure(ex -> {
+									LOG.error(String.format("postTrafficPerson failed. "), ex);
+									blockingCodeHandler.fail(ex);
+									semaphore.release();
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("postTrafficPerson failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							}
+						} catch(Exception ex) {
+							LOG.error(String.format("postTrafficPerson failed. "), ex);
+							blockingCodeHandler.fail(ex);
+						}
+					}, false).onSuccess(a -> {
+						postTrafficPersonFuture(siteRequest, false).onSuccess(trafficPerson -> {
+							apiRequest.setPk(trafficPerson.getPk());
+							response200POSTTrafficPerson(trafficPerson).onSuccess(response -> {
+								eventHandler.handle(Future.succeededFuture(response));
+								LOG.debug(String.format("postTrafficPerson succeeded. "));
+							}).onFailure(ex -> {
+								LOG.error(String.format("postTrafficPerson failed. "), ex);
+								error(siteRequest, eventHandler, ex);
+							});
 						}).onFailure(ex -> {
 							LOG.error(String.format("postTrafficPerson failed. "), ex);
 							error(siteRequest, eventHandler, ex);
@@ -981,11 +466,12 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
 		postTrafficPersonFuture(siteRequest, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}
@@ -1296,24 +782,36 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					try {
 						semaphore.acquire();
-						Long pk = o.getPk();
+						try {
+							Long pk = o.getPk();
 
-						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject().put(TrafficPerson.VAR_pk, pk.toString()));
-						params.put("path", new JsonObject());
-						params.put("cookie", new JsonObject());
-						params.put("header", new JsonObject());
-						params.put("form", new JsonObject());
-						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-						JsonObject context = new JsonObject().put("params", params);
-						JsonObject json = new JsonObject().put("context", context);
-						eventBus.send("opendatapolicing-enUS-TrafficPerson", json, new DeliveryOptions().addHeader("action", "patchTrafficPersonFuture"));
-						blockingCodeHandler.complete();
+							JsonObject params = new JsonObject();
+							params.put("body", siteRequest.getJsonObject().put(TrafficPerson.VAR_pk, pk.toString()));
+							params.put("path", new JsonObject());
+							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
+							params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+							JsonObject context = new JsonObject().put("params", params);
+							JsonObject json = new JsonObject().put("context", context);
+							eventBus.request("opendatapolicing-enUS-TrafficPerson", json, new DeliveryOptions().addHeader("action", "patchTrafficPersonFuture")).onSuccess(a -> {
+								blockingCodeHandler.complete();
+								semaphore.release();
+							}).onFailure(ex -> {
+								LOG.error(String.format("listPATCHTrafficPerson failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							});
+						} catch(Exception ex) {
+							LOG.error(String.format("listPATCHTrafficPerson failed. "), ex);
+							blockingCodeHandler.fail(ex);
+							semaphore.release();
+						}
 					} catch(Exception ex) {
 						LOG.error(String.format("listPATCHTrafficPerson failed. "), ex);
 						blockingCodeHandler.fail(ex);
 					}
-				}).onSuccess(a -> {
+				}, false).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHTrafficPerson failed. "), ex);
@@ -1356,12 +854,14 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
 		o.setPk(body.getString(TrafficPerson.VAR_pk));
 		patchTrafficPersonFuture(o, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+//			LOG.info("DONE!!!! {}", Thread.currentThread().getName());
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}

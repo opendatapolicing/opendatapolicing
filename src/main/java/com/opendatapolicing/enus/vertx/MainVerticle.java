@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.CountDownLatch;
+import java.util.Optional;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -14,6 +14,10 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.curator.RetryPolicy;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.slf4j.Logger;
@@ -39,14 +43,12 @@ import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.WorkerExecutor;
-import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.http.Cookie;
 import io.vertx.core.http.HttpHeaders;
@@ -90,8 +92,8 @@ import io.vertx.sqlclient.PoolOptions;
  *	A Java class to start the Vert.x application as a main method. 
  * Keyword: classSimpleNameVerticle
  **/
-public class AppVertx extends AppVertxGen<AbstractVerticle> {
-	private static final Logger LOG = LoggerFactory.getLogger(AppVertx.class);
+public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
+	private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
 
 	public final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
@@ -110,8 +112,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 	private WebClient webClient;
 
-	private JsonObject config;
-
 	private Router router;
 
 	WorkerExecutor workerExecutor;
@@ -123,13 +123,12 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	Integer semaphorePermits;
 
 	Semaphore semaphore;
-
-	public static final String CONFIG_staticPath = "staticPath";
-
-	public AppVertx setSemaphore(Semaphore semaphore) {
+	public MainVerticle setSemaphore(Semaphore semaphore) {
 		this.semaphore = semaphore;
 		return this;
 	}
+
+	public static final String CONFIG_staticPath = "staticPath";
 
 	/**	
 	 *	The main method for the Vert.x application that runs the Vert.x Runner class
@@ -138,32 +137,73 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		run();
 	}
 
-	public static void  run() {
-		Integer semaphorePermits = System.getenv(ConfigKeys.SEMAPHORE_PERMITS) == null ? 10 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_PERMITS));
-		Semaphore semaphore = new Semaphore(semaphorePermits);
+	/**	
+	 * Val.Complete.enUS:The config was configured successfully. 
+	 * Val.Fail.enUS:Could not configure the config(). 
+	 **/
+	public static Future<JsonObject> configureConfig(Vertx vertx) {
+		Promise<JsonObject> promise = Promise.promise();
 
+		try {
+			ConfigRetrieverOptions retrieverOptions = new ConfigRetrieverOptions();
+
+			retrieverOptions.addStore(new ConfigStoreOptions().setType("file").setFormat("properties").setConfig(new JsonObject().put("path", "application.properties")));
+
+			String configPath = System.getenv("configPath");
+			if(StringUtils.isNotBlank(configPath)) {
+				ConfigStoreOptions configIni = new ConfigStoreOptions().setType("file").setFormat("properties").setConfig(new JsonObject().put("path", configPath));
+				retrieverOptions.addStore(configIni);
+			}
+
+			ConfigStoreOptions storeEnv = new ConfigStoreOptions().setType("env");
+			retrieverOptions.addStore(storeEnv);
+
+			ConfigRetriever configRetriever = ConfigRetriever.create(vertx, retrieverOptions);
+			configRetriever.getConfig().onSuccess(config -> {
+				LOG.info("The config was configured successfully. ");
+				promise.complete(config);
+			}).onFailure(ex -> {
+				LOG.error("Unable to configure site context. ", ex);
+				promise.fail(ex);
+			});
+		} catch(Exception ex) {
+			LOG.error("Unable to configure site context. ", ex);
+			promise.fail(ex);
+		}
+
+		return promise.future();
+	}
+
+	public static void  run() {
 		JsonObject zkConfig = new JsonObject();
-		String zookeeperHostName = System.getenv("zookeeperHostName");
-		Integer zookeeperPort = Integer.parseInt(System.getenv("zookeeperPort"));
+		String zookeeperHostName = System.getenv(ConfigKeys.ZOOKEEPER_HOST_NAME);
+		Integer zookeeperPort = Integer.parseInt(Optional.ofNullable(System.getenv(ConfigKeys.ZOOKEEPER_PORT)).orElse("2181"));
+		String zookeeperHosts = Optional.ofNullable(System.getenv(ConfigKeys.ZOOKEEPER_HOSTS)).orElse(zookeeperHostName + ":" + zookeeperPort);
+		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
+		CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(zookeeperHosts, retryPolicy);
+		curatorFramework.start();
+		Integer semaphorePermits = System.getenv(ConfigKeys.SEMAPHORE_PERMITS) == null ? 10 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_PERMITS));
+//		InterProcessSemaphoreV2 semaphore = new InterProcessSemaphoreV2(curatorFramework, "/opendatapolicing/semaphore", semaphorePermits);
+		Semaphore semaphore = new Semaphore(semaphorePermits);
 		Integer clusterPort = System.getenv("clusterPort") == null ? null : Integer.parseInt(System.getenv("clusterPort"));
 		String clusterHost = System.getenv("clusterHost");
 		Integer clusterPublicPort = System.getenv("clusterPublicPort") == null ? null : Integer.parseInt(System.getenv("clusterPublicPort"));
-		Integer siteInstances = System.getenv("siteInstances") == null ? 1 : Integer.parseInt(System.getenv("siteInstances"));
+		Integer siteInstances = System.getenv(ConfigKeys.SITE_INSTANCES) == null ? 1 : Integer.parseInt(System.getenv(ConfigKeys.SITE_INSTANCES));
+		Integer semaphoreVerticleInstances = System.getenv(ConfigKeys.SEMAPHORE_VERTICLE_INSTANCES) == null ? 1 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_VERTICLE_INSTANCES));
 		Long vertxWarningExceptionSeconds = System.getenv("vertxWarningExceptionSeconds") == null ? 10 : Long.parseLong(System.getenv("vertxWarningExceptionSeconds"));
 		String clusterPublicHost = System.getenv("clusterPublicHost");
-		String zookeeperHosts = zookeeperHostName + ":" + zookeeperPort;
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
-		zkConfig.put("sessionTimeout", 20000);
-		zkConfig.put("connectTimeout", 3000);
+		zkConfig.put("sessionTimeout", 20000000);
+		zkConfig.put("connectTimeout", 30000);
 		zkConfig.put("rootPath", "io.vertx");
 		zkConfig.put("retry", new JsonObject() {
 			{
 				put("initialSleepTime", 100);
 				put("intervalTimes", 10000);
-				put("maxTimes", 3);
+				put("maxTimes", 30);
 			}
 		});
-		ClusterManager gestionnaireCluster = new ZookeeperClusterManager(zkConfig);
+		ClusterManager clusterManager = new ZookeeperClusterManager(zkConfig);
 		VertxOptions vertxOptions = new VertxOptions();
 		// For OpenShift
 		EventBusOptions eventBusOptions = new EventBusOptions();
@@ -194,58 +234,108 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			eventBusOptions.setClusterPublicPort(clusterPublicPort);
 		}
 		vertxOptions.setEventBusOptions(eventBusOptions);
-		vertxOptions.setClusterManager(gestionnaireCluster);
+		vertxOptions.setClusterManager(clusterManager);
 		vertxOptions.setWarningExceptionTime(vertxWarningExceptionSeconds);
 		vertxOptions.setWarningExceptionTimeUnit(TimeUnit.SECONDS);
 		vertxOptions.setWorkerPoolSize(System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? 5 : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE)));
-		DeploymentOptions deploymentOptions = new DeploymentOptions();
-
-		DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
-//		mailVerticleDeploymentOptions.setWorker(true);
-
-		DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
-//		workerVerticleDeploymentOptions.setWorker(true);
-
 		Consumer<Vertx> runner = vertx -> {
-			for(Integer i = 0; i < siteInstances; i++) {
-				vertx.deployVerticle(new AppVertx().setSemaphore(semaphore), deploymentOptions);
-			}
-			vertx.deployVerticle(new MailVerticle(), mailVerticleDeploymentOptions);
-			vertx.deployVerticle(new WorkerVerticle().setSemaphore(semaphore), workerVerticleDeploymentOptions);
-		};
-		Vertx.clusteredVertx(vertxOptions).onSuccess(vertx -> {
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				public void run() {
-					LOG.info("Shutting down vertx. ");
+			configureConfig(vertx).onSuccess(config -> {
+				try {
 					List<Future> futures = new ArrayList<>();
-					CountDownLatch latch = new CountDownLatch(vertx.deploymentIDs().size());
-					vertx.deploymentIDs().forEach(deploymentId -> {
-						futures.add(vertx.undeploy(deploymentId).onSuccess(a -> {
-							LOG.info("Succeeded to undeploy verticle {}. ", deploymentId);
-							latch.countDown();
-						}).onFailure(ex -> {
-							LOG.error("Failed to undeploy verticle {}. ", deploymentId);
-							latch.countDown();
-						}));
-						
-					});
-					CompositeFuture.all(futures).onSuccess(a -> {
-						vertx.close().onSuccess(b -> {
-							LOG.info("Goodbye");
-						}).onFailure(ex -> {
-							LOG.error("Failed to shut down vertx. ", ex);
-						});
+
+					DeploymentOptions deploymentOptions = new DeploymentOptions();
+					deploymentOptions.setInstances(siteInstances);
+					deploymentOptions.setConfig(config);
+		
+					DeploymentOptions semaphoreVerticleDeploymentOptions = new DeploymentOptions();
+					semaphoreVerticleDeploymentOptions.setConfig(config);
+					semaphoreVerticleDeploymentOptions.setWorker(true);
+		
+					DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
+					mailVerticleDeploymentOptions.setConfig(config);
+					mailVerticleDeploymentOptions.setWorker(true);
+		
+					DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
+					workerVerticleDeploymentOptions.setConfig(config);
+//					workerVerticleDeploymentOptions.setWorker(true);
+					workerVerticleDeploymentOptions.setInstances(1);
+		
+					vertx.deployVerticle(MainVerticle.class, deploymentOptions).onSuccess(a -> {
+						vertx.deployVerticle(WorkerVerticle.class, workerVerticleDeploymentOptions);
+						LOG.info("Started main verticle. ");
 					}).onFailure(ex -> {
-						LOG.error(String.format("listPUTImportTrafficStop failed. ", ex));
+						LOG.error("Failed to start main verticle. ", ex);
 					});
-					try {
-						latch.await(10, TimeUnit.SECONDS);
-					} catch (Exception ignored) {
-					}
+	//				for(Integer i = 0; i < semaphoreVerticleInstances; i++) {
+	//					futures.add(vertx.deployVerticle(new SemaphoreVerticle().setClusterManager(clusterManager), semaphoreVerticleDeploymentOptions).onSuccess(a -> {
+	//						LOG.info("Started SemaphoreVerticle. ");
+	//					}).onFailure(ex -> {
+	//						LOG.error("Failed to start SemaphoreVerticle. ", ex);
+	//					}));
+	//				}
+		//			futures.add(vertx.deployVerticle(new MailVerticle(), mailVerticleDeploymentOptions).onSuccess(a -> {
+		//				LOG.info("Started mail verticle. ");
+		//			}).onFailure(ex -> {
+		//				LOG.error("Failed to start mail verticle. ", ex);
+		//			}));
+		//			futures.add(Future.future(promise -> {
+		//				vertx.deployVerticle(new WorkerVerticle().setSemaphore(semaphore), workerVerticleDeploymentOptions).onSuccess(a -> {
+		//					promise.complete();
+		//					LOG.info("Started worker verticle. ");
+		//				}).onFailure(ex -> {
+		//					promise.fail(ex);
+		//					LOG.error("Failed to start worker verticle. ", ex);
+		//				});
+		//			}));
+//		
+//					CompositeFuture.all(futures).onSuccess(b -> {
+//						LOG.info("We now have a clustered event bus. ");
+//						vertx.deployVerticle(new WorkerVerticle().setClusterManager(clusterManager), workerVerticleDeploymentOptions);
+//						Runtime.getRuntime().addShutdownHook(new Thread() {
+//							public void run() {
+//								LOG.info("Shutting down vertx. ");
+//								List<Future> futures = new ArrayList<>();
+//								CountDownLatch latch = new CountDownLatch(vertx.deploymentIDs().size());
+//								vertx.deploymentIDs().forEach(deploymentId -> {
+//									futures.add(vertx.undeploy(deploymentId).onSuccess(a -> {
+//										LOG.info("Succeeded to undeploy verticle {}. ", deploymentId);
+//										latch.countDown();
+//									}).onFailure(ex -> {
+//										LOG.error("Failed to undeploy verticle {}. ", deploymentId);
+//										latch.countDown();
+//									}));
+//									
+//								});
+//								CompositeFuture.all(futures).onSuccess(a -> {
+//									vertx.close().onSuccess(b -> {
+//										LOG.info("Goodbye");
+//									}).onFailure(ex -> {
+//										LOG.error("Failed to shut down vertx. ", ex);
+//									});
+//								}).onFailure(ex -> {
+//									LOG.error(String.format("listPUTImportTrafficStop failed. ", ex));
+//								});
+//								try {
+//									latch.await(10, TimeUnit.SECONDS);
+//								} catch (Exception ignored) {
+//								}
+//							}
+//						});
+//					}).onFailure(ex -> {
+//						LOG.error("Creating clustered Vertx failed. ", ex);
+//						ExceptionUtils.rethrow(ex);
+//					});
+				} catch (Throwable ex) {
+					LOG.error("Creating clustered Vertx failed. ", ex);
+					ExceptionUtils.rethrow(ex);
 				}
+			}).onFailure(ex -> {
+				LOG.error("Creating clustered Vertx failed. ", ex);
+				ExceptionUtils.rethrow(ex);
 			});
-			EventBus eventBus = vertx.eventBus();
-			LOG.info("We now have a clustered event bus: {}", eventBus);
+		};
+
+		Vertx.clusteredVertx(vertxOptions).onSuccess(vertx -> {
 			runner.accept(vertx);
 		}).onFailure(ex -> {
 			LOG.error("Creating clustered Vertx failed. ", ex);
@@ -262,18 +352,16 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	public void  start(Promise<Void> startPromise) throws Exception, Exception {
 
 		try {
-			Future<Void> promiseSteps = configureSiteContext().compose(a ->
+			Future<Void> promiseSteps = configureWebClient().compose(a ->
 				configureData().compose(b -> 
-					configureCluster().compose(c -> 
-						configureOpenApi().compose(d -> 
-							configureHealthChecks().compose(e -> 
-								configureSharedWorkerExecutor().compose(f -> 
-									configureWebsockets().compose(g -> 
-										configureEmail().compose(h -> 
-											configureApi().compose(i -> 
-												configureUi().compose(j -> 
-													startServer()
-												)
+					configureOpenApi().compose(d -> 
+						configureHealthChecks().compose(e -> 
+							configureSharedWorkerExecutor().compose(f -> 
+								configureWebsockets().compose(g -> 
+									configureEmail().compose(h -> 
+										configureApi().compose(i -> 
+											configureUi().compose(j -> 
+												startServer()
 											)
 										)
 									)
@@ -291,31 +379,12 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 	/**	
 	 **/
-	private Future<Void> configureSiteContext() {
+	private Future<Void> configureWebClient() {
 		Promise<Void> promise = Promise.promise();
 
 		try {
-			ConfigRetrieverOptions retrieverOptions = new ConfigRetrieverOptions();
-			ConfigStoreOptions storeEnv = new ConfigStoreOptions().setType("env");
-			retrieverOptions.addStore(storeEnv);
-
-			String configPath = System.getenv("configPath");
-			if(StringUtils.isNotBlank(configPath)) {
-				ConfigStoreOptions configIni = new ConfigStoreOptions().setType("file").setFormat("properties")
-						.setConfig(new JsonObject().put("path", configPath));
-				retrieverOptions.addStore(configIni);
-			}
-
-			ConfigRetriever configRetriever = ConfigRetriever.create(vertx, retrieverOptions);
-			configRetriever.getConfig(a -> {
-				config = a.result();
-
-//				solrClient = new HttpSolrClient.Builder(config.getString(ConfigKeys.SOLR_URL)).build();
-				webClient = WebClient.create(vertx);
-
-				LOG.info("The site context was configured successfully. ");
-				promise.complete();
-			});
+			webClient = WebClient.create(vertx);
+			promise.complete();
 		} catch(Exception ex) {
 			LOG.error("Unable to configure site context. ", ex);
 			promise.fail(ex);
@@ -342,18 +411,18 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		try {
 			semaphorePermits = System.getenv(ConfigKeys.SEMAPHORE_PERMITS) == null ? 10 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_PERMITS));
 			PgConnectOptions pgOptions = new PgConnectOptions();
-			pgOptions.setPort(config.getInteger(ConfigKeys.JDBC_PORT));
-			pgOptions.setHost(config.getString(ConfigKeys.JDBC_HOST));
-			pgOptions.setDatabase(config.getString(ConfigKeys.JDBC_DATABASE));
-			pgOptions.setUser(config.getString(ConfigKeys.JDBC_USERNAME));
-			pgOptions.setPassword(config.getString(ConfigKeys.JDBC_PASSWORD));
-			pgOptions.setIdleTimeout(config.getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME, 10));
+			pgOptions.setPort(config().getInteger(ConfigKeys.JDBC_PORT));
+			pgOptions.setHost(config().getString(ConfigKeys.JDBC_HOST));
+			pgOptions.setDatabase(config().getString(ConfigKeys.JDBC_DATABASE));
+			pgOptions.setUser(config().getString(ConfigKeys.JDBC_USERNAME));
+			pgOptions.setPassword(config().getString(ConfigKeys.JDBC_PASSWORD));
+			pgOptions.setIdleTimeout(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME, 10));
 			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-			pgOptions.setConnectTimeout(config.getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT, 5));
+			pgOptions.setConnectTimeout(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT, 5));
 
 			PoolOptions poolOptions = new PoolOptions();
-			jdbcMaxPoolSize = config.getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1);
-			jdbcMaxWaitQueueSize = config.getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10);
+			jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1);
+			jdbcMaxWaitQueueSize = config().getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10);
 			poolOptions.setMaxSize(jdbcMaxPoolSize);
 			poolOptions.setMaxWaitQueueSize(jdbcMaxWaitQueueSize);
 
@@ -371,37 +440,6 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 
 	/**	
 	 * 
-	 * Val.DataError.enUS:Could not configure the shared cluster data. 
-	 * Val.DataSuccess.enUS:The shared cluster data was configured successfully. 
-	 * 
-	 *	Configure shared data across the cluster for massive scaling of the application. 
-	 *	Return a promise that configures a shared cluster data. 
-	 **/ 
-	private Future<Void> configureCluster() {
-		Promise<Void> promise = Promise.promise();
-		SharedData sharedData = vertx.sharedData();
-		sharedData.getClusterWideMap("clusterData", res -> {
-			if (res.succeeded()) {
-				AsyncMap<Object, Object> clusterData = res.result();
-				clusterData.put("config", config, resPut -> {
-					if (resPut.succeeded()) {
-						LOG.info(configureClusterDataSuccess);
-						promise.complete();
-					} else {
-						LOG.error(configureClusterDataError, res.cause());
-						promise.fail(res.cause());
-					}
-				});
-			} else {
-				LOG.error(configureClusterDataError, res.cause());
-				promise.fail(res.cause());
-			}
-		});
-		return promise.future();
-	}
-
-	/**	
-	 * 
 	 * Val.Error.enUS:Could not configure the auth server and API. 
 	 * Val.Success.enUS:The auth server and API was configured successfully. 
 	 * 
@@ -413,13 +451,13 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureOpenApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
+			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
 
 			OAuth2Options oauth2ClientOptions = new OAuth2Options();
-			oauth2ClientOptions.setSite(config.getString(ConfigKeys.AUTH_URL) + "/realms/" + config.getString(ConfigKeys.AUTH_REALM));
-			oauth2ClientOptions.setTenant(config.getString(ConfigKeys.AUTH_REALM));
-			oauth2ClientOptions.setClientID(config.getString(ConfigKeys.AUTH_RESOURCE));
-			oauth2ClientOptions.setClientSecret(config.getString(ConfigKeys.AUTH_SECRET));
+			oauth2ClientOptions.setSite(config().getString(ConfigKeys.AUTH_URL) + "/realms/" + config().getString(ConfigKeys.AUTH_REALM));
+			oauth2ClientOptions.setTenant(config().getString(ConfigKeys.AUTH_REALM));
+			oauth2ClientOptions.setClientID(config().getString(ConfigKeys.AUTH_RESOURCE));
+			oauth2ClientOptions.setClientSecret(config().getString(ConfigKeys.AUTH_SECRET));
 			oauth2ClientOptions.setFlow(OAuth2FlowType.AUTH_CODE);
 			JsonObject extraParams = new JsonObject();
 			extraParams.put("scope", "DefaultAuthScope");
@@ -467,7 +505,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			
 								final JsonObject config = new JsonObject().put("code", code);
 			
-								config.put("redirect_uri", siteBaseUrl + "/callback");
+								config().put("redirect_uri", siteBaseUrl + "/callback");
 			
 								oauth2AuthenticationProvider.authenticate(config, res -> {
 									if (res.failed()) {
@@ -540,7 +578,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	/**	
 	 * 
 	 * Val.Fail.enUS:Could not configure the shared worker executor. 
-	 * Val.Complete.enUS:The shared worker executor was configured successfully. 
+	 * Val.Complete.enUS:The shared worker executor "{}" was configured successfully. 
 	 * 
 	 *	Configure a shared worker executor for running blocking tasks in the background. 
 	 *	Return a promise that configures the shared worker executor. 
@@ -548,8 +586,10 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureSharedWorkerExecutor() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			workerExecutor = vertx.createSharedWorkerExecutor("WorkerExecutor");
-			LOG.info(configureSharedWorkerExecutorComplete);
+			String name = "AppVertx-WorkerExecutor";
+			Integer workerPoolSize = System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? 5 : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE));
+			workerExecutor = vertx.createSharedWorkerExecutor(name, workerPoolSize);
+			LOG.info(configureSharedWorkerExecutorComplete, name);
 			promise.complete();
 		} catch (Exception ex) {
 			LOG.error(configureSharedWorkerExecutorFail, ex);
@@ -589,9 +629,9 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 				SolrQuery query = new SolrQuery();
 				query.setQuery("*:*");
 				try {
-					String solrHostName = config.getString(ConfigKeys.SOLR_HOST_NAME);
-					Integer solrPort = config.getInteger(ConfigKeys.SOLR_PORT);
-					String solrCollection = config.getString(ConfigKeys.SOLR_COLLECTION);
+					String solrHostName = config().getString(ConfigKeys.SOLR_HOST_NAME);
+					Integer solrPort = config().getInteger(ConfigKeys.SOLR_PORT);
+					String solrCollection = config().getString(ConfigKeys.SOLR_COLLECTION);
 					String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, query.toQueryString() + "&suggest=true&terms=true&terms.fl=stopPurposeTitle_indexed_string");
 					webClient.get(solrPort, solrHostName, solrRequestUri).send().onSuccess(b -> {
 						try {
@@ -610,7 +650,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 				}
 			});
 			healthCheckHandler.register("semaphore", 2000, a -> {
-				a.complete(Status.OK(new JsonObject().put("permits", semaphorePermits).put("availablePermits", semaphore.availablePermits()).put("queueLengthEstimate", semaphore.getQueueLength())));
+				a.complete(Status.OK(new JsonObject().put("permits", semaphorePermits)));
 			});
 			healthCheckHandler.register("vertx", 2000, a -> {
 				a.complete(Status.OK(new JsonObject().put("siteInstances", siteInstances).put("workerPoolSize", workerPoolSize)));
@@ -655,14 +695,14 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureEmail() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			String emailHost = config.getString(ConfigKeys.EMAIL_HOST);
+			String emailHost = config().getString(ConfigKeys.EMAIL_HOST);
 			if(StringUtils.isNotBlank(emailHost)) {
 				MailConfig mailConfig = new MailConfig();
 				mailConfig.setHostname(emailHost);
-				mailConfig.setPort(config.getInteger(ConfigKeys.EMAIL_PORT));
-				mailConfig.setSsl(config.getBoolean(ConfigKeys.EMAIL_SSL));
-				mailConfig.setUsername(config.getString(ConfigKeys.EMAIL_USERNAME));
-				mailConfig.setPassword(config.getString(ConfigKeys.EMAIL_PASSWORD));
+				mailConfig.setPort(config().getInteger(ConfigKeys.EMAIL_PORT));
+				mailConfig.setSsl(config().getBoolean(ConfigKeys.EMAIL_SSL));
+				mailConfig.setUsername(config().getString(ConfigKeys.EMAIL_USERNAME));
+				mailConfig.setPassword(config().getString(ConfigKeys.EMAIL_PASSWORD));
 				MailClient.createShared(vertx, mailConfig);
 				LOG.info(configureEmailComplete);
 				promise.complete();
@@ -684,14 +724,14 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureApi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			SiteUserEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteStateEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SiteAgencyEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			SearchBasisEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficContrabandEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficPersonEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficSearchEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
-			TrafficStopEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config, workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteUserEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteStateEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SiteAgencyEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			SearchBasisEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficContrabandEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficPersonEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficSearchEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
+			TrafficStopEnUSGenApiService.registerService(semaphore, vertx.eventBus(), config(), workerExecutor, pgPool, webClient, oauth2AuthenticationProvider, authorizationProvider, vertx);
 
 			LOG.info(configureApiComplete);
 			promise.complete();
@@ -709,9 +749,9 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 	private Future<Void> configureUi() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			String staticPath = config.getString(ConfigKeys.STATIC_PATH);
-			String staticBaseUrl = config.getString(ConfigKeys.STATIC_BASE_URL);
-			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
+			String staticPath = config().getString(ConfigKeys.STATIC_PATH);
+			String staticBaseUrl = config().getString(ConfigKeys.STATIC_BASE_URL);
+			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
 			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
 			Handlebars handlebars = (Handlebars)engine.unwrap();
 			TemplateHandler templateHandler = TemplateHandler.create(engine, staticPath + "/template", "text/html");
@@ -731,7 +771,7 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 			router.get("/template/home-page").handler(ctx -> {
 				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 				siteRequest.setWebClient(webClient);
-				siteRequest.setConfig(config);
+				siteRequest.setConfig(config());
 				siteRequest.initDeepSiteRequestEnUS(siteRequest);
 
 				SearchList<SiteState> stateSearch = new SearchList<SiteState>();
@@ -864,13 +904,13 @@ public class AppVertx extends AppVertxGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 
 		try {
-			Boolean sslPassthrough = config.getBoolean(ConfigKeys.SSL_PASSTHROUGH, false);
-			String siteBaseUrl = config.getString(ConfigKeys.SITE_BASE_URL);
-			Integer sitePort = config.getInteger(ConfigKeys.SITE_PORT);
-			String sslJksPath = config.getString(ConfigKeys.SSL_JKS_PATH);
+			Boolean sslPassthrough = config().getBoolean(ConfigKeys.SSL_PASSTHROUGH, false);
+			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
+			Integer sitePort = config().getInteger(ConfigKeys.SITE_PORT);
+			String sslJksPath = config().getString(ConfigKeys.SSL_JKS_PATH);
 			HttpServerOptions options = new HttpServerOptions();
 			if(sslPassthrough) {
-				options.setKeyStoreOptions(new JksOptions().setPath(sslJksPath).setPassword(config.getString(ConfigKeys.SSL_JKS_PASSWORD)));
+				options.setKeyStoreOptions(new JksOptions().setPath(sslJksPath).setPassword(config().getString(ConfigKeys.SSL_JKS_PASSWORD)));
 				options.setSsl(true);
 				LOG.info(String.format(startServerSsl, sslJksPath));
 			}

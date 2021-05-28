@@ -58,6 +58,41 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String API_COUNTER_PAUSE = "apiCounterPause";
+
+	/**
+	 * 
+	 **/
+	public static final String API_COUNTER_RESUME = "apiCounterResume";
+
+	/**
+	 * 
+	 **/
+	public static final String API_COUNTER_FETCH = "apiCounterFetch";
+
+	/**
+	 * 
+	 **/
+	public static final String SEMAPHORE_VERTICLE_INSTANCES = "semaphoreVerticleInstances";
+
+	/**
+	 * 
+	 **/
+	public static final String SEMAPHORE_VERTICLE_EVENT_NAME = "opendatapolicing-enUS-semaphore";
+
+	/**
+	 * 
+	 **/
+	public static final String SEMAPHORE_VERTICLE_NEXT_EVENT_NAME = "eventName";
+
+	/**
+	 * 
+	 **/
+	public static final String SEMAPHORE_VERTICLE_EVENT_ACTION = "eventAction";
+
+	/**
+	 * 
+	 **/
 	public static final String AUTH_REALM = "authRealm";
 
 	/**
@@ -243,11 +278,6 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
-	public static final String NUMBER_EXECUTORS = "numberExecutors";
-
-	/**
-	 * 
-	 **/
 	public static final String OPEN_API_VERSION = "openApiVersion";
 
 	/**
@@ -379,4 +409,19 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String VERTX_WARNING_EXCEPTION_SECONDS = "vertxWarningExceptionSeconds";
+
+	/**
+	 * 
+	 **/
+	public static final String ZOOKEEPER_HOST_NAME = "zookeeperHostName";
+
+	/**
+	 * 
+	 **/
+	public static final String ZOOKEEPER_PORT = "zookeeperPort";
+
+	/**
+	 * 
+	 **/
+	public static final String ZOOKEEPER_HOSTS = "zookeeperHosts";
 }

@@ -21,6 +21,7 @@
 		<exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
 		<vertx.version>4.0.2</vertx.version>
 		<handlebars-maven-plugin.version>4.2.0</handlebars-maven-plugin.version>
+		<apache-curator.version>4.3.0</apache-curator.version>
 	</properties>
 
 	<dependencyManagement>
@@ -106,12 +107,17 @@
 		<dependency>
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-client</artifactId>
-			<version>4.3.0</version>
+			<version>${apache-curator.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-framework</artifactId>
-			<version>4.3.0</version>
+			<version>${apache-curator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>${apache-curator.version}</version>
 		</dependency>
 		<!-- PDF Generation -->
 		<dependency>

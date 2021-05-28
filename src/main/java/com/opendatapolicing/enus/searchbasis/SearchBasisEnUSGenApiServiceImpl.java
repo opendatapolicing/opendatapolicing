@@ -199,23 +199,34 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					workerExecutor.executeBlocking(blockingCodeHandler -> {
 						try {
 							semaphore.acquire();
-
-							JsonObject params = new JsonObject();
-							params.put("body", obj);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject());
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.send("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "putimportSearchBasisFuture"));
-							blockingCodeHandler.complete();
+							try {
+								JsonObject params = new JsonObject();
+								params.put("body", obj);
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								eventBus.request("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "putimportSearchBasisFuture")).onSuccess(a -> {
+									blockingCodeHandler.complete();
+									semaphore.release();
+								}).onFailure(ex -> {
+									LOG.error(String.format("listPUTImportSearchBasis failed. "), ex);
+									blockingCodeHandler.fail(ex);
+									semaphore.release();
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("listPUTImportSearchBasis failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							}
 						} catch(Exception ex) {
 							LOG.error(String.format("listPUTImportSearchBasis failed. "), ex);
 							blockingCodeHandler.fail(ex);
 						}
-					}).onSuccess(a -> {
+					}, false).onSuccess(a -> {
 						promise1.complete();
 					}).onFailure(ex -> {
 						LOG.error(String.format("listPUTImportSearchBasis failed. "), ex);
@@ -248,6 +259,9 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			apiRequest.initDeepApiRequest(siteRequest);
 			siteRequest.setApiRequest_(apiRequest);
 			body.put("inheritPk", body.getValue("pk"));
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
 
 			SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
 			searchList.setStore(true);
@@ -286,7 +300,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								}
 							} else {
 								o2.defineForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
 						}
@@ -297,35 +311,33 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						if(body2.size() > 0) {
 							siteRequest.setJsonObject(body2);
 							patchSearchBasisFuture(o, true).onSuccess(b -> {
-								semaphore.release();
+								LOG.info("Import SearchBasis {} succeeded, modified SearchBasis. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportSearchBasisFuture failed. "), ex);
 							});
+						} else {
+							eventHandler.handle(Future.succeededFuture());
 						}
 					} else {
 						postSearchBasisFuture(siteRequest, true).onSuccess(b -> {
-							semaphore.release();
+							LOG.info("Import SearchBasis {} succeeded, created new SearchBasis. ", body.getValue("pk"));
 							eventHandler.handle(Future.succeededFuture());
 						}).onFailure(ex -> {
 							LOG.error(String.format("putimportSearchBasisFuture failed. "), ex);
-							semaphore.release();
 							eventHandler.handle(Future.failedFuture(ex));
 						});
 					}
 				} catch(Exception ex) {
 					LOG.error(String.format("putimportSearchBasisFuture failed. "), ex);
-					semaphore.release();
 					eventHandler.handle(Future.failedFuture(ex));
 				}
 			}).onFailure(ex -> {
 				LOG.error(String.format("putimportSearchBasisFuture failed. "), ex);
-				semaphore.release();
 				eventHandler.handle(Future.failedFuture(ex));
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("putimportSearchBasisFuture failed. "), ex);
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		}
 	}
@@ -337,532 +349,6 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
 		} catch(Exception ex) {
 			LOG.error(String.format("response200PUTImportSearchBasis failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	// PUTMerge //
-
-	@Override
-	public void putmergeSearchBasis(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.debug(String.format("putmergeSearchBasis started. "));
-		user(serviceRequest).onSuccess(siteRequest -> {
-			try {
-				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/search-basis/merge");
-				siteRequest.setRequestMethod("PUTMerge");
-
-				List<String> roles = Arrays.asList("SiteService");
-				if(
-						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-						) {
-					eventHandler.handle(Future.succeededFuture(
-						new ServiceResponse(401, "UNAUTHORIZED", 
-							Buffer.buffer().appendString(
-								new JsonObject()
-									.put("errorCode", "401")
-									.put("errorMessage", "roles required: " + String.join(", ", roles))
-									.encodePrettily()
-								), MultiMap.caseInsensitiveMultiMap()
-						)
-					));
-				} else {
-					try {
-						ApiRequest apiRequest = new ApiRequest();
-						JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-						apiRequest.setRows(jsonArray.size());
-						apiRequest.setNumFound(new Integer(jsonArray.size()).longValue());
-						apiRequest.setNumPATCH(0L);
-						apiRequest.initDeepApiRequest(siteRequest);
-						siteRequest.setApiRequest_(apiRequest);
-						eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
-						varsSearchBasis(siteRequest).onSuccess(d -> {
-							listPUTMergeSearchBasis(apiRequest, siteRequest).onSuccess(e -> {
-								response200PUTMergeSearchBasis(siteRequest).onSuccess(response -> {
-									LOG.debug(String.format("putmergeSearchBasis succeeded. "));
-									eventHandler.handle(Future.succeededFuture(response));
-								}).onFailure(ex -> {
-									LOG.error(String.format("putmergeSearchBasis failed. "), ex);
-									error(siteRequest, eventHandler, ex);
-								});
-							}).onFailure(ex -> {
-								LOG.error(String.format("putmergeSearchBasis failed. "), ex);
-								error(siteRequest, eventHandler, ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("putmergeSearchBasis failed. "), ex);
-							error(siteRequest, eventHandler, ex);
-						});
-					} catch(Exception ex) {
-						LOG.error(String.format("putmergeSearchBasis failed. "), ex);
-						error(siteRequest, eventHandler, ex);
-					}
-				}
-			} catch(Exception ex) {
-				LOG.error(String.format("putmergeSearchBasis failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		}).onFailure(ex -> {
-			if("Inactive Token".equals(ex.getMessage())) {
-				try {
-					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-				} catch(Exception ex2) {
-					LOG.error(String.format("putmergeSearchBasis failed. ", ex2));
-					error(null, eventHandler, ex2);
-				}
-			} else {
-				LOG.error(String.format("putmergeSearchBasis failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		});
-	}
-
-
-	public Future<Void> listPUTMergeSearchBasis(ApiRequest apiRequest, SiteRequestEnUS siteRequest) {
-		Promise<Void> promise = Promise.promise();
-		List<Future> futures = new ArrayList<>();
-		JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
-		try {
-			jsonArray.forEach(obj -> {
-				futures.add(Future.future(promise1 -> {
-					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
-							semaphore.acquire();
-
-							JsonObject params = new JsonObject();
-							params.put("body", obj);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject());
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							eventBus.send("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "putmergeSearchBasisFuture"));
-							blockingCodeHandler.complete();
-						} catch(Exception ex) {
-							LOG.error(String.format("listPUTMergeSearchBasis failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
-					}).onSuccess(a -> {
-						promise1.complete();
-					}).onFailure(ex -> {
-						LOG.error(String.format("listPUTMergeSearchBasis failed. "), ex);
-						promise1.fail(ex);
-					});
-				}));
-			});
-			CompositeFuture.all(futures).onSuccess(a -> {
-				apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-				promise.complete();
-			}).onFailure(ex -> {
-				LOG.error(String.format("listPUTMergeSearchBasis failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("listPUTMergeSearchBasis failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	@Override
-	public void putmergeSearchBasisFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-			ApiRequest apiRequest = new ApiRequest();
-			apiRequest.setRows(1);
-			apiRequest.setNumFound(1L);
-			apiRequest.setNumPATCH(0L);
-			apiRequest.initDeepApiRequest(siteRequest);
-			siteRequest.setApiRequest_(apiRequest);
-			body.put("inheritPk", body.getValue("pk"));
-
-			SearchList<SearchBasis> searchList = new SearchList<SearchBasis>();
-			searchList.setStore(true);
-			searchList.setQuery("*:*");
-			searchList.setC(SearchBasis.class);
-			searchList.addFilterQuery("pk_indexed_long:" + ClientUtils.escapeQueryChars(body.getString("pk")));
-			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
-				try {
-					if(searchList.size() == 1) {
-						SearchBasis o = searchList.getList().stream().findFirst().orElse(null);
-						SearchBasis o2 = new SearchBasis();
-						JsonObject body2 = new JsonObject();
-						for(String f : body.fieldNames()) {
-							Object bodyVal = body.getValue(f);
-							if(bodyVal instanceof JsonArray) {
-								JsonArray bodyVals = (JsonArray)bodyVal;
-								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(bodyVals.size() == vals.size()) {
-									Boolean match = true;
-									for(Object val : vals) {
-										if(val != null) {
-											if(!bodyVals.contains(val.toString())) {
-												match = false;
-												break;
-											}
-										} else {
-											match = false;
-											break;
-										}
-									}
-									if(!match) {
-										body2.put("set" + StringUtils.capitalize(f), bodyVal);
-									}
-								} else {
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
-								}
-							} else {
-								o2.defineForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
-							}
-						}
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!body.fieldNames().contains(f))
-								body2.putNull("set" + StringUtils.capitalize(f));
-						}
-						if(body2.size() > 0) {
-							siteRequest.setJsonObject(body2);
-							patchSearchBasisFuture(o, false).onSuccess(b -> {
-								semaphore.release();
-								eventHandler.handle(Future.succeededFuture());
-							}).onFailure(ex -> {
-								LOG.error(String.format("putmergeSearchBasisFuture failed. "), ex);
-							});
-						}
-					} else {
-						postSearchBasisFuture(siteRequest, false).onSuccess(b -> {
-							semaphore.release();
-							eventHandler.handle(Future.succeededFuture());
-						}).onFailure(ex -> {
-							LOG.error(String.format("putmergeSearchBasisFuture failed. "), ex);
-							semaphore.release();
-							eventHandler.handle(Future.failedFuture(ex));
-						});
-					}
-				} catch(Exception ex) {
-					LOG.error(String.format("putmergeSearchBasisFuture failed. "), ex);
-					semaphore.release();
-					eventHandler.handle(Future.failedFuture(ex));
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("putmergeSearchBasisFuture failed. "), ex);
-				semaphore.release();
-				eventHandler.handle(Future.failedFuture(ex));
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putmergeSearchBasisFuture failed. "), ex);
-			semaphore.release();
-			eventHandler.handle(Future.failedFuture(ex));
-		}
-	}
-
-	public Future<ServiceResponse> response200PUTMergeSearchBasis(SiteRequestEnUS siteRequest) {
-		Promise<ServiceResponse> promise = Promise.promise();
-		try {
-			JsonObject json = new JsonObject();
-			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-		} catch(Exception ex) {
-			LOG.error(String.format("response200PUTMergeSearchBasis failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	// PUTCopy //
-
-	@Override
-	public void putcopySearchBasis(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		LOG.debug(String.format("putcopySearchBasis started. "));
-		user(serviceRequest).onSuccess(siteRequest -> {
-			try {
-				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/search-basis/copy");
-				siteRequest.setRequestMethod("PUTCopy");
-
-				List<String> roles = Arrays.asList("SiteService");
-				if(
-						!CollectionUtils.containsAny(siteRequest.getUserResourceRoles(), roles)
-						&& !CollectionUtils.containsAny(siteRequest.getUserRealmRoles(), roles)
-						) {
-					eventHandler.handle(Future.succeededFuture(
-						new ServiceResponse(401, "UNAUTHORIZED", 
-							Buffer.buffer().appendString(
-								new JsonObject()
-									.put("errorCode", "401")
-									.put("errorMessage", "roles required: " + String.join(", ", roles))
-									.encodePrettily()
-								), MultiMap.caseInsensitiveMultiMap()
-						)
-					));
-				} else {
-					response200PUTCopySearchBasis(siteRequest).onSuccess(response -> {
-						eventHandler.handle(Future.succeededFuture(response));
-						workerExecutor.executeBlocking(blockingCodeHandler -> {
-							try {
-								semaphore.acquire();
-								searchSearchBasisList(siteRequest, false, true, true, "/api/search-basis/copy", "PUTCopy").onSuccess(listSearchBasis -> {
-									ApiRequest apiRequest = new ApiRequest();
-									apiRequest.setRows(listSearchBasis.getRows());
-									apiRequest.setNumFound(listSearchBasis.getQueryResponse().getResults().getNumFound());
-									apiRequest.setNumPATCH(0L);
-									apiRequest.initDeepApiRequest(siteRequest);
-									siteRequest.setApiRequest_(apiRequest);
-									eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
-									listPUTCopySearchBasis(apiRequest, listSearchBasis).onSuccess(e -> {
-										response200PUTCopySearchBasis(siteRequest).onSuccess(f -> {
-											LOG.debug(String.format("putcopySearchBasis succeeded. "));
-											blockingCodeHandler.complete();
-										}).onFailure(ex -> {
-											LOG.error(String.format("putcopySearchBasis failed. "), ex);
-											blockingCodeHandler.fail(ex);
-										});
-									}).onFailure(ex -> {
-										LOG.error(String.format("putcopySearchBasis failed. "), ex);
-										blockingCodeHandler.fail(ex);
-									});
-								}).onFailure(ex -> {
-									LOG.error(String.format("putcopySearchBasis failed. "), ex);
-									blockingCodeHandler.fail(ex);
-								});
-							} catch(Exception ex) {
-								LOG.error(String.format("putcopySearchBasis failed. "), ex);
-								blockingCodeHandler.fail(ex);
-							}
-						}, resultHandler -> {
-							semaphore.release();
-						});
-					}).onFailure(ex -> {
-						LOG.error(String.format("putcopySearchBasis failed. "), ex);
-						error(siteRequest, eventHandler, ex);
-					});
-				}
-			} catch(Exception ex) {
-				LOG.error(String.format("putcopySearchBasis failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		}).onFailure(ex -> {
-			if("Inactive Token".equals(ex.getMessage())) {
-				try {
-					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-				} catch(Exception ex2) {
-					LOG.error(String.format("putcopySearchBasis failed. ", ex2));
-					error(null, eventHandler, ex2);
-				}
-			} else {
-				LOG.error(String.format("putcopySearchBasis failed. "), ex);
-				error(null, eventHandler, ex);
-			}
-		});
-	}
-
-
-	public Future<Void> listPUTCopySearchBasis(ApiRequest apiRequest, SearchList<SearchBasis> listSearchBasis) {
-		Promise<Void> promise = Promise.promise();
-		List<Future> futures = new ArrayList<>();
-		SiteRequestEnUS siteRequest = listSearchBasis.getSiteRequest_();
-		listSearchBasis.getList().forEach(o -> {
-			SiteRequestEnUS siteRequest2 = siteRequest.copy();
-			siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
-			o.setSiteRequest_(siteRequest2);
-			futures.add(
-				putcopySearchBasisFuture(siteRequest2, JsonObject.mapFrom(o)).onFailure(ex -> {
-					LOG.error(String.format("listPUTCopySearchBasis failed. "), ex);
-					error(siteRequest, null, ex);
-				})
-			);
-		});
-		CompositeFuture.all(futures).onSuccess(a -> {
-			apiRequest.setNumPATCH(apiRequest.getNumPATCH() + listSearchBasis.size());
-			listSearchBasis.next().onSuccess(next -> {
-				if(next) {
-					listPUTCopySearchBasis(apiRequest, listSearchBasis);
-				} else {
-					promise.complete();
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("listPUTCopySearchBasis failed. "), ex);
-				error(listSearchBasis.getSiteRequest_(), null, ex);
-			});
-		}).onFailure(ex -> {
-			LOG.error(String.format("listPUTCopySearchBasis failed. "), ex);
-			error(listSearchBasis.getSiteRequest_(), null, ex);
-		});
-		return promise.future();
-	}
-
-	public Future<SearchBasis> putcopySearchBasisFuture(SiteRequestEnUS siteRequest, JsonObject jsonObject) {
-		Promise<SearchBasis> promise = Promise.promise();
-
-		try {
-
-			jsonObject.put("saves", Optional.ofNullable(jsonObject.getJsonArray("saves")).orElse(new JsonArray()));
-			JsonObject jsonPatch = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonObject("patch")).orElse(new JsonObject());
-			jsonPatch.stream().forEach(o -> {
-				if(o.getValue() == null)
-					jsonObject.remove(o.getKey());
-				else
-					jsonObject.put(o.getKey(), o.getValue());
-				if(!jsonObject.getJsonArray("saves").contains(o.getKey()))
-					jsonObject.getJsonArray("saves").add(o.getKey());
-			});
-
-			pgPool.withTransaction(sqlConnection -> {
-				Promise<SearchBasis> promise1 = Promise.promise();
-				siteRequest.setSqlConnection(sqlConnection);
-				createSearchBasis(siteRequest).onSuccess(searchBasis -> {
-					sqlPUTCopySearchBasis(searchBasis, jsonObject).onSuccess(b -> {
-						defineSearchBasis(searchBasis).onSuccess(c -> {
-							attributeSearchBasis(searchBasis).onSuccess(d -> {
-								indexSearchBasis(searchBasis).onSuccess(e -> {
-									promise1.complete(searchBasis);
-								}).onFailure(ex -> {
-									LOG.error(String.format("putcopySearchBasisFuture failed. "), ex);
-									promise1.fail(ex);
-								});
-							}).onFailure(ex -> {
-								LOG.error(String.format("putcopySearchBasisFuture failed. "), ex);
-								promise1.fail(ex);
-							});
-						}).onFailure(ex -> {
-							LOG.error(String.format("putcopySearchBasisFuture failed. "), ex);
-							promise1.fail(ex);
-						});
-					}).onFailure(ex -> {
-						LOG.error(String.format("putcopySearchBasisFuture failed. "), ex);
-						promise1.fail(ex);
-					});
-				}).onFailure(ex -> {
-					LOG.error(String.format("putcopySearchBasisFuture failed. "), ex);
-					promise1.fail(ex);
-				});
-				return promise1.future();
-			}).onSuccess(a -> {
-				siteRequest.setSqlConnection(null);
-			}).onFailure(ex -> {
-				promise.fail(ex);
-				error(siteRequest, null, ex);
-			}).compose(searchBasis -> {
-				Promise<SearchBasis> promise2 = Promise.promise();
-				refreshSearchBasis(searchBasis).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						searchBasis.apiRequestSearchBasis();
-						eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
-					}
-					promise2.complete(searchBasis);
-				}).onFailure(ex -> {
-					LOG.error(String.format("putcopySearchBasisFuture failed. "), ex);
-					promise2.fail(ex);
-				});
-				return promise2.future();
-			}).onSuccess(searchBasis -> {
-				promise.complete(searchBasis);
-				LOG.debug(String.format("putcopySearchBasisFuture succeeded. "));
-			}).onFailure(ex -> {
-				promise.fail(ex);
-				error(siteRequest, null, ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putcopySearchBasisFuture failed. "), ex);
-			promise.fail(ex);
-			error(siteRequest, null, ex);
-		}
-		return promise.future();
-	}
-
-	public Future<Void> sqlPUTCopySearchBasis(SearchBasis o, JsonObject jsonObject) {
-		Promise<Void> promise = Promise.promise();
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			List<Long> pks = Optional.ofNullable(apiRequest).map(r -> r.getPks()).orElse(new ArrayList<>());
-			List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-			Integer num = 1;
-			StringBuilder bSql = new StringBuilder("UPDATE SearchBasis SET ");
-			List<Object> bParams = new ArrayList<Object>();
-			SearchBasis o2 = new SearchBasis();
-			o2.setSiteRequest_(siteRequest);
-			Long pk = o.getPk();
-			List<Future> futures = new ArrayList<>();
-
-			if(jsonObject != null) {
-				JsonArray entityVars = jsonObject.getJsonArray("saves");
-				for(Integer i = 0; i < entityVars.size(); i++) {
-					String entityVar = entityVars.getString(i);
-					switch(entityVar) {
-					case SearchBasis.VAR_inheritPk:
-						o2.setInheritPk(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(SearchBasis.VAR_inheritPk + "=$" + num);
-						num++;
-						bParams.add(o2.sqlInheritPk());
-						break;
-					case SearchBasis.VAR_searchId:
-						o2.setSearchId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(SearchBasis.VAR_searchId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlSearchId());
-						break;
-					case SearchBasis.VAR_searchBasisId:
-						o2.setSearchBasisId(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(SearchBasis.VAR_searchBasisId + "=$" + num);
-						num++;
-						bParams.add(o2.sqlSearchBasisId());
-						break;
-					}
-				}
-			}
-			bSql.append(" WHERE pk=$" + num);
-			if(bParams.size() > 0) {
-			bParams.add(pk);
-			num++;
-				futures.add(Future.future(a -> {
-					sqlConnection.preparedQuery(bSql.toString())
-							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
-					});
-				}));
-			}
-			CompositeFuture.all(futures).onSuccess(a -> {
-				promise.complete();
-			}).onFailure(ex -> {
-				LOG.error(String.format("sqlPUTCopySearchBasis failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("sqlPUTCopySearchBasis failed. "), ex);
-			promise.fail(ex);
-		}
-		return promise.future();
-	}
-
-	public Future<ServiceResponse> response200PUTCopySearchBasis(SiteRequestEnUS siteRequest) {
-		Promise<ServiceResponse> promise = Promise.promise();
-		try {
-			JsonObject json = new JsonObject();
-			promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-		} catch(Exception ex) {
-			LOG.error(String.format("response200PUTCopySearchBasis failed. "), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -902,11 +388,46 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					apiRequest.initDeepApiRequest(siteRequest);
 					siteRequest.setApiRequest_(apiRequest);
 					eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
-					postSearchBasisFuture(siteRequest, false).onSuccess(searchBasis -> {
-						apiRequest.setPk(searchBasis.getPk());
-						response200POSTSearchBasis(searchBasis).onSuccess(response -> {
-							eventHandler.handle(Future.succeededFuture(response));
-							LOG.debug(String.format("postSearchBasis succeeded. "));
+					workerExecutor.executeBlocking(blockingCodeHandler -> {
+						try {
+							semaphore.acquire();
+							try {
+								JsonObject params = new JsonObject();
+								params.put("body", siteRequest.getJsonObject());
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								eventBus.request("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "postSearchBasisFuture")).onSuccess(a -> {
+									blockingCodeHandler.complete();
+									semaphore.release();
+								}).onFailure(ex -> {
+									LOG.error(String.format("postSearchBasis failed. "), ex);
+									blockingCodeHandler.fail(ex);
+									semaphore.release();
+								});
+							} catch(Exception ex) {
+								LOG.error(String.format("postSearchBasis failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							}
+						} catch(Exception ex) {
+							LOG.error(String.format("postSearchBasis failed. "), ex);
+							blockingCodeHandler.fail(ex);
+						}
+					}, false).onSuccess(a -> {
+						postSearchBasisFuture(siteRequest, false).onSuccess(searchBasis -> {
+							apiRequest.setPk(searchBasis.getPk());
+							response200POSTSearchBasis(searchBasis).onSuccess(response -> {
+								eventHandler.handle(Future.succeededFuture(response));
+								LOG.debug(String.format("postSearchBasis succeeded. "));
+							}).onFailure(ex -> {
+								LOG.error(String.format("postSearchBasis failed. "), ex);
+								error(siteRequest, eventHandler, ex);
+							});
 						}).onFailure(ex -> {
 							LOG.error(String.format("postSearchBasis failed. "), ex);
 							error(siteRequest, eventHandler, ex);
@@ -945,11 +466,12 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
 		postSearchBasisFuture(siteRequest, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}
@@ -1224,24 +746,36 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					try {
 						semaphore.acquire();
-						Long pk = o.getPk();
+						try {
+							Long pk = o.getPk();
 
-						JsonObject params = new JsonObject();
-						params.put("body", siteRequest.getJsonObject().put(SearchBasis.VAR_pk, pk.toString()));
-						params.put("path", new JsonObject());
-						params.put("cookie", new JsonObject());
-						params.put("header", new JsonObject());
-						params.put("form", new JsonObject());
-						params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-						JsonObject context = new JsonObject().put("params", params);
-						JsonObject json = new JsonObject().put("context", context);
-						eventBus.send("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "patchSearchBasisFuture"));
-						blockingCodeHandler.complete();
+							JsonObject params = new JsonObject();
+							params.put("body", siteRequest.getJsonObject().put(SearchBasis.VAR_pk, pk.toString()));
+							params.put("path", new JsonObject());
+							params.put("cookie", new JsonObject());
+							params.put("header", new JsonObject());
+							params.put("form", new JsonObject());
+							params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
+							JsonObject context = new JsonObject().put("params", params);
+							JsonObject json = new JsonObject().put("context", context);
+							eventBus.request("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "patchSearchBasisFuture")).onSuccess(a -> {
+								blockingCodeHandler.complete();
+								semaphore.release();
+							}).onFailure(ex -> {
+								LOG.error(String.format("listPATCHSearchBasis failed. "), ex);
+								blockingCodeHandler.fail(ex);
+								semaphore.release();
+							});
+						} catch(Exception ex) {
+							LOG.error(String.format("listPATCHSearchBasis failed. "), ex);
+							blockingCodeHandler.fail(ex);
+							semaphore.release();
+						}
 					} catch(Exception ex) {
 						LOG.error(String.format("listPATCHSearchBasis failed. "), ex);
 						blockingCodeHandler.fail(ex);
 					}
-				}).onSuccess(a -> {
+				}, false).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHSearchBasis failed. "), ex);
@@ -1284,12 +818,13 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		apiRequest.setNumPATCH(0L);
 		apiRequest.initDeepApiRequest(siteRequest);
 		siteRequest.setApiRequest_(apiRequest);
+		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+			siteRequest.getRequestVars().put( "refresh", "false" );
+		}
 		o.setPk(body.getString(SearchBasis.VAR_pk));
 		patchSearchBasisFuture(o, false).onSuccess(a -> {
-			semaphore.release();
-			eventHandler.handle(Future.succeededFuture());
+			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
 		}).onFailure(ex -> {
-			semaphore.release();
 			eventHandler.handle(Future.failedFuture(ex));
 		});
 	}

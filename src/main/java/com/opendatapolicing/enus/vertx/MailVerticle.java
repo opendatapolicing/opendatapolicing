@@ -107,8 +107,8 @@ public class MailVerticle extends AbstractVerticle {
 
 		retrieverOptions.setScanPeriod(0);
 
-		ConfigStoreOptions storeApplicationProperties = new ConfigStoreOptions().setType("file").setFormat("properties").setConfig(new JsonObject().put("path", "application.properties"));
-		retrieverOptions.addStore(storeApplicationProperties);
+//		ConfigStoreOptions storeApplicationProperties = new ConfigStoreOptions().setType("file").setFormat("properties").setConfig(new JsonObject().put("path", "application.properties"));
+//		retrieverOptions.addStore(storeApplicationProperties);
 
 		String configPath = System.getenv("configPath");
 		if(StringUtils.isNotBlank(configPath)) {

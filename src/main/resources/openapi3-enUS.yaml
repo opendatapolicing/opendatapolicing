@@ -462,149 +462,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchSiteAgencyResponse'
-  /api/agency/copy:
-    put:
-      operationId: putcopySiteAgency
-      x-vertx-event-bus: opendatapolicing-enUS-SiteAgency
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - State
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopySiteAgencyRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopySiteAgencyResponse'
   /api/agency/import:
     put:
       operationId: putimportSiteAgency
@@ -748,149 +605,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportSiteAgencyResponse'
-  /api/agency/merge:
-    put:
-      operationId: putmergeSiteAgency
-      x-vertx-event-bus: opendatapolicing-enUS-SiteAgency
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - State
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeSiteAgencyRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeSiteAgencyResponse'
   /api/agency/{id}:
     get:
       operationId: getSiteAgency
@@ -1353,149 +1067,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchSearchBasisResponse'
-  /api/search-basis/copy:
-    put:
-      operationId: putcopySearchBasis
-      x-vertx-event-bus: opendatapolicing-enUS-SearchBasis
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Search Basis
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopySearchBasisRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopySearchBasisResponse'
   /api/search-basis/import:
     put:
       operationId: putimportSearchBasis
@@ -1639,149 +1210,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportSearchBasisResponse'
-  /api/search-basis/merge:
-    put:
-      operationId: putmergeSearchBasis
-      x-vertx-event-bus: opendatapolicing-enUS-SearchBasis
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Search Basis
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeSearchBasisRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeSearchBasisResponse'
   /api/search-basis/{id}:
     get:
       operationId: getSearchBasis
@@ -2244,149 +1672,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchSiteStateResponse'
-  /api/state/copy:
-    put:
-      operationId: putcopySiteState
-      x-vertx-event-bus: opendatapolicing-enUS-SiteState
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - State
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopySiteStateRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopySiteStateResponse'
   /api/state/import:
     put:
       operationId: putimportSiteState
@@ -2530,149 +1815,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportSiteStateResponse'
-  /api/state/merge:
-    put:
-      operationId: putmergeSiteState
-      x-vertx-event-bus: opendatapolicing-enUS-SiteState
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - State
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeSiteStateRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeSiteStateResponse'
   /api/state/{id}:
     get:
       operationId: getSiteState
@@ -3135,149 +2277,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchTrafficContrabandResponse'
-  /api/contraband/copy:
-    put:
-      operationId: putcopyTrafficContraband
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficContraband
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Contraband
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopyTrafficContrabandRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopyTrafficContrabandResponse'
   /api/contraband/import:
     put:
       operationId: putimportTrafficContraband
@@ -3421,149 +2420,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportTrafficContrabandResponse'
-  /api/contraband/merge:
-    put:
-      operationId: putmergeTrafficContraband
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficContraband
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Contraband
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeTrafficContrabandRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeTrafficContrabandResponse'
   /api/contraband/{id}:
     get:
       operationId: getTrafficContraband
@@ -4026,149 +2882,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchTrafficPersonResponse'
-  /api/person/copy:
-    put:
-      operationId: putcopyTrafficPerson
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficPerson
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Person
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopyTrafficPersonRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopyTrafficPersonResponse'
   /api/person/import:
     put:
       operationId: putimportTrafficPerson
@@ -4312,149 +3025,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportTrafficPersonResponse'
-  /api/person/merge:
-    put:
-      operationId: putmergeTrafficPerson
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficPerson
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Person
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeTrafficPersonRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeTrafficPersonResponse'
   /api/person/{id}:
     get:
       operationId: getTrafficPerson
@@ -4917,149 +3487,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchTrafficSearchResponse'
-  /api/traffic-search/copy:
-    put:
-      operationId: putcopyTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopyTrafficSearchRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopyTrafficSearchResponse'
   /api/traffic-search/import:
     put:
       operationId: putimportTrafficSearch
@@ -5203,149 +3630,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportTrafficSearchResponse'
-  /api/traffic-search/merge:
-    put:
-      operationId: putmergeTrafficSearch
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficSearch
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Search
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeTrafficSearchRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeTrafficSearchResponse'
   /api/traffic-search/{id}:
     get:
       operationId: getTrafficSearch
@@ -5808,149 +4092,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchTrafficStopResponse'
-  /api/traffic-stop/copy:
-    put:
-      operationId: putcopyTrafficStop
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficStop
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Stop
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTCopyTrafficStopRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTCopyTrafficStopResponse'
   /api/traffic-stop/import:
     put:
       operationId: putimportTrafficStop
@@ -6094,149 +4235,6 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportTrafficStopResponse'
-  /api/traffic-stop/merge:
-    put:
-      operationId: putmergeTrafficStop
-      x-vertx-event-bus: opendatapolicing-enUS-TrafficStop
-      security:
-        - openIdConnect:
-          - DefaultAuthScope
-      description: >+
-      summary: >+
-      tags:
-        - Traffic Stop
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: q
-          description: ''
-          required: false
-          schema:
-            type: string
-            default: '*:*'
-        - in: query
-          name: fq
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: fl
-          description: ''
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: sort
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: start
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - in: query
-          name: rows
-          description: ''
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 0
-        - in: query
-          name: var
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - in: query
-          name: facet
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: boolean
-        - in: query
-          name: facet.range.start
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.end
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range.gap
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.pivot
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.range
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: facet.field
-          description: ''
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        description: >+
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PUTMergeTrafficStopRequest'
-      responses:
-        '200':
-          description: >+
-          content:
-            application/json; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/PUTMergeTrafficStopResponse'
   /api/traffic-stop/{id}:
     get:
       operationId: getTrafficStop
@@ -6608,16 +4606,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchSiteAgencyResponse'
-    PUTCopySiteAgencyRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopySiteAgencyRequest'
-    PUTCopySiteAgencyResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopySiteAgencyResponse'
     PUTImportSiteAgencyRequest:
       content:
         application/json:
@@ -6628,16 +4616,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportSiteAgencyResponse'
-    PUTMergeSiteAgencyRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSiteAgencyRequest'
-    PUTMergeSiteAgencyResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSiteAgencyResponse'
     GETSiteAgencyResponse:
       content:
         application/json; charset=utf-8:
@@ -6673,16 +4651,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchSearchBasisResponse'
-    PUTCopySearchBasisRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopySearchBasisRequest'
-    PUTCopySearchBasisResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopySearchBasisResponse'
     PUTImportSearchBasisRequest:
       content:
         application/json:
@@ -6693,16 +4661,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportSearchBasisResponse'
-    PUTMergeSearchBasisRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSearchBasisRequest'
-    PUTMergeSearchBasisResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSearchBasisResponse'
     GETSearchBasisResponse:
       content:
         application/json; charset=utf-8:
@@ -6738,16 +4696,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchSiteStateResponse'
-    PUTCopySiteStateRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopySiteStateRequest'
-    PUTCopySiteStateResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopySiteStateResponse'
     PUTImportSiteStateRequest:
       content:
         application/json:
@@ -6758,16 +4706,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportSiteStateResponse'
-    PUTMergeSiteStateRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSiteStateRequest'
-    PUTMergeSiteStateResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeSiteStateResponse'
     GETSiteStateResponse:
       content:
         application/json; charset=utf-8:
@@ -6803,16 +4741,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchTrafficContrabandResponse'
-    PUTCopyTrafficContrabandRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficContrabandRequest'
-    PUTCopyTrafficContrabandResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficContrabandResponse'
     PUTImportTrafficContrabandRequest:
       content:
         application/json:
@@ -6823,16 +4751,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportTrafficContrabandResponse'
-    PUTMergeTrafficContrabandRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficContrabandRequest'
-    PUTMergeTrafficContrabandResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficContrabandResponse'
     GETTrafficContrabandResponse:
       content:
         application/json; charset=utf-8:
@@ -6868,16 +4786,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchTrafficPersonResponse'
-    PUTCopyTrafficPersonRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficPersonRequest'
-    PUTCopyTrafficPersonResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficPersonResponse'
     PUTImportTrafficPersonRequest:
       content:
         application/json:
@@ -6888,16 +4796,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportTrafficPersonResponse'
-    PUTMergeTrafficPersonRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficPersonRequest'
-    PUTMergeTrafficPersonResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficPersonResponse'
     GETTrafficPersonResponse:
       content:
         application/json; charset=utf-8:
@@ -6933,16 +4831,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchTrafficSearchResponse'
-    PUTCopyTrafficSearchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficSearchRequest'
-    PUTCopyTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficSearchResponse'
     PUTImportTrafficSearchRequest:
       content:
         application/json:
@@ -6953,16 +4841,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportTrafficSearchResponse'
-    PUTMergeTrafficSearchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficSearchRequest'
-    PUTMergeTrafficSearchResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficSearchResponse'
     GETTrafficSearchResponse:
       content:
         application/json; charset=utf-8:
@@ -6998,16 +4876,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchTrafficStopResponse'
-    PUTCopyTrafficStopRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficStopRequest'
-    PUTCopyTrafficStopResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTCopyTrafficStopResponse'
     PUTImportTrafficStopRequest:
       content:
         application/json:
@@ -7018,16 +4886,6 @@ components:
         application/json; charset=utf-8:
           schema:
             $ref: '#/components/schemas/PUTImportTrafficStopResponse'
-    PUTMergeTrafficStopRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficStopRequest'
-    PUTMergeTrafficStopResponse:
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/PUTMergeTrafficStopResponse'
     GETTrafficStopResponse:
       content:
         application/json; charset=utf-8:
@@ -7329,58 +5187,6 @@ components:
                 type: string
               agencyCompleteName:
                 type: string
-    PUTCopySiteAgencyRequest:
-      allOf:
-        - type: object
-          properties:
-            agencyKey:
-              type: string
-            agencyName:
-              type: string
-            stateKey:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            imageCoords:
-              type: string
-            stateId:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
-              type: string
-    PUTCopySiteAgencyResponse:
-      allOf:
-        - type: object
-          properties:
-            agencyKey:
-              type: string
-            agencyName:
-              type: string
-            stateKey:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            imageCoords:
-              type: string
-            stateId:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
-              type: string
     PUTImportSiteAgencyRequest:
       allOf:
         - type: object
@@ -7408,58 +5214,6 @@ components:
             agencyCompleteName:
               type: string
     PUTImportSiteAgencyResponse:
-      allOf:
-        - type: object
-          properties:
-            agencyKey:
-              type: string
-            agencyName:
-              type: string
-            stateKey:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            imageCoords:
-              type: string
-            stateId:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
-              type: string
-    PUTMergeSiteAgencyRequest:
-      allOf:
-        - type: object
-          properties:
-            agencyKey:
-              type: string
-            agencyName:
-              type: string
-            stateKey:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            imageCoords:
-              type: string
-            stateId:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
-              type: string
-    PUTMergeSiteAgencyResponse:
       allOf:
         - type: object
           properties:
@@ -7520,6 +5274,8 @@ components:
               searchBasisKey:
                 type: string
               searchId:
+                type: string
+              stateAbbreviation:
                 type: string
               agencyTitle:
                 type: string
@@ -7611,6 +5367,8 @@ components:
               type: string
             searchId:
               type: string
+            stateAbbreviation:
+              type: string
             agencyTitle:
               type: string
             stopDateTime:
@@ -7700,6 +5458,8 @@ components:
             searchBasisKey:
               type: string
             searchId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -7800,6 +5560,13 @@ components:
             removeSearchId:
               type: string
             removeAllSearchId:
+              type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
               type: string
             setAgencyTitle:
               type: string
@@ -8106,6 +5873,13 @@ components:
               type: string
             removeAllSearchId:
               type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
+              type: string
             setAgencyTitle:
               type: string
               nullable: true
@@ -8403,6 +6177,8 @@ components:
                 type: string
               searchId:
                 type: string
+              stateAbbreviation:
+                type: string
               agencyTitle:
                 type: string
               stopDateTime:
@@ -8485,186 +6261,6 @@ components:
                 type: string
               searchBasisTitle:
                 type: string
-    PUTCopySearchBasisRequest:
-      allOf:
-        - type: object
-          properties:
-            searchBasisKey:
-              type: string
-            searchId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            searchBasisId:
-              type: string
-            searchBasisTitle:
-              type: string
-    PUTCopySearchBasisResponse:
-      allOf:
-        - type: object
-          properties:
-            searchBasisKey:
-              type: string
-            searchId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            searchBasisId:
-              type: string
-            searchBasisTitle:
-              type: string
     PUTImportSearchBasisRequest:
       allOf:
         - type: object
@@ -8672,6 +6268,8 @@ components:
             searchBasisKey:
               type: string
             searchId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -8763,185 +6361,7 @@ components:
               type: string
             searchId:
               type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            searchBasisId:
-              type: string
-            searchBasisTitle:
-              type: string
-    PUTMergeSearchBasisRequest:
-      allOf:
-        - type: object
-          properties:
-            searchBasisKey:
-              type: string
-            searchId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            searchBasisId:
-              type: string
-            searchBasisTitle:
-              type: string
-    PUTMergeSearchBasisResponse:
-      allOf:
-        - type: object
-          properties:
-            searchBasisKey:
-              type: string
-            searchId:
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -9032,6 +6452,8 @@ components:
             searchBasisKey:
               type: string
             searchId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -9325,46 +6747,6 @@ components:
                   type: string
               stateCompleteName:
                 type: string
-    PUTCopySiteStateRequest:
-      allOf:
-        - type: object
-          properties:
-            stateKey:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
-            stateCompleteName:
-              type: string
-    PUTCopySiteStateResponse:
-      allOf:
-        - type: object
-          properties:
-            stateKey:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
-            stateCompleteName:
-              type: string
     PUTImportSiteStateRequest:
       allOf:
         - type: object
@@ -9386,46 +6768,6 @@ components:
             stateCompleteName:
               type: string
     PUTImportSiteStateResponse:
-      allOf:
-        - type: object
-          properties:
-            stateKey:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
-            stateCompleteName:
-              type: string
-    PUTMergeSiteStateRequest:
-      allOf:
-        - type: object
-          properties:
-            stateKey:
-              type: string
-            stateName:
-              type: string
-            stateAbbreviation:
-              type: string
-            imageLeft:
-              type: string
-            imageTop:
-              type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
-            stateCompleteName:
-              type: string
-    PUTMergeSiteStateResponse:
       allOf:
         - type: object
           properties:
@@ -9474,6 +6816,8 @@ components:
               contrabandKey:
                 type: string
               searchId:
+                type: string
+              stateAbbreviation:
                 type: string
               agencyTitle:
                 type: string
@@ -9581,6 +6925,8 @@ components:
               type: string
             searchId:
               type: string
+            stateAbbreviation:
+              type: string
             agencyTitle:
               type: string
             stopDateTime:
@@ -9686,6 +7032,8 @@ components:
             contrabandKey:
               type: string
             searchId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -9802,6 +7150,13 @@ components:
             removeSearchId:
               type: string
             removeAllSearchId:
+              type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
               type: string
             setAgencyTitle:
               type: string
@@ -10164,6 +7519,13 @@ components:
               type: string
             removeAllSearchId:
               type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
+              type: string
             setAgencyTitle:
               type: string
               nullable: true
@@ -10517,6 +7879,8 @@ components:
                 type: string
               searchId:
                 type: string
+              stateAbbreviation:
+                type: string
               agencyTitle:
                 type: string
               stopDateTime:
@@ -10615,218 +7979,6 @@ components:
                 type: string
               contrabandDollarAmount:
                 type: string
-    PUTCopyTrafficContrabandRequest:
-      allOf:
-        - type: object
-          properties:
-            contrabandKey:
-              type: string
-            searchId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            contrabandOunces:
-              type: string
-            contrabandPounds:
-              type: string
-            contrabandPints:
-              type: string
-            contrabandGallons:
-              type: string
-            contrabandDosages:
-              type: string
-            contrabandGrams:
-              type: string
-            contrabandKilos:
-              type: string
-            contrabandMoney:
-              type: string
-            contrabandWeapons:
-              type: string
-            contrabandDollarAmount:
-              type: string
-    PUTCopyTrafficContrabandResponse:
-      allOf:
-        - type: object
-          properties:
-            contrabandKey:
-              type: string
-            searchId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            contrabandOunces:
-              type: string
-            contrabandPounds:
-              type: string
-            contrabandPints:
-              type: string
-            contrabandGallons:
-              type: string
-            contrabandDosages:
-              type: string
-            contrabandGrams:
-              type: string
-            contrabandKilos:
-              type: string
-            contrabandMoney:
-              type: string
-            contrabandWeapons:
-              type: string
-            contrabandDollarAmount:
-              type: string
     PUTImportTrafficContrabandRequest:
       allOf:
         - type: object
@@ -10834,6 +7986,8 @@ components:
             contrabandKey:
               type: string
             searchId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -10941,217 +8095,7 @@ components:
               type: string
             searchId:
               type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            contrabandOunces:
-              type: string
-            contrabandPounds:
-              type: string
-            contrabandPints:
-              type: string
-            contrabandGallons:
-              type: string
-            contrabandDosages:
-              type: string
-            contrabandGrams:
-              type: string
-            contrabandKilos:
-              type: string
-            contrabandMoney:
-              type: string
-            contrabandWeapons:
-              type: string
-            contrabandDollarAmount:
-              type: string
-    PUTMergeTrafficContrabandRequest:
-      allOf:
-        - type: object
-          properties:
-            contrabandKey:
-              type: string
-            searchId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-            contrabandOunces:
-              type: string
-            contrabandPounds:
-              type: string
-            contrabandPints:
-              type: string
-            contrabandGallons:
-              type: string
-            contrabandDosages:
-              type: string
-            contrabandGrams:
-              type: string
-            contrabandKilos:
-              type: string
-            contrabandMoney:
-              type: string
-            contrabandWeapons:
-              type: string
-            contrabandDollarAmount:
-              type: string
-    PUTMergeTrafficContrabandResponse:
-      allOf:
-        - type: object
-          properties:
-            contrabandKey:
-              type: string
-            searchId:
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -11258,6 +8202,8 @@ components:
             contrabandKey:
               type: string
             searchId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -11367,6 +8313,8 @@ components:
                 type: string
               stopId:
                 type: string
+              stateAbbreviation:
+                type: string
               agencyTitle:
                 type: string
               stopDateTime:
@@ -11433,6 +8381,8 @@ components:
               type: string
             stopId:
               type: string
+            stateAbbreviation:
+              type: string
             agencyTitle:
               type: string
             stopDateTime:
@@ -11498,6 +8448,8 @@ components:
             personKey:
               type: string
             stopId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -11574,6 +8526,13 @@ components:
             removeStopId:
               type: string
             removeAllStopId:
+              type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
               type: string
             setAgencyTitle:
               type: string
@@ -11796,6 +8755,13 @@ components:
               type: string
             removeAllStopId:
               type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
+              type: string
             setAgencyTitle:
               type: string
               nullable: true
@@ -12009,6 +8975,8 @@ components:
                 type: string
               stopId:
                 type: string
+              stateAbbreviation:
+                type: string
               agencyTitle:
                 type: string
               stopDateTime:
@@ -12067,138 +9035,6 @@ components:
                 type: string
               personRaceTitle:
                 type: string
-    PUTCopyTrafficPersonRequest:
-      allOf:
-        - type: object
-          properties:
-            personKey:
-              type: string
-            stopId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-    PUTCopyTrafficPersonResponse:
-      allOf:
-        - type: object
-          properties:
-            personKey:
-              type: string
-            stopId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
     PUTImportTrafficPersonRequest:
       allOf:
         - type: object
@@ -12206,6 +9042,8 @@ components:
             personKey:
               type: string
             stopId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -12273,137 +9111,7 @@ components:
               type: string
             stopId:
               type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-    PUTMergeTrafficPersonRequest:
-      allOf:
-        - type: object
-          properties:
-            personKey:
-              type: string
-            stopId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-    PUTMergeTrafficPersonResponse:
-      allOf:
-        - type: object
-          properties:
-            personKey:
-              type: string
-            stopId:
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -12470,6 +9178,8 @@ components:
             personKey:
               type: string
             stopId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -12538,6 +9248,8 @@ components:
               trafficSearchKey:
                 type: string
               personId:
+                type: string
+              stateAbbreviation:
                 type: string
               agencyTitle:
                 type: string
@@ -12625,6 +9337,8 @@ components:
               type: string
             personId:
               type: string
+            stateAbbreviation:
+              type: string
             agencyTitle:
               type: string
             stopDateTime:
@@ -12710,6 +9424,8 @@ components:
             trafficSearchKey:
               type: string
             personId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -12806,6 +9522,13 @@ components:
             removePersonId:
               type: string
             removeAllPersonId:
+              type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
               type: string
             setAgencyTitle:
               type: string
@@ -13098,6 +9821,13 @@ components:
               type: string
             removeAllPersonId:
               type: string
+            setStateAbbreviation:
+              type: string
+              nullable: true
+            removeStateAbbreviation:
+              type: string
+            removeAllStateAbbreviation:
+              type: string
             setAgencyTitle:
               type: string
               nullable: true
@@ -13381,6 +10111,8 @@ components:
                 type: string
               personId:
                 type: string
+              stateAbbreviation:
+                type: string
               agencyTitle:
                 type: string
               stopDateTime:
@@ -13459,178 +10191,6 @@ components:
                 type: boolean
               searchOtherPropertySiezed:
                 type: boolean
-    PUTCopyTrafficSearchRequest:
-      allOf:
-        - type: object
-          properties:
-            trafficSearchKey:
-              type: string
-            personId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-    PUTCopyTrafficSearchResponse:
-      allOf:
-        - type: object
-          properties:
-            trafficSearchKey:
-              type: string
-            personId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
     PUTImportTrafficSearchRequest:
       allOf:
         - type: object
@@ -13638,6 +10198,8 @@ components:
             trafficSearchKey:
               type: string
             personId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -13725,177 +10287,7 @@ components:
               type: string
             personId:
               type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-    PUTMergeTrafficSearchRequest:
-      allOf:
-        - type: object
-          properties:
-            trafficSearchKey:
-              type: string
-            personId:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personAge:
-              type: string
-            personTypeId:
-              type: string
-            personTypeTitle:
-              type: string
-            personTypeDriver:
-              type: boolean
-            personTypePassenger:
-              type: boolean
-            personGenderId:
-              type: string
-            personGenderTitle:
-              type: string
-            personGenderFemale:
-              type: boolean
-            personGenderMale:
-              type: boolean
-            personEthnicityId:
-              type: string
-            personEthnicityTitle:
-              type: string
-            personRaceId:
-              type: string
-            personRaceTitle:
-              type: string
-            stopId:
-              type: string
-            searchTypeNum:
-              type: string
-            searchTypeTitle:
-              type: string
-            searchVehicle:
-              type: boolean
-            searchDriver:
-              type: boolean
-            searchPassenger:
-              type: boolean
-            searchProperty:
-              type: boolean
-            searchVehicleSiezed:
-              type: boolean
-            searchPersonalPropertySiezed:
-              type: boolean
-            searchOtherPropertySiezed:
-              type: boolean
-    PUTMergeTrafficSearchResponse:
-      allOf:
-        - type: object
-          properties:
-            trafficSearchKey:
-              type: string
-            personId:
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -13982,6 +10374,8 @@ components:
             trafficSearchKey:
               type: string
             personId:
+              type: string
+            stateAbbreviation:
               type: string
             agencyTitle:
               type: string
@@ -14607,106 +11001,6 @@ components:
                 type: array
                 items:
                   type: string
-    PUTCopyTrafficStopRequest:
-      allOf:
-        - type: object
-          properties:
-            stateAbbreviation:
-              type: string
-            stateName:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopYear:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
-    PUTCopyTrafficStopResponse:
-      allOf:
-        - type: object
-          properties:
-            stateAbbreviation:
-              type: string
-            stateName:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopYear:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
     PUTImportTrafficStopRequest:
       allOf:
         - type: object
@@ -14758,106 +11052,6 @@ components:
               items:
                 type: string
     PUTImportTrafficStopResponse:
-      allOf:
-        - type: object
-          properties:
-            stateAbbreviation:
-              type: string
-            stateName:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopYear:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
-    PUTMergeTrafficStopRequest:
-      allOf:
-        - type: object
-          properties:
-            stateAbbreviation:
-              type: string
-            stateName:
-              type: string
-            agencyTitle:
-              type: string
-            stopDateTime:
-              type: string
-            stopYear:
-              type: string
-            stopPurposeNum:
-              type: string
-            stopPurposeTitle:
-              type: string
-            stopActionNum:
-              type: string
-            stopActionTitle:
-              type: string
-            stopDriverArrest:
-              type: boolean
-            stopPassengerArrest:
-              type: boolean
-            stopEncounterForce:
-              type: boolean
-            stopEngageForce:
-              type: boolean
-            stopOfficerInjury:
-              type: boolean
-            stopDriverInjury:
-              type: boolean
-            stopPassengerInjury:
-              type: boolean
-            stopOfficerId:
-              type: string
-            stopLocationId:
-              type: string
-            stopCityId:
-              type: string
-            personRaceTitles:
-              type: array
-              items:
-                type: string
-            trafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
-    PUTMergeTrafficStopResponse:
       allOf:
         - type: object
           properties:

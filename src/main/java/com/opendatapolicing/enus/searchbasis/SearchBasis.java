@@ -20,8 +20,6 @@ import io.vertx.core.Promise;
  * ApiUri.enUS: /api/search-basis
  * 
  * ApiMethod.enUS: PUTImport
- * ApiMethod.enUS: PUTMerge
- * ApiMethod.enUS: PUTCopy
 
  * ApiMethod: POST
  * ApiMethod: PATCH
