@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,8 +46,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 	WorkerExecutor workerExecutor;
 
-	Semaphore semaphore;
-
 	Long totalNum;
 	private void incrementTotalNum() {
 		this.totalNum++;
@@ -67,11 +64,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private void setCountNum(Long countNum) {
 		this.countNum = countNum;
 	}
-
-//	public WorkerVerticle setSemaphore(Semaphore semaphore) {
-//		this.semaphore = semaphore;
-//		return this;
-//	}
 
 	/**	
 	 *	This is called by Vert.x when the verticle instance is deployed. 
@@ -206,8 +198,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			futures.add(Future.future(promise1 -> {
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					try {
-//						Lease lease = semaphore.acquire();
-						semaphore.acquire();
 						try {
 							JsonObject params = new JsonObject();
 							JsonObject body = new JsonObject().put("stateName", "North Carolina").put("stateAbbreviation", "NC").put("pk", "NC");
@@ -222,19 +212,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
 								LOG.info("{} State imported. ", body.getString("stateName"));
 								blockingCodeHandler.complete();
-//								semaphore.returnLease(lease);
-								semaphore.release();
 							}).onFailure(ex -> {
 								LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 								blockingCodeHandler.fail(ex);
-//								semaphore.returnLease(lease);
-								semaphore.release();
 							});
 						} catch(Exception ex) {
 							LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 							blockingCodeHandler.fail(ex);
-//							semaphore.returnLease(lease);
-							semaphore.release();
 						}
 					} catch(Exception ex) {
 						LOG.error(String.format("listPUTImportSiteState failed. "), ex);
