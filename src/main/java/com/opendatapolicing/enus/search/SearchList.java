@@ -235,49 +235,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 					List<NamedList<Object>> pivots1 = new ArrayList<>();
 					facetPivots.add(key1, pivots1);
 					for(Map<String, Object> pivotJson1 : pivotsJson1) {
-						NamedList<Object> namedList1 = new NamedList<>();
-						pivots1.add(namedList1);
-						namedList1.add("field", pivotJson1.get("field"));
-						namedList1.add("value", pivotJson1.get("value"));
-						namedList1.add("count", pivotJson1.get("count"));
-						List<NamedList<Object>> pivots2 = new ArrayList<>();
-						namedList1.add("pivot", pivots2);
-						Optional.ofNullable((List<Map<String, Object>>)pivotJson1.get("pivot")).ifPresent(pivotsJson2 -> {
-							pivotsJson2.forEach(pivotJson2 -> {
-								NamedList<Object> namedList2 = new NamedList<>();
-								pivots2.add(namedList2);
-								namedList2.add("field", pivotJson2.get("field"));
-								namedList2.add("value", pivotJson2.get("value"));
-								namedList2.add("count", pivotJson2.get("count"));
-								Optional.ofNullable((List<Object>)pivotJson1.get("pivot")).ifPresent(pivotsJson3 -> {
-									
-								});
-							});
-							
-						});
-						Optional.ofNullable(pivotJson1.get("ranges")).ifPresent(facetRangesJson -> {
-							NamedList<Object> facetRanges = new NamedList<Object>();
-							namedList1.add("ranges", facetRanges);
-							((Map<String, Map<String, Object>>)facetRangesJson).forEach((key2, value2) -> {
-								NamedList<Object> namedList2 = new NamedList<>();
-								facetRanges.add(key2, namedList2);
-								List<Object> countsJson = (List<Object>)value2.get("counts");
-								NamedList<Integer> counts = new NamedList<>();
-								namedList2.add("counts", counts);
-								Optional.ofNullable((String)value2.get("gap")).ifPresent(gap -> {
-									namedList2.add("gap", gap);
-								});
-								Optional.ofNullable((String)value2.get("start")).ifPresent(start -> {
-									namedList2.add("start", start);
-								});
-								Optional.ofNullable((String)value2.get("end")).ifPresent(end -> {
-									namedList2.add("end", end);
-								});
-								for(Integer i = 0; i < countsJson.size(); i+=2) {
-									counts.add((String)countsJson.get(i), (Integer)countsJson.get(i + 1));
-								}
-							});
-						});
+						generateFacetPivotResponse(pivotJson1, pivots1);
 					}
 				});
 			});
@@ -312,6 +270,45 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 
 		QueryResponse r = new QueryResponse(l, null);
 		return r;
+	}
+
+	private void generateFacetPivotResponse(Map<String, Object> pivotJson, List<NamedList<Object>> pivots) {
+		NamedList<Object> namedList1 = new NamedList<>();
+		pivots.add(namedList1);
+		namedList1.add("field", pivotJson.get("field"));
+		namedList1.add("value", pivotJson.get("value"));
+		namedList1.add("count", pivotJson.get("count"));
+		List<NamedList<Object>> pivots2 = new ArrayList<>();
+		namedList1.add("pivot", pivots2);
+		Optional.ofNullable((List<Map<String, Object>>)pivotJson.get("pivot")).ifPresent(pivotsJson2 -> {
+			pivotsJson2.forEach(pivotJson2 -> {
+				generateFacetPivotResponse(pivotJson2, pivots2);
+			});
+			
+		});
+		Optional.ofNullable(pivotJson.get("ranges")).ifPresent(facetRangesJson -> {
+			NamedList<Object> facetRanges = new NamedList<Object>();
+			namedList1.add("ranges", facetRanges);
+			((Map<String, Map<String, Object>>)facetRangesJson).forEach((key2, value2) -> {
+				NamedList<Object> namedList2 = new NamedList<>();
+				facetRanges.add(key2, namedList2);
+				List<Object> countsJson = (List<Object>)value2.get("counts");
+				NamedList<Integer> counts = new NamedList<>();
+				namedList2.add("counts", counts);
+				Optional.ofNullable((String)value2.get("gap")).ifPresent(gap -> {
+					namedList2.add("gap", gap);
+				});
+				Optional.ofNullable((String)value2.get("start")).ifPresent(start -> {
+					namedList2.add("start", start);
+				});
+				Optional.ofNullable((String)value2.get("end")).ifPresent(end -> {
+					namedList2.add("end", end);
+				});
+				for(Integer i = 0; i < countsJson.size(); i+=2) {
+					counts.add((String)countsJson.get(i), (Integer)countsJson.get(i + 1));
+				}
+			});
+		});
 	}
 
 	private void searchFacetPivot() {

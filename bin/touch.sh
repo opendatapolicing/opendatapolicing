@@ -10,7 +10,7 @@ touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/wr
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/writer/ApiWriter.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/AppOpenApi3.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/AppSwagger2.java
-touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/AppVertx.java
+touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/MainVerticle.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/WorkerVerticle.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/user/SiteUser.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/cluster/Cluster.java
