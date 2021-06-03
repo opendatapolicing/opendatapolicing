@@ -16,7 +16,6 @@ buildNumber.properties
 *.jks
 *.p12
 *.jceks
-*.properties
 .vertx
 src/main/fabric8/*.yml
 **/*.swp
