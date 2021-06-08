@@ -20,6 +20,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -780,7 +781,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 				stateSearch.setStore(true);
 				stateSearch.setQuery("*:*");
 				stateSearch.setC(SiteState.class);
-				stateSearch.addFilterQuery("stateAbbreviation_indexed_string[* TO *]");
+				stateSearch.addFilterQuery("stateAbbreviation_indexed_string:[* TO *]");
 				stateSearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
 					JsonArray states = new JsonArray();
 					ctx.put("states", states);
@@ -818,6 +819,35 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						LOG.error("Home page failed to load state data. ", ex);
 						ctx.fail(ex);
 					});
+				}).onFailure(ex -> {
+					LOG.error("Home page failed to load state data. ", ex);
+					ctx.fail(ex);
+				});
+			});
+
+			router.get("/state/:stateId").handler(ctx -> {
+				ctx.put("stateId", ctx.pathParam("stateId"));
+				ctx.reroute("/template/state-page");
+			});
+
+			router.get("/template/state-page").handler(ctx -> {
+				String stateId = ctx.get("stateId");
+				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+				siteRequest.setWebClient(webClient);
+				siteRequest.setConfig(config());
+				siteRequest.initDeepSiteRequestEnUS(siteRequest);
+
+				SearchList<SiteState> stateSearch = new SearchList<SiteState>();
+				stateSearch.setStore(true);
+				stateSearch.setQuery("*:*");
+				stateSearch.setC(SiteState.class);
+				stateSearch.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(stateId));
+				stateSearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
+					ctx.next();
+					SiteState state = stateSearch.first();
+					if(state != null) {
+						ctx.put("state", JsonObject.mapFrom(state));
+					}
 				}).onFailure(ex -> {
 					LOG.error("Home page failed to load state data. ", ex);
 					ctx.fail(ex);

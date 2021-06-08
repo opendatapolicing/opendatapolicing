@@ -1,6 +1,8 @@
-package com.opendatapolicing.enus.state;                   
+package com.opendatapolicing.enus.state;                           
 
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.opendatapolicing.enus.cluster.Cluster;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -127,6 +129,13 @@ public class SiteState extends SiteStateGen<Cluster> {
 	 */
 	@Override() protected void _objectTitle(Wrap<String> c) {
 		c.o(stateName + " (" + stateAbbreviation + ")");
+	}
+
+	@Override protected void _objectId(Wrap<String> c) {
+		if(StringUtils.isNotBlank(stateAbbreviation))
+			c.o(StringUtils.lowerCase(stateAbbreviation));
+		else
+			c.o(pk.toString());
 	}
 }
 

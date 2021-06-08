@@ -120,8 +120,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/state/import");
-				siteRequest.setRequestMethod("PUTImport");
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteAdmin");
 				if(
@@ -342,8 +342,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/state");
-				siteRequest.setRequestMethod("POST");
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteAdmin");
 				if(
@@ -639,8 +639,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/state");
-				siteRequest.setRequestMethod("PATCH");
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteAdmin");
 				if(
@@ -1056,8 +1056,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	public void getSiteState(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/state/{id}");
-				siteRequest.setRequestMethod("GET");
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchSiteStateList(siteRequest, false, true, false, "/api/state/{id}", "GET").onSuccess(listSiteState -> {
 						response200GETSiteState(listSiteState).onSuccess(response -> {
@@ -1113,8 +1113,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	public void searchSiteState(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/state");
-				siteRequest.setRequestMethod("Search");
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchSiteStateList(siteRequest, false, true, false, "/api/state", "Search").onSuccess(listSiteState -> {
 						response200SearchSiteState(listSiteState).onSuccess(response -> {
@@ -1300,8 +1300,8 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	public void adminsearchSiteState(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/admin/state");
-				siteRequest.setRequestMethod("AdminSearch");
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchSiteStateList(siteRequest, false, true, false, "/api/admin/state", "AdminSearch").onSuccess(listSiteState -> {
 						response200AdminSearchSiteState(listSiteState).onSuccess(response -> {

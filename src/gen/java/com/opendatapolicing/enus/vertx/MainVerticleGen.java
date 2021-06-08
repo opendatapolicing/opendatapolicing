@@ -43,11 +43,51 @@ import com.opendatapolicing.enus.request.SiteRequestEnUS;
 public abstract class MainVerticleGen<DEV> extends AbstractVerticle {
 
 /*
-CREATE TABLE SiteUser(
+CREATE TABLE PageDesign(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
-	, userKey bigint
+	, pageDesignCompleteName text
+	, designHidden boolean
+	, pageContentType text
+	);
+CREATE TABLE HtmlPart(
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, htmlLink text
+	, htmlElement text
+	, htmlId text
+	, htmlClasses text
+	, htmlStyle text
+	, htmlBefore text
+	, htmlAfter text
+	, htmlText text
+	, htmlVar text
+	, htmlVarSpan text
+	, htmlVarForm text
+	, htmlVarInput text
+	, htmlVarForEach text
+	, htmlVarHtml text
+	, htmlVarBase64Decode text
+	, htmlExclude boolean
+	, pdfExclude boolean
+	, loginLogout boolean
+	, searchUri text
+	, mapTo text
+	, sort1 double precision
+	, sort2 double precision
+	, sort3 double precision
+	, sort4 double precision
+	, sort5 double precision
+	, sort6 double precision
+	, sort7 double precision
+	, sort8 double precision
+	, sort9 double precision
+	, sort10 double precision
+	);
+CREATE TABLE SiteUser(
+	userKey bigint
 	, userId text
 	, userName text
 	, userEmail text
@@ -75,10 +115,7 @@ CREATE TABLE SiteAgency(
 	, imageCoords text
 	);
 CREATE TABLE TrafficStop(
-	pk bigserial primary key
-	, inheritPk text
-	, created timestamp with time zone
-	, stateAbbreviation text
+	stateAbbreviation text
 	, stateName text
 	, agencyTitle text
 	, stopDateTime timestamp with time zone
@@ -144,7 +181,19 @@ CREATE TABLE SearchBasis(
 	, searchId text
 	, searchBasisId text
 	);
+CREATE TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references PageDesign(pk)
+	, pk2 bigint references PageDesign(pk)
+	);
+CREATE TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys(
+	pk bigserial primary key
+	, pk1 bigint references PageDesign(pk)
+	, pk2 bigint references HtmlPart(pk)
+	);
 
+DROP TABLE PageDesign CASCADE;
+DROP TABLE HtmlPart CASCADE;
 DROP TABLE SiteUser CASCADE;
 DROP TABLE SiteState CASCADE;
 DROP TABLE SiteAgency CASCADE;
@@ -153,6 +202,8 @@ DROP TABLE TrafficPerson CASCADE;
 DROP TABLE TrafficSearch CASCADE;
 DROP TABLE TrafficContraband CASCADE;
 DROP TABLE SearchBasis CASCADE;
+DROP TABLE PageDesignChildDesignKeys_PageDesignParentDesignKeys CASCADE;
+DROP TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys CASCADE;
 */
 
 	protected static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);

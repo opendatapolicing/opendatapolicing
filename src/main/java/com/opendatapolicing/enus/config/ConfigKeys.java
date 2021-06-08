@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.config;
+package com.opendatapolicing.enus.config; 
 
 /**
  * Keyword: classSimpleNameConfigKeys

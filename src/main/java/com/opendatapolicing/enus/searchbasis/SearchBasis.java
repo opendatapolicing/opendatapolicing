@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.searchbasis;  
+package com.opendatapolicing.enus.searchbasis;   
 
 import java.time.ZonedDateTime;
 

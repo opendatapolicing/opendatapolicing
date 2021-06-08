@@ -160,3 +160,10 @@ psql opendatapolicing -c "copy TrafficPerson(inheritPk, stopId, personTypeId, pe
 psql opendatapolicing -c 'copy TrafficSearch(inheritPk, personId, searchTypeNum, searchVehicle, searchDriver, searchPassenger, searchProperty, searchVehicleSiezed, searchPersonalPropertySiezed, searchOtherPropertySiezed) from program '"'"'cut -f 1,2,4,5,6,7,8,9,10,11 ~/backup/opendatapolicing/Search.txt'"'"' (delimiter E'"'"'\t'"'"', format csv, null '"'"''"'"');'
 psql opendatapolicing -c 'copy SearchBasis(inheritPk, searchId, searchBasisId) from program '"'"'cut -f 1,2,5 ~/backup/opendatapolicing/SearchBasis.txt'"'"' (delimiter E'"'"'\t'"'"', format csv, null '"'"''"'"');'
 psql opendatapolicing -c 'copy TrafficContraband(inheritPk, searchId, contrabandOunces, contrabandPounds, contrabandPints, contrabandGallons, contrabandDosages, contrabandGrams, contrabandKilos, contrabandMoney, contrabandWeapons, contrabandDollarAmount) from program '"'"'cut -f 1,2,5,6,7,8,9,10,11,12,13,14 ~/backup/opendatapolicing/Contraband.txt'"'"' (delimiter E'"'"'\t'"'"', format csv, null '"'"''"'"');'
+
+# Restore Solr Index
+
+http://localhost:8983/solr/opendatapolicing/replication?command=restore&name=shard1&async=request3&location=/run/media/ctate/D8A5-1D9A/solr/opendatapolicing
+
+Check status of restore operation: 
+http://localhost:8983/solr/opendatapolicing/replication?command=restorestatus

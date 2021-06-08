@@ -118,8 +118,8 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/traffic-search/import");
-				siteRequest.setRequestMethod("PUTImport");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -340,8 +340,8 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/traffic-search");
-				siteRequest.setRequestMethod("POST");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -663,8 +663,8 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/traffic-search");
-				siteRequest.setRequestMethod("PATCH");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -1037,8 +1037,8 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public void getTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/traffic-search/{id}");
-				siteRequest.setRequestMethod("GET");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchTrafficSearchList(siteRequest, false, true, false, "/api/traffic-search/{id}", "GET").onSuccess(listTrafficSearch -> {
 						response200GETTrafficSearch(listTrafficSearch).onSuccess(response -> {
@@ -1094,8 +1094,8 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public void searchTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/traffic-search");
-				siteRequest.setRequestMethod("Search");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchTrafficSearchList(siteRequest, false, true, false, "/api/traffic-search", "Search").onSuccess(listTrafficSearch -> {
 						response200SearchTrafficSearch(listTrafficSearch).onSuccess(response -> {
@@ -1281,8 +1281,8 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public void adminsearchTrafficSearch(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/admin/traffic-search");
-				siteRequest.setRequestMethod("AdminSearch");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchTrafficSearchList(siteRequest, false, true, false, "/api/admin/traffic-search", "AdminSearch").onSuccess(listTrafficSearch -> {
 						response200AdminSearchTrafficSearch(listTrafficSearch).onSuccess(response -> {

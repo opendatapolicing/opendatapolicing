@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.java; 
+package com.opendatapolicing.enus.java;  
 
 import java.io.IOException;
 import java.time.ZonedDateTime;

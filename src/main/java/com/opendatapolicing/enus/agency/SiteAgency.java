@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.agency;         
+package com.opendatapolicing.enus.agency;          
 
 import org.apache.commons.lang3.StringUtils;
 

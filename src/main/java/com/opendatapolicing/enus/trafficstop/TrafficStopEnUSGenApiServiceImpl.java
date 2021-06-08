@@ -118,8 +118,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/traffic-stop/import");
-				siteRequest.setRequestMethod("PUTImport");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -340,8 +340,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/traffic-stop");
-				siteRequest.setRequestMethod("POST");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -515,15 +515,6 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
-					case TrafficStop.VAR_inheritPk:
-						o2.setInheritPk(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(TrafficStop.VAR_inheritPk + "=$" + num);
-						num++;
-						bParams.add(o2.sqlInheritPk());
-						break;
 					case TrafficStop.VAR_stateAbbreviation:
 						o2.setStateAbbreviation(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
@@ -735,8 +726,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/traffic-stop");
-				siteRequest.setRequestMethod("PATCH");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -972,14 +963,6 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 
 			for(String entityVar : methodNames) {
 				switch(entityVar) {
-					case "setInheritPk":
-							o2.setInheritPk(jsonObject.getString(entityVar));
-							if(bParams.size() > 0)
-								bSql.append(", ");
-							bSql.append(TrafficStop.VAR_inheritPk + "=$" + num);
-							num++;
-							bParams.add(o2.sqlInheritPk());
-						break;
 					case "setStateAbbreviation":
 							o2.setStateAbbreviation(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
@@ -1173,8 +1156,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public void getTrafficStop(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/traffic-stop/{id}");
-				siteRequest.setRequestMethod("GET");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchTrafficStopList(siteRequest, false, true, false, "/api/traffic-stop/{id}", "GET").onSuccess(listTrafficStop -> {
 						response200GETTrafficStop(listTrafficStop).onSuccess(response -> {
@@ -1230,8 +1213,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public void searchTrafficStop(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/traffic-stop");
-				siteRequest.setRequestMethod("Search");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchTrafficStopList(siteRequest, false, true, false, "/api/traffic-stop", "Search").onSuccess(listTrafficStop -> {
 						response200SearchTrafficStop(listTrafficStop).onSuccess(response -> {
@@ -1417,8 +1400,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public void adminsearchTrafficStop(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/admin/traffic-stop");
-				siteRequest.setRequestMethod("AdminSearch");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchTrafficStopList(siteRequest, false, true, false, "/api/admin/traffic-stop", "AdminSearch").onSuccess(listTrafficStop -> {
 						response200AdminSearchTrafficStop(listTrafficStop).onSuccess(response -> {

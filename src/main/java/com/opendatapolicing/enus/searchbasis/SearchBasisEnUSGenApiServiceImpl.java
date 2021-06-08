@@ -118,8 +118,8 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/search-basis/import");
-				siteRequest.setRequestMethod("PUTImport");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -340,8 +340,8 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/search-basis");
-				siteRequest.setRequestMethod("POST");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -600,8 +600,8 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri("/api/search-basis");
-				siteRequest.setRequestMethod("PATCH");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -918,8 +918,8 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public void getSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/search-basis/{id}");
-				siteRequest.setRequestMethod("GET");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchSearchBasisList(siteRequest, false, true, false, "/api/search-basis/{id}", "GET").onSuccess(listSearchBasis -> {
 						response200GETSearchBasis(listSearchBasis).onSuccess(response -> {
@@ -975,8 +975,8 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public void searchSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/search-basis");
-				siteRequest.setRequestMethod("Search");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchSearchBasisList(siteRequest, false, true, false, "/api/search-basis", "Search").onSuccess(listSearchBasis -> {
 						response200SearchSearchBasis(listSearchBasis).onSuccess(response -> {
@@ -1162,8 +1162,8 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public void adminsearchSearchBasis(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri("/api/admin/search-basis");
-				siteRequest.setRequestMethod("AdminSearch");
+				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
+				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
 				{
 					searchSearchBasisList(siteRequest, false, true, false, "/api/admin/search-basis", "AdminSearch").onSuccess(listSearchBasis -> {
 						response200AdminSearchSearchBasis(listSearchBasis).onSuccess(response -> {
