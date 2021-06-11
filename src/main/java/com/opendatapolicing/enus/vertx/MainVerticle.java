@@ -2,15 +2,16 @@ package com.opendatapolicing.enus.vertx;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -19,6 +20,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.slf4j.Logger;
@@ -28,6 +30,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
 import com.opendatapolicing.enus.config.ConfigKeys;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.searchbasis.SearchBasisEnUSGenApiService;
@@ -57,8 +60,6 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
-import io.vertx.core.shareddata.AsyncMap;
-import io.vertx.core.shareddata.SharedData;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
@@ -578,7 +579,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		return promise.future();
 	}
 
-	/**	
+	/**
 	 * 
 	 * Val.Fail.enUS:Could not configure the shared worker executor. 
 	 * Val.Complete.enUS:The shared worker executor "{}" was configured successfully. 
@@ -810,6 +811,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								JsonObject stateJson = new JsonObject();
 								stateJson.put("stateAbbreviation", stateAbbreviation);
 								stateJson.put("stateName", state.getStateName());
+								stateJson.put("objectId", state.getObjectId());
 								stateJson.put("stopCountStr", stopCountStr);
 								states.add(stateJson);
 							}
@@ -831,6 +833,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			});
 
 			router.get("/template/state-page").handler(ctx -> {
+				JsonArray agencyFacets = new JsonArray();
+				ctx.put("agencyFacets", agencyFacets);
 				String stateId = ctx.get("stateId");
 				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 				siteRequest.setWebClient(webClient);
@@ -843,11 +847,37 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 				stateSearch.setC(SiteState.class);
 				stateSearch.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(stateId));
 				stateSearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
-					ctx.next();
 					SiteState state = stateSearch.first();
 					if(state != null) {
-						ctx.put("state", JsonObject.mapFrom(state));
+						ctx.put("state", state);
 					}
+
+					SearchList<TrafficStop> stopSearch = new SearchList<TrafficStop>();
+					stopSearch.setStore(true);
+					stopSearch.setQuery("*:*");
+					stopSearch.setC(TrafficStop.class);
+					stopSearch.setRows(1);
+					stopSearch.addSort(SortClause.asc("stopDateTime_indexed_date"));
+					stopSearch.addFacetField("agencyTitle_indexed_string");
+					stopSearch.add("facet.limit", "5");
+					stopSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
+						TrafficStop stop = stopSearch.first();
+						ctx.put("beginStopDateTime", stop.getStopDateTime().format(LocalDateSerializer.FORMATDateSite));
+						stopSearch.getQueryResponse().getFacetFields().forEach(facetField -> {
+							facetField.getValues().forEach(value -> {
+								agencyFacets.add(
+										new JsonObject()
+										.put("stateAbbreviation", state.getStateAbbreviation())
+										.put("agencyTitle", value.getName())
+										.put("stopCount", NumberFormat.getNumberInstance(Locale.US).format(value.getCount()))
+										);
+							});
+						});
+						ctx.next();
+					}).onFailure(ex -> {
+						LOG.error("Home page failed to load state data. ", ex);
+						ctx.fail(ex);
+					});
 				}).onFailure(ex -> {
 					LOG.error("Home page failed to load state data. ", ex);
 					ctx.fail(ex);
