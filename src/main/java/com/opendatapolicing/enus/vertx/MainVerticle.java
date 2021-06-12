@@ -1,10 +1,14 @@
 package com.opendatapolicing.enus.vertx;          
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -13,6 +17,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.curator.RetryPolicy;
@@ -21,8 +26,11 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +46,7 @@ import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.state.SiteStateEnUSGenApiService;
 import com.opendatapolicing.enus.trafficcontraband.TrafficContrabandEnUSGenApiService;
 import com.opendatapolicing.enus.trafficperson.TrafficPersonEnUSGenApiService;
+import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearchEnUSGenApiService;
 import com.opendatapolicing.enus.trafficstop.TrafficStop;
 import com.opendatapolicing.enus.trafficstop.TrafficStopEnUSGenApiService;
@@ -93,7 +102,7 @@ import io.vertx.sqlclient.PoolOptions;
 /**	
  *	A Java class to start the Vert.x application as a main method. 
  * Keyword: classSimpleNameVerticle
- **/
+ **/  
 public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
 
@@ -852,28 +861,59 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put("state", state);
 					}
 
-					SearchList<TrafficStop> stopSearch = new SearchList<TrafficStop>();
-					stopSearch.setStore(true);
-					stopSearch.setQuery("*:*");
-					stopSearch.setC(TrafficStop.class);
-					stopSearch.setRows(1);
-					stopSearch.addSort(SortClause.asc("stopDateTime_indexed_date"));
-					stopSearch.addFacetField("agencyTitle_indexed_string");
-					stopSearch.add("facet.limit", "5");
-					stopSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
-						TrafficStop stop = stopSearch.first();
-						ctx.put("beginStopDateTime", stop.getStopDateTime().format(LocalDateSerializer.FORMATDateSite));
-						stopSearch.getQueryResponse().getFacetFields().forEach(facetField -> {
-							facetField.getValues().forEach(value -> {
-								agencyFacets.add(
-										new JsonObject()
-										.put("stateAbbreviation", state.getStateAbbreviation())
-										.put("agencyTitle", value.getName())
-										.put("stopCount", NumberFormat.getNumberInstance(Locale.US).format(value.getCount()))
-										);
+					SearchList<TrafficStop> stopSearch1 = new SearchList<TrafficStop>();
+					stopSearch1.setStore(true);
+					stopSearch1.setQuery("*:*");
+					stopSearch1.setC(TrafficStop.class);
+					stopSearch1.setRows(1);
+					stopSearch1.addSort(SortClause.asc("stopDateTime_indexed_date"));
+					stopSearch1.addFacetField("agencyTitle_indexed_string");
+					stopSearch1.add("facet.limit", "5");
+					stopSearch1.add("json.facet", "{agencyTitle:\"unique(agencyTitle_indexed_string)\"}");
+					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(c -> {
+						TrafficStop beginStop = stopSearch1.first();
+						SearchList<TrafficStop> stopSearch2 = new SearchList<TrafficStop>();
+						stopSearch2.setStore(true);
+						stopSearch2.setQuery("*:*");
+						stopSearch2.setC(TrafficStop.class);
+						stopSearch2.setRows(1);
+						stopSearch2.addSort(SortClause.desc("stopDateTime_indexed_date"));
+						stopSearch2.promiseDeepForClass(siteRequest).onSuccess(d -> {
+							TrafficStop endStop = stopSearch2.first();
+							SearchList<TrafficSearch> searchSearch = new SearchList<TrafficSearch>();
+							searchSearch.setStore(true);
+							searchSearch.setQuery("*:*");
+							searchSearch.setC(TrafficSearch.class);
+							searchSearch.setRows(0);
+							searchSearch.promiseDeepForClass(siteRequest).onSuccess(e -> {
+								ctx.put("beginStopDateTime", beginStop.getStopDateTime().format(LocalDateSerializer.FORMATDateSite));
+								ctx.put("endStopDateTime", endStop.getStopDateTime().format(LocalDateSerializer.FORMATDateSite));
+								ctx.put("stopCount", NumberFormat.getNumberInstance(Locale.US).format(stopSearch1.getQueryResponse().getResults().getNumFound()));
+								ctx.put("searchCount", NumberFormat.getNumberInstance(Locale.US).format(searchSearch.getQueryResponse().getResults().getNumFound()));
+	
+								SimpleOrderedMap jsonFacets = (SimpleOrderedMap)Optional.ofNullable(stopSearch1.getQueryResponse()).map(QueryResponse::getResponse).map(r -> r.get("facets")).orElse(new SimpleOrderedMap());
+								Integer agencyCount = (Integer)jsonFacets.get("agencyTitle");
+								ctx.put("agencyCount", NumberFormat.getNumberInstance(Locale.US).format(agencyCount));
+	
+								stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "agencyTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+									facetField.getValues().forEach(value -> {
+										agencyFacets.add(
+												new JsonObject()
+												.put("stateAbbreviation", state.getStateAbbreviation())
+												.put("agencyTitle", value.getName())
+												.put("stopCount", NumberFormat.getNumberInstance(Locale.US).format(value.getCount()))
+												);
+									});
+								});
+								ctx.next();
+							}).onFailure(ex -> {
+								LOG.error("Home page failed to load state data. ", ex);
+								ctx.fail(ex);
 							});
+						}).onFailure(ex -> {
+							LOG.error("Home page failed to load state data. ", ex);
+							ctx.fail(ex);
 						});
-						ctx.next();
 					}).onFailure(ex -> {
 						LOG.error("Home page failed to load state data. ", ex);
 						ctx.fail(ex);

@@ -1,16 +1,40 @@
 package com.opendatapolicing.enus.vertx;
 
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.slf4j.LoggerFactory;
-
-import com.opendatapolicing.enus.cluster.Cluster;
-import com.opendatapolicing.enus.request.SiteRequestEnUS;
-
+import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import org.apache.commons.collections.CollectionUtils;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
+import com.opendatapolicing.enus.config.ConfigKeys;
+import java.math.RoundingMode;
+import com.opendatapolicing.enus.wrap.Wrap;
+import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
+import java.math.MathContext;
+import io.vertx.core.Promise;
+import com.opendatapolicing.enus.writer.AllWriter;
+import org.apache.commons.text.StringEscapeUtils;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
+import com.opendatapolicing.enus.request.api.ApiRequest;
+import java.util.Objects;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.AbstractVerticle;
+import org.apache.commons.lang3.math.NumberUtils;
+import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.opendatapolicing.enus.cluster.Cluster;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.vertx.MainVerticle&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -471,4 +495,5 @@ DROP TABLE PageDesignHtmlPartKeys_HtmlPartPageDesignKeys CASCADE;
 	}
 
 	public static final String[] MainVerticleVals = new String[] { configureConfigComplete1, configureConfigFail1, configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureOpenApiError1, configureOpenApiSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureHealthChecksComplete1, configureHealthChecksFail1, configureHealthChecksErrorDatabase1, configureHealthChecksEmptySolr1, configureHealthChecksErrorSolr1, configureHealthChecksErrorVertx1, configureWebsocketsComplete1, configureWebsocketsFail1, configureEmailComplete1, configureEmailFail1, configureApiFail1, configureApiComplete1, configureUiFail1, configureUiComplete1, startServerErrorServer1, startServerSuccessServer1, startServerBeforeServer1, startServerSsl1, stopFail1, stopComplete1 };
+
 }
