@@ -118,8 +118,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -340,8 +340,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -681,8 +681,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -1071,8 +1071,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	public void getTrafficContraband(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchTrafficContrabandList(siteRequest, false, true, false, "/api/contraband/{id}", "GET").onSuccess(listTrafficContraband -> {
 						response200GETTrafficContraband(listTrafficContraband).onSuccess(response -> {
@@ -1128,8 +1128,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	public void searchTrafficContraband(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchTrafficContrabandList(siteRequest, false, true, false, "/api/contraband", "Search").onSuccess(listTrafficContraband -> {
 						response200SearchTrafficContraband(listTrafficContraband).onSuccess(response -> {
@@ -1315,8 +1315,8 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	public void adminsearchTrafficContraband(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchTrafficContrabandList(siteRequest, false, true, false, "/api/admin/contraband", "AdminSearch").onSuccess(listTrafficContraband -> {
 						response200AdminSearchTrafficContraband(listTrafficContraband).onSuccess(response -> {

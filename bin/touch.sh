@@ -1,3 +1,4 @@
+touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/config/ConfigKeys.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/MailVerticle.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/wrap/Wrap.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/cluster/BaseApiServiceImpl.java
@@ -19,6 +20,7 @@ touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/xm
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/java/LocalDateSerializer.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/java/LocalTimeSerializer.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/java/ZonedDateTimeSerializer.java
+touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/java/ZonedDateTimeDeserializer.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/agency/SiteAgency.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/state/SiteState.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/searchbasis/SearchBasis.java

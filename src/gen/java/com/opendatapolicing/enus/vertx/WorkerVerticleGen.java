@@ -12,9 +12,12 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
+import com.opendatapolicing.enus.config.ConfigKeys;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import java.math.MathContext;
 import io.vertx.core.Promise;
 import com.opendatapolicing.enus.writer.AllWriter;
@@ -94,6 +97,20 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String refreshDataFail = refreshDataFail1;
 	public static final String refreshDataSkip1 = "%s refresh skipped. ";
 	public static final String refreshDataSkip = refreshDataSkip1;
+
+	public static final String syncAgenciesComplete1 = "%s refresh completed. ";
+	public static final String syncAgenciesComplete = syncAgenciesComplete1;
+	public static final String syncAgenciesFail1 = "%s refresh failed. ";
+	public static final String syncAgenciesFail = syncAgenciesFail1;
+	public static final String syncAgenciesSkip1 = "%s refresh skipped. ";
+	public static final String syncAgenciesSkip = syncAgenciesSkip1;
+
+	public static final String syncAgenciesFacetsComplete1 = "%s refresh facet data completed. ";
+	public static final String syncAgenciesFacetsComplete = syncAgenciesFacetsComplete1;
+	public static final String syncAgenciesFacetsFail1 = "%s refresh facet data failed. ";
+	public static final String syncAgenciesFacetsFail = syncAgenciesFacetsFail1;
+	public static final String syncAgenciesFacetsSkip1 = "%s refresh facet data skipped. ";
+	public static final String syncAgenciesFacetsSkip = syncAgenciesFacetsSkip1;
 
 
 	//////////////
@@ -311,6 +328,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDataComplete1, syncDataFail1, syncDataCounterResetFail1, syncDataSkip1, syncDataStarted1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1 };
+	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDataComplete1, syncDataFail1, syncDataCounterResetFail1, syncDataSkip1, syncDataStarted1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1, syncAgenciesComplete1, syncAgenciesFail1, syncAgenciesSkip1, syncAgenciesFacetsComplete1, syncAgenciesFacetsFail1, syncAgenciesFacetsSkip1 };
 
 }

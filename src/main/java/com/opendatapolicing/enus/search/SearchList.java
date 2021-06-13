@@ -1,5 +1,6 @@
 package com.opendatapolicing.enus.search;  
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
@@ -100,7 +102,36 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			}
 		} catch (Exception ex) {
 			promise.fail(ex);
-			LOG.error(String.format("indexTrafficStop failed. "), ex);
+			LOG.error(String.format("Solr search failed. "), ex);
+		}
+		return promise.future();
+	}
+
+	public Future<Boolean> query() {
+		Promise<Boolean> promise = Promise.promise();
+		try {
+			String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
+			Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
+			String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
+			String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
+			siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
+				JsonObject json = a.bodyAsJsonObject();
+				Map<String, Object> map = json.getMap();
+				QueryResponse r = generateSolrQueryResponse(map);
+				setQueryResponse(r);
+				_solrDocumentList(solrDocumentListWrap);
+				setSolrDocumentList(solrDocumentListWrap.o);
+				list.clear();
+				_list(list);
+
+				promise.complete(true);
+			}).onFailure(ex -> {
+				promise.fail(ex);
+				LOG.error(String.format("Solr search failed. "), ex);
+			});
+		} catch (Exception ex) {
+			promise.fail(ex);
+			LOG.error(String.format("Solr search failed. "), ex);
 		}
 		return promise.future();
 	}

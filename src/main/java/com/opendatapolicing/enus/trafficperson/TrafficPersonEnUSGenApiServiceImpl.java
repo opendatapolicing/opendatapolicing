@@ -118,8 +118,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -340,8 +340,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -636,8 +636,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteService");
 				if(
@@ -986,8 +986,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public void getTrafficPerson(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchTrafficPersonList(siteRequest, false, true, false, "/api/person/{id}", "GET").onSuccess(listTrafficPerson -> {
 						response200GETTrafficPerson(listTrafficPerson).onSuccess(response -> {
@@ -1043,8 +1043,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public void searchTrafficPerson(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchTrafficPersonList(siteRequest, false, true, false, "/api/person", "Search").onSuccess(listTrafficPerson -> {
 						response200SearchTrafficPerson(listTrafficPerson).onSuccess(response -> {
@@ -1230,8 +1230,8 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 	public void adminsearchTrafficPerson(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchTrafficPersonList(siteRequest, false, true, false, "/api/admin/person", "AdminSearch").onSuccess(listTrafficPerson -> {
 						response200AdminSearchTrafficPerson(listTrafficPerson).onSuccess(response -> {

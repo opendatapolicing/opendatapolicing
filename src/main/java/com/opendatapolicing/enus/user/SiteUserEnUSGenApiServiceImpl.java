@@ -116,8 +116,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 	public void searchSiteUser(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchSiteUserList(siteRequest, false, true, false, "/api/user", "Search").onSuccess(listSiteUser -> {
 						response200SearchSiteUser(listSiteUser).onSuccess(response -> {
@@ -305,8 +305,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					serviceRequest.getParams().getJsonObject("query").put("rows", 100);
 					searchSiteUserList(siteRequest, false, true, true, "/api/user", "PATCH").onSuccess(listSiteUser -> {
@@ -526,6 +526,14 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 			for(String entityVar : methodNames) {
 				switch(entityVar) {
+					case "setInheritPk":
+							o2.setInheritPk(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteUser.VAR_inheritPk + "=$" + num);
+							num++;
+							bParams.add(o2.sqlInheritPk());
+						break;
 					case "setUserId":
 							o2.setUserId(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
@@ -633,8 +641,8 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					ApiRequest apiRequest = new ApiRequest();
 					apiRequest.setRows(1);
@@ -792,6 +800,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				Set<String> entityVars = jsonObject.fieldNames();
 				for(String entityVar : entityVars) {
 					switch(entityVar) {
+					case SiteUser.VAR_inheritPk:
+						o2.setInheritPk(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteUser.VAR_inheritPk + "=$" + num);
+						num++;
+						bParams.add(o2.sqlInheritPk());
+						break;
 					case SiteUser.VAR_userId:
 						o2.setUserId(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {

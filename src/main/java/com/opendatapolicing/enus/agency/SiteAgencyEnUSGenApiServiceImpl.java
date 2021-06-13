@@ -120,8 +120,8 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteAdmin");
 				if(
@@ -342,8 +342,8 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteAdmin");
 				if(
@@ -639,8 +639,8 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
 				siteRequest.setJsonObject(body);
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 
 				List<String> roles = Arrays.asList("SiteAdmin");
 				if(
@@ -991,8 +991,8 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 	public void getSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchSiteAgencyList(siteRequest, false, true, false, "/api/agency/{id}", "GET").onSuccess(listSiteAgency -> {
 						response200GETSiteAgency(listSiteAgency).onSuccess(response -> {
@@ -1048,8 +1048,8 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 	public void searchSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchSiteAgencyList(siteRequest, false, true, false, "/api/agency", "Search").onSuccess(listSiteAgency -> {
 						response200SearchSiteAgency(listSiteAgency).onSuccess(response -> {
@@ -1235,8 +1235,8 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 	public void adminsearchSiteAgency(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
 			try {
-				siteRequest.setRequestUri(serviceRequest.getExtra().getString("uri"));
-				siteRequest.setRequestMethod(serviceRequest.getExtra().getString("method"));
+				siteRequest.setRequestUri(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("uri")).orElse(null));
+				siteRequest.setRequestMethod(Optional.ofNullable(serviceRequest.getExtra()).map(extra -> extra.getString("method")).orElse(null));
 				{
 					searchSiteAgencyList(siteRequest, false, true, false, "/api/admin/agency", "AdminSearch").onSuccess(listSiteAgency -> {
 						response200AdminSearchSiteAgency(listSiteAgency).onSuccess(response -> {

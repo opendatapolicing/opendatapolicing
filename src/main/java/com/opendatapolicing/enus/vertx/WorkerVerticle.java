@@ -3,17 +3,24 @@ package com.opendatapolicing.enus.vertx;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
+import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.trafficstop.TrafficStop;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
@@ -36,6 +43,8 @@ import io.vertx.sqlclient.RowStream;
  */
 public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkerVerticle.class);
+
+	public static final Integer FACET_LIMIT = 1000;
 
 	/**
 	 * A io.vertx.ext.jdbc.JDBCClient for connecting to the relational database PostgreSQL. 
@@ -260,8 +269,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 						syncData("TrafficSearch").onSuccess(d -> {
 							syncData("SearchBasis").onSuccess(e -> {
 								syncData("TrafficContraband").onSuccess(f -> {
-									LOG.info(syncDbToSolrComplete);
-									promise.complete();
+									syncAgencies().onSuccess(g -> {
+										LOG.info(syncDbToSolrComplete);
+										promise.complete();
+									}).onFailure(ex -> {
+										LOG.error(syncDbToSolrFail, ex);
+										promise.fail(ex);
+									});
 								}).onFailure(ex -> {
 									LOG.error(syncDbToSolrFail, ex);
 									promise.fail(ex);
@@ -486,6 +500,104 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			}
 		} catch (Exception ex) {
 			LOG.error(String.format(refreshDataFail, tableName), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+
+	/**	
+	 * Import agency data to Solr. 
+	 * Val.Complete.enUS:%s refresh completed. 
+	 * Val.Fail.enUS:%s refresh failed. 
+	 * Val.Skip.enUS:%s refresh skipped. 
+	 **/
+	private Future<Void> syncAgencies() {
+		Promise<Void> promise = Promise.promise();
+		try {
+			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_REFRESH_DATA, "SiteAgency"), true)) {
+				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+				siteRequest.setConfig(config());
+				siteRequest.initDeepSiteRequestEnUS(siteRequest);
+
+				SearchList<TrafficStop> stopSearch1 = new SearchList<TrafficStop>();
+				stopSearch1.setStore(true);
+				stopSearch1.setQuery("*:*");
+				stopSearch1.setC(TrafficStop.class);
+				stopSearch1.setRows(0);
+				stopSearch1.addFacetField("agencyTitle_indexed_string");
+				stopSearch1.promiseDeepForClass(siteRequest).onSuccess(c -> {
+					syncAgenciesFacets(stopSearch1, 0).onSuccess(a -> {
+						LOG.info(String.format(refreshAgenciesComplete, "SiteAgency"));
+						promise.complete();
+					}).onFailure(ex -> {
+						LOG.error(String.format(refreshAgenciesFail, "SiteAgency"), ex);
+						promise.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format(refreshAgenciesFail, "SiteAgency"), ex);
+					promise.fail(ex);
+				});
+			} else {
+				LOG.info(String.format(refreshAgenciesSkip, "SiteAgency"));
+				promise.complete();
+			}
+		} catch (Exception ex) {
+			LOG.error(String.format(refreshAgenciesFail, "SiteAgency"), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+
+	/**	
+	 * Import agency facet data to Solr. 
+	 * Val.Complete.enUS:%s refresh facet data completed. 
+	 * Val.Fail.enUS:%s refresh facet data failed. 
+	 * Val.Skip.enUS:%s refresh facet data skipped. 
+	 **/  
+	private Future<Void> syncAgenciesFacets(SearchList<TrafficStop> stopSearch1, Integer facetOffset) {
+		Promise<Void> promise = Promise.promise();
+		try {
+			FacetField agencyTitleFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
+			if(agencyTitleFacet.getValueCount() > 0) {
+				List<Future> futures = new ArrayList<>();
+
+				FacetField groupNameFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
+				List<Count> groupNameCounts = Optional.ofNullable(groupNameFacet.getValues()).orElse(Arrays.asList());
+	
+				for(Count count : groupNameCounts) {
+					String agencyTitle = count.getName();
+
+					JsonObject agencyJson = new JsonObject().put("saves", new JsonArray().add("inheritPk").add("agencyTitle")).put("agencyTitle", agencyTitle).put("pk", agencyTitle);
+					JsonObject body = new JsonObject().put("list", new JsonArray().add(agencyJson));
+					JsonObject params = new JsonObject();
+					params.put("body", body);
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+					JsonObject context = new JsonObject().put("params", params);
+					JsonObject json = new JsonObject().put("context", context);
+					futures.add(vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%s", "SiteAgency"))));
+				}
+				CompositeFuture.all(futures).onSuccess(a -> {
+					Integer facetOffsetNext = facetOffset + FACET_LIMIT;
+					stopSearch1.set("facet.offset", facetOffsetNext);
+					syncAgenciesFacets(stopSearch1, facetOffsetNext).onSuccess(b -> {
+						LOG.info(String.format(refreshAgenciesFacetsComplete, "SiteAgency"));
+						promise.complete();
+					}).onFailure(ex -> {
+						LOG.error(String.format(refreshAgenciesFacetsFail, "SiteAgency"), ex);
+						promise.fail(ex);
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format(refreshAgenciesFacetsFail, "SiteAgency"), ex);
+					promise.fail(ex);
+				});
+			} else {
+				LOG.info(String.format(refreshAgenciesFacetsComplete, "SiteAgency"));
+				promise.complete();
+			}
+		} catch (Exception ex) {
+			LOG.error(String.format(refreshAgenciesFacetsFail, "SiteAgency"), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
