@@ -40,7 +40,7 @@ import io.vertx.core.Promise;
  * Role.enUS: SiteAdmin
  * PublicRead: true
  * 
- * Sort.asc: agencyName
+ * Sort.asc: agencyTitle
  * 
  * Rows: 300
  **/
@@ -66,7 +66,7 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 	 * HtmlCell: 1
 	 * DisplayName.enUS: name
 	 */ 
-	protected void _agencyName(Wrap<String> c) {
+	protected void _agencyTitle(Wrap<String> c) {
 	}
 
 	/**
@@ -177,10 +177,10 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 	 * Stored: true
 	 */ 
 	protected void _agencyOnlyName(Wrap<String> c) {
-		if(StringUtils.equals(agencyName, stateName))
+		if(StringUtils.equals(agencyTitle, stateName))
 			c.o("A A A " + stateName);
 		else
-			c.o(agencyName + " in " + stateName + " (" + stateAbbreviation + ")");
+			c.o(agencyTitle + " in " + stateName + " (" + stateAbbreviation + ")");
 	}
 
 	/**   
@@ -191,9 +191,9 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 	 * VarTitle: true
 	 */ 
 	protected void _agencyCompleteName(Wrap<String> c) {
-		if(StringUtils.equals(agencyName, stateName))
+		if(StringUtils.equals(agencyTitle, stateName))
 			c.o(stateName + " (" + stateAbbreviation + ")");
 		else
-			c.o(agencyName + " in " + stateName + " (" + stateAbbreviation + ")");
+			c.o(agencyTitle + " in " + stateName + " (" + stateAbbreviation + ")");
 	}
 }

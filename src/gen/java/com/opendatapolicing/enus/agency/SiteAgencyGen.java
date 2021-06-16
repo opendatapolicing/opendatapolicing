@@ -140,74 +140,74 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		return agencyKey == null ? "" : agencyKey.toString();
 	}
 
-	////////////////
-	// agencyName //
-	////////////////
+	/////////////////
+	// agencyTitle //
+	/////////////////
 
-	/**	 The entity agencyName
+	/**	 The entity agencyTitle
 	 *	 is defined as null before being initialized. 
 	 */
 	@JsonProperty
 	@JsonInclude(Include.NON_NULL)
-	protected String agencyName;
+	protected String agencyTitle;
 	@JsonIgnore
-	public Wrap<String> agencyNameWrap = new Wrap<String>().var("agencyName").o(agencyName);
+	public Wrap<String> agencyTitleWrap = new Wrap<String>().var("agencyTitle").o(agencyTitle);
 
-	/**	<br/> The entity agencyName
+	/**	<br/> The entity agencyTitle
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyName">Find the entity agencyName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTitle">Find the entity agencyTitle in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _agencyName(Wrap<String> c);
+	protected abstract void _agencyTitle(Wrap<String> c);
 
-	public String getAgencyName() {
-		return agencyName;
+	public String getAgencyTitle() {
+		return agencyTitle;
 	}
-	public void setAgencyName(String o) {
-		this.agencyName = SiteAgency.staticSetAgencyName(siteRequest_, o);
-		this.agencyNameWrap.alreadyInitialized = true;
+	public void setAgencyTitle(String o) {
+		this.agencyTitle = SiteAgency.staticSetAgencyTitle(siteRequest_, o);
+		this.agencyTitleWrap.alreadyInitialized = true;
 	}
-	public static String staticSetAgencyName(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSetAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected SiteAgency agencyNameInit() {
-		if(!agencyNameWrap.alreadyInitialized) {
-			_agencyName(agencyNameWrap);
-			if(agencyName == null)
-				setAgencyName(agencyNameWrap.o);
-			agencyNameWrap.o(null);
+	protected SiteAgency agencyTitleInit() {
+		if(!agencyTitleWrap.alreadyInitialized) {
+			_agencyTitle(agencyTitleWrap);
+			if(agencyTitle == null)
+				setAgencyTitle(agencyTitleWrap.o);
+			agencyTitleWrap.o(null);
 		}
-		agencyNameWrap.alreadyInitialized(true);
+		agencyTitleWrap.alreadyInitialized(true);
 		return (SiteAgency)this;
 	}
 
-	public static String staticSolrAgencyName(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
 
-	public static String staticSolrStrAgencyName(SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrStrAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o == null ? null : o.toString();
 	}
 
-	public static String staticSolrFqAgencyName(SiteRequestEnUS siteRequest_, String o) {
-		return SiteAgency.staticSolrStrAgencyName(siteRequest_, SiteAgency.staticSolrAgencyName(siteRequest_, SiteAgency.staticSetAgencyName(siteRequest_, o)));
+	public static String staticSolrFqAgencyTitle(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTitle(siteRequest_, SiteAgency.staticSolrAgencyTitle(siteRequest_, SiteAgency.staticSetAgencyTitle(siteRequest_, o)));
 	}
 
-	public String solrAgencyName() {
-		return SiteAgency.staticSolrAgencyName(siteRequest_, agencyName);
+	public String solrAgencyTitle() {
+		return SiteAgency.staticSolrAgencyTitle(siteRequest_, agencyTitle);
 	}
 
-	public String strAgencyName() {
-		return agencyName == null ? "" : agencyName;
+	public String strAgencyTitle() {
+		return agencyTitle == null ? "" : agencyTitle;
 	}
 
-	public String sqlAgencyName() {
-		return agencyName;
+	public String sqlAgencyTitle() {
+		return agencyTitle;
 	}
 
-	public String jsonAgencyName() {
-		return agencyName == null ? "" : agencyName;
+	public String jsonAgencyTitle() {
+		return agencyTitle == null ? "" : agencyTitle;
 	}
 
 	/////////////////
@@ -1006,7 +1006,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				agencyKeyInit();
-				agencyNameInit();
+				agencyTitleInit();
 				promise2.complete();
 			} catch(Exception ex) {
 				promise2.fail(ex);
@@ -1090,8 +1090,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		switch(var) {
 			case "agencyKey":
 				return oSiteAgency.agencyKey;
-			case "agencyName":
-				return oSiteAgency.agencyName;
+			case "agencyTitle":
+				return oSiteAgency.agencyTitle;
 			case "stateSearch":
 				return oSiteAgency.stateSearch;
 			case "state_":
@@ -1161,8 +1161,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "agencyKey":
 			return SiteAgency.staticSetAgencyKey(siteRequest_, o);
-		case "agencyName":
-			return SiteAgency.staticSetAgencyName(siteRequest_, o);
+		case "agencyTitle":
+			return SiteAgency.staticSetAgencyTitle(siteRequest_, o);
 		case "stateKey":
 			return SiteAgency.staticSetStateKey(siteRequest_, o);
 		case "imageLeft":
@@ -1197,8 +1197,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "agencyKey":
 			return SiteAgency.staticSolrAgencyKey(siteRequest_, (Long)o);
-		case "agencyName":
-			return SiteAgency.staticSolrAgencyName(siteRequest_, (String)o);
+		case "agencyTitle":
+			return SiteAgency.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "stateKey":
 			return SiteAgency.staticSolrStateKey(siteRequest_, (Long)o);
 		case "imageLeft":
@@ -1233,8 +1233,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "agencyKey":
 			return SiteAgency.staticSolrStrAgencyKey(siteRequest_, (Long)o);
-		case "agencyName":
-			return SiteAgency.staticSolrStrAgencyName(siteRequest_, (String)o);
+		case "agencyTitle":
+			return SiteAgency.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "stateKey":
 			return SiteAgency.staticSolrStrStateKey(siteRequest_, (Long)o);
 		case "imageLeft":
@@ -1269,8 +1269,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		switch(entityVar) {
 		case "agencyKey":
 			return SiteAgency.staticSolrFqAgencyKey(siteRequest_, o);
-		case "agencyName":
-			return SiteAgency.staticSolrFqAgencyName(siteRequest_, o);
+		case "agencyTitle":
+			return SiteAgency.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "stateKey":
 			return SiteAgency.staticSolrFqStateKey(siteRequest_, o);
 		case "imageLeft":
@@ -1315,10 +1315,10 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	}
 	public Object defineSiteAgency(String var, String val) {
 		switch(var.toLowerCase()) {
-			case "agencyname":
+			case "agencytitle":
 				if(val != null)
-					setAgencyName(val);
-				saves.add("agencyName");
+					setAgencyTitle(val);
+				saves.add("agencyTitle");
 				return val;
 			case "statekey":
 				if(val != null)
@@ -1362,10 +1362,10 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	}
 	public Object defineSiteAgency(String var, Object val) {
 		switch(var.toLowerCase()) {
-			case "agencyname":
+			case "agencytitle":
 				if(val instanceof String)
-					setAgencyName((String)val);
-				saves.add("agencyName");
+					setAgencyTitle((String)val);
+				saves.add("agencyTitle");
 				return val;
 			case "statekey":
 				if(val instanceof Long)
@@ -1410,10 +1410,10 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 					oSiteAgency.setAgencyKey(agencyKey);
 			}
 
-			if(saves.contains("agencyName")) {
-				String agencyName = (String)solrDocument.get("agencyName_stored_string");
-				if(agencyName != null)
-					oSiteAgency.setAgencyName(agencyName);
+			if(saves.contains("agencyTitle")) {
+				String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
+				if(agencyTitle != null)
+					oSiteAgency.setAgencyTitle(agencyTitle);
 			}
 
 			Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
@@ -1477,9 +1477,9 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 			document.addField("agencyKey_indexed_long", agencyKey);
 			document.addField("agencyKey_stored_long", agencyKey);
 		}
-		if(agencyName != null) {
-			document.addField("agencyName_indexed_string", agencyName);
-			document.addField("agencyName_stored_string", agencyName);
+		if(agencyTitle != null) {
+			document.addField("agencyTitle_indexed_string", agencyTitle);
+			document.addField("agencyTitle_stored_string", agencyTitle);
 		}
 		if(stateKey != null) {
 			document.addField("stateKey_indexed_long", stateKey);
@@ -1525,8 +1525,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		switch(entityVar) {
 			case "agencyKey":
 				return "agencyKey_indexed_long";
-			case "agencyName":
-				return "agencyName_indexed_string";
+			case "agencyTitle":
+				return "agencyTitle_indexed_string";
 			case "stateKey":
 				return "stateKey_indexed_long";
 			case "imageLeft":
@@ -1575,7 +1575,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		SiteAgency oSiteAgency = (SiteAgency)this;
 
 		oSiteAgency.setAgencyKey(Optional.ofNullable(solrDocument.get("agencyKey_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyName(Optional.ofNullable(solrDocument.get("agencyName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setStateKey(Optional.ofNullable(solrDocument.get("stateKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setImageLeft(Optional.ofNullable(solrDocument.get("imageLeft_stored_int")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setImageTop(Optional.ofNullable(solrDocument.get("imageTop_stored_int")).map(v -> v.toString()).orElse(null));
@@ -1600,8 +1600,8 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 			SiteAgency original = (SiteAgency)o;
 			if(!Objects.equals(agencyKey, original.getAgencyKey()))
 				apiRequest.addVars("agencyKey");
-			if(!Objects.equals(agencyName, original.getAgencyName()))
-				apiRequest.addVars("agencyName");
+			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
+				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(stateKey, original.getStateKey()))
 				apiRequest.addVars("stateKey");
 			if(!Objects.equals(imageLeft, original.getImageLeft()))
@@ -1629,7 +1629,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), agencyKey, agencyName, stateKey, imageLeft, imageTop, imageCoords, stateId, stateName, stateAbbreviation, agencyOnlyName, agencyCompleteName);
+		return Objects.hash(super.hashCode(), agencyKey, agencyTitle, stateKey, imageLeft, imageTop, imageCoords, stateId, stateName, stateAbbreviation, agencyOnlyName, agencyCompleteName);
 	}
 
 	////////////
@@ -1644,7 +1644,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		SiteAgency that = (SiteAgency)o;
 		return super.equals(o)
 				&& Objects.equals( agencyKey, that.agencyKey )
-				&& Objects.equals( agencyName, that.agencyName )
+				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( stateKey, that.stateKey )
 				&& Objects.equals( imageLeft, that.imageLeft )
 				&& Objects.equals( imageTop, that.imageTop )
@@ -1665,7 +1665,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 		sb.append(super.toString() + "\n");
 		sb.append("SiteAgency { ");
 		sb.append( "agencyKey: " ).append(agencyKey);
-		sb.append( ", agencyName: \"" ).append(agencyName).append( "\"" );
+		sb.append( ", agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", stateKey: " ).append(stateKey);
 		sb.append( ", imageLeft: " ).append(imageLeft);
 		sb.append( ", imageTop: " ).append(imageTop);
@@ -1680,7 +1680,7 @@ public abstract class SiteAgencyGen<DEV> extends Cluster {
 	}
 
 	public static final String VAR_agencyKey = "agencyKey";
-	public static final String VAR_agencyName = "agencyName";
+	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_stateSearch = "stateSearch";
 	public static final String VAR_state_ = "state_";
 	public static final String VAR_stateKey = "stateKey";

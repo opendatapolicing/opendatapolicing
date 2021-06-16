@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.util.SimpleOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +18,7 @@ import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.trafficstop.TrafficStop;
 
 import io.vertx.core.AbstractVerticle;
@@ -44,7 +43,7 @@ import io.vertx.sqlclient.RowStream;
 public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkerVerticle.class);
 
-	public static final Integer FACET_LIMIT = 1000;
+	public static final Integer FACET_LIMIT = 100;
 
 	/**
 	 * A io.vertx.ext.jdbc.JDBCClient for connecting to the relational database PostgreSQL. 
@@ -83,12 +82,14 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	public void  start(Promise<Void> startPromise) throws Exception, Exception {
 
 		try {
-			configureData().compose(b -> 
-				configureSharedWorkerExecutor().compose(c -> 
-					configureEmail().compose(d -> 
-						syncDbToSolr().compose(e -> 
-							refreshAllData().compose(f -> 
-								importData()
+			configureWebClient().compose(a -> 
+				configureData().compose(b -> 
+					configureSharedWorkerExecutor().compose(c -> 
+						configureEmail().compose(d -> 
+							importData().compose(e -> 
+								syncDbToSolr().compose(f -> 
+									refreshAllData()
+								)
 							)
 						)
 					)
@@ -97,6 +98,22 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		} catch (Exception ex) {
 			LOG.error("Couldn't start verticle. ", ex);
 		}
+	}
+
+	/**	
+	 **/
+	private Future<Void> configureWebClient() {
+		Promise<Void> promise = Promise.promise();
+
+		try {
+			webClient = WebClient.create(vertx);
+			promise.complete();
+		} catch(Exception ex) {
+			LOG.error("Unable to configure site context. ", ex);
+			promise.fail(ex);
+		}
+
+		return promise.future();
 	}
 
 	/**	
@@ -517,32 +534,53 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_REFRESH_DATA, "SiteAgency"), true)) {
 				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 				siteRequest.setConfig(config());
+				siteRequest.setWebClient(webClient);
 				siteRequest.initDeepSiteRequestEnUS(siteRequest);
 
-				SearchList<TrafficStop> stopSearch1 = new SearchList<TrafficStop>();
-				stopSearch1.setStore(true);
-				stopSearch1.setQuery("*:*");
-				stopSearch1.setC(TrafficStop.class);
-				stopSearch1.setRows(0);
-				stopSearch1.addFacetField("agencyTitle_indexed_string");
-				stopSearch1.promiseDeepForClass(siteRequest).onSuccess(c -> {
-					syncAgenciesFacets(stopSearch1, 0).onSuccess(a -> {
-						LOG.info(String.format(refreshAgenciesComplete, "SiteAgency"));
-						promise.complete();
-					}).onFailure(ex -> {
-						LOG.error(String.format(refreshAgenciesFail, "SiteAgency"), ex);
+				SearchList<SiteState> stateSearch = new SearchList<SiteState>();
+				stateSearch.setStore(true);
+				stateSearch.setQuery("*:*");
+				stateSearch.setC(SiteState.class);
+				stateSearch.setRows(1);
+				stateSearch.addFilterQuery("inheritPk_indexed_string:NC");
+				stateSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
+					SiteState state = stateSearch.first();
+					if(state != null) {
+						SearchList<TrafficStop> stopSearch1 = new SearchList<TrafficStop>();
+						stopSearch1.setStore(true);
+						stopSearch1.setQuery("*:*");
+						stopSearch1.setC(TrafficStop.class);
+						stopSearch1.setRows(0);
+						stopSearch1.addFacetField("agencyTitle_indexed_string");
+						stopSearch1.set("facet.offset", 0);
+						stopSearch1.set("facet.limit", FACET_LIMIT);
+						stopSearch1.promiseDeepForClass(siteRequest).onSuccess(d -> {
+							syncAgenciesFacets(state, stopSearch1, 0).onSuccess(a -> {
+								LOG.info(String.format(syncAgenciesComplete, "SiteAgency"));
+								promise.complete();
+							}).onFailure(ex -> {
+								LOG.error(String.format(syncAgenciesFail, "SiteAgency"), ex);
+								promise.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format(syncAgenciesFail, "SiteAgency"), ex);
+							promise.fail(ex);
+						});
+					} else {
+						Exception ex = new RuntimeException("No State NC found. ");
+						LOG.error(String.format(syncAgenciesFail, "SiteAgency"), ex);
 						promise.fail(ex);
-					});
+					}
 				}).onFailure(ex -> {
-					LOG.error(String.format(refreshAgenciesFail, "SiteAgency"), ex);
+					LOG.error(String.format(syncAgenciesFail, "SiteAgency"), ex);
 					promise.fail(ex);
 				});
 			} else {
-				LOG.info(String.format(refreshAgenciesSkip, "SiteAgency"));
+				LOG.info(String.format(syncAgenciesSkip, "SiteAgency"));
 				promise.complete();
 			}
 		} catch (Exception ex) {
-			LOG.error(String.format(refreshAgenciesFail, "SiteAgency"), ex);
+			LOG.error(String.format(syncAgenciesFail, "SiteAgency"), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
@@ -553,8 +591,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * Val.Complete.enUS:%s refresh facet data completed. 
 	 * Val.Fail.enUS:%s refresh facet data failed. 
 	 * Val.Skip.enUS:%s refresh facet data skipped. 
+	 * @param state 
 	 **/  
-	private Future<Void> syncAgenciesFacets(SearchList<TrafficStop> stopSearch1, Integer facetOffset) {
+	private Future<Void> syncAgenciesFacets(SiteState state, SearchList<TrafficStop> stopSearch1, Integer facetOffset) {
 		Promise<Void> promise = Promise.promise();
 		try {
 			FacetField agencyTitleFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
@@ -567,8 +606,14 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				for(Count count : groupNameCounts) {
 					String agencyTitle = count.getName();
 
-					JsonObject agencyJson = new JsonObject().put("saves", new JsonArray().add("inheritPk").add("agencyTitle")).put("agencyTitle", agencyTitle).put("pk", agencyTitle);
-					JsonObject body = new JsonObject().put("list", new JsonArray().add(agencyJson));
+					JsonObject body = new JsonObject()
+							.put("saves", new JsonArray().add("inheritPk").add("agencyTitle").add("stateKey"))
+							.put("agencyTitle", agencyTitle)
+							.put("pk", state.getStateAbbreviation() + "-" + agencyTitle)
+							.put("stateKey", state.getPk())
+							;
+//					JsonObject agencyJson = new JsonObject().put("saves", new JsonArray().add("inheritPk").add("agencyTitle")).put("agencyTitle", agencyTitle).put("pk", agencyTitle);
+//					JsonObject body = new JsonObject().put("list", new JsonArray().add(agencyJson));
 					JsonObject params = new JsonObject();
 					params.put("body", body);
 					params.put("path", new JsonObject());
@@ -576,28 +621,33 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
 					JsonObject context = new JsonObject().put("params", params);
 					JsonObject json = new JsonObject().put("context", context);
-					futures.add(vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%s", "SiteAgency"))));
+					futures.add(vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", "SiteAgency"))));
 				}
 				CompositeFuture.all(futures).onSuccess(a -> {
 					Integer facetOffsetNext = facetOffset + FACET_LIMIT;
 					stopSearch1.set("facet.offset", facetOffsetNext);
-					syncAgenciesFacets(stopSearch1, facetOffsetNext).onSuccess(b -> {
-						LOG.info(String.format(refreshAgenciesFacetsComplete, "SiteAgency"));
-						promise.complete();
+					stopSearch1.query().onSuccess(b -> {
+						syncAgenciesFacets(state, stopSearch1, facetOffsetNext).onSuccess(c -> {
+							LOG.info(String.format(syncAgenciesFacetsComplete, "SiteAgency"));
+							promise.complete();
+						}).onFailure(ex -> {
+							LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
+							promise.fail(ex);
+						});
 					}).onFailure(ex -> {
-						LOG.error(String.format(refreshAgenciesFacetsFail, "SiteAgency"), ex);
+						LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
 						promise.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format(refreshAgenciesFacetsFail, "SiteAgency"), ex);
+					LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
 					promise.fail(ex);
 				});
 			} else {
-				LOG.info(String.format(refreshAgenciesFacetsComplete, "SiteAgency"));
+				LOG.info(String.format(syncAgenciesFacetsComplete, "SiteAgency"));
 				promise.complete();
 			}
 		} catch (Exception ex) {
-			LOG.error(String.format(refreshAgenciesFacetsFail, "SiteAgency"), ex);
+			LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
 			promise.fail(ex);
 		}
 		return promise.future();
