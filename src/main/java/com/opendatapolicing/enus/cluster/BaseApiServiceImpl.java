@@ -343,7 +343,7 @@ public class BaseApiServiceImpl {
 					pks.add(pk2);
 					classes.add(c2.getSimpleName());
 				}
-				siteRequest.getSqlConnection().preparedQuery(String.format("UPDATE %s SET %s=$1 WHERE pk=$2", c1.getSimpleName(), entityVar1)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
+				siteRequest.getSqlConnection().preparedQuery(String.format("UPDATE %s SET %s=$1 WHERE pk=$2", c1.getSimpleName(), entityVar1)).execute(Tuple.of(pk2, pk1)).onSuccess(a -> {
 					promise.complete();
 				}).onFailure(ex -> {
 					promise.fail(ex);

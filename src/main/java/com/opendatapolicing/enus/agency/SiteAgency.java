@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.agency;          
+package com.opendatapolicing.enus.agency;            
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,16 +46,6 @@ import io.vertx.core.Promise;
  **/
 
 public class SiteAgency extends SiteAgencyGen<Cluster> {
-	
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Description.enUS: The primary key of the agency in the database. 
-	 */            
-	protected void _agencyKey(Wrap<Long> c) {
-		c.o(pk);
-	}
 
 	/**   
 	 * {@inheritDoc}
@@ -67,25 +57,6 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 	 * DisplayName.enUS: name
 	 */ 
 	protected void _agencyTitle(Wrap<String> c) {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Ignore: true
-	 */
-	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {
-		SearchList<SiteState> l = new SearchList<>();
-		l.setQuery("*:*");
-		l.addFilterQuery("agencyKeys_indexed_longs:" + pk);
-		l.setC(SiteState.class);
-		l.setStore(true);
-		promise.complete(l);
-	}
-
-	protected void _state_(Wrap<SiteState> c) {
-		if(stateSearch.size() > 0) {
-			c.o(stateSearch.get(0));
-		}
 	}
 
 	/**  
@@ -100,45 +71,23 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 	protected void _stateKey(Wrap<Long> c) {
 	}
 
-	/**   
+	/**
 	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 4
-	 * HtmlCell: 1
-	 * DisplayName.enUS: image left pixels
-	 */ 
-	protected void _imageLeft(Wrap<Integer> c) {
-		if(state_ != null)
-			c.o(state_.getImageLeft());
+	 * Ignore: true
+	 */
+	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {
+		SearchList<SiteState> l = new SearchList<>();
+		l.setQuery("*:*");
+		l.addFilterQuery("stateKey_indexed_long:" + stateKey);
+		l.setC(SiteState.class);
+		l.setStore(true);
+		promise.complete(l);
 	}
 
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 4
-	 * HtmlCell: 2
-	 * DisplayName.enUS: image top pixels
-	 */ 
-	protected void _imageTop(Wrap<Integer> c) {
-		if(state_ != null)
-			c.o(state_.getImageTop());
-	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 4
-	 * HtmlCell: 3
-	 * Multiline: true
-	 * DisplayName.enUS: image map coordinates
-	 */ 
-	protected void _imageCoords(Wrap<String> c) {
+	protected void _state_(Wrap<SiteState> c) {
+		if(stateSearch.size() > 0) {
+			c.o(stateSearch.get(0));
+		}
 	}
 
 	/**   
@@ -171,29 +120,16 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 			c.o(state_.getStateAbbreviation());
 	}
 
-	/**    
+	/**
 	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 */ 
-	protected void _agencyOnlyName(Wrap<String> c) {
-		if(StringUtils.equals(agencyTitle, stateName))
-			c.o("A A A " + stateName);
-		else
-			c.o(agencyTitle + " in " + stateName + " (" + stateAbbreviation + ")");
+	 * Suggested: true
+	 */    
+	protected void _objectSuggest(Wrap<String> c) { 
+		c.o(agencyTitle);
 	}
 
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * VarH2: true
-	 * VarTitle: true
-	 */ 
-	protected void _agencyCompleteName(Wrap<String> c) {
-		if(StringUtils.equals(agencyTitle, stateName))
-			c.o(stateName + " (" + stateAbbreviation + ")");
-		else
-			c.o(agencyTitle + " in " + stateName + " (" + stateAbbreviation + ")");
+	@Override
+	protected void _objectTitle(Wrap<String> c) {
+		c.o(agencyTitle);
 	}
 }

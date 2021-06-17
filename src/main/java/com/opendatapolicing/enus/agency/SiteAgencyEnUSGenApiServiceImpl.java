@@ -280,6 +280,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								}
 							} else {
 								o2.defineForClass(f, bodyVal);
+								o2.attributeForClass(f, bodyVal);
 								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
@@ -553,33 +554,6 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								});
 							}));
 						});
-						break;
-					case SiteAgency.VAR_imageLeft:
-						o2.setImageLeft(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(SiteAgency.VAR_imageLeft + "=$" + num);
-						num++;
-						bParams.add(o2.sqlImageLeft());
-						break;
-					case SiteAgency.VAR_imageTop:
-						o2.setImageTop(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(SiteAgency.VAR_imageTop + "=$" + num);
-						num++;
-						bParams.add(o2.sqlImageTop());
-						break;
-					case SiteAgency.VAR_imageCoords:
-						o2.setImageCoords(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(SiteAgency.VAR_imageCoords + "=$" + num);
-						num++;
-						bParams.add(o2.sqlImageCoords());
 						break;
 					}
 				}
@@ -910,30 +884,6 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 								});
 							}));
 						});
-					case "setImageLeft":
-							o2.setImageLeft(jsonObject.getString(entityVar));
-							if(bParams.size() > 0)
-								bSql.append(", ");
-							bSql.append(SiteAgency.VAR_imageLeft + "=$" + num);
-							num++;
-							bParams.add(o2.sqlImageLeft());
-						break;
-					case "setImageTop":
-							o2.setImageTop(jsonObject.getString(entityVar));
-							if(bParams.size() > 0)
-								bSql.append(", ");
-							bSql.append(SiteAgency.VAR_imageTop + "=$" + num);
-							num++;
-							bParams.add(o2.sqlImageTop());
-						break;
-					case "setImageCoords":
-							o2.setImageCoords(jsonObject.getString(entityVar));
-							if(bParams.size() > 0)
-								bSql.append(", ");
-							bSql.append(SiteAgency.VAR_imageCoords + "=$" + num);
-							num++;
-							bParams.add(o2.sqlImageCoords());
-						break;
 				}
 			}
 			bSql.append(" WHERE pk=$" + num);
@@ -1415,19 +1365,14 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 			}
 		}
 	}
-	public static final String VAR_agencyKey = "agencyKey";
 	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateSearch = "stateSearch";
 	public static final String VAR_state_ = "state_";
-	public static final String VAR_stateKey = "stateKey";
-	public static final String VAR_imageLeft = "imageLeft";
-	public static final String VAR_imageTop = "imageTop";
-	public static final String VAR_imageCoords = "imageCoords";
 	public static final String VAR_stateId = "stateId";
 	public static final String VAR_stateName = "stateName";
 	public static final String VAR_stateAbbreviation = "stateAbbreviation";
-	public static final String VAR_agencyOnlyName = "agencyOnlyName";
-	public static final String VAR_agencyCompleteName = "agencyCompleteName";
+	public static final String VAR_objectSuggest = "objectSuggest";
 
 	// General //
 

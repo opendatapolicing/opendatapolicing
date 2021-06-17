@@ -54,25 +54,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 	WorkerExecutor workerExecutor;
 
-	Long totalNum;
-	private void incrementTotalNum() {
-		this.totalNum++;
-	}
-	private void setTotalNum(Long totalNum) {
-		this.totalNum = totalNum;
-	}
-
-	Long countNum;
-	private void incrementCountNum() {
-		this.countNum++;
-	}
-	private void decrementCountNum() {
-		this.countNum--;
-	}
-	private void setCountNum(Long countNum) {
-		this.countNum = countNum;
-	}
-
 	/**	
 	 *	This is called by Vert.x when the verticle instance is deployed. 
 	 *	Initialize a new site context object for storing information about the entire site in English. 
@@ -610,7 +591,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							.put("saves", new JsonArray().add("inheritPk").add("agencyTitle").add("stateKey"))
 							.put("agencyTitle", agencyTitle)
 							.put("pk", state.getStateAbbreviation() + "-" + agencyTitle)
-							.put("stateKey", state.getPk())
+							.put("stateKey", state.getStateAbbreviation())
 							;
 //					JsonObject agencyJson = new JsonObject().put("saves", new JsonArray().add("inheritPk").add("agencyTitle")).put("agencyTitle", agencyTitle).put("pk", agencyTitle);
 //					JsonObject body = new JsonObject().put("list", new JsonArray().add(agencyJson));

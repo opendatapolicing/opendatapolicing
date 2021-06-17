@@ -73,26 +73,6 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
-	public static final String SEMAPHORE_VERTICLE_INSTANCES = "semaphoreVerticleInstances";
-
-	/**
-	 * 
-	 **/
-	public static final String SEMAPHORE_VERTICLE_EVENT_NAME = "opendatapolicing-enUS-semaphore";
-
-	/**
-	 * 
-	 **/
-	public static final String SEMAPHORE_VERTICLE_NEXT_EVENT_NAME = "eventName";
-
-	/**
-	 * 
-	 **/
-	public static final String SEMAPHORE_VERTICLE_EVENT_ACTION = "eventAction";
-
-	/**
-	 * 
-	 **/
 	public static final String AUTH_REALM = "authRealm";
 
 	/**

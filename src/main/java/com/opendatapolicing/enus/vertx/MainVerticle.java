@@ -131,13 +131,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 	AuthorizationProvider authorizationProvider;
 
-	Integer semaphorePermits;
-
-	Semaphore semaphore;
-	public MainVerticle setSemaphore(Semaphore semaphore) {
-		this.semaphore = semaphore;
-		return this;
-	}
 
 	public static final String CONFIG_staticPath = "staticPath";
 
@@ -193,14 +186,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
 		CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(zookeeperHosts, retryPolicy);
 		curatorFramework.start();
-		Integer semaphorePermits = System.getenv(ConfigKeys.SEMAPHORE_PERMITS) == null ? 10 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_PERMITS));
-//		InterProcessSemaphoreV2 semaphore = new InterProcessSemaphoreV2(curatorFramework, "/opendatapolicing/semaphore", semaphorePermits);
-		Semaphore semaphore = new Semaphore(semaphorePermits);
 		Integer clusterPort = System.getenv("clusterPort") == null ? null : Integer.parseInt(System.getenv("clusterPort"));
 		String clusterHost = System.getenv("clusterHost");
 		Integer clusterPublicPort = System.getenv("clusterPublicPort") == null ? null : Integer.parseInt(System.getenv("clusterPublicPort"));
 		Integer siteInstances = System.getenv(ConfigKeys.SITE_INSTANCES) == null ? 1 : Integer.parseInt(System.getenv(ConfigKeys.SITE_INSTANCES));
-		Integer semaphoreVerticleInstances = System.getenv(ConfigKeys.SEMAPHORE_VERTICLE_INSTANCES) == null ? 1 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_VERTICLE_INSTANCES));
 		Long vertxWarningExceptionSeconds = System.getenv("vertxWarningExceptionSeconds") == null ? 10 : Long.parseLong(System.getenv("vertxWarningExceptionSeconds"));
 		String clusterPublicHost = System.getenv("clusterPublicHost");
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
@@ -258,17 +247,12 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					deploymentOptions.setInstances(siteInstances);
 					deploymentOptions.setConfig(config);
 		
-					DeploymentOptions semaphoreVerticleDeploymentOptions = new DeploymentOptions();
-					semaphoreVerticleDeploymentOptions.setConfig(config);
-					semaphoreVerticleDeploymentOptions.setWorker(true);
-		
 					DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
 					mailVerticleDeploymentOptions.setConfig(config);
 					mailVerticleDeploymentOptions.setWorker(true);
 		
 					DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
 					workerVerticleDeploymentOptions.setConfig(config);
-//					workerVerticleDeploymentOptions.setWorker(true);
 					workerVerticleDeploymentOptions.setInstances(1);
 		
 					vertx.deployVerticle(MainVerticle.class, deploymentOptions).onSuccess(a -> {
@@ -277,65 +261,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					}).onFailure(ex -> {
 						LOG.error("Failed to start main verticle. ", ex);
 					});
-	//				for(Integer i = 0; i < semaphoreVerticleInstances; i++) {
-	//					futures.add(vertx.deployVerticle(new SemaphoreVerticle().setClusterManager(clusterManager), semaphoreVerticleDeploymentOptions).onSuccess(a -> {
-	//						LOG.info("Started SemaphoreVerticle. ");
-	//					}).onFailure(ex -> {
-	//						LOG.error("Failed to start SemaphoreVerticle. ", ex);
-	//					}));
-	//				}
-		//			futures.add(vertx.deployVerticle(new MailVerticle(), mailVerticleDeploymentOptions).onSuccess(a -> {
-		//				LOG.info("Started mail verticle. ");
-		//			}).onFailure(ex -> {
-		//				LOG.error("Failed to start mail verticle. ", ex);
-		//			}));
-		//			futures.add(Future.future(promise -> {
-		//				vertx.deployVerticle(new WorkerVerticle().setSemaphore(semaphore), workerVerticleDeploymentOptions).onSuccess(a -> {
-		//					promise.complete();
-		//					LOG.info("Started worker verticle. ");
-		//				}).onFailure(ex -> {
-		//					promise.fail(ex);
-		//					LOG.error("Failed to start worker verticle. ", ex);
-		//				});
-		//			}));
-//		
-//					CompositeFuture.all(futures).onSuccess(b -> {
-//						LOG.info("We now have a clustered event bus. ");
-//						vertx.deployVerticle(new WorkerVerticle().setClusterManager(clusterManager), workerVerticleDeploymentOptions);
-//						Runtime.getRuntime().addShutdownHook(new Thread() {
-//							public void run() {
-//								LOG.info("Shutting down vertx. ");
-//								List<Future> futures = new ArrayList<>();
-//								CountDownLatch latch = new CountDownLatch(vertx.deploymentIDs().size());
-//								vertx.deploymentIDs().forEach(deploymentId -> {
-//									futures.add(vertx.undeploy(deploymentId).onSuccess(a -> {
-//										LOG.info("Succeeded to undeploy verticle {}. ", deploymentId);
-//										latch.countDown();
-//									}).onFailure(ex -> {
-//										LOG.error("Failed to undeploy verticle {}. ", deploymentId);
-//										latch.countDown();
-//									}));
-//									
-//								});
-//								CompositeFuture.all(futures).onSuccess(a -> {
-//									vertx.close().onSuccess(b -> {
-//										LOG.info("Goodbye");
-//									}).onFailure(ex -> {
-//										LOG.error("Failed to shut down vertx. ", ex);
-//									});
-//								}).onFailure(ex -> {
-//									LOG.error(String.format("listPUTImportTrafficStop failed. ", ex));
-//								});
-//								try {
-//									latch.await(10, TimeUnit.SECONDS);
-//								} catch (Exception ignored) {
-//								}
-//							}
-//						});
-//					}).onFailure(ex -> {
-//						LOG.error("Creating clustered Vertx failed. ", ex);
-//						ExceptionUtils.rethrow(ex);
-//					});
 				} catch (Throwable ex) {
 					LOG.error("Creating clustered Vertx failed. ", ex);
 					ExceptionUtils.rethrow(ex);
@@ -420,7 +345,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	private Future<Void> configureData() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			semaphorePermits = System.getenv(ConfigKeys.SEMAPHORE_PERMITS) == null ? 10 : Integer.parseInt(System.getenv(ConfigKeys.SEMAPHORE_PERMITS));
 			PgConnectOptions pgOptions = new PgConnectOptions();
 			pgOptions.setPort(config().getInteger(ConfigKeys.JDBC_PORT));
 			pgOptions.setHost(config().getString(ConfigKeys.JDBC_HOST));
@@ -518,7 +442,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			
 								final JsonObject config = new JsonObject().put("code", code);
 			
-								config().put("redirect_uri", siteBaseUrl + "/callback");
+								config.put("redirect_uri", siteBaseUrl + "/callback");
 			
 								oauth2AuthenticationProvider.authenticate(config, res -> {
 									if (res.failed()) {
@@ -599,7 +523,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	private Future<Void> configureSharedWorkerExecutor() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			String name = "AppVertx-WorkerExecutor";
+			String name = "MainVerticle-WorkerExecutor";
 			Integer workerPoolSize = System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? 5 : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE));
 			workerExecutor = vertx.createSharedWorkerExecutor(name, workerPoolSize);
 			LOG.info(configureSharedWorkerExecutorComplete, name);
@@ -661,9 +585,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					LOG.error(configureHealthChecksErrorSolr, a.future().cause());
 					a.fail(a.future().cause());
 				}
-			});
-			healthCheckHandler.register("semaphore", 2000, a -> {
-				a.complete(Status.OK(new JsonObject().put("permits", semaphorePermits)));
 			});
 			healthCheckHandler.register("vertx", 2000, a -> {
 				a.complete(Status.OK(new JsonObject().put("siteInstances", siteInstances).put("workerPoolSize", workerPoolSize)));
@@ -868,7 +789,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch1.setRows(1);
 					stopSearch1.addSort(SortClause.asc("stopDateTime_indexed_date"));
 					stopSearch1.addFacetField("agencyTitle_indexed_string");
-					stopSearch1.add("facet.limit", "5");
+					stopSearch1.addFacetField("personRaceTitles_indexed_strings");
+					stopSearch1.add("facet.limit", "20");
 					stopSearch1.add("json.facet", "{agencyTitle:\"unique(agencyTitle_indexed_string)\"}");
 					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(c -> {
 						TrafficStop beginStop = stopSearch1.first();
@@ -896,15 +818,27 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								ctx.put("agencyCount", NumberFormat.getNumberInstance(Locale.US).format(agencyCount));
 	
 								stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "agencyTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-									facetField.getValues().forEach(value -> {
+									List<Count> counts = facetField.getValues();
+									for(Integer i = 0; i < counts.size(); i++) {
+										if(i == 5)
+											break;
+										Count value = counts.get(i);
 										agencyFacets.add(
 												new JsonObject()
 												.put("stateAbbreviation", state.getStateAbbreviation())
 												.put("agencyTitle", value.getName())
 												.put("stopCount", NumberFormat.getNumberInstance(Locale.US).format(value.getCount()))
 												);
+									}
+								});
+
+								JsonArray personRaceTitles = new JsonArray();
+								stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+									facetField.getValues().forEach(value -> {
+										personRaceTitles.add(value.getName());
 									});
 								});
+								ctx.put("personRaceTitles", personRaceTitles);
 								ctx.next();
 							}).onFailure(ex -> {
 								LOG.error("Home page failed to load state data. ", ex);

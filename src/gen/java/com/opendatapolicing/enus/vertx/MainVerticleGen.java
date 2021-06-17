@@ -68,14 +68,14 @@ CREATE TABLE SiteAgency(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
-	, agencyName text
+	, agencyTitle text
 	, stateKey bigint references SiteState(pk)
-	, imageLeft integer
-	, imageTop integer
-	, imageCoords text
 	);
 CREATE TABLE TrafficStop(
-	stateAbbreviation text
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, stateAbbreviation text
 	, stateName text
 	, agencyTitle text
 	, stopDateTime timestamp with time zone
@@ -94,7 +94,10 @@ CREATE TABLE TrafficStop(
 	, stopCityId text
 	);
 CREATE TABLE TrafficPerson(
-	stopId text
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, stopId text
 	, personAge integer
 	, personTypeId text
 	, personGenderId text
@@ -102,7 +105,10 @@ CREATE TABLE TrafficPerson(
 	, personRaceId text
 	);
 CREATE TABLE TrafficSearch(
-	personId text
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, personId text
 	, searchTypeNum integer
 	, searchVehicle boolean
 	, searchDriver boolean
@@ -113,7 +119,10 @@ CREATE TABLE TrafficSearch(
 	, searchOtherPropertySiezed boolean
 	);
 CREATE TABLE TrafficContraband(
-	searchId text
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, searchId text
 	, contrabandOunces decimal
 	, contrabandPounds decimal
 	, contrabandPints decimal
@@ -126,7 +135,10 @@ CREATE TABLE TrafficContraband(
 	, contrabandDollarAmount decimal
 	);
 CREATE TABLE SearchBasis(
-	searchId text
+	pk bigserial primary key
+	, inheritPk text
+	, created timestamp with time zone
+	, searchId text
 	, searchBasisId text
 	);
 
