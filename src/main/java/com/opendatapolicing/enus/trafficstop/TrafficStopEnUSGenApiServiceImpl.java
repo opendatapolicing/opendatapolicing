@@ -248,7 +248,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				try {
-					if(searchList.size() == 1) {
+					if(searchList.size() >= 1) {
 						TrafficStop o = searchList.getList().stream().findFirst().orElse(null);
 						TrafficStop o2 = new TrafficStop();
 						JsonObject body2 = new JsonObject();
@@ -278,6 +278,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								}
 							} else {
 								o2.defineForClass(f, bodyVal);
+								o2.attributeForClass(f, bodyVal);
 								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
@@ -1618,6 +1619,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public static final String VAR_stopCityId = "stopCityId";
 	public static final String VAR_personSearch = "personSearch";
 	public static final String VAR_personRaceTitles = "personRaceTitles";
+	public static final String VAR_personGenderTitles = "personGenderTitles";
+	public static final String VAR_personAges = "personAges";
 	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
 	public static final String VAR_trafficSearchRaceTitles = "trafficSearchRaceTitles";
 

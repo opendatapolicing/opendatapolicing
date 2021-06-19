@@ -332,6 +332,8 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 		l.setC(TrafficPerson.class);
 		l.setRows(0);
 		l.addFacetField("personRaceTitle_indexed_string");
+		l.addFacetField("personGenderTitle_indexed_string");
+		l.addFacetField("personAge_indexed_integer");
 		l.setStore(true);
 		promise.complete(l);
 	}
@@ -347,6 +349,36 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 			for(Count count : field.getValues()) {
 				if(count.getCount() > 0)
 					l.add(count.getName());
+			}
+		}
+	}
+
+	/** 
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 */
+	protected void _personGenderTitles(List<String> l) {
+		FacetField field = personSearch.getQueryResponse().getFacetField("personGenderTitle_indexed_string");
+		if(field != null) {
+			for(Count count : field.getValues()) {
+				if(count.getCount() > 0)
+					l.add(count.getName());
+			}
+		}
+	}
+
+	/** 
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 */
+	protected void _personAges(List<Integer> l) {
+		FacetField field = personSearch.getQueryResponse().getFacetField("personAge_indexed_integer");
+		if(field != null) {
+			for(Count count : field.getValues()) {
+				if(count.getCount() > 0)
+					l.add(Integer.parseInt(count.getName()));
 			}
 		}
 	}

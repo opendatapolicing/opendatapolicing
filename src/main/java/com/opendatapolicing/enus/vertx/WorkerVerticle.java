@@ -24,14 +24,17 @@ import com.opendatapolicing.enus.trafficstop.TrafficStop;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
 import io.vertx.ext.mail.MailClient;
 import io.vertx.ext.mail.MailConfig;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.pgclient.PgConnectOptions;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.PoolOptions;
@@ -478,16 +481,28 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_REFRESH_DATA, tableName), true)) {
-				JsonObject params = new JsonObject();
-				params.put("body", new JsonObject());
-				params.put("path", new JsonObject());
-				params.put("cookie", new JsonObject());
-				params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
-				JsonObject context = new JsonObject().put("params", params);
-				JsonObject json = new JsonObject().put("context", context);
-				vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%s", tableName))).onSuccess(a -> {
-					LOG.info(String.format(refreshDataComplete, tableName));
-					promise.complete();
+				webClient.post(config().getInteger(ConfigKeys.AUTH_PORT), config().getString(ConfigKeys.AUTH_HOST_NAME), config().getString(ConfigKeys.AUTH_TOKEN_URI))
+						.expect(ResponsePredicate.SC_OK)
+						.ssl(config().getBoolean(ConfigKeys.AUTH_SSL))
+						.authentication(new UsernamePasswordCredentials(config().getString(ConfigKeys.AUTH_RESOURCE), config().getString(ConfigKeys.AUTH_SECRET)))
+						.putHeader("Content-Type", "application/x-www-form-urlencoded")
+						.sendForm(MultiMap.caseInsensitiveMultiMap().set("grant_type", "client_credentials"))
+						.onSuccess(tokenResponse -> {
+					JsonObject token = tokenResponse.bodyAsJsonObject();
+					JsonObject params = new JsonObject();
+					params.put("body", new JsonObject());
+					params.put("path", new JsonObject());
+					params.put("cookie", new JsonObject());
+					params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+					JsonObject context = new JsonObject().put("params", params).put("user", token);
+					JsonObject json = new JsonObject().put("context", context);
+					vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", tableName), json, new DeliveryOptions().addHeader("action", String.format("patch%s", tableName))).onSuccess(a -> {
+						LOG.info(String.format(refreshDataComplete, tableName));
+						promise.complete();
+					}).onFailure(ex -> {
+						LOG.error(String.format(refreshDataFail, tableName), ex);
+						promise.fail(ex);
+					});
 				}).onFailure(ex -> {
 					LOG.error(String.format(refreshDataFail, tableName), ex);
 					promise.fail(ex);

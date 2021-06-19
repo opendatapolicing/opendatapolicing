@@ -108,6 +108,26 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String AUTH_PORT = "authPort";
+
+	/**
+	 * 
+	 **/
+	public static final String AUTH_SSL = "authSsl";
+
+	/**
+	 * 
+	 **/
+	public static final String AUTH_TOKEN_URI = "authTokenUri";
+
+	/**
+	 * 
+	 **/
+	public static final String AUTH_HOST_NAME = "authHostName";
+
+	/**
+	 * 
+	 **/
 	public static final String AUTH_URL = "authUrl";
 
 	/**
