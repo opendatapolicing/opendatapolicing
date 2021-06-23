@@ -2,7 +2,7 @@ package com.opendatapolicing.enus.user;
 
 import java.util.List;
 
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.wrap.Wrap;
 
 
@@ -34,7 +34,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * RoleUser: true
  * Role.enUS: SiteAdmin
  */
-public class SiteUser extends SiteUserGen<Cluster> {   
+public class SiteUser extends SiteUserGen<BaseModel> {   
 
 	/**   
 	 * {@inheritDoc}

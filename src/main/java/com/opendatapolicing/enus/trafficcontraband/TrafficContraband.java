@@ -3,7 +3,7 @@ package com.opendatapolicing.enus.trafficcontraband;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -42,7 +42,7 @@ import io.vertx.core.Promise;
  * 
  * Map.hackathonMission: to create a new Java class TrafficContraband to define the TrafficContraband Java class that collects search, search, and use-of-force police data publicly available to ensure transparency
  **/   
-public class TrafficContraband extends TrafficContrabandGen<Cluster> {
+public class TrafficContraband extends TrafficContrabandGen<BaseModel> {
 
 	/**
 	 * {@inheritDoc}

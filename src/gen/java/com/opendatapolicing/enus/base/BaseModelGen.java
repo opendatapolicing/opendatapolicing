@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.cluster;
+package com.opendatapolicing.enus.base;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
@@ -26,9 +26,9 @@ import java.util.List;
 import java.time.OffsetDateTime;
 import org.apache.solr.client.solrj.SolrQuery;
 import java.util.Optional;
-import com.opendatapolicing.enus.cluster.Cluster;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.opendatapolicing.enus.base.BaseModel;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -57,11 +57,11 @@ import java.lang.Object;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 
 /**	
- * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
+ * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class ClusterGen<DEV> extends Object {
-	protected static final Logger LOG = LoggerFactory.getLogger(Cluster.class);
+public abstract class BaseModelGen<DEV> extends Object {
+	protected static final Logger LOG = LoggerFactory.getLogger(BaseModel.class);
 
 	public static final List<String> ROLES = Arrays.asList("SiteService");
 	public static final List<String> ROLE_READS = Arrays.asList("User");
@@ -81,7 +81,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity siteRequest_
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -98,7 +98,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	public static SiteRequestEnUS staticSetSiteRequest_(SiteRequestEnUS siteRequest_, String o) {
 		return null;
 	}
-	protected Cluster siteRequest_Init() {
+	protected BaseModel siteRequest_Init() {
 		if(!siteRequest_Wrap.alreadyInitialized) {
 			_siteRequest_(siteRequest_Wrap);
 			if(siteRequest_ == null)
@@ -106,7 +106,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			siteRequest_Wrap.o(null);
 		}
 		siteRequest_Wrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	////////
@@ -125,7 +125,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity pk
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -141,7 +141,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 	@JsonIgnore
 	public void setPk(String o) {
-		this.pk = Cluster.staticSetPk(siteRequest_, o);
+		this.pk = BaseModel.staticSetPk(siteRequest_, o);
 		this.pkWrap.alreadyInitialized = true;
 	}
 	public static Long staticSetPk(SiteRequestEnUS siteRequest_, String o) {
@@ -149,7 +149,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			return Long.parseLong(o);
 		return null;
 	}
-	protected Cluster pkInit() {
+	protected BaseModel pkInit() {
 		if(!pkWrap.alreadyInitialized) {
 			_pk(pkWrap);
 			if(pk == null)
@@ -157,7 +157,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			pkWrap.o(null);
 		}
 		pkWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static Long staticSolrPk(SiteRequestEnUS siteRequest_, Long o) {
@@ -169,11 +169,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqPk(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrPk(siteRequest_, Cluster.staticSolrPk(siteRequest_, Cluster.staticSetPk(siteRequest_, o)));
+		return BaseModel.staticSolrStrPk(siteRequest_, BaseModel.staticSolrPk(siteRequest_, BaseModel.staticSetPk(siteRequest_, o)));
 	}
 
 	public Long solrPk() {
-		return Cluster.staticSolrPk(siteRequest_, pk);
+		return BaseModel.staticSolrPk(siteRequest_, pk);
 	}
 
 	public String strPk() {
@@ -203,7 +203,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity inheritPk
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:inheritPk">Find the entity inheritPk in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:inheritPk">Find the entity inheritPk in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -213,13 +213,13 @@ public abstract class ClusterGen<DEV> extends Object {
 		return inheritPk;
 	}
 	public void setInheritPk(String o) {
-		this.inheritPk = Cluster.staticSetInheritPk(siteRequest_, o);
+		this.inheritPk = BaseModel.staticSetInheritPk(siteRequest_, o);
 		this.inheritPkWrap.alreadyInitialized = true;
 	}
 	public static String staticSetInheritPk(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected Cluster inheritPkInit() {
+	protected BaseModel inheritPkInit() {
 		if(!inheritPkWrap.alreadyInitialized) {
 			_inheritPk(inheritPkWrap);
 			if(inheritPk == null)
@@ -227,7 +227,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			inheritPkWrap.o(null);
 		}
 		inheritPkWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrInheritPk(SiteRequestEnUS siteRequest_, String o) {
@@ -239,11 +239,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqInheritPk(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrInheritPk(siteRequest_, Cluster.staticSolrInheritPk(siteRequest_, Cluster.staticSetInheritPk(siteRequest_, o)));
+		return BaseModel.staticSolrStrInheritPk(siteRequest_, BaseModel.staticSolrInheritPk(siteRequest_, BaseModel.staticSetInheritPk(siteRequest_, o)));
 	}
 
 	public String solrInheritPk() {
-		return Cluster.staticSolrInheritPk(siteRequest_, inheritPk);
+		return BaseModel.staticSolrInheritPk(siteRequest_, inheritPk);
 	}
 
 	public String strInheritPk() {
@@ -273,7 +273,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity id
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:id">Find the entity id in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:id">Find the entity id in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -283,13 +283,13 @@ public abstract class ClusterGen<DEV> extends Object {
 		return id;
 	}
 	public void setId(String o) {
-		this.id = Cluster.staticSetId(siteRequest_, o);
+		this.id = BaseModel.staticSetId(siteRequest_, o);
 		this.idWrap.alreadyInitialized = true;
 	}
 	public static String staticSetId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected Cluster idInit() {
+	protected BaseModel idInit() {
 		if(!idWrap.alreadyInitialized) {
 			_id(idWrap);
 			if(id == null)
@@ -297,7 +297,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			idWrap.o(null);
 		}
 		idWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrId(SiteRequestEnUS siteRequest_, String o) {
@@ -309,11 +309,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqId(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrId(siteRequest_, Cluster.staticSolrId(siteRequest_, Cluster.staticSetId(siteRequest_, o)));
+		return BaseModel.staticSolrStrId(siteRequest_, BaseModel.staticSolrId(siteRequest_, BaseModel.staticSetId(siteRequest_, o)));
 	}
 
 	public String solrId() {
-		return Cluster.staticSolrId(siteRequest_, id);
+		return BaseModel.staticSolrId(siteRequest_, id);
 	}
 
 	public String strId() {
@@ -346,7 +346,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity created
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:created">Find the entity created in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:created">Find the entity created in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -368,7 +368,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/** Example: 2011-12-03T10:15:30+01:00 **/
 	@JsonIgnore
 	public void setCreated(String o) {
-		this.created = Cluster.staticSetCreated(siteRequest_, o);
+		this.created = BaseModel.staticSetCreated(siteRequest_, o);
 		this.createdWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetCreated(SiteRequestEnUS siteRequest_, String o) {
@@ -382,7 +382,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		this.created = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.createdWrap.alreadyInitialized = true;
 	}
-	protected Cluster createdInit() {
+	protected BaseModel createdInit() {
 		if(!createdWrap.alreadyInitialized) {
 			_created(createdWrap);
 			if(created == null)
@@ -390,7 +390,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			createdWrap.o(null);
 		}
 		createdWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static Date staticSolrCreated(SiteRequestEnUS siteRequest_, ZonedDateTime o) {
@@ -402,11 +402,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqCreated(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrCreated(siteRequest_, Cluster.staticSolrCreated(siteRequest_, Cluster.staticSetCreated(siteRequest_, o)));
+		return BaseModel.staticSolrStrCreated(siteRequest_, BaseModel.staticSolrCreated(siteRequest_, BaseModel.staticSetCreated(siteRequest_, o)));
 	}
 
 	public Date solrCreated() {
-		return Cluster.staticSolrCreated(siteRequest_, created);
+		return BaseModel.staticSolrCreated(siteRequest_, created);
 	}
 
 	public String strCreated() {
@@ -439,7 +439,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity modified
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:modified">Find the entity modified in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:modified">Find the entity modified in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -461,7 +461,7 @@ public abstract class ClusterGen<DEV> extends Object {
 	/** Example: 2011-12-03T10:15:30+01:00 **/
 	@JsonIgnore
 	public void setModified(String o) {
-		this.modified = Cluster.staticSetModified(siteRequest_, o);
+		this.modified = BaseModel.staticSetModified(siteRequest_, o);
 		this.modifiedWrap.alreadyInitialized = true;
 	}
 	public static ZonedDateTime staticSetModified(SiteRequestEnUS siteRequest_, String o) {
@@ -475,7 +475,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		this.modified = o == null ? null : ZonedDateTime.ofInstant(o.toInstant(), ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		this.modifiedWrap.alreadyInitialized = true;
 	}
-	protected Cluster modifiedInit() {
+	protected BaseModel modifiedInit() {
 		if(!modifiedWrap.alreadyInitialized) {
 			_modified(modifiedWrap);
 			if(modified == null)
@@ -483,7 +483,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			modifiedWrap.o(null);
 		}
 		modifiedWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static Date staticSolrModified(SiteRequestEnUS siteRequest_, ZonedDateTime o) {
@@ -495,11 +495,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqModified(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrModified(siteRequest_, Cluster.staticSolrModified(siteRequest_, Cluster.staticSetModified(siteRequest_, o)));
+		return BaseModel.staticSolrStrModified(siteRequest_, BaseModel.staticSolrModified(siteRequest_, BaseModel.staticSetModified(siteRequest_, o)));
 	}
 
 	public Date solrModified() {
-		return Cluster.staticSolrModified(siteRequest_, modified);
+		return BaseModel.staticSolrModified(siteRequest_, modified);
 	}
 
 	public String strModified() {
@@ -529,7 +529,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity classCanonicalName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalName">Find the entity classCanonicalName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalName">Find the entity classCanonicalName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -539,13 +539,13 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classCanonicalName;
 	}
 	public void setClassCanonicalName(String o) {
-		this.classCanonicalName = Cluster.staticSetClassCanonicalName(siteRequest_, o);
+		this.classCanonicalName = BaseModel.staticSetClassCanonicalName(siteRequest_, o);
 		this.classCanonicalNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected Cluster classCanonicalNameInit() {
+	protected BaseModel classCanonicalNameInit() {
 		if(!classCanonicalNameWrap.alreadyInitialized) {
 			_classCanonicalName(classCanonicalNameWrap);
 			if(classCanonicalName == null)
@@ -553,7 +553,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			classCanonicalNameWrap.o(null);
 		}
 		classCanonicalNameWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
@@ -565,11 +565,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqClassCanonicalName(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrClassCanonicalName(siteRequest_, Cluster.staticSolrClassCanonicalName(siteRequest_, Cluster.staticSetClassCanonicalName(siteRequest_, o)));
+		return BaseModel.staticSolrStrClassCanonicalName(siteRequest_, BaseModel.staticSolrClassCanonicalName(siteRequest_, BaseModel.staticSetClassCanonicalName(siteRequest_, o)));
 	}
 
 	public String solrClassCanonicalName() {
-		return Cluster.staticSolrClassCanonicalName(siteRequest_, classCanonicalName);
+		return BaseModel.staticSolrClassCanonicalName(siteRequest_, classCanonicalName);
 	}
 
 	public String strClassCanonicalName() {
@@ -599,7 +599,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity classSimpleName
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -609,13 +609,13 @@ public abstract class ClusterGen<DEV> extends Object {
 		return classSimpleName;
 	}
 	public void setClassSimpleName(String o) {
-		this.classSimpleName = Cluster.staticSetClassSimpleName(siteRequest_, o);
+		this.classSimpleName = BaseModel.staticSetClassSimpleName(siteRequest_, o);
 		this.classSimpleNameWrap.alreadyInitialized = true;
 	}
 	public static String staticSetClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected Cluster classSimpleNameInit() {
+	protected BaseModel classSimpleNameInit() {
 		if(!classSimpleNameWrap.alreadyInitialized) {
 			_classSimpleName(classSimpleNameWrap);
 			if(classSimpleName == null)
@@ -623,7 +623,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			classSimpleNameWrap.o(null);
 		}
 		classSimpleNameWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
@@ -635,11 +635,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqClassSimpleName(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrClassSimpleName(siteRequest_, Cluster.staticSolrClassSimpleName(siteRequest_, Cluster.staticSetClassSimpleName(siteRequest_, o)));
+		return BaseModel.staticSolrStrClassSimpleName(siteRequest_, BaseModel.staticSolrClassSimpleName(siteRequest_, BaseModel.staticSetClassSimpleName(siteRequest_, o)));
 	}
 
 	public String solrClassSimpleName() {
-		return Cluster.staticSolrClassSimpleName(siteRequest_, classSimpleName);
+		return BaseModel.staticSolrClassSimpleName(siteRequest_, classSimpleName);
 	}
 
 	public String strClassSimpleName() {
@@ -670,7 +670,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity classCanonicalNames
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalNames">Find the entity classCanonicalNames in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalNames">Find the entity classCanonicalNames in Solr</a>
 	 * <br/>
 	 * @param classCanonicalNames is the entity already constructed. 
 	 **/
@@ -687,16 +687,16 @@ public abstract class ClusterGen<DEV> extends Object {
 	public static String staticSetClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	public Cluster addClassCanonicalNames(String...objets) {
+	public BaseModel addClassCanonicalNames(String...objets) {
 		for(String o : objets) {
 			addClassCanonicalNames(o);
 		}
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
-	public Cluster addClassCanonicalNames(String o) {
+	public BaseModel addClassCanonicalNames(String o) {
 		if(o != null && !classCanonicalNames.contains(o))
 			this.classCanonicalNames.add(o);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 	@JsonIgnore
 	public void setClassCanonicalNames(JsonArray objets) {
@@ -706,12 +706,12 @@ public abstract class ClusterGen<DEV> extends Object {
 			addClassCanonicalNames(o);
 		}
 	}
-	protected Cluster classCanonicalNamesInit() {
+	protected BaseModel classCanonicalNamesInit() {
 		if(!classCanonicalNamesWrap.alreadyInitialized) {
 			_classCanonicalNames(classCanonicalNames);
 		}
 		classCanonicalNamesWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
@@ -723,13 +723,13 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrClassCanonicalNames(siteRequest_, Cluster.staticSolrClassCanonicalNames(siteRequest_, Cluster.staticSetClassCanonicalNames(siteRequest_, o)));
+		return BaseModel.staticSolrStrClassCanonicalNames(siteRequest_, BaseModel.staticSolrClassCanonicalNames(siteRequest_, BaseModel.staticSetClassCanonicalNames(siteRequest_, o)));
 	}
 
 	public List<String> solrClassCanonicalNames() {
 		List<String> l = new ArrayList<String>();
 		for(String o : classCanonicalNames) {
-			l.add(Cluster.staticSolrClassCanonicalNames(siteRequest_, o));
+			l.add(BaseModel.staticSolrClassCanonicalNames(siteRequest_, o));
 		}
 		return l;
 	}
@@ -762,7 +762,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity saves
 	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:saves">Find the entity saves in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:saves">Find the entity saves in Solr</a>
 	 * <br/>
 	 * @param saves is the entity already constructed. 
 	 **/
@@ -779,16 +779,16 @@ public abstract class ClusterGen<DEV> extends Object {
 	public static String staticSetSaves(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	public Cluster addSaves(String...objets) {
+	public BaseModel addSaves(String...objets) {
 		for(String o : objets) {
 			addSaves(o);
 		}
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
-	public Cluster addSaves(String o) {
+	public BaseModel addSaves(String o) {
 		if(o != null && !saves.contains(o))
 			this.saves.add(o);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 	@JsonIgnore
 	public void setSaves(JsonArray objets) {
@@ -798,12 +798,12 @@ public abstract class ClusterGen<DEV> extends Object {
 			addSaves(o);
 		}
 	}
-	protected Cluster savesInit() {
+	protected BaseModel savesInit() {
 		if(!savesWrap.alreadyInitialized) {
 			_saves(saves);
 		}
 		savesWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrSaves(SiteRequestEnUS siteRequest_, String o) {
@@ -815,13 +815,13 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqSaves(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrSaves(siteRequest_, Cluster.staticSolrSaves(siteRequest_, Cluster.staticSetSaves(siteRequest_, o)));
+		return BaseModel.staticSolrStrSaves(siteRequest_, BaseModel.staticSolrSaves(siteRequest_, BaseModel.staticSetSaves(siteRequest_, o)));
 	}
 
 	public List<String> solrSaves() {
 		List<String> l = new ArrayList<String>();
 		for(String o : saves) {
-			l.add(Cluster.staticSolrSaves(siteRequest_, o));
+			l.add(BaseModel.staticSolrSaves(siteRequest_, o));
 		}
 		return l;
 	}
@@ -853,7 +853,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity objectTitle
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectTitle">Find the entity objectTitle in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectTitle">Find the entity objectTitle in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -863,13 +863,13 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectTitle;
 	}
 	public void setObjectTitle(String o) {
-		this.objectTitle = Cluster.staticSetObjectTitle(siteRequest_, o);
+		this.objectTitle = BaseModel.staticSetObjectTitle(siteRequest_, o);
 		this.objectTitleWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectTitle(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected Cluster objectTitleInit() {
+	protected BaseModel objectTitleInit() {
 		if(!objectTitleWrap.alreadyInitialized) {
 			_objectTitle(objectTitleWrap);
 			if(objectTitle == null)
@@ -877,7 +877,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			objectTitleWrap.o(null);
 		}
 		objectTitleWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrObjectTitle(SiteRequestEnUS siteRequest_, String o) {
@@ -889,11 +889,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqObjectTitle(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrObjectTitle(siteRequest_, Cluster.staticSolrObjectTitle(siteRequest_, Cluster.staticSetObjectTitle(siteRequest_, o)));
+		return BaseModel.staticSolrStrObjectTitle(siteRequest_, BaseModel.staticSolrObjectTitle(siteRequest_, BaseModel.staticSetObjectTitle(siteRequest_, o)));
 	}
 
 	public String solrObjectTitle() {
-		return Cluster.staticSolrObjectTitle(siteRequest_, objectTitle);
+		return BaseModel.staticSolrObjectTitle(siteRequest_, objectTitle);
 	}
 
 	public String strObjectTitle() {
@@ -923,7 +923,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	/**	<br/> The entity objectId
 	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.cluster.Cluster&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectId">Find the entity objectId in Solr</a>
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectId">Find the entity objectId in Solr</a>
 	 * <br/>
 	 * @param c is for wrapping a value to assign to this entity during initialization. 
 	 **/
@@ -933,13 +933,13 @@ public abstract class ClusterGen<DEV> extends Object {
 		return objectId;
 	}
 	public void setObjectId(String o) {
-		this.objectId = Cluster.staticSetObjectId(siteRequest_, o);
+		this.objectId = BaseModel.staticSetObjectId(siteRequest_, o);
 		this.objectIdWrap.alreadyInitialized = true;
 	}
 	public static String staticSetObjectId(SiteRequestEnUS siteRequest_, String o) {
 		return o;
 	}
-	protected Cluster objectIdInit() {
+	protected BaseModel objectIdInit() {
 		if(!objectIdWrap.alreadyInitialized) {
 			_objectId(objectIdWrap);
 			if(objectId == null)
@@ -947,7 +947,7 @@ public abstract class ClusterGen<DEV> extends Object {
 			objectIdWrap.o(null);
 		}
 		objectIdWrap.alreadyInitialized(true);
-		return (Cluster)this;
+		return (BaseModel)this;
 	}
 
 	public static String staticSolrObjectId(SiteRequestEnUS siteRequest_, String o) {
@@ -959,11 +959,11 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public static String staticSolrFqObjectId(SiteRequestEnUS siteRequest_, String o) {
-		return Cluster.staticSolrStrObjectId(siteRequest_, Cluster.staticSolrObjectId(siteRequest_, Cluster.staticSetObjectId(siteRequest_, o)));
+		return BaseModel.staticSolrStrObjectId(siteRequest_, BaseModel.staticSolrObjectId(siteRequest_, BaseModel.staticSetObjectId(siteRequest_, o)));
 	}
 
 	public String solrObjectId() {
-		return Cluster.staticSolrObjectId(siteRequest_, objectId);
+		return BaseModel.staticSolrObjectId(siteRequest_, objectId);
 	}
 
 	public String strObjectId() {
@@ -982,22 +982,22 @@ public abstract class ClusterGen<DEV> extends Object {
 	// initDeep //
 	//////////////
 
-	protected boolean alreadyInitializedCluster = false;
+	protected boolean alreadyInitializedBaseModel = false;
 
-	public Future<Void> promiseDeepCluster(SiteRequestEnUS siteRequest_) {
+	public Future<Void> promiseDeepBaseModel(SiteRequestEnUS siteRequest_) {
 		setSiteRequest_(siteRequest_);
-		if(!alreadyInitializedCluster) {
-			alreadyInitializedCluster = true;
-			return promiseDeepCluster();
+		if(!alreadyInitializedBaseModel) {
+			alreadyInitializedBaseModel = true;
+			return promiseDeepBaseModel();
 		} else {
 			return Future.succeededFuture();
 		}
 	}
 
-	public Future<Void> promiseDeepCluster() {
+	public Future<Void> promiseDeepBaseModel() {
 		Promise<Void> promise = Promise.promise();
 		Promise<Void> promise2 = Promise.promise();
-		promiseCluster(promise2);
+		promiseBaseModel(promise2);
 		promise2.future().onSuccess(a -> {
 			promise.complete();
 		}).onFailure(ex -> {
@@ -1006,7 +1006,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		return promise.future();
 	}
 
-	public Future<Void> promiseCluster(Promise<Void> promise) {
+	public Future<Void> promiseBaseModel(Promise<Void> promise) {
 		Future.future(a -> a.complete()).compose(a -> {
 			Promise<Void> promise2 = Promise.promise();
 			try {
@@ -1036,18 +1036,18 @@ public abstract class ClusterGen<DEV> extends Object {
 	}
 
 	public Future<Void> promiseDeepForClass(SiteRequestEnUS siteRequest_) {
-		return promiseDeepCluster(siteRequest_);
+		return promiseDeepBaseModel(siteRequest_);
 	}
 
 	/////////////////
 	// siteRequest //
 	/////////////////
 
-	public void siteRequestCluster(SiteRequestEnUS siteRequest_) {
+	public void siteRequestBaseModel(SiteRequestEnUS siteRequest_) {
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
-		siteRequestCluster(siteRequest_);
+		siteRequestBaseModel(siteRequest_);
 	}
 
 	/////////////
@@ -1059,10 +1059,10 @@ public abstract class ClusterGen<DEV> extends Object {
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = obtainCluster(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+				o = obtainBaseModel(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -1071,33 +1071,33 @@ public abstract class ClusterGen<DEV> extends Object {
 		}
 		return o;
 	}
-	public Object obtainCluster(String var) {
-		Cluster oCluster = (Cluster)this;
+	public Object obtainBaseModel(String var) {
+		BaseModel oBaseModel = (BaseModel)this;
 		switch(var) {
 			case "siteRequest_":
-				return oCluster.siteRequest_;
+				return oBaseModel.siteRequest_;
 			case "pk":
-				return oCluster.pk;
+				return oBaseModel.pk;
 			case "inheritPk":
-				return oCluster.inheritPk;
+				return oBaseModel.inheritPk;
 			case "id":
-				return oCluster.id;
+				return oBaseModel.id;
 			case "created":
-				return oCluster.created;
+				return oBaseModel.created;
 			case "modified":
-				return oCluster.modified;
+				return oBaseModel.modified;
 			case "classCanonicalName":
-				return oCluster.classCanonicalName;
+				return oBaseModel.classCanonicalName;
 			case "classSimpleName":
-				return oCluster.classSimpleName;
+				return oBaseModel.classSimpleName;
 			case "classCanonicalNames":
-				return oCluster.classCanonicalNames;
+				return oBaseModel.classCanonicalNames;
 			case "saves":
-				return oCluster.saves;
+				return oBaseModel.saves;
 			case "objectTitle":
-				return oCluster.objectTitle;
+				return oBaseModel.objectTitle;
 			case "objectId":
-				return oCluster.objectId;
+				return oBaseModel.objectId;
 			default:
 				return null;
 		}
@@ -1112,16 +1112,16 @@ public abstract class ClusterGen<DEV> extends Object {
 		Object o = null;
 		for(String v : vars) {
 			if(o == null)
-				o = attributeCluster(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+				o = attributeBaseModel(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
 	}
-	public Object attributeCluster(String var, Object val) {
-		Cluster oCluster = (Cluster)this;
+	public Object attributeBaseModel(String var, Object val) {
+		BaseModel oBaseModel = (BaseModel)this;
 		switch(var) {
 			default:
 				return null;
@@ -1133,32 +1133,32 @@ public abstract class ClusterGen<DEV> extends Object {
 	///////////////
 
 	public static Object staticSetForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSetCluster(entityVar,  siteRequest_, o);
+		return staticSetBaseModel(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSetCluster(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static Object staticSetBaseModel(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 		case "pk":
-			return Cluster.staticSetPk(siteRequest_, o);
+			return BaseModel.staticSetPk(siteRequest_, o);
 		case "inheritPk":
-			return Cluster.staticSetInheritPk(siteRequest_, o);
+			return BaseModel.staticSetInheritPk(siteRequest_, o);
 		case "id":
-			return Cluster.staticSetId(siteRequest_, o);
+			return BaseModel.staticSetId(siteRequest_, o);
 		case "created":
-			return Cluster.staticSetCreated(siteRequest_, o);
+			return BaseModel.staticSetCreated(siteRequest_, o);
 		case "modified":
-			return Cluster.staticSetModified(siteRequest_, o);
+			return BaseModel.staticSetModified(siteRequest_, o);
 		case "classCanonicalName":
-			return Cluster.staticSetClassCanonicalName(siteRequest_, o);
+			return BaseModel.staticSetClassCanonicalName(siteRequest_, o);
 		case "classSimpleName":
-			return Cluster.staticSetClassSimpleName(siteRequest_, o);
+			return BaseModel.staticSetClassSimpleName(siteRequest_, o);
 		case "classCanonicalNames":
-			return Cluster.staticSetClassCanonicalNames(siteRequest_, o);
+			return BaseModel.staticSetClassCanonicalNames(siteRequest_, o);
 		case "saves":
-			return Cluster.staticSetSaves(siteRequest_, o);
+			return BaseModel.staticSetSaves(siteRequest_, o);
 		case "objectTitle":
-			return Cluster.staticSetObjectTitle(siteRequest_, o);
+			return BaseModel.staticSetObjectTitle(siteRequest_, o);
 		case "objectId":
-			return Cluster.staticSetObjectId(siteRequest_, o);
+			return BaseModel.staticSetObjectId(siteRequest_, o);
 			default:
 				return null;
 		}
@@ -1169,32 +1169,32 @@ public abstract class ClusterGen<DEV> extends Object {
 	////////////////
 
 	public static Object staticSolrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrCluster(entityVar,  siteRequest_, o);
+		return staticSolrBaseModel(entityVar,  siteRequest_, o);
 	}
-	public static Object staticSolrCluster(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static Object staticSolrBaseModel(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 		case "pk":
-			return Cluster.staticSolrPk(siteRequest_, (Long)o);
+			return BaseModel.staticSolrPk(siteRequest_, (Long)o);
 		case "inheritPk":
-			return Cluster.staticSolrInheritPk(siteRequest_, (String)o);
+			return BaseModel.staticSolrInheritPk(siteRequest_, (String)o);
 		case "id":
-			return Cluster.staticSolrId(siteRequest_, (String)o);
+			return BaseModel.staticSolrId(siteRequest_, (String)o);
 		case "created":
-			return Cluster.staticSolrCreated(siteRequest_, (ZonedDateTime)o);
+			return BaseModel.staticSolrCreated(siteRequest_, (ZonedDateTime)o);
 		case "modified":
-			return Cluster.staticSolrModified(siteRequest_, (ZonedDateTime)o);
+			return BaseModel.staticSolrModified(siteRequest_, (ZonedDateTime)o);
 		case "classCanonicalName":
-			return Cluster.staticSolrClassCanonicalName(siteRequest_, (String)o);
+			return BaseModel.staticSolrClassCanonicalName(siteRequest_, (String)o);
 		case "classSimpleName":
-			return Cluster.staticSolrClassSimpleName(siteRequest_, (String)o);
+			return BaseModel.staticSolrClassSimpleName(siteRequest_, (String)o);
 		case "classCanonicalNames":
-			return Cluster.staticSolrClassCanonicalNames(siteRequest_, (String)o);
+			return BaseModel.staticSolrClassCanonicalNames(siteRequest_, (String)o);
 		case "saves":
-			return Cluster.staticSolrSaves(siteRequest_, (String)o);
+			return BaseModel.staticSolrSaves(siteRequest_, (String)o);
 		case "objectTitle":
-			return Cluster.staticSolrObjectTitle(siteRequest_, (String)o);
+			return BaseModel.staticSolrObjectTitle(siteRequest_, (String)o);
 		case "objectId":
-			return Cluster.staticSolrObjectId(siteRequest_, (String)o);
+			return BaseModel.staticSolrObjectId(siteRequest_, (String)o);
 			default:
 				return null;
 		}
@@ -1205,32 +1205,32 @@ public abstract class ClusterGen<DEV> extends Object {
 	///////////////////
 
 	public static String staticSolrStrForClass(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
-		return staticSolrStrCluster(entityVar,  siteRequest_, o);
+		return staticSolrStrBaseModel(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrStrCluster(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
+	public static String staticSolrStrBaseModel(String entityVar, SiteRequestEnUS siteRequest_, Object o) {
 		switch(entityVar) {
 		case "pk":
-			return Cluster.staticSolrStrPk(siteRequest_, (Long)o);
+			return BaseModel.staticSolrStrPk(siteRequest_, (Long)o);
 		case "inheritPk":
-			return Cluster.staticSolrStrInheritPk(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrInheritPk(siteRequest_, (String)o);
 		case "id":
-			return Cluster.staticSolrStrId(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrId(siteRequest_, (String)o);
 		case "created":
-			return Cluster.staticSolrStrCreated(siteRequest_, (Date)o);
+			return BaseModel.staticSolrStrCreated(siteRequest_, (Date)o);
 		case "modified":
-			return Cluster.staticSolrStrModified(siteRequest_, (Date)o);
+			return BaseModel.staticSolrStrModified(siteRequest_, (Date)o);
 		case "classCanonicalName":
-			return Cluster.staticSolrStrClassCanonicalName(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrClassCanonicalName(siteRequest_, (String)o);
 		case "classSimpleName":
-			return Cluster.staticSolrStrClassSimpleName(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrClassSimpleName(siteRequest_, (String)o);
 		case "classCanonicalNames":
-			return Cluster.staticSolrStrClassCanonicalNames(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrClassCanonicalNames(siteRequest_, (String)o);
 		case "saves":
-			return Cluster.staticSolrStrSaves(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrSaves(siteRequest_, (String)o);
 		case "objectTitle":
-			return Cluster.staticSolrStrObjectTitle(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrObjectTitle(siteRequest_, (String)o);
 		case "objectId":
-			return Cluster.staticSolrStrObjectId(siteRequest_, (String)o);
+			return BaseModel.staticSolrStrObjectId(siteRequest_, (String)o);
 			default:
 				return null;
 		}
@@ -1241,32 +1241,32 @@ public abstract class ClusterGen<DEV> extends Object {
 	//////////////////
 
 	public static String staticSolrFqForClass(String entityVar, SiteRequestEnUS siteRequest_, String o) {
-		return staticSolrFqCluster(entityVar,  siteRequest_, o);
+		return staticSolrFqBaseModel(entityVar,  siteRequest_, o);
 	}
-	public static String staticSolrFqCluster(String entityVar, SiteRequestEnUS siteRequest_, String o) {
+	public static String staticSolrFqBaseModel(String entityVar, SiteRequestEnUS siteRequest_, String o) {
 		switch(entityVar) {
 		case "pk":
-			return Cluster.staticSolrFqPk(siteRequest_, o);
+			return BaseModel.staticSolrFqPk(siteRequest_, o);
 		case "inheritPk":
-			return Cluster.staticSolrFqInheritPk(siteRequest_, o);
+			return BaseModel.staticSolrFqInheritPk(siteRequest_, o);
 		case "id":
-			return Cluster.staticSolrFqId(siteRequest_, o);
+			return BaseModel.staticSolrFqId(siteRequest_, o);
 		case "created":
-			return Cluster.staticSolrFqCreated(siteRequest_, o);
+			return BaseModel.staticSolrFqCreated(siteRequest_, o);
 		case "modified":
-			return Cluster.staticSolrFqModified(siteRequest_, o);
+			return BaseModel.staticSolrFqModified(siteRequest_, o);
 		case "classCanonicalName":
-			return Cluster.staticSolrFqClassCanonicalName(siteRequest_, o);
+			return BaseModel.staticSolrFqClassCanonicalName(siteRequest_, o);
 		case "classSimpleName":
-			return Cluster.staticSolrFqClassSimpleName(siteRequest_, o);
+			return BaseModel.staticSolrFqClassSimpleName(siteRequest_, o);
 		case "classCanonicalNames":
-			return Cluster.staticSolrFqClassCanonicalNames(siteRequest_, o);
+			return BaseModel.staticSolrFqClassCanonicalNames(siteRequest_, o);
 		case "saves":
-			return Cluster.staticSolrFqSaves(siteRequest_, o);
+			return BaseModel.staticSolrFqSaves(siteRequest_, o);
 		case "objectTitle":
-			return Cluster.staticSolrFqObjectTitle(siteRequest_, o);
+			return BaseModel.staticSolrFqObjectTitle(siteRequest_, o);
 		case "objectId":
-			return Cluster.staticSolrFqObjectId(siteRequest_, o);
+			return BaseModel.staticSolrFqObjectId(siteRequest_, o);
 			default:
 				return null;
 		}
@@ -1282,16 +1282,16 @@ public abstract class ClusterGen<DEV> extends Object {
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineCluster(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+					o = defineBaseModel(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
 		return o != null;
 	}
-	public Object defineCluster(String var, String val) {
+	public Object defineBaseModel(String var, String val) {
 		switch(var.toLowerCase()) {
 			case "inheritpk":
 				if(val != null)
@@ -1314,16 +1314,16 @@ public abstract class ClusterGen<DEV> extends Object {
 		if(val != null) {
 			for(String v : vars) {
 				if(o == null)
-					o = defineCluster(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+					o = defineBaseModel(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
 		return o != null;
 	}
-	public Object defineCluster(String var, Object val) {
+	public Object defineBaseModel(String var, Object val) {
 		switch(var.toLowerCase()) {
 			case "inheritpk":
 				if(val instanceof String)
@@ -1347,16 +1347,16 @@ public abstract class ClusterGen<DEV> extends Object {
 	/////////////
 
 	public void populateForClass(SolrDocument solrDocument) {
-		populateCluster(solrDocument);
+		populateBaseModel(solrDocument);
 	}
-	public void populateCluster(SolrDocument solrDocument) {
-		Cluster oCluster = (Cluster)this;
+	public void populateBaseModel(SolrDocument solrDocument) {
+		BaseModel oBaseModel = (BaseModel)this;
 		saves = (List<String>)solrDocument.get("saves_stored_strings");
 		if(saves != null) {
 		}
 	}
 
-	public void indexCluster(SolrInputDocument document) {
+	public void indexBaseModel(SolrInputDocument document) {
 		if(pk != null) {
 			document.addField("pk_indexed_long", pk);
 			document.addField("pk_stored_long", pk);
@@ -1411,7 +1411,7 @@ public abstract class ClusterGen<DEV> extends Object {
 		}
 	}
 
-	public static String varIndexedCluster(String entityVar) {
+	public static String varIndexedBaseModel(String entityVar) {
 		switch(entityVar) {
 			case "pk":
 				return "pk_indexed_long";
@@ -1440,14 +1440,14 @@ public abstract class ClusterGen<DEV> extends Object {
 		}
 	}
 
-	public static String varSearchCluster(String entityVar) {
+	public static String varSearchBaseModel(String entityVar) {
 		switch(entityVar) {
 			default:
 				return null;
 		}
 	}
 
-	public static String varSuggestedCluster(String entityVar) {
+	public static String varSuggestedBaseModel(String entityVar) {
 		switch(entityVar) {
 			default:
 				return null;
@@ -1459,38 +1459,38 @@ public abstract class ClusterGen<DEV> extends Object {
 	/////////////
 
 	public void storeForClass(SolrDocument solrDocument) {
-		storeCluster(solrDocument);
+		storeBaseModel(solrDocument);
 	}
-	public void storeCluster(SolrDocument solrDocument) {
-		Cluster oCluster = (Cluster)this;
+	public void storeBaseModel(SolrDocument solrDocument) {
+		BaseModel oBaseModel = (BaseModel)this;
 
-		oCluster.setPk(Optional.ofNullable(solrDocument.get("pk_stored_long")).map(v -> v.toString()).orElse(null));
-		oCluster.setInheritPk(Optional.ofNullable(solrDocument.get("inheritPk_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setPk(Optional.ofNullable(solrDocument.get("pk_stored_long")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setInheritPk(Optional.ofNullable(solrDocument.get("inheritPk_stored_string")).map(v -> v.toString()).orElse(null));
 		String id = (String)solrDocument.get("id");
-		oCluster.setId(id);
-		oCluster.setCreated(Optional.ofNullable(solrDocument.get("created_stored_date")).map(v -> v.toString()).orElse(null));
-		oCluster.setModified(Optional.ofNullable(solrDocument.get("modified_stored_date")).map(v -> v.toString()).orElse(null));
-		oCluster.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_stored_string")).map(v -> v.toString()).orElse(null));
-		oCluster.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setId(id);
+		oBaseModel.setCreated(Optional.ofNullable(solrDocument.get("created_stored_date")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setModified(Optional.ofNullable(solrDocument.get("modified_stored_date")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_stored_string")).map(v -> v.toString()).orElse(null));
 		Optional.ofNullable((List<?>)solrDocument.get("classCanonicalNames_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oCluster.addClassCanonicalNames(v.toString());
+			oBaseModel.addClassCanonicalNames(v.toString());
 		});
 		Optional.ofNullable((List<?>)solrDocument.get("saves_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oCluster.addSaves(v.toString());
+			oBaseModel.addSaves(v.toString());
 		});
-		oCluster.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oCluster.setObjectId(Optional.ofNullable(solrDocument.get("objectId_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setObjectId(Optional.ofNullable(solrDocument.get("objectId_stored_string")).map(v -> v.toString()).orElse(null));
 	}
 
 	//////////////////
 	// apiRequest //
 	//////////////////
 
-	public void apiRequestCluster() {
+	public void apiRequestBaseModel() {
 		ApiRequest apiRequest = Optional.ofNullable(siteRequest_).map(SiteRequestEnUS::getApiRequest_).orElse(null);
 		Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
-		if(o != null && o instanceof Cluster) {
-			Cluster original = (Cluster)o;
+		if(o != null && o instanceof BaseModel) {
+			BaseModel original = (BaseModel)o;
 			if(!Objects.equals(pk, original.getPk()))
 				apiRequest.addVars("pk");
 			if(!Objects.equals(inheritPk, original.getInheritPk()))
@@ -1531,9 +1531,9 @@ public abstract class ClusterGen<DEV> extends Object {
 	@Override public boolean equals(Object o) {
 		if(this == o)
 			return true;
-		if(!(o instanceof Cluster))
+		if(!(o instanceof BaseModel))
 			return false;
-		Cluster that = (Cluster)o;
+		BaseModel that = (BaseModel)o;
 		return Objects.equals( pk, that.pk )
 				&& Objects.equals( inheritPk, that.inheritPk )
 				&& Objects.equals( id, that.id )
@@ -1553,7 +1553,7 @@ public abstract class ClusterGen<DEV> extends Object {
 
 	@Override public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Cluster { ");
+		sb.append("BaseModel { ");
 		sb.append( "pk: " ).append(pk);
 		sb.append( ", inheritPk: \"" ).append(inheritPk).append( "\"" );
 		sb.append( ", id: \"" ).append(id).append( "\"" );

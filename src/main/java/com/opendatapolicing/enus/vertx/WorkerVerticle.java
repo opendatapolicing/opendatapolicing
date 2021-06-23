@@ -200,54 +200,60 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * Import initial data
 	 * Val.Complete.enUS:Importing initial data completed. 
 	 * Val.Fail.enUS:Importing initial data failed. 
-	 **/
+	 * Val.Skip.enUS:data import skipped. 
+	 **/  
 	private Future<Void> importData() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			List<Future> futures = new ArrayList<>();
-			futures.add(Future.future(promise1 -> {
-				workerExecutor.executeBlocking(blockingCodeHandler -> {
-					try {
+			if(config().getBoolean(ConfigKeys.ENABLE_IMPORT_DATA, true)) {
+				List<Future> futures = new ArrayList<>();
+				futures.add(Future.future(promise1 -> {
+					workerExecutor.executeBlocking(blockingCodeHandler -> {
 						try {
-							JsonObject params = new JsonObject();
-							JsonObject body = new JsonObject().put("stateName", "North Carolina").put("stateAbbreviation", "NC").put("pk", "NC");
-							params.put("body", body);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("header", new JsonObject());
-							params.put("form", new JsonObject());
-							params.put("query", new JsonObject());
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
-								LOG.info("{} State imported. ", body.getString("stateName"));
-								blockingCodeHandler.complete();
-							}).onFailure(ex -> {
+							try {
+								JsonObject params = new JsonObject();
+								JsonObject body = new JsonObject().put("stateName", "North Carolina").put("stateAbbreviation", "NC").put("pk", "NC");
+								params.put("body", body);
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("header", new JsonObject());
+								params.put("form", new JsonObject());
+								params.put("query", new JsonObject());
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
+									LOG.info("{} State imported. ", body.getString("stateName"));
+									blockingCodeHandler.complete();
+								}).onFailure(ex -> {
+									LOG.error(String.format("listPUTImportSiteState failed. "), ex);
+									blockingCodeHandler.fail(ex);
+								});
+							} catch(Exception ex) {
 								LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 								blockingCodeHandler.fail(ex);
-							});
+							}
 						} catch(Exception ex) {
 							LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 							blockingCodeHandler.fail(ex);
 						}
-					} catch(Exception ex) {
+					}, false).onSuccess(a -> {
+						promise1.complete();
+					}).onFailure(ex -> {
 						LOG.error(String.format("listPUTImportSiteState failed. "), ex);
-						blockingCodeHandler.fail(ex);
-					}
-				}, false).onSuccess(a -> {
-					promise1.complete();
+						promise1.fail(ex);
+					});
+				}));
+				CompositeFuture.all(futures).onSuccess(a -> {
+					LOG.info("States imported. ");
+					promise.complete();
 				}).onFailure(ex -> {
-					LOG.error(String.format("listPUTImportSiteState failed. "), ex);
-					promise1.fail(ex);
+					LOG.error(String.format("importData failed. "), ex);
+					promise.fail(ex);
 				});
-			}));
-			CompositeFuture.all(futures).onSuccess(a -> {
-				LOG.info("States imported. ");
+			} else {
+				LOG.info(String.format(importDataSkip));
 				promise.complete();
-			}).onFailure(ex -> {
-				LOG.error(String.format("importData failed. "), ex);
-				promise.fail(ex);
-			});
+			}
 		} catch (Exception ex) {
 			LOG.error(configureEmailFail, ex);
 			promise.fail(ex);

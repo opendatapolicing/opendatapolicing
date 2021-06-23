@@ -29,9 +29,9 @@ import java.util.List;
 import java.time.OffsetDateTime;
 import org.apache.solr.client.solrj.SolrQuery;
 import java.util.Optional;
-import com.opendatapolicing.enus.cluster.Cluster;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.opendatapolicing.enus.base.BaseModel;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -65,7 +65,7 @@ import com.opendatapolicing.enus.trafficstop.TrafficStop;
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficperson.TrafficPerson&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class TrafficPersonGen<DEV> extends Cluster {
+public abstract class TrafficPersonGen<DEV> extends BaseModel {
 	protected static final Logger LOG = LoggerFactory.getLogger(TrafficPerson.class);
 
 	public static final List<String> ROLES = Arrays.asList("SiteService");
@@ -2559,7 +2559,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		Promise<Void> promise2 = Promise.promise();
 		promiseTrafficPerson(promise2);
 		promise2.future().onSuccess(a -> {
-			super.promiseDeepCluster(siteRequest_).onSuccess(b -> {
+			super.promiseDeepBaseModel(siteRequest_).onSuccess(b -> {
 				promise.complete();
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -2645,7 +2645,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 	/////////////////
 
 	public void siteRequestTrafficPerson(SiteRequestEnUS siteRequest_) {
-			super.siteRequestCluster(siteRequest_);
+			super.siteRequestBaseModel(siteRequest_);
 		if(trafficStopSearch != null)
 			trafficStopSearch.setSiteRequest_(siteRequest_);
 	}
@@ -2664,9 +2664,9 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainTrafficPerson(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -2747,7 +2747,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			case "personRaceTitle":
 				return oTrafficPerson.personRaceTitle;
 			default:
-				return super.obtainCluster(var);
+				return super.obtainBaseModel(var);
 		}
 	}
 
@@ -2761,9 +2761,9 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeTrafficPerson(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -2772,7 +2772,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		TrafficPerson oTrafficPerson = (TrafficPerson)this;
 		switch(var) {
 			default:
-				return super.attributeCluster(var, val);
+				return super.attributeBaseModel(var, val);
 		}
 	}
 
@@ -2850,7 +2850,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		case "personRaceTitle":
 			return TrafficPerson.staticSetPersonRaceTitle(siteRequest_, o);
 			default:
-				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -2928,7 +2928,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		case "personRaceTitle":
 			return TrafficPerson.staticSolrPersonRaceTitle(siteRequest_, (String)o);
 			default:
-				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -3006,7 +3006,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		case "personRaceTitle":
 			return TrafficPerson.staticSolrStrPersonRaceTitle(siteRequest_, (String)o);
 			default:
-				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrStrBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -3084,7 +3084,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		case "personRaceTitle":
 			return TrafficPerson.staticSolrFqPersonRaceTitle(siteRequest_, o);
 			default:
-				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrFqBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -3099,9 +3099,9 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			for(String v : vars) {
 				if(o == null)
 					o = defineTrafficPerson(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -3140,7 +3140,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				saves.add("personRaceId");
 				return val;
 			default:
-				return super.defineCluster(var, val);
+				return super.defineBaseModel(var, val);
 		}
 	}
 
@@ -3151,9 +3151,9 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			for(String v : vars) {
 				if(o == null)
 					o = defineTrafficPerson(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -3192,7 +3192,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				saves.add("personRaceId");
 				return val;
 			default:
-				return super.defineCluster(var, val);
+				return super.defineBaseModel(var, val);
 		}
 	}
 
@@ -3401,7 +3401,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			}
 		}
 
-		super.populateCluster(solrDocument);
+		super.populateBaseModel(solrDocument);
 	}
 
 	public void indexTrafficPerson(SolrInputDocument document) {
@@ -3533,7 +3533,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			document.addField("personRaceTitle_indexed_string", personRaceTitle);
 			document.addField("personRaceTitle_stored_string", personRaceTitle);
 		}
-		super.indexCluster(document);
+		super.indexBaseModel(document);
 
 	}
 
@@ -3604,21 +3604,21 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 			case "personRaceTitle":
 				return "personRaceTitle_indexed_string";
 			default:
-				return Cluster.varIndexedCluster(entityVar);
+				return BaseModel.varIndexedBaseModel(entityVar);
 		}
 	}
 
 	public static String varSearchTrafficPerson(String entityVar) {
 		switch(entityVar) {
 			default:
-				return Cluster.varSearchCluster(entityVar);
+				return BaseModel.varSearchBaseModel(entityVar);
 		}
 	}
 
 	public static String varSuggestedTrafficPerson(String entityVar) {
 		switch(entityVar) {
 			default:
-				return Cluster.varSuggestedCluster(entityVar);
+				return BaseModel.varSuggestedBaseModel(entityVar);
 		}
 	}
 
@@ -3665,7 +3665,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 		oTrafficPerson.setPersonRaceId(Optional.ofNullable(solrDocument.get("personRaceId_stored_string")).map(v -> v.toString()).orElse(null));
 		oTrafficPerson.setPersonRaceTitle(Optional.ofNullable(solrDocument.get("personRaceTitle_stored_string")).map(v -> v.toString()).orElse(null));
 
-		super.storeCluster(solrDocument);
+		super.storeBaseModel(solrDocument);
 	}
 
 	//////////////////
@@ -3741,7 +3741,7 @@ public abstract class TrafficPersonGen<DEV> extends Cluster {
 				apiRequest.addVars("personRaceId");
 			if(!Objects.equals(personRaceTitle, original.getPersonRaceTitle()))
 				apiRequest.addVars("personRaceTitle");
-			super.apiRequestCluster();
+			super.apiRequestBaseModel();
 		}
 	}
 

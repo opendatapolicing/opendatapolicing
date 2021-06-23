@@ -1,13 +1,11 @@
-package com.opendatapolicing.enus.cluster;
+package com.opendatapolicing.enus.base;   
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreV2;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +46,6 @@ public class BaseApiServiceImpl {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(BaseApiServiceImpl.class);
 
-	protected Semaphore semaphore;
-
 	protected EventBus eventBus;
 
 	protected JsonObject config;
@@ -65,7 +61,6 @@ public class BaseApiServiceImpl {
 	protected AuthorizationProvider authorizationProvider;
 
 	public BaseApiServiceImpl(EventBus eventBus, JsonObject config, WorkerExecutor workerExecutor, PgPool pgPool, WebClient webClient, OAuth2Auth oauth2AuthenticationProvider, AuthorizationProvider authorizationProvider) {
-		this.semaphore = semaphore;
 		this.eventBus = eventBus;
 		this.config = config;
 		this.workerExecutor = workerExecutor;
@@ -261,17 +256,16 @@ public class BaseApiServiceImpl {
 		}
 	}
 
-//	public void attributeArrayFuture(Cluster o, List<Future<?>> futures, String entityVar, Boolean inheritPk) {
 	public void attributeArrayFuture(SiteRequestEnUS siteRequest, Class<?> c1, Long pk1, Class<?> c2, String pk2, List<Future<?>> futures, String entityVar, Boolean inheritPk) {
 		ApiRequest apiRequest = siteRequest.getApiRequest_();
 		List<Long> pks = apiRequest.getPks();
 
 		for(String l : Optional.ofNullable(siteRequest.getJsonObject().getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(a -> (String)a).collect(Collectors.toList())) {
 			if(l != null) {
-				SearchList<Cluster> searchList = new SearchList<Cluster>();
+				SearchList<BaseModel> searchList = new SearchList<BaseModel>();
 				searchList.setQuery("*:*");
 				searchList.setStore(true);
-				searchList.setC(Cluster.class);
+				searchList.setC(BaseModel.class);
 				searchList.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(c2.getCanonicalName()));
 				searchList.addFilterQuery((inheritPk ? "inheritPk_indexed_string:" : "pk_indexed_long:") + ClientUtils.escapeQueryChars(l));
 				searchList.promiseDeepSearchList(siteRequest).onSuccess(s -> {
@@ -312,13 +306,13 @@ public class BaseApiServiceImpl {
 			this.classes = apiRequest.getClasses();
 		}
 
-		public SqlUpdate update(Class<? extends Cluster> c1, Long pk1) {
+		public SqlUpdate update(Class<? extends BaseModel> c1, Long pk1) {
 			this.c1 = c1;
 			this.pk1 = pk1;
 			return this;
 		}
 
-		public SqlUpdate insertInto(Class<? extends Cluster> c1, String entityVar1, Class<? extends Cluster> c2, String entityVar2) {
+		public SqlUpdate insertInto(Class<? extends BaseModel> c1, String entityVar1, Class<? extends BaseModel> c2, String entityVar2) {
 			this.c1 = c1;
 			this.entityVar1 = entityVar1;
 			this.c2 = c2;
@@ -326,7 +320,7 @@ public class BaseApiServiceImpl {
 			return this;
 		}
 
-		public SqlUpdate deleteFrom(Class<? extends Cluster> c1, String entityVar1, Class<? extends Cluster> c2, String entityVar2) {
+		public SqlUpdate deleteFrom(Class<? extends BaseModel> c1, String entityVar1, Class<? extends BaseModel> c2, String entityVar2) {
 			this.c1 = c1;
 			this.entityVar1 = entityVar1;
 			this.c2 = c2;
@@ -334,7 +328,7 @@ public class BaseApiServiceImpl {
 			return this;
 		}
 
-		public Future<Void> set(String entityVar1, Class<? extends Cluster> c2, Long pk2) {
+		public Future<Void> set(String entityVar1, Class<? extends BaseModel> c2, Long pk2) {
 			Promise<Void> promise = Promise.promise();
 			if(pk2 == null) {
 				promise.complete();
@@ -352,7 +346,7 @@ public class BaseApiServiceImpl {
 			return promise.future();
 		}
 
-		public Future<Void> setToNull(String entityVar1, Class<? extends Cluster> c2, Long pk2) {
+		public Future<Void> setToNull(String entityVar1, Class<? extends BaseModel> c2, Long pk2) {
 			Promise<Void> promise = Promise.promise();
 			if(pk2 == null) {
 				promise.complete();
@@ -405,24 +399,6 @@ public class BaseApiServiceImpl {
 			}
 			return promise.future();
 		}
-
-//		public Future<Void> to(Class<? extends Cluster> c2, Long pk2, String entityVar2) {
-//			Promise<Void> promise = Promise.promise();
-//			if(pk2 == null) {
-//				promise.complete();
-//			} else {
-//				if(!pks.contains(pk2)) {
-//					pks.add(pk2);
-//					classes.add(c2.getSimpleName());
-//				}
-//				siteRequest.getSqlConnection().preparedQuery(String.format("INSERT INTO %s%s_%s%s(pk1, pk2) VALUES($1, $2)", c1.getSimpleName(), StringUtils.capitalize(entityVar1), c2.getSimpleName(), StringUtils.capitalize(entityVar2), entityVar2)).execute(Tuple.of(pk1, pk2)).onSuccess(a -> {
-//					promise.complete();
-//				}).onFailure(ex -> {
-//					promise.fail(ex);
-//				});
-//			}
-//			return promise.future();
-//		}
 	}
 
 	public SqlUpdate sql(SiteRequestEnUS siteRequest) {
@@ -440,10 +416,10 @@ public class BaseApiServiceImpl {
 			this.siteRequest = siteRequest;
 		}
 
-		public Future<Long> query(Class<? extends Cluster> c, String pk, Boolean inheritPk) {
+		public Future<Long> query(Class<? extends BaseModel> c, String pk, Boolean inheritPk) {
 			Promise<Long> promise = Promise.promise();
 			if(pk != null) {
-				SearchList<Cluster> searchList = new SearchList<Cluster>();
+				SearchList<BaseModel> searchList = new SearchList<BaseModel>();
 				searchList.setQuery("*:*");
 				searchList.setStore(true);
 				searchList.setC(c);

@@ -3,7 +3,7 @@ package com.opendatapolicing.enus.trafficsearch;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -45,7 +45,7 @@ import io.vertx.core.Promise;
  * 
  * Map.hackathonMission: to create a new Java class TrafficSearch to define the TrafficSearch Java class that collects search, search, and use-of-force police data publicly available to ensure transparency
  **/     
-public class TrafficSearch extends TrafficSearchGen<Cluster> {
+public class TrafficSearch extends TrafficSearchGen<BaseModel> {
 
 	/**
 	 * {@inheritDoc}

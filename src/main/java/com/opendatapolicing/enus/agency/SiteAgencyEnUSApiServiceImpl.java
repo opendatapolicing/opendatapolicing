@@ -1,7 +1,5 @@
 package com.opendatapolicing.enus.agency;
 
-import java.util.concurrent.Semaphore;
-
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;

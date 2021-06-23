@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
@@ -84,6 +85,7 @@ import io.vertx.ext.mail.MailConfig;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
+import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 import io.vertx.ext.web.handler.SessionHandler;
@@ -700,6 +702,71 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 			router.get("/").handler(a -> {
 				a.reroute("/template/home-page");
+			});
+
+			router.get("/stop").handler(ctx -> {
+				putVarsInRoutingContext(ctx);
+				ctx.reroute("/template/stop-search");
+			});
+
+			router.get("/template/stop-search").handler(ctx -> {
+				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+				siteRequest.setWebClient(webClient);
+				siteRequest.setConfig(config());
+				siteRequest.initDeepSiteRequestEnUS(siteRequest);
+
+				SearchList<TrafficStop> stopSearch = new SearchList<TrafficStop>();
+				stopSearch.setStore(true);
+				stopSearch.setQuery("*:*");
+				stopSearch.setFields(Arrays.asList(
+						"stopDateTime_stored_string"
+						, "personGenderTitles_stored_strings"
+						, "personRaceTitles_stored_strings"
+						, "personAges_stored_integers"
+						, "agencyTitle_stored_string"
+						, "stopOfficerId_stored_string"
+						, "pk_stored_long"
+						));
+
+				Integer rows = Optional.ofNullable((String)ctx.get("rows")).map(s -> Integer.valueOf(s)).orElse(100);
+				stopSearch.setRows(rows);
+				Integer start = Optional.ofNullable((String)ctx.get("start")).map(s -> Integer.valueOf(s)).orElse(0);
+				stopSearch.setStart(start);
+				String startDate = ctx.get("startDate");
+				String endDate = ctx.get("endDate");
+				if(startDate != null && endDate != null)
+					stopSearch.addFilterQuery("stopDateTime_indexed_date:[" + ClientUtils.escapeQueryChars(TrafficStop.staticSolrFqStopDateTime(siteRequest, startDate)) + " TO " + ClientUtils.escapeQueryChars(TrafficStop.staticSolrFqStopDateTime(siteRequest, endDate)) + "]");
+				else if(startDate == null && endDate != null)
+					stopSearch.addFilterQuery("stopDateTime_indexed_date:[" + ClientUtils.escapeQueryChars(TrafficStop.staticSolrFqStopDateTime(siteRequest, startDate)) + " TO *]");
+				else if(startDate != null && endDate == null)
+					stopSearch.addFilterQuery("stopDateTime_indexed_date:[* TO " + ClientUtils.escapeQueryChars(TrafficStop.staticSolrFqStopDateTime(siteRequest, startDate)) + "]");
+
+				Optional.ofNullable((String)ctx.get("agencyTitle")).ifPresent(agencyTitle -> stopSearch.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle)));
+				Optional.ofNullable((String)ctx.get("stopOfficerId")).ifPresent(stopOfficerId -> stopSearch.addFilterQuery("stopOfficerId_indexed_string:" + ClientUtils.escapeQueryChars(stopOfficerId)));
+
+				stopSearch.setC(TrafficStop.class);
+				stopSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
+					JsonArray stopsJson = new JsonArray();
+					stopSearch.getList().stream().forEach(stop -> {
+						JsonObject stopJson = new JsonObject();
+						stopJson.put("pk", stop.getPk());
+						stopJson.put("stopDateTime", stop.strStopDateTime());
+						stopJson.put("personGenderTitles", stop.getPersonGenderTitles());
+						stopJson.put("personRaceTitles", stop.getPersonRaceTitles());
+						stopJson.put("personAges", stop.getPersonAges());
+						stopJson.put("agencyTitle", stop.getAgencyTitle());
+						stopJson.put("stopOfficerId", stop.getStopOfficerId());
+						stopJson.put("searchStart", start);
+						stopJson.put("searchRows", rows);
+						stopJson.put("searchTotal", stopSearch.getQueryResponse().getResults().getNumFound());
+						stopsJson.add(stopJson);
+					});
+					ctx.put("stops", stopsJson);
+					ctx.next();
+				}).onFailure(ex -> {
+					LOG.error("Stop search page failed to load stop data. ", ex);
+					ctx.fail(ex);
+				});
 			});
 
 			router.get("/template/home-page").handler(ctx -> {

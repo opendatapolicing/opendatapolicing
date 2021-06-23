@@ -41,10 +41,10 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.opendatapolicing.enus.cluster.Cluster;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.base.BaseModel;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -52,7 +52,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.user.SiteUser&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
  * <br/>
  **/
-public abstract class SiteUserGen<DEV> extends Cluster {
+public abstract class SiteUserGen<DEV> extends BaseModel {
 	protected static final Logger LOG = LoggerFactory.getLogger(SiteUser.class);
 
 	public static final List<String> ROLES = Arrays.asList("SiteAdmin", "SiteAdmin");
@@ -687,7 +687,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		Promise<Void> promise2 = Promise.promise();
 		promiseSiteUser(promise2);
 		promise2.future().onSuccess(a -> {
-			super.promiseDeepCluster(siteRequest_).onSuccess(b -> {
+			super.promiseDeepBaseModel(siteRequest_).onSuccess(b -> {
 				promise.complete();
 			}).onFailure(ex -> {
 				promise.fail(ex);
@@ -732,7 +732,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 	/////////////////
 
 	public void siteRequestSiteUser(SiteRequestEnUS siteRequest_) {
-			super.siteRequestCluster(siteRequest_);
+			super.siteRequestBaseModel(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -749,9 +749,9 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainSiteUser(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -780,7 +780,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			case "userFullName":
 				return oSiteUser.userFullName;
 			default:
-				return super.obtainCluster(var);
+				return super.obtainBaseModel(var);
 		}
 	}
 
@@ -794,9 +794,9 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeSiteUser(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -805,7 +805,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		SiteUser oSiteUser = (SiteUser)this;
 		switch(var) {
 			default:
-				return super.attributeCluster(var, val);
+				return super.attributeBaseModel(var, val);
 		}
 	}
 
@@ -835,7 +835,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		case "userFullName":
 			return SiteUser.staticSetUserFullName(siteRequest_, o);
 			default:
-				return Cluster.staticSetCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -865,7 +865,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		case "userFullName":
 			return SiteUser.staticSolrUserFullName(siteRequest_, (String)o);
 			default:
-				return Cluster.staticSolrCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -895,7 +895,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		case "userFullName":
 			return SiteUser.staticSolrStrUserFullName(siteRequest_, (String)o);
 			default:
-				return Cluster.staticSolrStrCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrStrBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -925,7 +925,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		case "userFullName":
 			return SiteUser.staticSolrFqUserFullName(siteRequest_, o);
 			default:
-				return Cluster.staticSolrFqCluster(entityVar,  siteRequest_, o);
+				return BaseModel.staticSolrFqBaseModel(entityVar,  siteRequest_, o);
 		}
 	}
 
@@ -940,9 +940,9 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSiteUser(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -986,7 +986,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				saves.add("userFullName");
 				return val;
 			default:
-				return super.defineCluster(var, val);
+				return super.defineBaseModel(var, val);
 		}
 	}
 
@@ -997,9 +997,9 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			for(String v : vars) {
 				if(o == null)
 					o = defineSiteUser(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -1043,7 +1043,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				saves.add("userFullName");
 				return val;
 			default:
-				return super.defineCluster(var, val);
+				return super.defineBaseModel(var, val);
 		}
 	}
 
@@ -1108,7 +1108,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			}
 		}
 
-		super.populateCluster(solrDocument);
+		super.populateBaseModel(solrDocument);
 	}
 
 	public void indexSiteUser(SolrInputDocument document) {
@@ -1148,7 +1148,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			document.addField("userFullName_indexed_string", userFullName);
 			document.addField("userFullName_stored_string", userFullName);
 		}
-		super.indexCluster(document);
+		super.indexBaseModel(document);
 
 	}
 
@@ -1171,21 +1171,21 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 			case "userFullName":
 				return "userFullName_indexed_string";
 			default:
-				return Cluster.varIndexedCluster(entityVar);
+				return BaseModel.varIndexedBaseModel(entityVar);
 		}
 	}
 
 	public static String varSearchSiteUser(String entityVar) {
 		switch(entityVar) {
 			default:
-				return Cluster.varSearchCluster(entityVar);
+				return BaseModel.varSearchBaseModel(entityVar);
 		}
 	}
 
 	public static String varSuggestedSiteUser(String entityVar) {
 		switch(entityVar) {
 			default:
-				return Cluster.varSuggestedCluster(entityVar);
+				return BaseModel.varSuggestedBaseModel(entityVar);
 		}
 	}
 
@@ -1210,7 +1210,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 		oSiteUser.setUserLastName(Optional.ofNullable(solrDocument.get("userLastName_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteUser.setUserFullName(Optional.ofNullable(solrDocument.get("userFullName_stored_string")).map(v -> v.toString()).orElse(null));
 
-		super.storeCluster(solrDocument);
+		super.storeBaseModel(solrDocument);
 	}
 
 	//////////////////
@@ -1238,7 +1238,7 @@ public abstract class SiteUserGen<DEV> extends Cluster {
 				apiRequest.addVars("userLastName");
 			if(!Objects.equals(userFullName, original.getUserFullName()))
 				apiRequest.addVars("userFullName");
-			super.apiRequestCluster();
+			super.apiRequestBaseModel();
 		}
 	}
 

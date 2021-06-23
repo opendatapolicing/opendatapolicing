@@ -3,7 +3,7 @@ package com.opendatapolicing.enus.trafficperson;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficstop.TrafficStop;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -43,7 +43,7 @@ import io.vertx.core.Promise;
  * 
  * Map.hackathonMission: to create a new Java class TrafficStop to define the TrafficStop Java class that collects stop, search, and use-of-force police data publicly available to ensure transparency
  **/  
-public class TrafficPerson extends TrafficPersonGen<Cluster> {
+public class TrafficPerson extends TrafficPersonGen<BaseModel> {
 
 	/**
 	 * {@inheritDoc}

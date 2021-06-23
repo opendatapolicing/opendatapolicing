@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.wrap.Wrap;
 
 /**
@@ -42,7 +42,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * 
  * Rows: 100
 **/    
-public class SiteState extends SiteStateGen<Cluster> {
+public class SiteState extends SiteStateGen<BaseModel> {
 
 	/**
 	 * {@inheritDoc}

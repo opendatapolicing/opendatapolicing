@@ -8,7 +8,7 @@ import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchResult;
 import com.opendatapolicing.enus.vertx.MailVerticle;
 import com.opendatapolicing.enus.config.ConfigKeys;
-import com.opendatapolicing.enus.cluster.BaseApiServiceImpl;
+import com.opendatapolicing.enus.base.BaseApiServiceImpl;
 import io.vertx.ext.web.client.WebClient;
 import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
@@ -250,7 +250,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
 			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
 				try {
-					if(searchList.size() == 1) {
+					if(searchList.size() >= 1) {
 						SiteState o = searchList.getList().stream().findFirst().orElse(null);
 						SiteState o2 = new SiteState();
 						JsonObject body2 = new JsonObject();
@@ -280,6 +280,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								}
 							} else {
 								o2.defineForClass(f, bodyVal);
+								o2.attributeForClass(f, bodyVal);
 								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
 									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}

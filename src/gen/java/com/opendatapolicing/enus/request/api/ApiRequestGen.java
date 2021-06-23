@@ -26,8 +26,8 @@ import java.util.Objects;
 import java.util.List;
 import java.time.OffsetDateTime;
 import java.util.Optional;
-import com.opendatapolicing.enus.cluster.Cluster;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -1115,9 +1115,9 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		for(String v : vars) {
 			if(o == null)
 				o = obtainApiRequest(v);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.obtainForClass(v);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.obtainForClass(v);
 			}
 			else if(o instanceof Map) {
 				Map<?, ?> map = (Map<?, ?>)o;
@@ -1170,9 +1170,9 @@ public abstract class ApiRequestGen<DEV> extends Object {
 		for(String v : vars) {
 			if(o == null)
 				o = attributeApiRequest(v, val);
-			else if(o instanceof Cluster) {
-				Cluster cluster = (Cluster)o;
-				o = cluster.attributeForClass(v, val);
+			else if(o instanceof BaseModel) {
+				BaseModel baseModel = (BaseModel)o;
+				o = baseModel.attributeForClass(v, val);
 			}
 		}
 		return o != null;
@@ -1340,9 +1340,9 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			for(String v : vars) {
 				if(o == null)
 					o = defineApiRequest(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}
@@ -1362,9 +1362,9 @@ public abstract class ApiRequestGen<DEV> extends Object {
 			for(String v : vars) {
 				if(o == null)
 					o = defineApiRequest(v, val);
-				else if(o instanceof Cluster) {
-					Cluster oCluster = (Cluster)o;
-					o = oCluster.defineForClass(v, val);
+				else if(o instanceof BaseModel) {
+					BaseModel oBaseModel = (BaseModel)o;
+					o = oBaseModel.defineForClass(v, val);
 				}
 			}
 		}

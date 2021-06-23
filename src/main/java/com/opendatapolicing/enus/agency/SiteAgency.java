@@ -2,7 +2,7 @@ package com.opendatapolicing.enus.agency;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -44,8 +44,7 @@ import io.vertx.core.Promise;
  * 
  * Rows: 300
  **/
-
-public class SiteAgency extends SiteAgencyGen<Cluster> {
+public class SiteAgency extends SiteAgencyGen<BaseModel> {
 
 	/**   
 	 * {@inheritDoc}
@@ -130,6 +129,6 @@ public class SiteAgency extends SiteAgencyGen<Cluster> {
 
 	@Override
 	protected void _objectTitle(Wrap<String> c) {
-		c.o(agencyTitle);
+		c.o(String.format("%s (%s)", agencyTitle, stateName));
 	}
 }

@@ -2,7 +2,7 @@ package com.opendatapolicing.enus.searchbasis;
 
 import java.time.ZonedDateTime;
 
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -42,7 +42,7 @@ import io.vertx.core.Promise;
  * 
  * Map.hackathonMission: to create a new Java class SearchBasis to define the SearchBasis Java class that collects search, search, and use-of-force police data publicly available to ensure transparency
  **/      
-public class SearchBasis extends SearchBasisGen<Cluster> {
+public class SearchBasis extends SearchBasisGen<BaseModel> {
 
 	/**
 	 * {@inheritDoc}

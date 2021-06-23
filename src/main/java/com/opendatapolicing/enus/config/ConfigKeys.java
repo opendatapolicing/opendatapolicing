@@ -398,6 +398,11 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String ENABLE_IMPORT_DATA = "ENABLE_IMPORT_DATA";
+
+	/**
+	 * 
+	 **/
 	public static final String SEMAPHORE_PERMITS = "semaphorePermits";
 
 	/**

@@ -2,7 +2,9 @@ package com.opendatapolicing.enus.trafficstop;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
@@ -11,10 +13,8 @@ import org.apache.solr.common.SolrInputDocument;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.opendatapolicing.enus.agency.SiteAgency;
-import com.opendatapolicing.enus.cluster.Cluster;
+import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.search.SearchList;
-import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
 import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
@@ -53,7 +53,7 @@ import io.vertx.core.Promise;
  * 
  * Map.hackathonMission: to create a new Java class TrafficStop to define the TrafficStop Java class that collects stop, search, and use-of-force police data publicly available to ensure transparency
  **/            
-public class TrafficStop extends TrafficStopGen<Cluster> {
+public class TrafficStop extends TrafficStopGen<BaseModel> {
 
 	////////////////
 	// SiteState //
@@ -104,6 +104,10 @@ public class TrafficStop extends TrafficStopGen<Cluster> {
 	 * DisplayName.enUS: stop date/time
 	 */ 
 	protected void _stopDateTime(Wrap<ZonedDateTime> w) {
+	}
+	@Override
+	public String strStopDateTime() {
+		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ofPattern("M/d/yyyy h:mm a", Locale.forLanguageTag("en-US"))).replace(" 12:00 AM", " midnight");
 	}
 
 	/**    

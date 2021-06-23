@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.cluster;                          
+package com.opendatapolicing.enus.base;       
 
 import java.text.Normalizer;
 import java.time.ZoneId;
@@ -14,7 +14,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
 /**
  * Indexed: true
  * 
- * AName.enUS: a cluster
+ * AName.enUS: a base model
  * Color: gray
  * IconGroup: regular
  * IconName: fort-awesome
@@ -23,9 +23,9 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * RoleUser: true
  * Role.enUS: SiteService
  * RoleRead.enUS: User
- **/ 
+ **/  
 
-public class Cluster extends ClusterGen<Object> {
+public class BaseModel extends BaseModelGen<Object> {
 
 	/**
 	 * {@inheritDoc}
@@ -118,9 +118,9 @@ public class Cluster extends ClusterGen<Object> {
 	 */ 
 	protected void _classCanonicalNames(List<String> l) { 
 		Class<?> cl = getClass();
-		if(!cl.equals(Cluster.class))
+		if(!cl.equals(BaseModel.class))
 			l.add(cl.getCanonicalName());
-		l.add(Cluster.class.getCanonicalName());
+		l.add(BaseModel.class.getCanonicalName());
 	}
 
 	/**

@@ -1,7 +1,7 @@
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/config/ConfigKeys.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/MailVerticle.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/wrap/Wrap.java
-touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/cluster/BaseApiServiceImpl.java
+touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/base/BaseApiServiceImpl.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/request/SiteRequestEnUS.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/request/api/ApiRequest.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/search/SearchList.java
@@ -14,7 +14,7 @@ touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/ve
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/MainVerticle.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/vertx/WorkerVerticle.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/user/SiteUser.java
-touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/cluster/Cluster.java
+touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/base/BaseModel.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/escape/EscapeTool.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/xml/UtilXml.java
 touch /usr/local/src/opendatapolicing/src/main/java/com/opendatapolicing/enus/java/LocalDateSerializer.java
