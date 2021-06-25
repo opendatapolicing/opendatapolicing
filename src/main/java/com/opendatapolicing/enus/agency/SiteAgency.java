@@ -129,6 +129,6 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 
 	@Override
 	protected void _objectTitle(Wrap<String> c) {
-		c.o(String.format("%s (%s)", agencyTitle, stateName));
+		c.o(String.format("%s (%s)", agencyTitle, stateAbbreviation));
 	}
 }
