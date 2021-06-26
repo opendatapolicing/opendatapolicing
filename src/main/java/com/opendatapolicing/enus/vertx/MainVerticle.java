@@ -841,11 +841,14 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								json.put("id", id);
 								json.put("checked", checked);
 								personPurposeTitles.add(json);
-								if(checked)
+								if(checked) {
 									fqValues.add(value.getName());
+									urlParams.add(String.format("var=purpose-%s:true", id));
+								}
 							});
-							if(fqValues.size() > 0)
+							if(fqValues.size() > 0) {
 								stopSearch2.addFilterQuery("stopPurposeTitle_indexed_string:(\"" + StringUtils.join(fqValues, "\" OR \"") + "\")");
+							}
 						});
 						ctx.put("personPurposeTitles", personPurposeTitles);
 	
@@ -860,11 +863,14 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								json.put("id", id);
 								json.put("checked", checked);
 								personActionTitles.add(json);
-								if(checked)
+								if(checked) {
 									fqValues.add(value.getName());
+									urlParams.add(String.format("var=action-%s:true", id));
+								}
 							});
-							if(fqValues.size() > 0)
+							if(fqValues.size() > 0) {
 								stopSearch2.addFilterQuery("stopActionTitle_indexed_string:(\"" + StringUtils.join(fqValues, "\" OR \"") + "\")");
+							}
 						});
 						ctx.put("personActionTitles", personActionTitles);
 		
@@ -876,18 +882,44 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							endNum = endNum < numFound ? endNum : numFound;
 							startNum = numFound == 0L ? 0L : startNum;
 							JsonObject pagination = new JsonObject();
+
+							{
+								JsonObject page = new JsonObject();
+								page.put("url", String.format("/stop?%s&var=start:%s", StringUtils.join(urlParams, "&"), 0));
+								page.put("currentPage", start.equals(0L));
+								pagination.put("pageStart", page);
+							}
+
 							if(start > 0L) {
-								pagination.put("pagePrev", true);
+								JsonObject page = new JsonObject();
+								page.put("url", String.format("/stop?%s&var=start:%s", StringUtils.join(urlParams, "&"), start - rows));
+								pagination.put("pagePrev", page);
 							}
+
 							if((start + rows) < numFound) {
-								pagination.put("pageNext", true);
+								JsonObject page = new JsonObject();
+								page.put("url", String.format("/stop?%s&var=start:%s", StringUtils.join(urlParams, "&"), start + rows));
+								pagination.put("pageNext", page);
 							}
+
+							{
+								JsonObject page = new JsonObject();
+								Long floorMod = Math.floorMod(numFound, rows);
+								Long last = (Math.floorDiv(numFound, rows) - (floorMod.equals(0L) ? 1L : 0L)) * rows;
+								page.put("currentPage", start.equals(last));
+								page.put("url", String.format("/stop?%s&var=start:%s", StringUtils.join(urlParams, "&"), last));
+								pagination.put("pageEnd", page);
+							}
+
 							Long paginationStart = start - 10 * rows;
 							if(paginationStart < 0)
 								paginationStart = 0L;
 							Long paginationEnd = start + 10 * rows;
 							if(paginationEnd > numFound)
 								paginationEnd = numFound;
+							pagination.put("startNum", startNum);
+							pagination.put("endNum", endNum);
+							pagination.put("numFound", numFound);
 							JsonArray pages = new JsonArray();
 							for(Long i = paginationStart; i < paginationEnd; i += rows) {
 								Long pageNumber = Math.floorDiv(i, rows) + 1L;
