@@ -751,9 +751,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		
 						ctx.put("siteZone", config().getValue(ConfigKeys.SITE_ZONE));
 	
-						Long rows = Optional.ofNullable((String)ctx.get("rows")).map(s -> Long.valueOf(s)).orElse(100L);
+						Long rows = 100L;
 						stopSearch2.setRows(rows.intValue());
-						urlParams.add("var=rows:" + rows);
 	
 						Long start = Optional.ofNullable((String)ctx.get("start")).map(s -> Long.valueOf(s)).orElse(0L);
 						stopSearch2.setStart(start.intValue());
