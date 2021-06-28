@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
+import com.github.jknack.handlebars.helper.StringHelpers;
+import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.agency.SiteAgencyEnUSGenApiService;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.java.LocalDateSerializer;
@@ -698,9 +700,75 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 				}
 			});
 			handlebars.registerHelpers(ConditionalHelpers.class);
+			handlebars.registerHelpers(StringHelpers.class);
 
 			router.get("/").handler(a -> {
 				a.reroute("/template/home-page");
+			});
+
+			router.get("/agency").handler(ctx -> {
+				putVarsInRoutingContext(ctx);
+				ctx.reroute("/template/agency-search");
+			});
+
+			router.get("/template/agency-search").handler(ctx -> {
+				try {
+					SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+					siteRequest.setWebClient(webClient);
+					siteRequest.setConfig(config());
+					siteRequest.initDeepSiteRequestEnUS(siteRequest);
+	
+					List<String> urlParams = new ArrayList<String>();
+					Long rows = 1000L;
+					SearchList<SiteAgency> agencySearch = new SearchList<SiteAgency>();
+					agencySearch.setStore(true);
+					agencySearch.setQuery("*:*");
+					agencySearch.setC(SiteAgency.class);
+					agencySearch.setRows(rows.intValue());
+					agencySearch.setFields(Arrays.asList(
+							"agencyName_stored_string"
+							, "stateAbbreviation_stored_string"
+							, "pk_stored_long"
+							));
+					agencySearch.addSort(SortClause.asc("agencyTitle_indexed_string"));
+					agencySearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
+						JsonObject agencyLettersMap = new JsonObject();
+						JsonArray agencyLettersArray = new JsonArray();
+						JsonObject agencyLetter = null;
+						JsonArray agencies = null;
+						String ch = null;
+						for(SiteAgency agency : agencySearch.getList()) {
+							String agencyTitle = agency.getAgencyTitle();
+							if(StringUtils.isNotBlank(agencyTitle)) {
+								ch = agencyTitle.substring(0, 1);
+								if(agencyLettersMap.containsKey(ch)) {
+									agencyLetter = agencyLettersMap.getJsonObject(ch);
+								}
+								else {
+									agencies = new JsonArray();
+									agencyLetter = new JsonObject();
+									agencyLetter.put("letter", ch);
+									agencyLetter.put("agencies", agencies);
+									agencyLettersMap.put(ch, agencyLetter);
+									agencyLettersArray.add(agencyLetter);
+								}
+								JsonObject json = new JsonObject();
+								json.put("pk", agency.getPk());
+								json.put("stateAbbreviation", agency.getStateAbbreviation());
+								json.put("agencyTitle", agencyTitle);
+								agencies.add(json);
+							}
+						}
+						ctx.put("agencyLetters", agencyLettersArray);
+						ctx.next();
+					}).onFailure(ex -> {
+						LOG.error("Stop search page failed to load stop data. ", ex);
+						ctx.fail(ex);
+					});
+				} catch(Exception ex) {
+					LOG.error("Stop search page failed to load stop data. ", ex);
+					ctx.fail(ex);
+				}
 			});
 
 			router.get("/stop").handler(ctx -> {
