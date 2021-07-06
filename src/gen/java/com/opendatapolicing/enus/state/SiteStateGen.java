@@ -279,6 +279,76 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 		return stateAbbreviation == null ? "" : stateAbbreviation;
 	}
 
+	////////////////
+	// stateAcsId //
+	////////////////
+
+	/**	 The entity stateAcsId
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String stateAcsId;
+	@JsonIgnore
+	public Wrap<String> stateAcsIdWrap = new Wrap<String>().var("stateAcsId").o(stateAcsId);
+
+	/**	<br/> The entity stateAcsId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:stateAcsId">Find the entity stateAcsId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _stateAcsId(Wrap<String> c);
+
+	public String getStateAcsId() {
+		return stateAcsId;
+	}
+	public void setStateAcsId(String o) {
+		this.stateAcsId = SiteState.staticSetStateAcsId(siteRequest_, o);
+		this.stateAcsIdWrap.alreadyInitialized = true;
+	}
+	public static String staticSetStateAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected SiteState stateAcsIdInit() {
+		if(!stateAcsIdWrap.alreadyInitialized) {
+			_stateAcsId(stateAcsIdWrap);
+			if(stateAcsId == null)
+				setStateAcsId(stateAcsIdWrap.o);
+			stateAcsIdWrap.o(null);
+		}
+		stateAcsIdWrap.alreadyInitialized(true);
+		return (SiteState)this;
+	}
+
+	public static String staticSolrStateAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrStateAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqStateAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return SiteState.staticSolrStrStateAcsId(siteRequest_, SiteState.staticSolrStateAcsId(siteRequest_, SiteState.staticSetStateAcsId(siteRequest_, o)));
+	}
+
+	public String solrStateAcsId() {
+		return SiteState.staticSolrStateAcsId(siteRequest_, stateAcsId);
+	}
+
+	public String strStateAcsId() {
+		return stateAcsId == null ? "" : stateAcsId;
+	}
+
+	public String sqlStateAcsId() {
+		return stateAcsId;
+	}
+
+	public String jsonStateAcsId() {
+		return stateAcsId == null ? "" : stateAcsId;
+	}
+
 	///////////////
 	// imageLeft //
 	///////////////
@@ -655,6 +725,7 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				stateKeyInit();
 				stateNameInit();
 				stateAbbreviationInit();
+				stateAcsIdInit();
 				imageLeftInit();
 				imageTopInit();
 				agencyKeysInit();
@@ -718,6 +789,8 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				return oSiteState.stateName;
 			case "stateAbbreviation":
 				return oSiteState.stateAbbreviation;
+			case "stateAcsId":
+				return oSiteState.stateAcsId;
 			case "imageLeft":
 				return oSiteState.imageLeft;
 			case "imageTop":
@@ -776,6 +849,8 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSetStateName(siteRequest_, o);
 		case "stateAbbreviation":
 			return SiteState.staticSetStateAbbreviation(siteRequest_, o);
+		case "stateAcsId":
+			return SiteState.staticSetStateAcsId(siteRequest_, o);
 		case "imageLeft":
 			return SiteState.staticSetImageLeft(siteRequest_, o);
 		case "imageTop":
@@ -804,6 +879,8 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSolrStateName(siteRequest_, (String)o);
 		case "stateAbbreviation":
 			return SiteState.staticSolrStateAbbreviation(siteRequest_, (String)o);
+		case "stateAcsId":
+			return SiteState.staticSolrStateAcsId(siteRequest_, (String)o);
 		case "imageLeft":
 			return SiteState.staticSolrImageLeft(siteRequest_, (Integer)o);
 		case "imageTop":
@@ -832,6 +909,8 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSolrStrStateName(siteRequest_, (String)o);
 		case "stateAbbreviation":
 			return SiteState.staticSolrStrStateAbbreviation(siteRequest_, (String)o);
+		case "stateAcsId":
+			return SiteState.staticSolrStrStateAcsId(siteRequest_, (String)o);
 		case "imageLeft":
 			return SiteState.staticSolrStrImageLeft(siteRequest_, (Integer)o);
 		case "imageTop":
@@ -860,6 +939,8 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSolrFqStateName(siteRequest_, o);
 		case "stateAbbreviation":
 			return SiteState.staticSolrFqStateAbbreviation(siteRequest_, o);
+		case "stateAcsId":
+			return SiteState.staticSolrFqStateAcsId(siteRequest_, o);
 		case "imageLeft":
 			return SiteState.staticSolrFqImageLeft(siteRequest_, o);
 		case "imageTop":
@@ -904,6 +985,11 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 					setStateAbbreviation(val);
 				saves.add("stateAbbreviation");
 				return val;
+			case "stateacsid":
+				if(val != null)
+					setStateAcsId(val);
+				saves.add("stateAcsId");
+				return val;
 			case "imageleft":
 				if(val != null)
 					setImageLeft(val);
@@ -945,6 +1031,11 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				if(val instanceof String)
 					setStateAbbreviation((String)val);
 				saves.add("stateAbbreviation");
+				return val;
+			case "stateacsid":
+				if(val instanceof String)
+					setStateAcsId((String)val);
+				saves.add("stateAcsId");
 				return val;
 			case "imageleft":
 				if(val instanceof Integer)
@@ -991,6 +1082,12 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 					oSiteState.setStateAbbreviation(stateAbbreviation);
 			}
 
+			if(saves.contains("stateAcsId")) {
+				String stateAcsId = (String)solrDocument.get("stateAcsId_stored_string");
+				if(stateAcsId != null)
+					oSiteState.setStateAcsId(stateAcsId);
+			}
+
 			if(saves.contains("imageLeft")) {
 				Integer imageLeft = (Integer)solrDocument.get("imageLeft_stored_int");
 				if(imageLeft != null)
@@ -1030,6 +1127,10 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
 			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
 		}
+		if(stateAcsId != null) {
+			document.addField("stateAcsId_indexed_string", stateAcsId);
+			document.addField("stateAcsId_stored_string", stateAcsId);
+		}
 		if(imageLeft != null) {
 			document.addField("imageLeft_indexed_int", imageLeft);
 			document.addField("imageLeft_stored_int", imageLeft);
@@ -1062,6 +1163,8 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				return "stateName_indexed_string";
 			case "stateAbbreviation":
 				return "stateAbbreviation_indexed_string";
+			case "stateAcsId":
+				return "stateAcsId_indexed_string";
 			case "imageLeft":
 				return "imageLeft_indexed_int";
 			case "imageTop":
@@ -1102,6 +1205,7 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 		oSiteState.setStateKey(Optional.ofNullable(solrDocument.get("stateKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oSiteState.setStateName(Optional.ofNullable(solrDocument.get("stateName_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteState.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteState.setStateAcsId(Optional.ofNullable(solrDocument.get("stateAcsId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteState.setImageLeft(Optional.ofNullable(solrDocument.get("imageLeft_stored_int")).map(v -> v.toString()).orElse(null));
 		oSiteState.setImageTop(Optional.ofNullable(solrDocument.get("imageTop_stored_int")).map(v -> v.toString()).orElse(null));
 		Optional.ofNullable((List<?>)solrDocument.get("agencyKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
@@ -1127,6 +1231,8 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				apiRequest.addVars("stateName");
 			if(!Objects.equals(stateAbbreviation, original.getStateAbbreviation()))
 				apiRequest.addVars("stateAbbreviation");
+			if(!Objects.equals(stateAcsId, original.getStateAcsId()))
+				apiRequest.addVars("stateAcsId");
 			if(!Objects.equals(imageLeft, original.getImageLeft()))
 				apiRequest.addVars("imageLeft");
 			if(!Objects.equals(imageTop, original.getImageTop()))
@@ -1144,7 +1250,7 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), stateKey, stateName, stateAbbreviation, imageLeft, imageTop, agencyKeys, stateCompleteName);
+		return Objects.hash(super.hashCode(), stateKey, stateName, stateAbbreviation, stateAcsId, imageLeft, imageTop, agencyKeys, stateCompleteName);
 	}
 
 	////////////
@@ -1161,6 +1267,7 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				&& Objects.equals( stateKey, that.stateKey )
 				&& Objects.equals( stateName, that.stateName )
 				&& Objects.equals( stateAbbreviation, that.stateAbbreviation )
+				&& Objects.equals( stateAcsId, that.stateAcsId )
 				&& Objects.equals( imageLeft, that.imageLeft )
 				&& Objects.equals( imageTop, that.imageTop )
 				&& Objects.equals( agencyKeys, that.agencyKeys )
@@ -1178,6 +1285,7 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 		sb.append( "stateKey: " ).append(stateKey);
 		sb.append( ", stateName: \"" ).append(stateName).append( "\"" );
 		sb.append( ", stateAbbreviation: \"" ).append(stateAbbreviation).append( "\"" );
+		sb.append( ", stateAcsId: \"" ).append(stateAcsId).append( "\"" );
 		sb.append( ", imageLeft: " ).append(imageLeft);
 		sb.append( ", imageTop: " ).append(imageTop);
 		sb.append( ", agencyKeys: " ).append(agencyKeys);
@@ -1189,6 +1297,7 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateName = "stateName";
 	public static final String VAR_stateAbbreviation = "stateAbbreviation";
+	public static final String VAR_stateAcsId = "stateAcsId";
 	public static final String VAR_imageLeft = "imageLeft";
 	public static final String VAR_imageTop = "imageTop";
 	public static final String VAR_agencyKeys = "agencyKeys";

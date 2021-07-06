@@ -130,6 +130,76 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		return agencyTitle == null ? "" : agencyTitle;
 	}
 
+	/////////////////
+	// agencyAcsId //
+	/////////////////
+
+	/**	 The entity agencyAcsId
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected String agencyAcsId;
+	@JsonIgnore
+	public Wrap<String> agencyAcsIdWrap = new Wrap<String>().var("agencyAcsId").o(agencyAcsId);
+
+	/**	<br/> The entity agencyAcsId
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyAcsId">Find the entity agencyAcsId in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyAcsId(Wrap<String> c);
+
+	public String getAgencyAcsId() {
+		return agencyAcsId;
+	}
+	public void setAgencyAcsId(String o) {
+		this.agencyAcsId = SiteAgency.staticSetAgencyAcsId(siteRequest_, o);
+		this.agencyAcsIdWrap.alreadyInitialized = true;
+	}
+	public static String staticSetAgencyAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+	protected SiteAgency agencyAcsIdInit() {
+		if(!agencyAcsIdWrap.alreadyInitialized) {
+			_agencyAcsId(agencyAcsIdWrap);
+			if(agencyAcsId == null)
+				setAgencyAcsId(agencyAcsIdWrap.o);
+			agencyAcsIdWrap.o(null);
+		}
+		agencyAcsIdWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static String staticSolrAgencyAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyAcsId(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyAcsId(siteRequest_, SiteAgency.staticSolrAgencyAcsId(siteRequest_, SiteAgency.staticSetAgencyAcsId(siteRequest_, o)));
+	}
+
+	public String solrAgencyAcsId() {
+		return SiteAgency.staticSolrAgencyAcsId(siteRequest_, agencyAcsId);
+	}
+
+	public String strAgencyAcsId() {
+		return agencyAcsId == null ? "" : agencyAcsId;
+	}
+
+	public String sqlAgencyAcsId() {
+		return agencyAcsId;
+	}
+
+	public String jsonAgencyAcsId() {
+		return agencyAcsId == null ? "" : agencyAcsId;
+	}
+
 	//////////////
 	// stateKey //
 	//////////////
@@ -628,6 +698,7 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			Promise<Void> promise2 = Promise.promise();
 			try {
 				agencyTitleInit();
+				agencyAcsIdInit();
 				stateKeyInit();
 				promise2.complete();
 			} catch(Exception ex) {
@@ -707,6 +778,8 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		switch(var) {
 			case "agencyTitle":
 				return oSiteAgency.agencyTitle;
+			case "agencyAcsId":
+				return oSiteAgency.agencyAcsId;
 			case "stateKey":
 				return oSiteAgency.stateKey;
 			case "stateSearch":
@@ -768,6 +841,8 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "agencyTitle":
 			return SiteAgency.staticSetAgencyTitle(siteRequest_, o);
+		case "agencyAcsId":
+			return SiteAgency.staticSetAgencyAcsId(siteRequest_, o);
 		case "stateKey":
 			return SiteAgency.staticSetStateKey(siteRequest_, o);
 		case "stateId":
@@ -794,6 +869,8 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "agencyTitle":
 			return SiteAgency.staticSolrAgencyTitle(siteRequest_, (String)o);
+		case "agencyAcsId":
+			return SiteAgency.staticSolrAgencyAcsId(siteRequest_, (String)o);
 		case "stateKey":
 			return SiteAgency.staticSolrStateKey(siteRequest_, (Long)o);
 		case "stateId":
@@ -820,6 +897,8 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "agencyTitle":
 			return SiteAgency.staticSolrStrAgencyTitle(siteRequest_, (String)o);
+		case "agencyAcsId":
+			return SiteAgency.staticSolrStrAgencyAcsId(siteRequest_, (String)o);
 		case "stateKey":
 			return SiteAgency.staticSolrStrStateKey(siteRequest_, (Long)o);
 		case "stateId":
@@ -846,6 +925,8 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		switch(entityVar) {
 		case "agencyTitle":
 			return SiteAgency.staticSolrFqAgencyTitle(siteRequest_, o);
+		case "agencyAcsId":
+			return SiteAgency.staticSolrFqAgencyAcsId(siteRequest_, o);
 		case "stateKey":
 			return SiteAgency.staticSolrFqStateKey(siteRequest_, o);
 		case "stateId":
@@ -887,6 +968,11 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 					setAgencyTitle(val);
 				saves.add("agencyTitle");
 				return val;
+			case "agencyacsid":
+				if(val != null)
+					setAgencyAcsId(val);
+				saves.add("agencyAcsId");
+				return val;
 			case "statekey":
 				if(val != null)
 					setStateKey(val);
@@ -919,6 +1005,11 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 					setAgencyTitle((String)val);
 				saves.add("agencyTitle");
 				return val;
+			case "agencyacsid":
+				if(val instanceof String)
+					setAgencyAcsId((String)val);
+				saves.add("agencyAcsId");
+				return val;
 			case "statekey":
 				if(val instanceof Long)
 					setStateKey((Long)val);
@@ -945,6 +1036,12 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 				String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
 				if(agencyTitle != null)
 					oSiteAgency.setAgencyTitle(agencyTitle);
+			}
+
+			if(saves.contains("agencyAcsId")) {
+				String agencyAcsId = (String)solrDocument.get("agencyAcsId_stored_string");
+				if(agencyAcsId != null)
+					oSiteAgency.setAgencyAcsId(agencyAcsId);
 			}
 
 			Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
@@ -983,6 +1080,10 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			document.addField("agencyTitle_indexed_string", agencyTitle);
 			document.addField("agencyTitle_stored_string", agencyTitle);
 		}
+		if(agencyAcsId != null) {
+			document.addField("agencyAcsId_indexed_string", agencyAcsId);
+			document.addField("agencyAcsId_stored_string", agencyAcsId);
+		}
 		if(stateKey != null) {
 			document.addField("stateKey_indexed_long", stateKey);
 			document.addField("stateKey_stored_long", stateKey);
@@ -1010,6 +1111,8 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		switch(entityVar) {
 			case "agencyTitle":
 				return "agencyTitle_indexed_string";
+			case "agencyAcsId":
+				return "agencyAcsId_indexed_string";
 			case "stateKey":
 				return "stateKey_indexed_long";
 			case "stateId":
@@ -1054,6 +1157,7 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		SiteAgency oSiteAgency = (SiteAgency)this;
 
 		oSiteAgency.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyAcsId(Optional.ofNullable(solrDocument.get("agencyAcsId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setStateKey(Optional.ofNullable(solrDocument.get("stateKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setStateId(Optional.ofNullable(solrDocument.get("stateId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setStateName(Optional.ofNullable(solrDocument.get("stateName_stored_string")).map(v -> v.toString()).orElse(null));
@@ -1075,6 +1179,8 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			SiteAgency original = (SiteAgency)o;
 			if(!Objects.equals(agencyTitle, original.getAgencyTitle()))
 				apiRequest.addVars("agencyTitle");
+			if(!Objects.equals(agencyAcsId, original.getAgencyAcsId()))
+				apiRequest.addVars("agencyAcsId");
 			if(!Objects.equals(stateKey, original.getStateKey()))
 				apiRequest.addVars("stateKey");
 			if(!Objects.equals(stateId, original.getStateId()))
@@ -1094,7 +1200,7 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), agencyTitle, stateKey, stateId, stateName, stateAbbreviation, objectSuggest);
+		return Objects.hash(super.hashCode(), agencyTitle, agencyAcsId, stateKey, stateId, stateName, stateAbbreviation, objectSuggest);
 	}
 
 	////////////
@@ -1109,6 +1215,7 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		SiteAgency that = (SiteAgency)o;
 		return super.equals(o)
 				&& Objects.equals( agencyTitle, that.agencyTitle )
+				&& Objects.equals( agencyAcsId, that.agencyAcsId )
 				&& Objects.equals( stateKey, that.stateKey )
 				&& Objects.equals( stateId, that.stateId )
 				&& Objects.equals( stateName, that.stateName )
@@ -1125,6 +1232,7 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		sb.append(super.toString() + "\n");
 		sb.append("SiteAgency { ");
 		sb.append( "agencyTitle: \"" ).append(agencyTitle).append( "\"" );
+		sb.append( ", agencyAcsId: \"" ).append(agencyAcsId).append( "\"" );
 		sb.append( ", stateKey: " ).append(stateKey);
 		sb.append( ", stateId: \"" ).append(stateId).append( "\"" );
 		sb.append( ", stateName: \"" ).append(stateName).append( "\"" );
@@ -1135,6 +1243,7 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 	}
 
 	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_agencyAcsId = "agencyAcsId";
 	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateSearch = "stateSearch";
 	public static final String VAR_state_ = "state_";

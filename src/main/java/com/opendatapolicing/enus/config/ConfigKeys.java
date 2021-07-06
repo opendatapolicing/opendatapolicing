@@ -429,4 +429,9 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String ZOOKEEPER_HOSTS = "zookeeperHosts";
+
+	/**
+	 * 
+	 **/
+	public static final String ACS_API_YEAR = "ACS_API_YEAR";
 }

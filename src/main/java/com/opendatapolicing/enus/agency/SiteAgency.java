@@ -58,6 +58,18 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 	protected void _agencyTitle(Wrap<String> c) {
 	}
 
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 * HtmlRow: 3
+	 * HtmlCell: 3
+	 * DisplayName.enUS: ACS ID
+	 */ 
+	protected void _agencyAcsId(Wrap<String> c) {
+	}
+
 	/**  
 	 * {@inheritDoc}
 	 * Indexed: true

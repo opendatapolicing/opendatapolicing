@@ -545,6 +545,15 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 						num++;
 						bParams.add(o2.sqlStateAbbreviation());
 						break;
+					case SiteState.VAR_stateAcsId:
+						o2.setStateAcsId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteState.VAR_stateAcsId + "=$" + num);
+						num++;
+						bParams.add(o2.sqlStateAcsId());
+						break;
 					case SiteState.VAR_imageLeft:
 						o2.setImageLeft(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
@@ -900,6 +909,14 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							bSql.append(SiteState.VAR_stateAbbreviation + "=$" + num);
 							num++;
 							bParams.add(o2.sqlStateAbbreviation());
+						break;
+					case "setStateAcsId":
+							o2.setStateAcsId(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteState.VAR_stateAcsId + "=$" + num);
+							num++;
+							bParams.add(o2.sqlStateAcsId());
 						break;
 					case "setImageLeft":
 							o2.setImageLeft(jsonObject.getString(entityVar));
@@ -1484,6 +1501,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateName = "stateName";
 	public static final String VAR_stateAbbreviation = "stateAbbreviation";
+	public static final String VAR_stateAcsId = "stateAcsId";
 	public static final String VAR_imageLeft = "imageLeft";
 	public static final String VAR_imageTop = "imageTop";
 	public static final String VAR_agencyKeys = "agencyKeys";

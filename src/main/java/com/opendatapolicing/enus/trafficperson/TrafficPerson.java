@@ -459,7 +459,9 @@ public class TrafficPerson extends TrafficPersonGen<BaseModel> {
 	 * DisplayName.enUS: person race title
 	 */ 
 	protected void _personRaceTitle(Wrap<String> w) {
-		if(personRaceId != null) {
+		if(personEthnicityId != null && "H".equals(personEthnicityId)) {
+			w.o("Latinx"); 
+		} else if(personRaceId != null) {
 			switch(personRaceId) {
 			case "A":
 				w.o("Asian"); break;
@@ -468,11 +470,7 @@ public class TrafficPerson extends TrafficPersonGen<BaseModel> {
 			case "I":
 				w.o("Indigenous"); break;
 			case "U":
-				if("H".equals(personEthnicityId))
-					w.o("Latinx"); 
-				else
-					w.o("Other"); 
-				break;
+				w.o("Other"); break;
 			case "W":
 				w.o("White"); break;
 			}

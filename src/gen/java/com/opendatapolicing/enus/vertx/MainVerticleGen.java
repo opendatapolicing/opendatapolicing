@@ -61,6 +61,7 @@ CREATE TABLE SiteState(
 	, created timestamp with time zone
 	, stateName text
 	, stateAbbreviation text
+	, stateAcsId text
 	, imageLeft integer
 	, imageTop integer
 	);
@@ -69,6 +70,7 @@ CREATE TABLE SiteAgency(
 	, inheritPk text
 	, created timestamp with time zone
 	, agencyTitle text
+	, agencyAcsId text
 	, stateKey bigint references SiteState(pk)
 	);
 CREATE TABLE TrafficStop(

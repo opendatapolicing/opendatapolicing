@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.vertx;          
+package com.opendatapolicing.enus.vertx;           
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -1012,22 +1012,22 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								});
 							});
 							ctx.put("personRaceTitles", personRaceTitles);
-		//
-		//					JsonArray personGenderTitles = new JsonArray();
-		//					stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-		//						facetField.getValues().forEach(value -> {
-		//							personGenderTitles.add(value.getName());
-		//						});
-		//					});
-		//					ctx.put("personGenderTitles", personGenderTitles);
-		//
-		//					JsonArray personAges = new JsonArray();
-		//					stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-		//						facetField.getValues().forEach(value -> {
-		//							personAges.add(value.getName());
-		//						});
-		//					});
-		//					ctx.put("personAges", personAges);
+		
+							JsonArray personGenderTitles = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									personGenderTitles.add(value.getName());
+								});
+							});
+							ctx.put("personGenderTitles", personGenderTitles);
+		
+							JsonArray personAges = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									personAges.add(value.getName());
+								});
+							});
+							ctx.put("personAges", personAges);
 		
 							JsonArray stopsJson = new JsonArray();
 							stopSearch2.getList().stream().forEach(stop -> {
@@ -1362,22 +1362,22 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							});
 						});
 						ctx.put("personRaceTitles", personRaceTitles);
-	//
-	//					JsonArray personGenderTitles = new JsonArray();
-	//					stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-	//						facetField.getValues().forEach(value -> {
-	//							personGenderTitles.add(value.getName());
-	//						});
-	//					});
-	//					ctx.put("personGenderTitles", personGenderTitles);
-	//
-	//					JsonArray personAges = new JsonArray();
-	//					stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-	//						facetField.getValues().forEach(value -> {
-	//							personAges.add(value.getName());
-	//						});
-	//					});
-	//					ctx.put("personAges", personAges);
+	
+						JsonArray personGenderTitles = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								personGenderTitles.add(value.getName());
+							});
+						});
+						ctx.put("personGenderTitles", personGenderTitles);
+	
+						JsonArray personAges = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								personAges.add(value.getName());
+							});
+						});
+						ctx.put("personAges", personAges);
 
 						ctx.put("stopJson", stopJson.toString());
 						ctx.put("fqParams", String.format("%s", StringUtils.join(fqParams, "&")));

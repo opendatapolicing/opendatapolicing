@@ -209,33 +209,50 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				List<Future> futures = new ArrayList<>();
 				futures.add(Future.future(promise1 -> {
 					workerExecutor.executeBlocking(blockingCodeHandler -> {
-						try {
+						Integer acsApiYear = config().getInteger(ConfigKeys.ACS_API_YEAR);
+						webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME&for=state:*", acsApiYear))
+								.expect(ResponsePredicate.SC_OK)
+								.ssl(true)
+								.send()
+								.onSuccess(acsGetStateResponse -> {
+							JsonArray acsGetStateJson = acsGetStateResponse.bodyAsJsonArray();
+							String stateAcsId = acsGetStateJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(1))).findFirst().map(item -> item.getString(1)).orElse(null);
+
 							try {
-								JsonObject params = new JsonObject();
-								JsonObject body = new JsonObject().put("stateName", "North Carolina").put("stateAbbreviation", "NC").put("pk", "NC");
-								params.put("body", body);
-								params.put("path", new JsonObject());
-								params.put("cookie", new JsonObject());
-								params.put("header", new JsonObject());
-								params.put("form", new JsonObject());
-								params.put("query", new JsonObject());
-								JsonObject context = new JsonObject().put("params", params);
-								JsonObject json = new JsonObject().put("context", context);
-								vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
-									LOG.info("{} State imported. ", body.getString("stateName"));
-									blockingCodeHandler.complete();
-								}).onFailure(ex -> {
+								try {
+									JsonObject params = new JsonObject();
+									JsonObject body = new JsonObject()
+											.put(SiteState.VAR_stateName, "North Carolina")
+											.put(SiteState.VAR_stateAbbreviation, "NC")
+											.put(SiteState.VAR_stateAcsId, stateAcsId)
+											.put(SiteState.VAR_pk, "NC");
+									params.put("body", body);
+									params.put("path", new JsonObject());
+									params.put("cookie", new JsonObject());
+									params.put("header", new JsonObject());
+									params.put("form", new JsonObject());
+									params.put("query", new JsonObject());
+									JsonObject context = new JsonObject().put("params", params);
+									JsonObject json = new JsonObject().put("context", context);
+									vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
+										LOG.info("{} State imported. ", body.getString("stateName"));
+										blockingCodeHandler.complete();
+									}).onFailure(ex -> {
+										LOG.error(String.format("listPUTImportSiteState failed. "), ex);
+										blockingCodeHandler.fail(ex);
+									});
+								} catch(Exception ex) {
 									LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 									blockingCodeHandler.fail(ex);
-								});
+								}
 							} catch(Exception ex) {
 								LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 								blockingCodeHandler.fail(ex);
 							}
-						} catch(Exception ex) {
+						}).onFailure(ex -> {
 							LOG.error(String.format("listPUTImportSiteState failed. "), ex);
-							blockingCodeHandler.fail(ex);
-						}
+							promise1.fail(ex);
+						});
 					}, false).onSuccess(a -> {
 						promise1.complete();
 					}).onFailure(ex -> {
@@ -608,22 +625,40 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				for(Count count : groupNameCounts) {
 					String agencyTitle = count.getName();
 
-					JsonObject body = new JsonObject()
-							.put("saves", new JsonArray().add("inheritPk").add("agencyTitle").add("stateKey"))
-							.put("agencyTitle", agencyTitle)
-							.put("pk", state.getStateAbbreviation() + "-" + agencyTitle)
-							.put("stateKey", state.getStateAbbreviation())
-							;
-//					JsonObject agencyJson = new JsonObject().put("saves", new JsonArray().add("inheritPk").add("agencyTitle")).put("agencyTitle", agencyTitle).put("pk", agencyTitle);
-//					JsonObject body = new JsonObject().put("list", new JsonArray().add(agencyJson));
-					JsonObject params = new JsonObject();
-					params.put("body", body);
-					params.put("path", new JsonObject());
-					params.put("cookie", new JsonObject());
-					params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
-					JsonObject context = new JsonObject().put("params", params);
-					JsonObject json = new JsonObject().put("context", context);
-					futures.add(vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", "SiteAgency"))));
+					futures.add(Future.future(promise1 -> {
+						webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME&for=county:*&in=state:%s", state.getStateAcsId()))
+								.expect(ResponsePredicate.SC_OK)
+								.ssl(true)
+								.send()
+								.onSuccess(acsGetStateResponse -> {
+							JsonArray acsGetStateJson = acsGetStateResponse.bodyAsJsonArray();
+							String stateAcsId = acsGetStateJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(1))).findFirst().map(item -> item.getString(1)).orElse(null);
+							JsonObject body = new JsonObject()
+									.put("saves", new JsonArray().add("inheritPk").add("agencyTitle").add("stateKey"))
+									.put("agencyTitle", agencyTitle)
+									.put("pk", state.getStateAbbreviation() + "-" + agencyTitle)
+									.put("stateKey", state.getStateAbbreviation())
+									;
+		//					JsonObject agencyJson = new JsonObject().put("saves", new JsonArray().add("inheritPk").add("agencyTitle")).put("agencyTitle", agencyTitle).put("pk", agencyTitle);
+		//					JsonObject body = new JsonObject().put("list", new JsonArray().add(agencyJson));
+							JsonObject params = new JsonObject();
+							params.put("body", body);
+							params.put("path", new JsonObject());
+							params.put("cookie", new JsonObject());
+							params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+							JsonObject context = new JsonObject().put("params", params);
+							JsonObject json = new JsonObject().put("context", context);
+							vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", "SiteAgency"))).onSuccess(a -> {
+								promise.complete();
+							}).onFailure(ex -> {
+								LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
+								promise1.fail(ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
+							promise1.fail(ex);
+						});
+					}));
 				}
 				CompositeFuture.all(futures).onSuccess(a -> {
 					Integer facetOffsetNext = facetOffset + FACET_LIMIT;

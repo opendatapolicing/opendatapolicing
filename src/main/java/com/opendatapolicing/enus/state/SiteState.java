@@ -83,6 +83,18 @@ public class SiteState extends SiteStateGen<BaseModel> {
 	 * Indexed: true
 	 * Stored: true
 	 * Define: true
+	 * HtmlRow: 3
+	 * HtmlCell: 3
+	 * DisplayName.enUS: ACS ID
+	 */ 
+	protected void _stateAcsId(Wrap<String> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
 	 * HtmlRow: 4
 	 * HtmlCell: 1
 	 * DisplayName.enUS: image left pixels

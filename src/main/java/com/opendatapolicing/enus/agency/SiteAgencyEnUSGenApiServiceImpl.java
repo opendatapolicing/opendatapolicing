@@ -536,6 +536,15 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						num++;
 						bParams.add(o2.sqlAgencyTitle());
 						break;
+					case SiteAgency.VAR_agencyAcsId:
+						o2.setAgencyAcsId(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyAcsId + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyAcsId());
+						break;
 					case SiteAgency.VAR_stateKey:
 						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
 							futures1.add(Future.future(promise2 -> {
@@ -865,6 +874,14 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							bSql.append(SiteAgency.VAR_agencyTitle + "=$" + num);
 							num++;
 							bParams.add(o2.sqlAgencyTitle());
+						break;
+					case "setAgencyAcsId":
+							o2.setAgencyAcsId(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyAcsId + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyAcsId());
 						break;
 					case "setStateKey":
 						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
@@ -1366,6 +1383,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 		}
 	}
 	public static final String VAR_agencyTitle = "agencyTitle";
+	public static final String VAR_agencyAcsId = "agencyAcsId";
 	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateSearch = "stateSearch";
 	public static final String VAR_state_ = "state_";
