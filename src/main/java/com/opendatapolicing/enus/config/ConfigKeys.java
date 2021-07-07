@@ -434,4 +434,9 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String ACS_API_YEAR = "ACS_API_YEAR";
+
+	/**
+	 * 
+	 **/
+	public static final String ACS_API_KEY = "ACS_API_KEY";
 }
