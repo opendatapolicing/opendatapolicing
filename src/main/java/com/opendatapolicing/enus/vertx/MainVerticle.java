@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.vertx;           
+package com.opendatapolicing.enus.vertx;          
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -1262,19 +1262,21 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch1.set("facet.range.end", endDateStr);
 					List<String> fqParams = new ArrayList<String>();
 					ctx.put("siteZone", config().getValue(ConfigKeys.SITE_ZONE));
+					ctx.put("ACS_API_YEAR", config().getValue(ConfigKeys.ACS_API_YEAR));
+					String agencyTitle = ctx.get("agencyTitle");
 
+					if(agencyTitle != null) {
+						try {
+							stopSearch1.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
+							fqParams.add("fq=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
+						} catch (UnsupportedEncodingException ex) {
+							ExceptionUtils.rethrow(ex);
+						}
+					}
 					Optional.ofNullable((String)ctx.get("stateAbbreviation")).ifPresent(stateAbbreviation -> {
 						try {
 							stopSearch1.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
 							fqParams.add("fq=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					Optional.ofNullable((String)ctx.get("agencyTitle")).ifPresent(agencyTitle -> {
-						try {
-							stopSearch1.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
-							fqParams.add("fq=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
 						} catch (UnsupportedEncodingException ex) {
 							ExceptionUtils.rethrow(ex);
 						}
@@ -1313,79 +1315,103 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					});
 					ctx.put("apiUriParams", String.format("%s&rows=0&facet=true", StringUtils.join(fqParams, "&")));
 	
-					stopSearch1.setC(TrafficStop.class);
-					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(c -> {
-						Long numFound = stopSearch1.getQueryResponse().getResults().getNumFound();
+					SearchList<SiteAgency> agencySearch = new SearchList<SiteAgency>();
+					agencySearch.setStore(true);
+					agencySearch.setQuery("*:*");
+					agencySearch.setC(SiteAgency.class);
+					agencySearch.setRows(1);
+					if(agencyTitle == null)
+						agencySearch.addFilterQuery("agencyTitle_indexed_string:------");
+					else
+						agencySearch.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
+					agencySearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
+						SiteAgency agency = agencySearch.first();
+						if(agency != null) {
+							JsonObject agencyJson = JsonObject.mapFrom(agency);
+							Long agencyTotal = agency.getAgencyTotal();
+							agencyJson.put("agencyPercentWhite", agency.getAgencyTotalWhite() / agencyTotal);
+							agencyJson.put("agencyPercentBlack", agency.getAgencyTotalBlack() / agencyTotal);
+							agencyJson.put("agencyPercentIndigenous", agency.getAgencyTotalIndigenous() / agencyTotal);
+							agencyJson.put("agencyPercentAsian", agency.getAgencyTotalAsian() / agencyTotal);
+							agencyJson.put("agencyPercentLatinx", agency.getAgencyTotalLatinx() / agencyTotal);
+							agencyJson.put("agencyPercentOther", agency.getAgencyTotalOther() / agencyTotal);
+							ctx.put("agency", agencyJson);
+						}
 
-						ctx.put("searchTotal", NumberFormat.getNumberInstance(Locale.US).format(numFound));
-
-						JsonObject stopJson = new JsonObject();
-						stopJson.put("foundNum", numFound);
-						JsonObject facetFields = new JsonObject();
-						stopJson.put("facet_fields", facetFields);
-						JsonObject personRaceTitlesFacets = new JsonObject();
-						facetFields.put("personRaceTitles", personRaceTitlesFacets);
-//						JsonObject facetRanges = new JsonObject();
-//						stopJson.put("facet_ranges", facetRanges);
-//						JsonObject stopDateTimeFacetRanges = new JsonObject();
-//						facetRanges.put("stopDateTime", stopDateTimeFacetRanges);
-
-						JsonArray years = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopYear_indexed_int".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-							facetField.getValues().forEach(value -> {
-								years.add(value.getName());
-							});
-						});
-						ctx.put("years", years);
-
-						JsonArray personPurposeTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-							facetField.getValues().forEach(value -> {
-								personPurposeTitles.add(value.getName());
-							});
-						});
-						ctx.put("personPurposeTitles", personPurposeTitles);
-
-						JsonArray personActionTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-							facetField.getValues().forEach(value -> {
-								personActionTitles.add(value.getName());
-							});
-						});
-						ctx.put("personActionTitles", personActionTitles);
+						stopSearch1.setC(TrafficStop.class);
+						stopSearch1.promiseDeepForClass(siteRequest).onSuccess(c -> {
+							Long numFound = stopSearch1.getQueryResponse().getResults().getNumFound();
 	
-						JsonArray personRaceTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-							facetField.getValues().forEach(value -> {
-								personRaceTitles.add(value.getName());
-								personRaceTitlesFacets.put(value.getName(), value.getCount());
-							});
-						});
-						ctx.put("personRaceTitles", personRaceTitles);
+							ctx.put("searchTotal", NumberFormat.getNumberInstance(Locale.US).format(numFound));
 	
-						JsonArray personGenderTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-							facetField.getValues().forEach(value -> {
-								personGenderTitles.add(value.getName());
-							});
-						});
-						ctx.put("personGenderTitles", personGenderTitles);
+							JsonObject stopJson = new JsonObject();
+							stopJson.put("foundNum", numFound);
+							JsonObject facetFields = new JsonObject();
+							stopJson.put("facet_fields", facetFields);
+							JsonObject personRaceTitlesFacets = new JsonObject();
+							facetFields.put("personRaceTitles", personRaceTitlesFacets);
+	//						JsonObject facetRanges = new JsonObject();
+	//						stopJson.put("facet_ranges", facetRanges);
+	//						JsonObject stopDateTimeFacetRanges = new JsonObject();
+	//						facetRanges.put("stopDateTime", stopDateTimeFacetRanges);
 	
-						JsonArray personAges = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-							facetField.getValues().forEach(value -> {
-								personAges.add(value.getName());
+							JsonArray years = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopYear_indexed_int".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									years.add(value.getName());
+								});
 							});
+							ctx.put("years", years);
+	
+							JsonArray personPurposeTitles = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									personPurposeTitles.add(value.getName());
+								});
+							});
+							ctx.put("personPurposeTitles", personPurposeTitles);
+	
+							JsonArray personActionTitles = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									personActionTitles.add(value.getName());
+								});
+							});
+							ctx.put("personActionTitles", personActionTitles);
+		
+							JsonArray personRaceTitles = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									personRaceTitles.add(value.getName());
+									personRaceTitlesFacets.put(value.getName(), value.getCount());
+								});
+							});
+							ctx.put("personRaceTitles", personRaceTitles);
+		
+							JsonArray personGenderTitles = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									personGenderTitles.add(value.getName());
+								});
+							});
+							ctx.put("personGenderTitles", personGenderTitles);
+		
+							JsonArray personAges = new JsonArray();
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								facetField.getValues().forEach(value -> {
+									personAges.add(value.getName());
+								});
+							});
+							ctx.put("personAges", personAges);
+	
+							ctx.put("stopJson", stopJson.toString());
+							ctx.put("fqParams", String.format("%s", StringUtils.join(fqParams, "&")));
+	
+							ctx.next();
+						}).onFailure(ex -> {
+							LOG.error("Stop search page failed to load stop data. ", ex);
+							ctx.fail(ex);
 						});
-						ctx.put("personAges", personAges);
-
-						ctx.put("stopJson", stopJson.toString());
-						ctx.put("fqParams", String.format("%s", StringUtils.join(fqParams, "&")));
-
-						ctx.next();
-					}).onFailure(ex -> {
-						LOG.error("Stop search page failed to load stop data. ", ex);
-						ctx.fail(ex);
 					});
 				} catch(Exception ex) {
 					LOG.error("Stop search page failed to load stop data. ", ex);

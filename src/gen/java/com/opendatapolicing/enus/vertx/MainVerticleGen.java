@@ -71,6 +71,15 @@ CREATE TABLE SiteAgency(
 	, created timestamp with time zone
 	, agencyTitle text
 	, agencyAcsId text
+	, agencyTotal bigint
+	, agencyTotalWhite bigint
+	, agencyTotalBlack bigint
+	, agencyTotalIndigenous bigint
+	, agencyTotalAsian bigint
+	, agencyTotalPacificIslander bigint
+	, agencyTotalLatinx bigint
+	, agencyTotalMultiracial bigint
+	, agencyTotalOther bigint
 	, stateKey bigint references SiteState(pk)
 	);
 CREATE TABLE TrafficStop(

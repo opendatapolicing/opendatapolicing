@@ -211,7 +211,10 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				futures.add(Future.future(promise1 -> {
 					workerExecutor.executeBlocking(blockingCodeHandler -> {
 						Integer acsApiYear = config().getInteger(ConfigKeys.ACS_API_YEAR);
-						webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME&for=state:*", acsApiYear))
+						webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME&for=state:*&key=%s"
+										, acsApiYear
+										, config().getString(ConfigKeys.ACS_API_KEY)
+										))
 								.expect(ResponsePredicate.SC_OK)
 								.ssl(true)
 								.send()
@@ -551,7 +554,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private Future<Void> syncAgencies() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_REFRESH_DATA, "SiteAgency"), true)) {
+			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, "SiteAgency"), true)) {
 				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 				siteRequest.setConfig(config());
 				siteRequest.setWebClient(webClient);
@@ -622,8 +625,11 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 				FacetField groupNameFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
 				List<Count> groupNameCounts = Optional.ofNullable(groupNameFacet.getValues()).orElse(Arrays.asList());
+				Integer acsApiYear = config().getInteger(ConfigKeys.ACS_API_YEAR);
 
-				webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME,GEO_ID,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s&for=county:*&in=state:%s"
+				JsonArray acsArray = new JsonArray();
+				webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME,GEO_ID,%s,%s,%s,%s,%s,%s,%s,%s,%s&for=county:*&in=state:%s&key=%s"
+								, acsApiYear
 								, "B03002_001E" // total
 								, "B03002_003E" // white
 								, "B03002_004E" // black
@@ -634,17 +640,53 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								, "B03002_009E" // multi-racial
 								, "B03002_012E" // latinx
 								, state.getStateAcsId()
+								, config().getString(ConfigKeys.ACS_API_KEY)
 								))
 						.expect(ResponsePredicate.SC_OK)
 						.ssl(true)
 						.send()
 						.onSuccess(acsGetCountyResponse -> {
 					JsonArray acsGetCountyJson = acsGetCountyResponse.bodyAsJsonArray();
-					futures.add(Future.future(promise1 -> {
-		
+					String replaceExpression = " \\w+, " + state.getStateName() + "$";
+					acsGetCountyJson.stream().map(o -> (JsonArray)o).filter(items -> !"NAME".equals(items.getString(0))).forEach(item -> {
+						String name = item.getString(0);
+						name = name.replaceFirst(replaceExpression, "");
+						item.remove(0);
+						item.add(0, name);
+						acsArray.add(item);
+					});
+					webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME,GEO_ID,%s,%s,%s,%s,%s,%s,%s,%s,%s&for=place:*&in=state:%s&key=%s"
+									, acsApiYear
+									, "B03002_001E" // total
+									, "B03002_003E" // white
+									, "B03002_004E" // black
+									, "B03002_005E" // indigenous
+									, "B03002_006E" // asian
+									, "B03002_007E" // pacific islander
+									, "B03002_008E" // other
+									, "B03002_009E" // multi-racial
+									, "B03002_012E" // latinx
+									, state.getStateAcsId()
+									, config().getString(ConfigKeys.ACS_API_KEY)
+									))
+							.expect(ResponsePredicate.SC_OK)
+							.ssl(true)
+							.send()
+							.onSuccess(acsGetPlaceResponse -> {
+						JsonArray acsGetPlaceJson = acsGetPlaceResponse.bodyAsJsonArray();
+						acsGetPlaceJson.stream().map(o -> (JsonArray)o).filter(items -> !"NAME".equals(items.getString(0))).forEach(item -> {
+							String name = item.getString(0);
+							name = name.replaceFirst(replaceExpression, "");
+							item.remove(0);
+							item.add(0, name);
+							acsArray.add(item);
+						});
 						for(Count count : groupNameCounts) {
-							String agencyTitle = count.getName();
-								JsonArray agencyAcsData = acsGetCountyJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(0))).findFirst().orElse(null);
+							futures.add(Future.future(promise1 -> {
+			
+								String agencyTitle = count.getName();
+								String agencyTitleSimplified = StringUtils.replaceEach(agencyTitle, new String[] { " Police Department", " Sheriff's Office" }, new String[] { "", "" });
+								JsonArray agencyAcsData = acsArray.stream().map(o -> (JsonArray)o).filter(items -> agencyTitleSimplified.equals(items.getString(0))).findFirst().orElse(null);
 								JsonObject body = new JsonObject()
 										.put("saves", new JsonArray()
 												.add(SiteAgency.VAR_inheritPk)
@@ -682,20 +724,24 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								JsonObject context = new JsonObject().put("params", params);
 								JsonObject json = new JsonObject().put("context", context);
 								vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", "SiteAgency"))).onSuccess(a -> {
-									promise.complete();
+									promise1.complete();
 								}).onFailure(ex -> {
 									LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
 									promise1.fail(ex);
 								});
+							}));
 						}
-					}));
-					CompositeFuture.all(futures).onSuccess(a -> {
-						Integer facetOffsetNext = facetOffset + FACET_LIMIT;
-						stopSearch1.set("facet.offset", facetOffsetNext);
-						stopSearch1.query().onSuccess(b -> {
-							syncAgenciesFacets(state, stopSearch1, facetOffsetNext).onSuccess(c -> {
-								LOG.info(String.format(syncAgenciesFacetsComplete, "SiteAgency"));
-								promise.complete();
+						CompositeFuture.all(futures).onSuccess(a -> {
+							Integer facetOffsetNext = facetOffset + FACET_LIMIT;
+							stopSearch1.set("facet.offset", facetOffsetNext);
+							stopSearch1.query().onSuccess(b -> {
+								syncAgenciesFacets(state, stopSearch1, facetOffsetNext).onSuccess(c -> {
+									LOG.info(String.format(syncAgenciesFacetsComplete, "SiteAgency"));
+									promise.complete();
+								}).onFailure(ex -> {
+									LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
+									promise.fail(ex);
+								});
 							}).onFailure(ex -> {
 								LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
 								promise.fail(ex);
