@@ -545,6 +545,87 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						num++;
 						bParams.add(o2.sqlAgencyAcsId());
 						break;
+					case SiteAgency.VAR_agencyTotal:
+						o2.setAgencyTotal(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotal + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotal());
+						break;
+					case SiteAgency.VAR_agencyTotalWhite:
+						o2.setAgencyTotalWhite(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalWhite + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalWhite());
+						break;
+					case SiteAgency.VAR_agencyTotalBlack:
+						o2.setAgencyTotalBlack(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalBlack + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalBlack());
+						break;
+					case SiteAgency.VAR_agencyTotalIndigenous:
+						o2.setAgencyTotalIndigenous(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalIndigenous + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalIndigenous());
+						break;
+					case SiteAgency.VAR_agencyTotalAsian:
+						o2.setAgencyTotalAsian(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalAsian + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalAsian());
+						break;
+					case SiteAgency.VAR_agencyTotalPacificIslander:
+						o2.setAgencyTotalPacificIslander(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalPacificIslander + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalPacificIslander());
+						break;
+					case SiteAgency.VAR_agencyTotalLatinx:
+						o2.setAgencyTotalLatinx(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalLatinx + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalLatinx());
+						break;
+					case SiteAgency.VAR_agencyTotalMultiracial:
+						o2.setAgencyTotalMultiracial(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalMultiracial + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalMultiracial());
+						break;
+					case SiteAgency.VAR_agencyTotalOther:
+						o2.setAgencyTotalOther(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_agencyTotalOther + "=$" + num);
+						num++;
+						bParams.add(o2.sqlAgencyTotalOther());
+						break;
 					case SiteAgency.VAR_stateKey:
 						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
 							futures1.add(Future.future(promise2 -> {
@@ -882,6 +963,78 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							bSql.append(SiteAgency.VAR_agencyAcsId + "=$" + num);
 							num++;
 							bParams.add(o2.sqlAgencyAcsId());
+						break;
+					case "setAgencyTotal":
+							o2.setAgencyTotal(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotal + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotal());
+						break;
+					case "setAgencyTotalWhite":
+							o2.setAgencyTotalWhite(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalWhite + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalWhite());
+						break;
+					case "setAgencyTotalBlack":
+							o2.setAgencyTotalBlack(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalBlack + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalBlack());
+						break;
+					case "setAgencyTotalIndigenous":
+							o2.setAgencyTotalIndigenous(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalIndigenous + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalIndigenous());
+						break;
+					case "setAgencyTotalAsian":
+							o2.setAgencyTotalAsian(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalAsian + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalAsian());
+						break;
+					case "setAgencyTotalPacificIslander":
+							o2.setAgencyTotalPacificIslander(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalPacificIslander + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalPacificIslander());
+						break;
+					case "setAgencyTotalLatinx":
+							o2.setAgencyTotalLatinx(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalLatinx + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalLatinx());
+						break;
+					case "setAgencyTotalMultiracial":
+							o2.setAgencyTotalMultiracial(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalMultiracial + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalMultiracial());
+						break;
+					case "setAgencyTotalOther":
+							o2.setAgencyTotalOther(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_agencyTotalOther + "=$" + num);
+							num++;
+							bParams.add(o2.sqlAgencyTotalOther());
 						break;
 					case "setStateKey":
 						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
@@ -1384,6 +1537,15 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 	}
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_agencyAcsId = "agencyAcsId";
+	public static final String VAR_agencyTotal = "agencyTotal";
+	public static final String VAR_agencyTotalWhite = "agencyTotalWhite";
+	public static final String VAR_agencyTotalBlack = "agencyTotalBlack";
+	public static final String VAR_agencyTotalIndigenous = "agencyTotalIndigenous";
+	public static final String VAR_agencyTotalAsian = "agencyTotalAsian";
+	public static final String VAR_agencyTotalPacificIslander = "agencyTotalPacificIslander";
+	public static final String VAR_agencyTotalLatinx = "agencyTotalLatinx";
+	public static final String VAR_agencyTotalMultiracial = "agencyTotalMultiracial";
+	public static final String VAR_agencyTotalOther = "agencyTotalOther";
 	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateSearch = "stateSearch";
 	public static final String VAR_state_ = "state_";

@@ -200,6 +200,717 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		return agencyAcsId == null ? "" : agencyAcsId;
 	}
 
+	/////////////////
+	// agencyTotal //
+	/////////////////
+
+	/**	 The entity agencyTotal
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotal;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalWrap = new Wrap<Long>().var("agencyTotal").o(agencyTotal);
+
+	/**	<br/> The entity agencyTotal
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotal">Find the entity agencyTotal in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotal(Wrap<Long> c);
+
+	public Long getAgencyTotal() {
+		return agencyTotal;
+	}
+
+	public void setAgencyTotal(Long agencyTotal) {
+		this.agencyTotal = agencyTotal;
+		this.agencyTotalWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotal(String o) {
+		this.agencyTotal = SiteAgency.staticSetAgencyTotal(siteRequest_, o);
+		this.agencyTotalWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotal(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalInit() {
+		if(!agencyTotalWrap.alreadyInitialized) {
+			_agencyTotal(agencyTotalWrap);
+			if(agencyTotal == null)
+				setAgencyTotal(agencyTotalWrap.o);
+			agencyTotalWrap.o(null);
+		}
+		agencyTotalWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotal(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotal(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotal(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotal(siteRequest_, SiteAgency.staticSolrAgencyTotal(siteRequest_, SiteAgency.staticSetAgencyTotal(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotal() {
+		return SiteAgency.staticSolrAgencyTotal(siteRequest_, agencyTotal);
+	}
+
+	public String strAgencyTotal() {
+		return agencyTotal == null ? "" : agencyTotal.toString();
+	}
+
+	public Long sqlAgencyTotal() {
+		return agencyTotal;
+	}
+
+	public String jsonAgencyTotal() {
+		return agencyTotal == null ? "" : agencyTotal.toString();
+	}
+
+	//////////////////////
+	// agencyTotalWhite //
+	//////////////////////
+
+	/**	 The entity agencyTotalWhite
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalWhite;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalWhiteWrap = new Wrap<Long>().var("agencyTotalWhite").o(agencyTotalWhite);
+
+	/**	<br/> The entity agencyTotalWhite
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalWhite">Find the entity agencyTotalWhite in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalWhite(Wrap<Long> c);
+
+	public Long getAgencyTotalWhite() {
+		return agencyTotalWhite;
+	}
+
+	public void setAgencyTotalWhite(Long agencyTotalWhite) {
+		this.agencyTotalWhite = agencyTotalWhite;
+		this.agencyTotalWhiteWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalWhite(String o) {
+		this.agencyTotalWhite = SiteAgency.staticSetAgencyTotalWhite(siteRequest_, o);
+		this.agencyTotalWhiteWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalWhite(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalWhiteInit() {
+		if(!agencyTotalWhiteWrap.alreadyInitialized) {
+			_agencyTotalWhite(agencyTotalWhiteWrap);
+			if(agencyTotalWhite == null)
+				setAgencyTotalWhite(agencyTotalWhiteWrap.o);
+			agencyTotalWhiteWrap.o(null);
+		}
+		agencyTotalWhiteWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalWhite(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalWhite(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalWhite(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalWhite(siteRequest_, SiteAgency.staticSolrAgencyTotalWhite(siteRequest_, SiteAgency.staticSetAgencyTotalWhite(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalWhite() {
+		return SiteAgency.staticSolrAgencyTotalWhite(siteRequest_, agencyTotalWhite);
+	}
+
+	public String strAgencyTotalWhite() {
+		return agencyTotalWhite == null ? "" : agencyTotalWhite.toString();
+	}
+
+	public Long sqlAgencyTotalWhite() {
+		return agencyTotalWhite;
+	}
+
+	public String jsonAgencyTotalWhite() {
+		return agencyTotalWhite == null ? "" : agencyTotalWhite.toString();
+	}
+
+	//////////////////////
+	// agencyTotalBlack //
+	//////////////////////
+
+	/**	 The entity agencyTotalBlack
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalBlack;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalBlackWrap = new Wrap<Long>().var("agencyTotalBlack").o(agencyTotalBlack);
+
+	/**	<br/> The entity agencyTotalBlack
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalBlack">Find the entity agencyTotalBlack in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalBlack(Wrap<Long> c);
+
+	public Long getAgencyTotalBlack() {
+		return agencyTotalBlack;
+	}
+
+	public void setAgencyTotalBlack(Long agencyTotalBlack) {
+		this.agencyTotalBlack = agencyTotalBlack;
+		this.agencyTotalBlackWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalBlack(String o) {
+		this.agencyTotalBlack = SiteAgency.staticSetAgencyTotalBlack(siteRequest_, o);
+		this.agencyTotalBlackWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalBlack(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalBlackInit() {
+		if(!agencyTotalBlackWrap.alreadyInitialized) {
+			_agencyTotalBlack(agencyTotalBlackWrap);
+			if(agencyTotalBlack == null)
+				setAgencyTotalBlack(agencyTotalBlackWrap.o);
+			agencyTotalBlackWrap.o(null);
+		}
+		agencyTotalBlackWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalBlack(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalBlack(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalBlack(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalBlack(siteRequest_, SiteAgency.staticSolrAgencyTotalBlack(siteRequest_, SiteAgency.staticSetAgencyTotalBlack(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalBlack() {
+		return SiteAgency.staticSolrAgencyTotalBlack(siteRequest_, agencyTotalBlack);
+	}
+
+	public String strAgencyTotalBlack() {
+		return agencyTotalBlack == null ? "" : agencyTotalBlack.toString();
+	}
+
+	public Long sqlAgencyTotalBlack() {
+		return agencyTotalBlack;
+	}
+
+	public String jsonAgencyTotalBlack() {
+		return agencyTotalBlack == null ? "" : agencyTotalBlack.toString();
+	}
+
+	///////////////////////////
+	// agencyTotalIndigenous //
+	///////////////////////////
+
+	/**	 The entity agencyTotalIndigenous
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalIndigenous;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalIndigenousWrap = new Wrap<Long>().var("agencyTotalIndigenous").o(agencyTotalIndigenous);
+
+	/**	<br/> The entity agencyTotalIndigenous
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalIndigenous">Find the entity agencyTotalIndigenous in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalIndigenous(Wrap<Long> c);
+
+	public Long getAgencyTotalIndigenous() {
+		return agencyTotalIndigenous;
+	}
+
+	public void setAgencyTotalIndigenous(Long agencyTotalIndigenous) {
+		this.agencyTotalIndigenous = agencyTotalIndigenous;
+		this.agencyTotalIndigenousWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalIndigenous(String o) {
+		this.agencyTotalIndigenous = SiteAgency.staticSetAgencyTotalIndigenous(siteRequest_, o);
+		this.agencyTotalIndigenousWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalIndigenous(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalIndigenousInit() {
+		if(!agencyTotalIndigenousWrap.alreadyInitialized) {
+			_agencyTotalIndigenous(agencyTotalIndigenousWrap);
+			if(agencyTotalIndigenous == null)
+				setAgencyTotalIndigenous(agencyTotalIndigenousWrap.o);
+			agencyTotalIndigenousWrap.o(null);
+		}
+		agencyTotalIndigenousWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalIndigenous(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalIndigenous(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalIndigenous(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalIndigenous(siteRequest_, SiteAgency.staticSolrAgencyTotalIndigenous(siteRequest_, SiteAgency.staticSetAgencyTotalIndigenous(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalIndigenous() {
+		return SiteAgency.staticSolrAgencyTotalIndigenous(siteRequest_, agencyTotalIndigenous);
+	}
+
+	public String strAgencyTotalIndigenous() {
+		return agencyTotalIndigenous == null ? "" : agencyTotalIndigenous.toString();
+	}
+
+	public Long sqlAgencyTotalIndigenous() {
+		return agencyTotalIndigenous;
+	}
+
+	public String jsonAgencyTotalIndigenous() {
+		return agencyTotalIndigenous == null ? "" : agencyTotalIndigenous.toString();
+	}
+
+	//////////////////////
+	// agencyTotalAsian //
+	//////////////////////
+
+	/**	 The entity agencyTotalAsian
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalAsian;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalAsianWrap = new Wrap<Long>().var("agencyTotalAsian").o(agencyTotalAsian);
+
+	/**	<br/> The entity agencyTotalAsian
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalAsian">Find the entity agencyTotalAsian in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalAsian(Wrap<Long> c);
+
+	public Long getAgencyTotalAsian() {
+		return agencyTotalAsian;
+	}
+
+	public void setAgencyTotalAsian(Long agencyTotalAsian) {
+		this.agencyTotalAsian = agencyTotalAsian;
+		this.agencyTotalAsianWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalAsian(String o) {
+		this.agencyTotalAsian = SiteAgency.staticSetAgencyTotalAsian(siteRequest_, o);
+		this.agencyTotalAsianWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalAsian(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalAsianInit() {
+		if(!agencyTotalAsianWrap.alreadyInitialized) {
+			_agencyTotalAsian(agencyTotalAsianWrap);
+			if(agencyTotalAsian == null)
+				setAgencyTotalAsian(agencyTotalAsianWrap.o);
+			agencyTotalAsianWrap.o(null);
+		}
+		agencyTotalAsianWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalAsian(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalAsian(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalAsian(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalAsian(siteRequest_, SiteAgency.staticSolrAgencyTotalAsian(siteRequest_, SiteAgency.staticSetAgencyTotalAsian(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalAsian() {
+		return SiteAgency.staticSolrAgencyTotalAsian(siteRequest_, agencyTotalAsian);
+	}
+
+	public String strAgencyTotalAsian() {
+		return agencyTotalAsian == null ? "" : agencyTotalAsian.toString();
+	}
+
+	public Long sqlAgencyTotalAsian() {
+		return agencyTotalAsian;
+	}
+
+	public String jsonAgencyTotalAsian() {
+		return agencyTotalAsian == null ? "" : agencyTotalAsian.toString();
+	}
+
+	////////////////////////////////
+	// agencyTotalPacificIslander //
+	////////////////////////////////
+
+	/**	 The entity agencyTotalPacificIslander
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalPacificIslander;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalPacificIslanderWrap = new Wrap<Long>().var("agencyTotalPacificIslander").o(agencyTotalPacificIslander);
+
+	/**	<br/> The entity agencyTotalPacificIslander
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalPacificIslander">Find the entity agencyTotalPacificIslander in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalPacificIslander(Wrap<Long> c);
+
+	public Long getAgencyTotalPacificIslander() {
+		return agencyTotalPacificIslander;
+	}
+
+	public void setAgencyTotalPacificIslander(Long agencyTotalPacificIslander) {
+		this.agencyTotalPacificIslander = agencyTotalPacificIslander;
+		this.agencyTotalPacificIslanderWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalPacificIslander(String o) {
+		this.agencyTotalPacificIslander = SiteAgency.staticSetAgencyTotalPacificIslander(siteRequest_, o);
+		this.agencyTotalPacificIslanderWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalPacificIslander(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalPacificIslanderInit() {
+		if(!agencyTotalPacificIslanderWrap.alreadyInitialized) {
+			_agencyTotalPacificIslander(agencyTotalPacificIslanderWrap);
+			if(agencyTotalPacificIslander == null)
+				setAgencyTotalPacificIslander(agencyTotalPacificIslanderWrap.o);
+			agencyTotalPacificIslanderWrap.o(null);
+		}
+		agencyTotalPacificIslanderWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalPacificIslander(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalPacificIslander(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalPacificIslander(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalPacificIslander(siteRequest_, SiteAgency.staticSolrAgencyTotalPacificIslander(siteRequest_, SiteAgency.staticSetAgencyTotalPacificIslander(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalPacificIslander() {
+		return SiteAgency.staticSolrAgencyTotalPacificIslander(siteRequest_, agencyTotalPacificIslander);
+	}
+
+	public String strAgencyTotalPacificIslander() {
+		return agencyTotalPacificIslander == null ? "" : agencyTotalPacificIslander.toString();
+	}
+
+	public Long sqlAgencyTotalPacificIslander() {
+		return agencyTotalPacificIslander;
+	}
+
+	public String jsonAgencyTotalPacificIslander() {
+		return agencyTotalPacificIslander == null ? "" : agencyTotalPacificIslander.toString();
+	}
+
+	///////////////////////
+	// agencyTotalLatinx //
+	///////////////////////
+
+	/**	 The entity agencyTotalLatinx
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalLatinx;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalLatinxWrap = new Wrap<Long>().var("agencyTotalLatinx").o(agencyTotalLatinx);
+
+	/**	<br/> The entity agencyTotalLatinx
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalLatinx">Find the entity agencyTotalLatinx in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalLatinx(Wrap<Long> c);
+
+	public Long getAgencyTotalLatinx() {
+		return agencyTotalLatinx;
+	}
+
+	public void setAgencyTotalLatinx(Long agencyTotalLatinx) {
+		this.agencyTotalLatinx = agencyTotalLatinx;
+		this.agencyTotalLatinxWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalLatinx(String o) {
+		this.agencyTotalLatinx = SiteAgency.staticSetAgencyTotalLatinx(siteRequest_, o);
+		this.agencyTotalLatinxWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalLatinx(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalLatinxInit() {
+		if(!agencyTotalLatinxWrap.alreadyInitialized) {
+			_agencyTotalLatinx(agencyTotalLatinxWrap);
+			if(agencyTotalLatinx == null)
+				setAgencyTotalLatinx(agencyTotalLatinxWrap.o);
+			agencyTotalLatinxWrap.o(null);
+		}
+		agencyTotalLatinxWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalLatinx(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalLatinx(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalLatinx(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalLatinx(siteRequest_, SiteAgency.staticSolrAgencyTotalLatinx(siteRequest_, SiteAgency.staticSetAgencyTotalLatinx(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalLatinx() {
+		return SiteAgency.staticSolrAgencyTotalLatinx(siteRequest_, agencyTotalLatinx);
+	}
+
+	public String strAgencyTotalLatinx() {
+		return agencyTotalLatinx == null ? "" : agencyTotalLatinx.toString();
+	}
+
+	public Long sqlAgencyTotalLatinx() {
+		return agencyTotalLatinx;
+	}
+
+	public String jsonAgencyTotalLatinx() {
+		return agencyTotalLatinx == null ? "" : agencyTotalLatinx.toString();
+	}
+
+	////////////////////////////
+	// agencyTotalMultiracial //
+	////////////////////////////
+
+	/**	 The entity agencyTotalMultiracial
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalMultiracial;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalMultiracialWrap = new Wrap<Long>().var("agencyTotalMultiracial").o(agencyTotalMultiracial);
+
+	/**	<br/> The entity agencyTotalMultiracial
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalMultiracial">Find the entity agencyTotalMultiracial in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalMultiracial(Wrap<Long> c);
+
+	public Long getAgencyTotalMultiracial() {
+		return agencyTotalMultiracial;
+	}
+
+	public void setAgencyTotalMultiracial(Long agencyTotalMultiracial) {
+		this.agencyTotalMultiracial = agencyTotalMultiracial;
+		this.agencyTotalMultiracialWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalMultiracial(String o) {
+		this.agencyTotalMultiracial = SiteAgency.staticSetAgencyTotalMultiracial(siteRequest_, o);
+		this.agencyTotalMultiracialWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalMultiracial(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalMultiracialInit() {
+		if(!agencyTotalMultiracialWrap.alreadyInitialized) {
+			_agencyTotalMultiracial(agencyTotalMultiracialWrap);
+			if(agencyTotalMultiracial == null)
+				setAgencyTotalMultiracial(agencyTotalMultiracialWrap.o);
+			agencyTotalMultiracialWrap.o(null);
+		}
+		agencyTotalMultiracialWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalMultiracial(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalMultiracial(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalMultiracial(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalMultiracial(siteRequest_, SiteAgency.staticSolrAgencyTotalMultiracial(siteRequest_, SiteAgency.staticSetAgencyTotalMultiracial(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalMultiracial() {
+		return SiteAgency.staticSolrAgencyTotalMultiracial(siteRequest_, agencyTotalMultiracial);
+	}
+
+	public String strAgencyTotalMultiracial() {
+		return agencyTotalMultiracial == null ? "" : agencyTotalMultiracial.toString();
+	}
+
+	public Long sqlAgencyTotalMultiracial() {
+		return agencyTotalMultiracial;
+	}
+
+	public String jsonAgencyTotalMultiracial() {
+		return agencyTotalMultiracial == null ? "" : agencyTotalMultiracial.toString();
+	}
+
+	//////////////////////
+	// agencyTotalOther //
+	//////////////////////
+
+	/**	 The entity agencyTotalOther
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonSerialize(using = ToStringSerializer.class)
+	@JsonInclude(Include.NON_NULL)
+	protected Long agencyTotalOther;
+	@JsonIgnore
+	public Wrap<Long> agencyTotalOtherWrap = new Wrap<Long>().var("agencyTotalOther").o(agencyTotalOther);
+
+	/**	<br/> The entity agencyTotalOther
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.agency.SiteAgency&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyTotalOther">Find the entity agencyTotalOther in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _agencyTotalOther(Wrap<Long> c);
+
+	public Long getAgencyTotalOther() {
+		return agencyTotalOther;
+	}
+
+	public void setAgencyTotalOther(Long agencyTotalOther) {
+		this.agencyTotalOther = agencyTotalOther;
+		this.agencyTotalOtherWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setAgencyTotalOther(String o) {
+		this.agencyTotalOther = SiteAgency.staticSetAgencyTotalOther(siteRequest_, o);
+		this.agencyTotalOtherWrap.alreadyInitialized = true;
+	}
+	public static Long staticSetAgencyTotalOther(SiteRequestEnUS siteRequest_, String o) {
+		if(NumberUtils.isParsable(o))
+			return Long.parseLong(o);
+		return null;
+	}
+	protected SiteAgency agencyTotalOtherInit() {
+		if(!agencyTotalOtherWrap.alreadyInitialized) {
+			_agencyTotalOther(agencyTotalOtherWrap);
+			if(agencyTotalOther == null)
+				setAgencyTotalOther(agencyTotalOtherWrap.o);
+			agencyTotalOtherWrap.o(null);
+		}
+		agencyTotalOtherWrap.alreadyInitialized(true);
+		return (SiteAgency)this;
+	}
+
+	public static Long staticSolrAgencyTotalOther(SiteRequestEnUS siteRequest_, Long o) {
+		return o;
+	}
+
+	public static String staticSolrStrAgencyTotalOther(SiteRequestEnUS siteRequest_, Long o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqAgencyTotalOther(SiteRequestEnUS siteRequest_, String o) {
+		return SiteAgency.staticSolrStrAgencyTotalOther(siteRequest_, SiteAgency.staticSolrAgencyTotalOther(siteRequest_, SiteAgency.staticSetAgencyTotalOther(siteRequest_, o)));
+	}
+
+	public Long solrAgencyTotalOther() {
+		return SiteAgency.staticSolrAgencyTotalOther(siteRequest_, agencyTotalOther);
+	}
+
+	public String strAgencyTotalOther() {
+		return agencyTotalOther == null ? "" : agencyTotalOther.toString();
+	}
+
+	public Long sqlAgencyTotalOther() {
+		return agencyTotalOther;
+	}
+
+	public String jsonAgencyTotalOther() {
+		return agencyTotalOther == null ? "" : agencyTotalOther.toString();
+	}
+
 	//////////////
 	// stateKey //
 	//////////////
@@ -699,6 +1410,15 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			try {
 				agencyTitleInit();
 				agencyAcsIdInit();
+				agencyTotalInit();
+				agencyTotalWhiteInit();
+				agencyTotalBlackInit();
+				agencyTotalIndigenousInit();
+				agencyTotalAsianInit();
+				agencyTotalPacificIslanderInit();
+				agencyTotalLatinxInit();
+				agencyTotalMultiracialInit();
+				agencyTotalOtherInit();
 				stateKeyInit();
 				promise2.complete();
 			} catch(Exception ex) {
@@ -780,6 +1500,24 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 				return oSiteAgency.agencyTitle;
 			case "agencyAcsId":
 				return oSiteAgency.agencyAcsId;
+			case "agencyTotal":
+				return oSiteAgency.agencyTotal;
+			case "agencyTotalWhite":
+				return oSiteAgency.agencyTotalWhite;
+			case "agencyTotalBlack":
+				return oSiteAgency.agencyTotalBlack;
+			case "agencyTotalIndigenous":
+				return oSiteAgency.agencyTotalIndigenous;
+			case "agencyTotalAsian":
+				return oSiteAgency.agencyTotalAsian;
+			case "agencyTotalPacificIslander":
+				return oSiteAgency.agencyTotalPacificIslander;
+			case "agencyTotalLatinx":
+				return oSiteAgency.agencyTotalLatinx;
+			case "agencyTotalMultiracial":
+				return oSiteAgency.agencyTotalMultiracial;
+			case "agencyTotalOther":
+				return oSiteAgency.agencyTotalOther;
 			case "stateKey":
 				return oSiteAgency.stateKey;
 			case "stateSearch":
@@ -843,6 +1581,24 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			return SiteAgency.staticSetAgencyTitle(siteRequest_, o);
 		case "agencyAcsId":
 			return SiteAgency.staticSetAgencyAcsId(siteRequest_, o);
+		case "agencyTotal":
+			return SiteAgency.staticSetAgencyTotal(siteRequest_, o);
+		case "agencyTotalWhite":
+			return SiteAgency.staticSetAgencyTotalWhite(siteRequest_, o);
+		case "agencyTotalBlack":
+			return SiteAgency.staticSetAgencyTotalBlack(siteRequest_, o);
+		case "agencyTotalIndigenous":
+			return SiteAgency.staticSetAgencyTotalIndigenous(siteRequest_, o);
+		case "agencyTotalAsian":
+			return SiteAgency.staticSetAgencyTotalAsian(siteRequest_, o);
+		case "agencyTotalPacificIslander":
+			return SiteAgency.staticSetAgencyTotalPacificIslander(siteRequest_, o);
+		case "agencyTotalLatinx":
+			return SiteAgency.staticSetAgencyTotalLatinx(siteRequest_, o);
+		case "agencyTotalMultiracial":
+			return SiteAgency.staticSetAgencyTotalMultiracial(siteRequest_, o);
+		case "agencyTotalOther":
+			return SiteAgency.staticSetAgencyTotalOther(siteRequest_, o);
 		case "stateKey":
 			return SiteAgency.staticSetStateKey(siteRequest_, o);
 		case "stateId":
@@ -871,6 +1627,24 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			return SiteAgency.staticSolrAgencyTitle(siteRequest_, (String)o);
 		case "agencyAcsId":
 			return SiteAgency.staticSolrAgencyAcsId(siteRequest_, (String)o);
+		case "agencyTotal":
+			return SiteAgency.staticSolrAgencyTotal(siteRequest_, (Long)o);
+		case "agencyTotalWhite":
+			return SiteAgency.staticSolrAgencyTotalWhite(siteRequest_, (Long)o);
+		case "agencyTotalBlack":
+			return SiteAgency.staticSolrAgencyTotalBlack(siteRequest_, (Long)o);
+		case "agencyTotalIndigenous":
+			return SiteAgency.staticSolrAgencyTotalIndigenous(siteRequest_, (Long)o);
+		case "agencyTotalAsian":
+			return SiteAgency.staticSolrAgencyTotalAsian(siteRequest_, (Long)o);
+		case "agencyTotalPacificIslander":
+			return SiteAgency.staticSolrAgencyTotalPacificIslander(siteRequest_, (Long)o);
+		case "agencyTotalLatinx":
+			return SiteAgency.staticSolrAgencyTotalLatinx(siteRequest_, (Long)o);
+		case "agencyTotalMultiracial":
+			return SiteAgency.staticSolrAgencyTotalMultiracial(siteRequest_, (Long)o);
+		case "agencyTotalOther":
+			return SiteAgency.staticSolrAgencyTotalOther(siteRequest_, (Long)o);
 		case "stateKey":
 			return SiteAgency.staticSolrStateKey(siteRequest_, (Long)o);
 		case "stateId":
@@ -899,6 +1673,24 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			return SiteAgency.staticSolrStrAgencyTitle(siteRequest_, (String)o);
 		case "agencyAcsId":
 			return SiteAgency.staticSolrStrAgencyAcsId(siteRequest_, (String)o);
+		case "agencyTotal":
+			return SiteAgency.staticSolrStrAgencyTotal(siteRequest_, (Long)o);
+		case "agencyTotalWhite":
+			return SiteAgency.staticSolrStrAgencyTotalWhite(siteRequest_, (Long)o);
+		case "agencyTotalBlack":
+			return SiteAgency.staticSolrStrAgencyTotalBlack(siteRequest_, (Long)o);
+		case "agencyTotalIndigenous":
+			return SiteAgency.staticSolrStrAgencyTotalIndigenous(siteRequest_, (Long)o);
+		case "agencyTotalAsian":
+			return SiteAgency.staticSolrStrAgencyTotalAsian(siteRequest_, (Long)o);
+		case "agencyTotalPacificIslander":
+			return SiteAgency.staticSolrStrAgencyTotalPacificIslander(siteRequest_, (Long)o);
+		case "agencyTotalLatinx":
+			return SiteAgency.staticSolrStrAgencyTotalLatinx(siteRequest_, (Long)o);
+		case "agencyTotalMultiracial":
+			return SiteAgency.staticSolrStrAgencyTotalMultiracial(siteRequest_, (Long)o);
+		case "agencyTotalOther":
+			return SiteAgency.staticSolrStrAgencyTotalOther(siteRequest_, (Long)o);
 		case "stateKey":
 			return SiteAgency.staticSolrStrStateKey(siteRequest_, (Long)o);
 		case "stateId":
@@ -927,6 +1719,24 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			return SiteAgency.staticSolrFqAgencyTitle(siteRequest_, o);
 		case "agencyAcsId":
 			return SiteAgency.staticSolrFqAgencyAcsId(siteRequest_, o);
+		case "agencyTotal":
+			return SiteAgency.staticSolrFqAgencyTotal(siteRequest_, o);
+		case "agencyTotalWhite":
+			return SiteAgency.staticSolrFqAgencyTotalWhite(siteRequest_, o);
+		case "agencyTotalBlack":
+			return SiteAgency.staticSolrFqAgencyTotalBlack(siteRequest_, o);
+		case "agencyTotalIndigenous":
+			return SiteAgency.staticSolrFqAgencyTotalIndigenous(siteRequest_, o);
+		case "agencyTotalAsian":
+			return SiteAgency.staticSolrFqAgencyTotalAsian(siteRequest_, o);
+		case "agencyTotalPacificIslander":
+			return SiteAgency.staticSolrFqAgencyTotalPacificIslander(siteRequest_, o);
+		case "agencyTotalLatinx":
+			return SiteAgency.staticSolrFqAgencyTotalLatinx(siteRequest_, o);
+		case "agencyTotalMultiracial":
+			return SiteAgency.staticSolrFqAgencyTotalMultiracial(siteRequest_, o);
+		case "agencyTotalOther":
+			return SiteAgency.staticSolrFqAgencyTotalOther(siteRequest_, o);
 		case "stateKey":
 			return SiteAgency.staticSolrFqStateKey(siteRequest_, o);
 		case "stateId":
@@ -973,6 +1783,51 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 					setAgencyAcsId(val);
 				saves.add("agencyAcsId");
 				return val;
+			case "agencytotal":
+				if(val != null)
+					setAgencyTotal(val);
+				saves.add("agencyTotal");
+				return val;
+			case "agencytotalwhite":
+				if(val != null)
+					setAgencyTotalWhite(val);
+				saves.add("agencyTotalWhite");
+				return val;
+			case "agencytotalblack":
+				if(val != null)
+					setAgencyTotalBlack(val);
+				saves.add("agencyTotalBlack");
+				return val;
+			case "agencytotalindigenous":
+				if(val != null)
+					setAgencyTotalIndigenous(val);
+				saves.add("agencyTotalIndigenous");
+				return val;
+			case "agencytotalasian":
+				if(val != null)
+					setAgencyTotalAsian(val);
+				saves.add("agencyTotalAsian");
+				return val;
+			case "agencytotalpacificislander":
+				if(val != null)
+					setAgencyTotalPacificIslander(val);
+				saves.add("agencyTotalPacificIslander");
+				return val;
+			case "agencytotallatinx":
+				if(val != null)
+					setAgencyTotalLatinx(val);
+				saves.add("agencyTotalLatinx");
+				return val;
+			case "agencytotalmultiracial":
+				if(val != null)
+					setAgencyTotalMultiracial(val);
+				saves.add("agencyTotalMultiracial");
+				return val;
+			case "agencytotalother":
+				if(val != null)
+					setAgencyTotalOther(val);
+				saves.add("agencyTotalOther");
+				return val;
 			case "statekey":
 				if(val != null)
 					setStateKey(val);
@@ -1010,6 +1865,51 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 					setAgencyAcsId((String)val);
 				saves.add("agencyAcsId");
 				return val;
+			case "agencytotal":
+				if(val instanceof Long)
+					setAgencyTotal((Long)val);
+				saves.add("agencyTotal");
+				return val;
+			case "agencytotalwhite":
+				if(val instanceof Long)
+					setAgencyTotalWhite((Long)val);
+				saves.add("agencyTotalWhite");
+				return val;
+			case "agencytotalblack":
+				if(val instanceof Long)
+					setAgencyTotalBlack((Long)val);
+				saves.add("agencyTotalBlack");
+				return val;
+			case "agencytotalindigenous":
+				if(val instanceof Long)
+					setAgencyTotalIndigenous((Long)val);
+				saves.add("agencyTotalIndigenous");
+				return val;
+			case "agencytotalasian":
+				if(val instanceof Long)
+					setAgencyTotalAsian((Long)val);
+				saves.add("agencyTotalAsian");
+				return val;
+			case "agencytotalpacificislander":
+				if(val instanceof Long)
+					setAgencyTotalPacificIslander((Long)val);
+				saves.add("agencyTotalPacificIslander");
+				return val;
+			case "agencytotallatinx":
+				if(val instanceof Long)
+					setAgencyTotalLatinx((Long)val);
+				saves.add("agencyTotalLatinx");
+				return val;
+			case "agencytotalmultiracial":
+				if(val instanceof Long)
+					setAgencyTotalMultiracial((Long)val);
+				saves.add("agencyTotalMultiracial");
+				return val;
+			case "agencytotalother":
+				if(val instanceof Long)
+					setAgencyTotalOther((Long)val);
+				saves.add("agencyTotalOther");
+				return val;
 			case "statekey":
 				if(val instanceof Long)
 					setStateKey((Long)val);
@@ -1042,6 +1942,60 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 				String agencyAcsId = (String)solrDocument.get("agencyAcsId_stored_string");
 				if(agencyAcsId != null)
 					oSiteAgency.setAgencyAcsId(agencyAcsId);
+			}
+
+			if(saves.contains("agencyTotal")) {
+				Long agencyTotal = (Long)solrDocument.get("agencyTotal_stored_long");
+				if(agencyTotal != null)
+					oSiteAgency.setAgencyTotal(agencyTotal);
+			}
+
+			if(saves.contains("agencyTotalWhite")) {
+				Long agencyTotalWhite = (Long)solrDocument.get("agencyTotalWhite_stored_long");
+				if(agencyTotalWhite != null)
+					oSiteAgency.setAgencyTotalWhite(agencyTotalWhite);
+			}
+
+			if(saves.contains("agencyTotalBlack")) {
+				Long agencyTotalBlack = (Long)solrDocument.get("agencyTotalBlack_stored_long");
+				if(agencyTotalBlack != null)
+					oSiteAgency.setAgencyTotalBlack(agencyTotalBlack);
+			}
+
+			if(saves.contains("agencyTotalIndigenous")) {
+				Long agencyTotalIndigenous = (Long)solrDocument.get("agencyTotalIndigenous_stored_long");
+				if(agencyTotalIndigenous != null)
+					oSiteAgency.setAgencyTotalIndigenous(agencyTotalIndigenous);
+			}
+
+			if(saves.contains("agencyTotalAsian")) {
+				Long agencyTotalAsian = (Long)solrDocument.get("agencyTotalAsian_stored_long");
+				if(agencyTotalAsian != null)
+					oSiteAgency.setAgencyTotalAsian(agencyTotalAsian);
+			}
+
+			if(saves.contains("agencyTotalPacificIslander")) {
+				Long agencyTotalPacificIslander = (Long)solrDocument.get("agencyTotalPacificIslander_stored_long");
+				if(agencyTotalPacificIslander != null)
+					oSiteAgency.setAgencyTotalPacificIslander(agencyTotalPacificIslander);
+			}
+
+			if(saves.contains("agencyTotalLatinx")) {
+				Long agencyTotalLatinx = (Long)solrDocument.get("agencyTotalLatinx_stored_long");
+				if(agencyTotalLatinx != null)
+					oSiteAgency.setAgencyTotalLatinx(agencyTotalLatinx);
+			}
+
+			if(saves.contains("agencyTotalMultiracial")) {
+				Long agencyTotalMultiracial = (Long)solrDocument.get("agencyTotalMultiracial_stored_long");
+				if(agencyTotalMultiracial != null)
+					oSiteAgency.setAgencyTotalMultiracial(agencyTotalMultiracial);
+			}
+
+			if(saves.contains("agencyTotalOther")) {
+				Long agencyTotalOther = (Long)solrDocument.get("agencyTotalOther_stored_long");
+				if(agencyTotalOther != null)
+					oSiteAgency.setAgencyTotalOther(agencyTotalOther);
 			}
 
 			Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
@@ -1084,6 +2038,42 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 			document.addField("agencyAcsId_indexed_string", agencyAcsId);
 			document.addField("agencyAcsId_stored_string", agencyAcsId);
 		}
+		if(agencyTotal != null) {
+			document.addField("agencyTotal_indexed_long", agencyTotal);
+			document.addField("agencyTotal_stored_long", agencyTotal);
+		}
+		if(agencyTotalWhite != null) {
+			document.addField("agencyTotalWhite_indexed_long", agencyTotalWhite);
+			document.addField("agencyTotalWhite_stored_long", agencyTotalWhite);
+		}
+		if(agencyTotalBlack != null) {
+			document.addField("agencyTotalBlack_indexed_long", agencyTotalBlack);
+			document.addField("agencyTotalBlack_stored_long", agencyTotalBlack);
+		}
+		if(agencyTotalIndigenous != null) {
+			document.addField("agencyTotalIndigenous_indexed_long", agencyTotalIndigenous);
+			document.addField("agencyTotalIndigenous_stored_long", agencyTotalIndigenous);
+		}
+		if(agencyTotalAsian != null) {
+			document.addField("agencyTotalAsian_indexed_long", agencyTotalAsian);
+			document.addField("agencyTotalAsian_stored_long", agencyTotalAsian);
+		}
+		if(agencyTotalPacificIslander != null) {
+			document.addField("agencyTotalPacificIslander_indexed_long", agencyTotalPacificIslander);
+			document.addField("agencyTotalPacificIslander_stored_long", agencyTotalPacificIslander);
+		}
+		if(agencyTotalLatinx != null) {
+			document.addField("agencyTotalLatinx_indexed_long", agencyTotalLatinx);
+			document.addField("agencyTotalLatinx_stored_long", agencyTotalLatinx);
+		}
+		if(agencyTotalMultiracial != null) {
+			document.addField("agencyTotalMultiracial_indexed_long", agencyTotalMultiracial);
+			document.addField("agencyTotalMultiracial_stored_long", agencyTotalMultiracial);
+		}
+		if(agencyTotalOther != null) {
+			document.addField("agencyTotalOther_indexed_long", agencyTotalOther);
+			document.addField("agencyTotalOther_stored_long", agencyTotalOther);
+		}
 		if(stateKey != null) {
 			document.addField("stateKey_indexed_long", stateKey);
 			document.addField("stateKey_stored_long", stateKey);
@@ -1113,6 +2103,24 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 				return "agencyTitle_indexed_string";
 			case "agencyAcsId":
 				return "agencyAcsId_indexed_string";
+			case "agencyTotal":
+				return "agencyTotal_indexed_long";
+			case "agencyTotalWhite":
+				return "agencyTotalWhite_indexed_long";
+			case "agencyTotalBlack":
+				return "agencyTotalBlack_indexed_long";
+			case "agencyTotalIndigenous":
+				return "agencyTotalIndigenous_indexed_long";
+			case "agencyTotalAsian":
+				return "agencyTotalAsian_indexed_long";
+			case "agencyTotalPacificIslander":
+				return "agencyTotalPacificIslander_indexed_long";
+			case "agencyTotalLatinx":
+				return "agencyTotalLatinx_indexed_long";
+			case "agencyTotalMultiracial":
+				return "agencyTotalMultiracial_indexed_long";
+			case "agencyTotalOther":
+				return "agencyTotalOther_indexed_long";
 			case "stateKey":
 				return "stateKey_indexed_long";
 			case "stateId":
@@ -1158,6 +2166,15 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 
 		oSiteAgency.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setAgencyAcsId(Optional.ofNullable(solrDocument.get("agencyAcsId_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotal(Optional.ofNullable(solrDocument.get("agencyTotal_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalWhite(Optional.ofNullable(solrDocument.get("agencyTotalWhite_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalBlack(Optional.ofNullable(solrDocument.get("agencyTotalBlack_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalIndigenous(Optional.ofNullable(solrDocument.get("agencyTotalIndigenous_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalAsian(Optional.ofNullable(solrDocument.get("agencyTotalAsian_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalPacificIslander(Optional.ofNullable(solrDocument.get("agencyTotalPacificIslander_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalLatinx(Optional.ofNullable(solrDocument.get("agencyTotalLatinx_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalMultiracial(Optional.ofNullable(solrDocument.get("agencyTotalMultiracial_stored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalOther(Optional.ofNullable(solrDocument.get("agencyTotalOther_stored_long")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setStateKey(Optional.ofNullable(solrDocument.get("stateKey_stored_long")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setStateId(Optional.ofNullable(solrDocument.get("stateId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteAgency.setStateName(Optional.ofNullable(solrDocument.get("stateName_stored_string")).map(v -> v.toString()).orElse(null));
@@ -1181,6 +2198,24 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 				apiRequest.addVars("agencyTitle");
 			if(!Objects.equals(agencyAcsId, original.getAgencyAcsId()))
 				apiRequest.addVars("agencyAcsId");
+			if(!Objects.equals(agencyTotal, original.getAgencyTotal()))
+				apiRequest.addVars("agencyTotal");
+			if(!Objects.equals(agencyTotalWhite, original.getAgencyTotalWhite()))
+				apiRequest.addVars("agencyTotalWhite");
+			if(!Objects.equals(agencyTotalBlack, original.getAgencyTotalBlack()))
+				apiRequest.addVars("agencyTotalBlack");
+			if(!Objects.equals(agencyTotalIndigenous, original.getAgencyTotalIndigenous()))
+				apiRequest.addVars("agencyTotalIndigenous");
+			if(!Objects.equals(agencyTotalAsian, original.getAgencyTotalAsian()))
+				apiRequest.addVars("agencyTotalAsian");
+			if(!Objects.equals(agencyTotalPacificIslander, original.getAgencyTotalPacificIslander()))
+				apiRequest.addVars("agencyTotalPacificIslander");
+			if(!Objects.equals(agencyTotalLatinx, original.getAgencyTotalLatinx()))
+				apiRequest.addVars("agencyTotalLatinx");
+			if(!Objects.equals(agencyTotalMultiracial, original.getAgencyTotalMultiracial()))
+				apiRequest.addVars("agencyTotalMultiracial");
+			if(!Objects.equals(agencyTotalOther, original.getAgencyTotalOther()))
+				apiRequest.addVars("agencyTotalOther");
 			if(!Objects.equals(stateKey, original.getStateKey()))
 				apiRequest.addVars("stateKey");
 			if(!Objects.equals(stateId, original.getStateId()))
@@ -1200,7 +2235,7 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), agencyTitle, agencyAcsId, stateKey, stateId, stateName, stateAbbreviation, objectSuggest);
+		return Objects.hash(super.hashCode(), agencyTitle, agencyAcsId, agencyTotal, agencyTotalWhite, agencyTotalBlack, agencyTotalIndigenous, agencyTotalAsian, agencyTotalPacificIslander, agencyTotalLatinx, agencyTotalMultiracial, agencyTotalOther, stateKey, stateId, stateName, stateAbbreviation, objectSuggest);
 	}
 
 	////////////
@@ -1216,6 +2251,15 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		return super.equals(o)
 				&& Objects.equals( agencyTitle, that.agencyTitle )
 				&& Objects.equals( agencyAcsId, that.agencyAcsId )
+				&& Objects.equals( agencyTotal, that.agencyTotal )
+				&& Objects.equals( agencyTotalWhite, that.agencyTotalWhite )
+				&& Objects.equals( agencyTotalBlack, that.agencyTotalBlack )
+				&& Objects.equals( agencyTotalIndigenous, that.agencyTotalIndigenous )
+				&& Objects.equals( agencyTotalAsian, that.agencyTotalAsian )
+				&& Objects.equals( agencyTotalPacificIslander, that.agencyTotalPacificIslander )
+				&& Objects.equals( agencyTotalLatinx, that.agencyTotalLatinx )
+				&& Objects.equals( agencyTotalMultiracial, that.agencyTotalMultiracial )
+				&& Objects.equals( agencyTotalOther, that.agencyTotalOther )
 				&& Objects.equals( stateKey, that.stateKey )
 				&& Objects.equals( stateId, that.stateId )
 				&& Objects.equals( stateName, that.stateName )
@@ -1233,6 +2277,15 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 		sb.append("SiteAgency { ");
 		sb.append( "agencyTitle: \"" ).append(agencyTitle).append( "\"" );
 		sb.append( ", agencyAcsId: \"" ).append(agencyAcsId).append( "\"" );
+		sb.append( ", agencyTotal: " ).append(agencyTotal);
+		sb.append( ", agencyTotalWhite: " ).append(agencyTotalWhite);
+		sb.append( ", agencyTotalBlack: " ).append(agencyTotalBlack);
+		sb.append( ", agencyTotalIndigenous: " ).append(agencyTotalIndigenous);
+		sb.append( ", agencyTotalAsian: " ).append(agencyTotalAsian);
+		sb.append( ", agencyTotalPacificIslander: " ).append(agencyTotalPacificIslander);
+		sb.append( ", agencyTotalLatinx: " ).append(agencyTotalLatinx);
+		sb.append( ", agencyTotalMultiracial: " ).append(agencyTotalMultiracial);
+		sb.append( ", agencyTotalOther: " ).append(agencyTotalOther);
 		sb.append( ", stateKey: " ).append(stateKey);
 		sb.append( ", stateId: \"" ).append(stateId).append( "\"" );
 		sb.append( ", stateName: \"" ).append(stateName).append( "\"" );
@@ -1244,6 +2297,15 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_agencyAcsId = "agencyAcsId";
+	public static final String VAR_agencyTotal = "agencyTotal";
+	public static final String VAR_agencyTotalWhite = "agencyTotalWhite";
+	public static final String VAR_agencyTotalBlack = "agencyTotalBlack";
+	public static final String VAR_agencyTotalIndigenous = "agencyTotalIndigenous";
+	public static final String VAR_agencyTotalAsian = "agencyTotalAsian";
+	public static final String VAR_agencyTotalPacificIslander = "agencyTotalPacificIslander";
+	public static final String VAR_agencyTotalLatinx = "agencyTotalLatinx";
+	public static final String VAR_agencyTotalMultiracial = "agencyTotalMultiracial";
+	public static final String VAR_agencyTotalOther = "agencyTotalOther";
 	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateSearch = "stateSearch";
 	public static final String VAR_state_ = "state_";

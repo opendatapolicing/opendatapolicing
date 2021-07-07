@@ -196,6 +196,10 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 		c.o((Boolean)classSolrDocument.get("classeRoleUtilisateur_stored_boolean"));
 	}
 
+	protected void _classRoleAll(Wrap<Boolean> c) {
+		c.o((Boolean)classSolrDocument.get("classeRoleChacun_stored_boolean"));
+	}
+
 	protected void _classRolesFound(Wrap<Boolean> c) {
 		c.o((Boolean)classSolrDocument.get("classeRolesTrouves_stored_boolean"));
 	}
@@ -569,36 +573,37 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 
 	public void  writeApi(Boolean id) throws Exception, Exception {
 
-			if(id || !classUris.contains(classApiUriMethod)) {
-				wPaths.tl(1, classApiUriMethod, (id ? "/{id}" : ""), ":");
-				classUris.add(classApiUriMethod);
-			}
-	
-			wPaths.tl(2, StringUtils.lowerCase(classApiMethodMethod), ":");
-			wPaths.tl(3, "operationId: ", classApiOperationIdMethod, (id ? "Id" : ""));
-			wPaths.tl(3, "x-vertx-event-bus: ", appName, "-", languageName, "-", classSimpleName);
-	
-			if(classRoleUserMethod 
-					|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isNotTrue(classPublicRead)
-					|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isTrue(classPublicRead) && StringUtils.equalsAny(classApiMethodMethod, "POST", "PUT", "PATCH", "DELETE")
-					) {
-				wPaths.tl(3, "security:");
-//				wPaths.tl(4, "- basicAuth: []");
-				wPaths.tl(4, "- openIdConnect:");
-				wPaths.tl(5, "- DefaultAuthScope");
-			}
-	
-			wPaths.t(3, "description: ").yamlStr(4, "");
-			wPaths.t(3, "summary: ").yamlStr(4, "");
-			if(StringUtils.isNotBlank(classApiTag)) {
-				wPaths.tl(3, "tags:");
-				wPaths.tl(4, "- ", classApiTag);
-			}
-	
-			if(openApiVersionNumber == 2) {
-				wPaths.tl(3, "produces:");
-				wPaths.tl(4, "- ", classApiMediaType200Method);
-			}
+		if(id || !classUris.contains(classApiUriMethod)) {
+			wPaths.tl(1, classApiUriMethod, (id ? "/{id}" : ""), ":");
+			classUris.add(classApiUriMethod);
+		}
+
+		wPaths.tl(2, StringUtils.lowerCase(classApiMethodMethod), ":");
+		wPaths.tl(3, "operationId: ", classApiOperationIdMethod, (id ? "Id" : ""));
+		wPaths.tl(3, "x-vertx-event-bus: ", appName, "-", languageName, "-", classSimpleName);
+
+		if(classRoleAll 
+				|| classRoleUserMethod 
+				|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isNotTrue(classPublicRead)
+				|| classRolesFound && BooleanUtils.isNotTrue(classRoleSession) && BooleanUtils.isTrue(classPublicRead) && StringUtils.equalsAny(classApiMethodMethod, "POST", "PUT", "PATCH", "DELETE")
+				) {
+			wPaths.tl(3, "security:");
+//			wPaths.tl(4, "- basicAuth: []");
+			wPaths.tl(4, "- openIdConnect:");
+			wPaths.tl(5, "- DefaultAuthScope");
+		}
+
+		wPaths.t(3, "description: ").yamlStr(4, "");
+		wPaths.t(3, "summary: ").yamlStr(4, "");
+		if(StringUtils.isNotBlank(classApiTag)) {
+			wPaths.tl(3, "tags:");
+			wPaths.tl(4, "- ", classApiTag);
+		}
+
+		if(openApiVersionNumber == 2) {
+			wPaths.tl(3, "produces:");
+			wPaths.tl(4, "- ", classApiMediaType200Method);
+		}
 	
 		if(!wRequestHeaders.getEmpty() || "GET".equals(classApiMethodMethod) || "DELETE".equals(classApiMethodMethod) || "PUT".equals(classApiMethodMethod) || "PATCH".equals(classApiMethodMethod)) {
 			wPaths.tl(3, "parameters:");

@@ -2852,6 +2852,82 @@ public abstract class ApiWriterGen<DEV> extends Object {
 		return classRoleUtilisateur == null ? "" : classRoleUtilisateur.toString();
 	}
 
+	//////////////////
+	// classRoleAll //
+	//////////////////
+
+	/**	 The entity classRoleAll
+	 *	 is defined as null before being initialized. 
+	 */
+	@JsonProperty
+	@JsonInclude(Include.NON_NULL)
+	protected Boolean classRoleAll;
+	@JsonIgnore
+	public Wrap<Boolean> classRoleAllWrap = new Wrap<Boolean>().var("classRoleAll").o(classRoleAll);
+
+	/**	<br/> The entity classRoleAll
+	 *  is defined as null before being initialized. 
+	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.writer.ApiWriter&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classRoleAll">Find the entity classRoleAll in Solr</a>
+	 * <br/>
+	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 **/
+	protected abstract void _classRoleAll(Wrap<Boolean> c);
+
+	public Boolean getClassRoleAll() {
+		return classRoleAll;
+	}
+
+	public void setClassRoleAll(Boolean classRoleAll) {
+		this.classRoleAll = classRoleAll;
+		this.classRoleAllWrap.alreadyInitialized = true;
+	}
+	@JsonIgnore
+	public void setClassRoleAll(String o) {
+		this.classRoleAll = ApiWriter.staticSetClassRoleAll(siteRequest_, o);
+		this.classRoleAllWrap.alreadyInitialized = true;
+	}
+	public static Boolean staticSetClassRoleAll(SiteRequestEnUS siteRequest_, String o) {
+		return Boolean.parseBoolean(o);
+	}
+	protected ApiWriter classRoleAllInit() {
+		if(!classRoleAllWrap.alreadyInitialized) {
+			_classRoleAll(classRoleAllWrap);
+			if(classRoleAll == null)
+				setClassRoleAll(classRoleAllWrap.o);
+			classRoleAllWrap.o(null);
+		}
+		classRoleAllWrap.alreadyInitialized(true);
+		return (ApiWriter)this;
+	}
+
+	public static Boolean staticSolrClassRoleAll(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o;
+	}
+
+	public static String staticSolrStrClassRoleAll(SiteRequestEnUS siteRequest_, Boolean o) {
+		return o == null ? null : o.toString();
+	}
+
+	public static String staticSolrFqClassRoleAll(SiteRequestEnUS siteRequest_, String o) {
+		return ApiWriter.staticSolrStrClassRoleAll(siteRequest_, ApiWriter.staticSolrClassRoleAll(siteRequest_, ApiWriter.staticSetClassRoleAll(siteRequest_, o)));
+	}
+
+	public Boolean solrClassRoleAll() {
+		return ApiWriter.staticSolrClassRoleAll(siteRequest_, classRoleAll);
+	}
+
+	public String strClassRoleAll() {
+		return classRoleAll == null ? "" : classRoleAll.toString();
+	}
+
+	public Boolean sqlClassRoleAll() {
+		return classRoleAll;
+	}
+
+	public String jsonClassRoleAll() {
+		return classRoleAll == null ? "" : classRoleAll.toString();
+	}
+
 	/////////////////////
 	// classRolesFound //
 	/////////////////////
@@ -3295,6 +3371,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 				classPublicReadInit();
 				classRoleSessionInit();
 				classRoleUtilisateurInit();
+				classRoleAllInit();
 				classRolesFoundInit();
 				classRolesInit();
 				classRolesLanguageInit();
@@ -3453,6 +3530,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 				return oApiWriter.classRoleSession;
 			case "classRoleUtilisateur":
 				return oApiWriter.classRoleUtilisateur;
+			case "classRoleAll":
+				return oApiWriter.classRoleAll;
 			case "classRolesFound":
 				return oApiWriter.classRolesFound;
 			case "classRoles":
@@ -3558,6 +3637,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSetClassRoleSession(siteRequest_, o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSetClassRoleUtilisateur(siteRequest_, o);
+		case "classRoleAll":
+			return ApiWriter.staticSetClassRoleAll(siteRequest_, o);
 		case "classRolesFound":
 			return ApiWriter.staticSetClassRolesFound(siteRequest_, o);
 		case "classRoles":
@@ -3636,6 +3717,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrClassRoleSession(siteRequest_, (Boolean)o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSolrClassRoleUtilisateur(siteRequest_, (Boolean)o);
+		case "classRoleAll":
+			return ApiWriter.staticSolrClassRoleAll(siteRequest_, (Boolean)o);
 		case "classRolesFound":
 			return ApiWriter.staticSolrClassRolesFound(siteRequest_, (Boolean)o);
 		case "classRoles":
@@ -3714,6 +3797,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrStrClassRoleSession(siteRequest_, (Boolean)o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSolrStrClassRoleUtilisateur(siteRequest_, (Boolean)o);
+		case "classRoleAll":
+			return ApiWriter.staticSolrStrClassRoleAll(siteRequest_, (Boolean)o);
 		case "classRolesFound":
 			return ApiWriter.staticSolrStrClassRolesFound(siteRequest_, (Boolean)o);
 		case "classRoles":
@@ -3792,6 +3877,8 @@ public abstract class ApiWriterGen<DEV> extends Object {
 			return ApiWriter.staticSolrFqClassRoleSession(siteRequest_, o);
 		case "classRoleUtilisateur":
 			return ApiWriter.staticSolrFqClassRoleUtilisateur(siteRequest_, o);
+		case "classRoleAll":
+			return ApiWriter.staticSolrFqClassRoleAll(siteRequest_, o);
 		case "classRolesFound":
 			return ApiWriter.staticSolrFqClassRolesFound(siteRequest_, o);
 		case "classRoles":
@@ -3941,6 +4028,7 @@ public abstract class ApiWriterGen<DEV> extends Object {
 	public static final String VAR_classPublicRead = "classPublicRead";
 	public static final String VAR_classRoleSession = "classRoleSession";
 	public static final String VAR_classRoleUtilisateur = "classRoleUtilisateur";
+	public static final String VAR_classRoleAll = "classRoleAll";
 	public static final String VAR_classRolesFound = "classRolesFound";
 	public static final String VAR_classRoles = "classRoles";
 	public static final String VAR_classRolesLanguage = "classRolesLanguage";

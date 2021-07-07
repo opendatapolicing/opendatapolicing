@@ -70,6 +70,87 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 	protected void _agencyAcsId(Wrap<String> c) {
 	}
 
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotal(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalWhite(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalBlack(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalIndigenous(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalAsian(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalPacificIslander(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalLatinx(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalMultiracial(Wrap<Long> c) {
+	}
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _agencyTotalOther(Wrap<Long> c) {
+	}
+
 	/**  
 	 * {@inheritDoc}
 	 * Indexed: true

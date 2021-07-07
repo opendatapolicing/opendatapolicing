@@ -14,6 +14,7 @@ import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opendatapolicing.enus.agency.SiteAgency;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
@@ -216,7 +217,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								.send()
 								.onSuccess(acsGetStateResponse -> {
 							JsonArray acsGetStateJson = acsGetStateResponse.bodyAsJsonArray();
-							String stateAcsId = acsGetStateJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(1))).findFirst().map(item -> item.getString(1)).orElse(null);
+							String stateAcsId = acsGetStateJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(0))).findFirst().map(item -> item.getString(1)).orElse(null);
 
 							try {
 								try {
@@ -621,52 +622,84 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 				FacetField groupNameFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
 				List<Count> groupNameCounts = Optional.ofNullable(groupNameFacet.getValues()).orElse(Arrays.asList());
-	
-				for(Count count : groupNameCounts) {
-					String agencyTitle = count.getName();
 
+				webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME,GEO_ID,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s&for=county:*&in=state:%s"
+								, "B03002_001E" // total
+								, "B03002_003E" // white
+								, "B03002_004E" // black
+								, "B03002_005E" // indigenous
+								, "B03002_006E" // asian
+								, "B03002_007E" // pacific islander
+								, "B03002_008E" // other
+								, "B03002_009E" // multi-racial
+								, "B03002_012E" // latinx
+								, state.getStateAcsId()
+								))
+						.expect(ResponsePredicate.SC_OK)
+						.ssl(true)
+						.send()
+						.onSuccess(acsGetCountyResponse -> {
+					JsonArray acsGetCountyJson = acsGetCountyResponse.bodyAsJsonArray();
 					futures.add(Future.future(promise1 -> {
-						webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME&for=county:*&in=state:%s", state.getStateAcsId()))
-								.expect(ResponsePredicate.SC_OK)
-								.ssl(true)
-								.send()
-								.onSuccess(acsGetStateResponse -> {
-							JsonArray acsGetStateJson = acsGetStateResponse.bodyAsJsonArray();
-							String stateAcsId = acsGetStateJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(1))).findFirst().map(item -> item.getString(1)).orElse(null);
-							JsonObject body = new JsonObject()
-									.put("saves", new JsonArray().add("inheritPk").add("agencyTitle").add("stateKey"))
-									.put("agencyTitle", agencyTitle)
-									.put("pk", state.getStateAbbreviation() + "-" + agencyTitle)
-									.put("stateKey", state.getStateAbbreviation())
-									;
-		//					JsonObject agencyJson = new JsonObject().put("saves", new JsonArray().add("inheritPk").add("agencyTitle")).put("agencyTitle", agencyTitle).put("pk", agencyTitle);
-		//					JsonObject body = new JsonObject().put("list", new JsonArray().add(agencyJson));
-							JsonObject params = new JsonObject();
-							params.put("body", body);
-							params.put("path", new JsonObject());
-							params.put("cookie", new JsonObject());
-							params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
-							JsonObject context = new JsonObject().put("params", params);
-							JsonObject json = new JsonObject().put("context", context);
-							vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", "SiteAgency"))).onSuccess(a -> {
+		
+						for(Count count : groupNameCounts) {
+							String agencyTitle = count.getName();
+								JsonArray agencyAcsData = acsGetCountyJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(0))).findFirst().orElse(null);
+								JsonObject body = new JsonObject()
+										.put("saves", new JsonArray()
+												.add(SiteAgency.VAR_inheritPk)
+												.add(SiteAgency.VAR_agencyTitle)
+												.add(SiteAgency.VAR_stateKey)
+												.add(SiteAgency.VAR_agencyAcsId)
+												.add(SiteAgency.VAR_agencyTotal)
+												.add(SiteAgency.VAR_agencyTotalWhite)
+												.add(SiteAgency.VAR_agencyTotalBlack)
+												.add(SiteAgency.VAR_agencyTotalIndigenous)
+												.add(SiteAgency.VAR_agencyTotalAsian)
+												.add(SiteAgency.VAR_agencyTotalPacificIslander)
+												.add(SiteAgency.VAR_agencyTotalOther)
+												.add(SiteAgency.VAR_agencyTotalLatinx)
+												)
+										.put(SiteAgency.VAR_agencyTitle, agencyTitle)
+										.put(SiteAgency.VAR_pk, state.getStateAbbreviation() + "-" + agencyTitle)
+										.put(SiteAgency.VAR_stateKey, state.getStateAbbreviation())
+										;
+								if(agencyAcsData != null) {
+									body.put(SiteAgency.VAR_agencyTotal, agencyAcsData.getString(2));
+									body.put(SiteAgency.VAR_agencyTotalWhite, agencyAcsData.getString(3));
+									body.put(SiteAgency.VAR_agencyTotalBlack, agencyAcsData.getString(4));
+									body.put(SiteAgency.VAR_agencyTotalIndigenous, agencyAcsData.getString(5));
+									body.put(SiteAgency.VAR_agencyTotalAsian, agencyAcsData.getString(6));
+									body.put(SiteAgency.VAR_agencyTotalPacificIslander, agencyAcsData.getString(7));
+									body.put(SiteAgency.VAR_agencyTotalOther, agencyAcsData.getString(8));
+									body.put(SiteAgency.VAR_agencyTotalLatinx, agencyAcsData.getString(10));
+								}
+								JsonObject params = new JsonObject();
+								params.put("body", body);
+								params.put("path", new JsonObject());
+								params.put("cookie", new JsonObject());
+								params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+								JsonObject context = new JsonObject().put("params", params);
+								JsonObject json = new JsonObject().put("context", context);
+								vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", "SiteAgency"))).onSuccess(a -> {
+									promise.complete();
+								}).onFailure(ex -> {
+									LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
+									promise1.fail(ex);
+								});
+						}
+					}));
+					CompositeFuture.all(futures).onSuccess(a -> {
+						Integer facetOffsetNext = facetOffset + FACET_LIMIT;
+						stopSearch1.set("facet.offset", facetOffsetNext);
+						stopSearch1.query().onSuccess(b -> {
+							syncAgenciesFacets(state, stopSearch1, facetOffsetNext).onSuccess(c -> {
+								LOG.info(String.format(syncAgenciesFacetsComplete, "SiteAgency"));
 								promise.complete();
 							}).onFailure(ex -> {
 								LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
-								promise1.fail(ex);
+								promise.fail(ex);
 							});
-						}).onFailure(ex -> {
-							LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
-							promise1.fail(ex);
-						});
-					}));
-				}
-				CompositeFuture.all(futures).onSuccess(a -> {
-					Integer facetOffsetNext = facetOffset + FACET_LIMIT;
-					stopSearch1.set("facet.offset", facetOffsetNext);
-					stopSearch1.query().onSuccess(b -> {
-						syncAgenciesFacets(state, stopSearch1, facetOffsetNext).onSuccess(c -> {
-							LOG.info(String.format(syncAgenciesFacetsComplete, "SiteAgency"));
-							promise.complete();
 						}).onFailure(ex -> {
 							LOG.error(String.format(syncAgenciesFacetsFail, "SiteAgency"), ex);
 							promise.fail(ex);

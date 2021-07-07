@@ -335,9 +335,10 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 		l.addFilterQuery("stopId_indexed_string:" + inheritPk);
 		l.setC(TrafficPerson.class);
 		l.setRows(0);
+		l.setFacet(true);
 		l.addFacetField("personRaceTitle_indexed_string");
 		l.addFacetField("personGenderTitle_indexed_string");
-		l.addFacetField("personAge_indexed_integer");
+		l.addFacetField("personAge_indexed_int");
 		l.setStore(true);
 		promise.complete(l);
 	}
@@ -378,7 +379,7 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	 * Stored: true
 	 */
 	protected void _personAges(List<Integer> l) {
-		FacetField field = personSearch.getQueryResponse().getFacetField("personAge_indexed_integer");
+		FacetField field = personSearch.getQueryResponse().getFacetField("personAge_indexed_int");
 		if(field != null) {
 			for(Count count : field.getValues()) {
 				if(count.getCount() > 0)
