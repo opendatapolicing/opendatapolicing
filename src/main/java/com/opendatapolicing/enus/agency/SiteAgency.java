@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.agency;            
+package com.opendatapolicing.enus.agency;                 
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -155,11 +155,11 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 * Attribute: SiteState.agencyKeys
+	 * Define: true
 	 * HtmlRow: 5
 	 * HtmlCell: 1
 	 * DisplayName.enUS: state
-	 */         
+	 */        
 	protected void _stateKey(Wrap<Long> c) {
 	}
 

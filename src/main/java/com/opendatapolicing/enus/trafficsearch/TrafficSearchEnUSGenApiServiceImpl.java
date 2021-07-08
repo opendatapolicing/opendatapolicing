@@ -202,7 +202,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("query", new JsonObject());
-					JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "putimportTrafficSearchFuture")).onSuccess(a -> {
 						promise1.complete();
@@ -228,97 +228,113 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void putimportTrafficSearchFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-			ApiRequest apiRequest = new ApiRequest();
-			apiRequest.setRows(1);
-			apiRequest.setNumFound(1L);
-			apiRequest.setNumPATCH(0L);
-			apiRequest.initDeepApiRequest(siteRequest);
-			siteRequest.setApiRequest_(apiRequest);
-			body.put("inheritPk", body.getValue("pk"));
-			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-				siteRequest.getRequestVars().put( "refresh", "false" );
-			}
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				ApiRequest apiRequest = new ApiRequest();
+				apiRequest.setRows(1);
+				apiRequest.setNumFound(1L);
+				apiRequest.setNumPATCH(0L);
+				apiRequest.initDeepApiRequest(siteRequest);
+				siteRequest.setApiRequest_(apiRequest);
+				body.put("inheritPk", body.getValue("pk"));
+				if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+					siteRequest.getRequestVars().put( "refresh", "false" );
+				}
 
-			SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
-			searchList.setStore(true);
-			searchList.setQuery("*:*");
-			searchList.setC(TrafficSearch.class);
-			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
-			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
-				try {
-					if(searchList.size() >= 1) {
-						TrafficSearch o = searchList.getList().stream().findFirst().orElse(null);
-						TrafficSearch o2 = new TrafficSearch();
-						JsonObject body2 = new JsonObject();
-						for(String f : body.fieldNames()) {
-							Object bodyVal = body.getValue(f);
-							if(bodyVal instanceof JsonArray) {
-								JsonArray bodyVals = (JsonArray)bodyVal;
-								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(bodyVals.size() == vals.size()) {
-									Boolean match = true;
-									for(Object val : vals) {
-										if(val != null) {
-											if(!bodyVals.contains(val.toString())) {
+				SearchList<TrafficSearch> searchList = new SearchList<TrafficSearch>();
+				searchList.setStore(true);
+				searchList.setQuery("*:*");
+				searchList.setC(TrafficSearch.class);
+				searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
+				searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+					try {
+						if(searchList.size() >= 1) {
+							TrafficSearch o = searchList.getList().stream().findFirst().orElse(null);
+							TrafficSearch o2 = new TrafficSearch();
+							JsonObject body2 = new JsonObject();
+							for(String f : body.fieldNames()) {
+								Object bodyVal = body.getValue(f);
+								if(bodyVal instanceof JsonArray) {
+									JsonArray bodyVals = (JsonArray)bodyVal;
+									Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+									if(bodyVals.size() == vals.size()) {
+										Boolean match = true;
+										for(Object val : vals) {
+											if(val != null) {
+												if(!bodyVals.contains(val.toString())) {
+													match = false;
+													break;
+												}
+											} else {
 												match = false;
 												break;
 											}
-										} else {
-											match = false;
-											break;
 										}
-									}
-									if(!match) {
+										if(!match) {
+											body2.put("set" + StringUtils.capitalize(f), bodyVal);
+										}
+									} else {
 										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 									}
 								} else {
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
+									o2.defineForClass(f, bodyVal);
+									o2.attributeForClass(f, bodyVal);
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
-							} else {
-								o2.defineForClass(f, bodyVal);
-								o2.attributeForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
-						}
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!body.fieldNames().contains(f))
-								body2.putNull("set" + StringUtils.capitalize(f));
-						}
-						if(body2.size() > 0) {
-							siteRequest.setJsonObject(body2);
-							patchTrafficSearchFuture(o, true).onSuccess(b -> {
-								LOG.info("Import TrafficSearch {} succeeded, modified TrafficSearch. ", body.getValue("pk"));
+							for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+								if(!body.fieldNames().contains(f)) {
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.putNull("set" + StringUtils.capitalize(f));
+								}
+							}
+							if(body2.size() > 0) {
+								siteRequest.setJsonObject(body2);
+								patchTrafficSearchFuture(o, true).onSuccess(b -> {
+									LOG.info("Import TrafficSearch {} succeeded, modified TrafficSearch. ", body.getValue("pk"));
+									eventHandler.handle(Future.succeededFuture());
+								}).onFailure(ex -> {
+									LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
+									eventHandler.handle(Future.failedFuture(ex));
+								});
+							} else {
+								eventHandler.handle(Future.succeededFuture());
+							}
+						} else {
+							postTrafficSearchFuture(siteRequest, true).onSuccess(b -> {
+								LOG.info("Import TrafficSearch {} succeeded, created new TrafficSearch. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
+								eventHandler.handle(Future.failedFuture(ex));
 							});
-						} else {
-							eventHandler.handle(Future.succeededFuture());
 						}
-					} else {
-						postTrafficSearchFuture(siteRequest, true).onSuccess(b -> {
-							LOG.info("Import TrafficSearch {} succeeded, created new TrafficSearch. ", body.getValue("pk"));
-							eventHandler.handle(Future.succeededFuture());
-						}).onFailure(ex -> {
-							LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
-							eventHandler.handle(Future.failedFuture(ex));
-						});
+					} catch(Exception ex) {
+						LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
+						eventHandler.handle(Future.failedFuture(ex));
 					}
-				} catch(Exception ex) {
+				}).onFailure(ex -> {
 					LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
 					eventHandler.handle(Future.failedFuture(ex));
-				}
-			}).onFailure(ex -> {
+				});
+			} catch(Exception ex) {
 				LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
 				eventHandler.handle(Future.failedFuture(ex));
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
-			eventHandler.handle(Future.failedFuture(ex));
-		}
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putimportTrafficSearch failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("putimportTrafficSearch failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 	public Future<ServiceResponse> response200PUTImportTrafficSearch(SiteRequestEnUS siteRequest) {
@@ -374,7 +390,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("query", new JsonObject());
-					JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "postTrafficSearchFuture")).onSuccess(a -> {
 						JsonObject responseBody = (JsonObject)a.body();
@@ -408,20 +424,33 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void postTrafficSearchFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-		ApiRequest apiRequest = new ApiRequest();
-		apiRequest.setRows(1);
-		apiRequest.setNumFound(1L);
-		apiRequest.setNumPATCH(0L);
-		apiRequest.initDeepApiRequest(siteRequest);
-		siteRequest.setApiRequest_(apiRequest);
-		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-			siteRequest.getRequestVars().put( "refresh", "false" );
-		}
-		postTrafficSearchFuture(siteRequest, false).onSuccess(a -> {
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			postTrafficSearchFuture(siteRequest, false).onSuccess(a -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
+			});
 		}).onFailure(ex -> {
-			eventHandler.handle(Future.failedFuture(ex));
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postTrafficSearch failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("postTrafficSearch failed. "), ex);
+				error(null, eventHandler, ex);
+			}
 		});
 	}
 
@@ -758,13 +787,13 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				Long pk = o.getPk();
 
 				JsonObject params = new JsonObject();
-				params.put("body", siteRequest.getJsonObject().put(TrafficSearch.VAR_pk, pk.toString()));
-				params.put("path", new JsonObject());
+				params.put("body", siteRequest.getJsonObject());
 				params.put("cookie", new JsonObject());
 				params.put("header", new JsonObject());
 				params.put("form", new JsonObject());
+				params.put("path", new JsonObject());
 				params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-				JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 				JsonObject json = new JsonObject().put("context", context);
 				eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "patchTrafficSearchFuture")).onSuccess(a -> {
 					promise1.complete();
@@ -800,23 +829,36 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
 	@Override
 	public void patchTrafficSearchFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-		TrafficSearch o = new TrafficSearch();
-		o.setSiteRequest_(siteRequest);
-		ApiRequest apiRequest = new ApiRequest();
-		apiRequest.setRows(1);
-		apiRequest.setNumFound(1L);
-		apiRequest.setNumPATCH(0L);
-		apiRequest.initDeepApiRequest(siteRequest);
-		siteRequest.setApiRequest_(apiRequest);
-		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-			siteRequest.getRequestVars().put( "refresh", "false" );
-		}
-		o.setPk(body.getString(TrafficSearch.VAR_pk));
-		patchTrafficSearchFuture(o, false).onSuccess(a -> {
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			TrafficSearch o = new TrafficSearch();
+			o.setSiteRequest_(siteRequest);
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			o.setPk(body.getString(TrafficSearch.VAR_pk));
+			patchTrafficSearchFuture(o, false).onSuccess(a -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
+			});
 		}).onFailure(ex -> {
-			eventHandler.handle(Future.failedFuture(ex));
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("patchTrafficSearch failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("patchTrafficSearch failed. "), ex);
+				error(null, eventHandler, ex);
+			}
 		});
 	}
 
@@ -1867,10 +1909,15 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
-					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficSearch", json, new DeliveryOptions().addHeader("action", "patchTrafficSearch")).onSuccess(c -> {
-						promise.complete();
+						JsonObject responseBody = (JsonObject)c.body();
+						Integer statusCode = responseBody.getInteger("statusCode");
+						if(statusCode.equals(200))
+							promise.complete();
+						else
+							promise.fail(new RuntimeException(responseBody.getString("statusMessage")));
 					}).onFailure(ex -> {
 						LOG.error("Refresh relations failed. ", ex);
 						promise.fail(ex);

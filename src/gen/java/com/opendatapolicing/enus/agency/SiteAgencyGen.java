@@ -1557,12 +1557,6 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 	public Object attributeSiteAgency(String var, Object val) {
 		SiteAgency oSiteAgency = (SiteAgency)this;
 		switch(var) {
-			case "stateKey":
-				if(oSiteAgency.getStateKey() == null)
-					oSiteAgency.setStateKey(val == null ? null : (NumberUtils.isCreatable(val.toString()) ? Long.parseLong(val.toString()) : -1L));
-				if(!saves.contains("stateKey"))
-					saves.add("stateKey");
-				return val;
 			default:
 				return super.attributeBaseModel(var, val);
 		}
@@ -1998,9 +1992,11 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 					oSiteAgency.setAgencyTotalOther(agencyTotalOther);
 			}
 
-			Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
-			if(stateKey != null)
-				oSiteAgency.setStateKey(stateKey);
+			if(saves.contains("stateKey")) {
+				Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
+				if(stateKey != null)
+					oSiteAgency.setStateKey(stateKey);
+			}
 
 			if(saves.contains("stateId")) {
 				String stateId = (String)solrDocument.get("stateId_stored_string");

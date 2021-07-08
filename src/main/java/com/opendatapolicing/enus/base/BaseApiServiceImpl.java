@@ -102,7 +102,7 @@ public class BaseApiServiceImpl {
 	}
 
 	public SiteRequestEnUS generateSiteRequestEnUS(User user, ServiceRequest serviceRequest) {
-		return generateSiteRequestEnUS(user, serviceRequest, null);
+		return generateSiteRequestEnUS(user, serviceRequest, serviceRequest.getParams().getJsonObject("body"));
 	}
 
 	public SiteRequestEnUS generateSiteRequestEnUS(User user, ServiceRequest serviceRequest, JsonObject body) {

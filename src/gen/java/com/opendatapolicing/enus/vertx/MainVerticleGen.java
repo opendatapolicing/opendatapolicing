@@ -80,7 +80,7 @@ CREATE TABLE SiteAgency(
 	, agencyTotalLatinx bigint
 	, agencyTotalMultiracial bigint
 	, agencyTotalOther bigint
-	, stateKey bigint references SiteState(pk)
+	, stateKey bigint
 	);
 CREATE TABLE TrafficStop(
 	pk bigserial primary key

@@ -383,13 +383,13 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				Long pk = o.getPk();
 
 				JsonObject params = new JsonObject();
-				params.put("body", siteRequest.getJsonObject().put(SiteUser.VAR_pk, pk.toString()));
-				params.put("path", new JsonObject());
+				params.put("body", siteRequest.getJsonObject());
 				params.put("cookie", new JsonObject());
 				params.put("header", new JsonObject());
 				params.put("form", new JsonObject());
+				params.put("path", new JsonObject());
 				params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-				JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 				JsonObject json = new JsonObject().put("context", context);
 				eventBus.request("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture")).onSuccess(a -> {
 					promise1.complete();
@@ -425,23 +425,36 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void patchSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-		SiteUser o = new SiteUser();
-		o.setSiteRequest_(siteRequest);
-		ApiRequest apiRequest = new ApiRequest();
-		apiRequest.setRows(1);
-		apiRequest.setNumFound(1L);
-		apiRequest.setNumPATCH(0L);
-		apiRequest.initDeepApiRequest(siteRequest);
-		siteRequest.setApiRequest_(apiRequest);
-		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-			siteRequest.getRequestVars().put( "refresh", "false" );
-		}
-		o.setPk(body.getString(SiteUser.VAR_pk));
-		patchSiteUserFuture(o, false).onSuccess(a -> {
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			SiteUser o = new SiteUser();
+			o.setSiteRequest_(siteRequest);
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			o.setPk(body.getString(SiteUser.VAR_pk));
+			patchSiteUserFuture(o, false).onSuccess(a -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
+			});
 		}).onFailure(ex -> {
-			eventHandler.handle(Future.failedFuture(ex));
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("patchSiteUser failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("patchSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
 		});
 	}
 
@@ -658,7 +671,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("query", new JsonObject());
-					JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "postSiteUserFuture")).onSuccess(a -> {
 						JsonObject responseBody = (JsonObject)a.body();
@@ -692,20 +705,33 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 
 	@Override
 	public void postSiteUserFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-		ApiRequest apiRequest = new ApiRequest();
-		apiRequest.setRows(1);
-		apiRequest.setNumFound(1L);
-		apiRequest.setNumPATCH(0L);
-		apiRequest.initDeepApiRequest(siteRequest);
-		siteRequest.setApiRequest_(apiRequest);
-		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-			siteRequest.getRequestVars().put( "refresh", "false" );
-		}
-		postSiteUserFuture(siteRequest, false).onSuccess(a -> {
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			postSiteUserFuture(siteRequest, false).onSuccess(a -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
+			});
 		}).onFailure(ex -> {
-			eventHandler.handle(Future.failedFuture(ex));
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postSiteUser failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("postSiteUser failed. "), ex);
+				error(null, eventHandler, ex);
+			}
 		});
 	}
 
@@ -1293,10 +1319,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
-					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUser")).onSuccess(c -> {
-						promise.complete();
+						JsonObject responseBody = (JsonObject)c.body();
+						Integer statusCode = responseBody.getInteger("statusCode");
+						if(statusCode.equals(200))
+							promise.complete();
+						else
+							promise.fail(new RuntimeException(responseBody.getString("statusMessage")));
 					}).onFailure(ex -> {
 						LOG.error("Refresh relations failed. ", ex);
 						promise.fail(ex);

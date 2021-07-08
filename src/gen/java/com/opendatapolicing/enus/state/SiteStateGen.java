@@ -2,53 +2,52 @@ package com.opendatapolicing.enus.state;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
 import org.slf4j.LoggerFactory;
+import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.lang.Integer;
-import java.lang.Long;
-import java.util.Map;
-import io.vertx.core.json.JsonObject;
-import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
-import java.math.RoundingMode;
-import com.opendatapolicing.enus.wrap.Wrap;
-import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
-import java.math.MathContext;
-import java.util.Set;
-import com.opendatapolicing.enus.writer.AllWriter;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.vertx.core.Future;
-import com.opendatapolicing.enus.request.api.ApiRequest;
-import java.util.Objects;
-import java.util.List;
-import org.apache.solr.client.solrj.SolrQuery;
-import java.util.Optional;
-import org.apache.solr.client.solrj.util.ClientUtils;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.opendatapolicing.enus.base.BaseModel;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import java.util.HashMap;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import org.apache.commons.collections.CollectionUtils;
+import java.lang.Long;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.vertx.core.json.JsonObject;
+import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import com.opendatapolicing.enus.config.ConfigKeys;
 import java.lang.String;
+import java.math.RoundingMode;
+import com.opendatapolicing.enus.wrap.Wrap;
 import org.slf4j.Logger;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
+import java.math.MathContext;
 import io.vertx.core.Promise;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import java.util.Set;
+import com.opendatapolicing.enus.writer.AllWriter;
 import org.apache.commons.text.StringEscapeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.vertx.core.Future;
+import com.opendatapolicing.enus.request.api.ApiRequest;
 import org.apache.solr.client.solrj.SolrClient;
+import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
+import java.util.List;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
+import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.opendatapolicing.enus.agency.SiteAgency;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.base.BaseModel;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**	
  * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true">Find the class  in Solr. </a>
@@ -507,115 +506,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 		return imageTop == null ? "" : imageTop.toString();
 	}
 
-	////////////////
-	// agencyKeys //
-	////////////////
-
-	/**	 The entity agencyKeys
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<Long>(). 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonSerialize(contentUsing = ToStringSerializer.class)
-	@JsonInclude(Include.NON_NULL)
-	protected List<Long> agencyKeys = new ArrayList<Long>();
-	@JsonIgnore
-	public Wrap<List<Long>> agencyKeysWrap = new Wrap<List<Long>>().var("agencyKeys").o(agencyKeys);
-
-	/**	<br/> The entity agencyKeys
-	 *  It is constructed before being initialized with the constructor by default List<Long>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.state.SiteState&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:agencyKeys">Find the entity agencyKeys in Solr</a>
-	 * <br/>
-	 * @param agencyKeys is the entity already constructed. 
-	 **/
-	protected abstract void _agencyKeys(List<Long> o);
-
-	public List<Long> getAgencyKeys() {
-		return agencyKeys;
-	}
-
-	public void setAgencyKeys(List<Long> agencyKeys) {
-		this.agencyKeys = agencyKeys;
-		this.agencyKeysWrap.alreadyInitialized = true;
-	}
-	@JsonIgnore
-	public void setAgencyKeys(String o) {
-		Long l = SiteState.staticSetAgencyKeys(siteRequest_, o);
-		if(l != null)
-			addAgencyKeys(l);
-		this.agencyKeysWrap.alreadyInitialized = true;
-	}
-	public static Long staticSetAgencyKeys(SiteRequestEnUS siteRequest_, String o) {
-		if(NumberUtils.isParsable(o))
-			return Long.parseLong(o);
-		return null;
-	}
-	public SiteState addAgencyKeys(Long...objets) {
-		for(Long o : objets) {
-			addAgencyKeys(o);
-		}
-		return (SiteState)this;
-	}
-	public SiteState addAgencyKeys(Long o) {
-		if(o != null && !agencyKeys.contains(o))
-			this.agencyKeys.add(o);
-		return (SiteState)this;
-	}
-	@JsonIgnore
-	public void setAgencyKeys(JsonArray objets) {
-		agencyKeys.clear();
-		for(int i = 0; i < objets.size(); i++) {
-			Long o = objets.getLong(i);
-			addAgencyKeys(o);
-		}
-	}
-	public SiteState addAgencyKeys(String o) {
-		if(NumberUtils.isParsable(o)) {
-			Long p = Long.parseLong(o);
-			addAgencyKeys(p);
-		}
-		return (SiteState)this;
-	}
-	protected SiteState agencyKeysInit() {
-		if(!agencyKeysWrap.alreadyInitialized) {
-			_agencyKeys(agencyKeys);
-		}
-		agencyKeysWrap.alreadyInitialized(true);
-		return (SiteState)this;
-	}
-
-	public static Long staticSolrAgencyKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o;
-	}
-
-	public static String staticSolrStrAgencyKeys(SiteRequestEnUS siteRequest_, Long o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqAgencyKeys(SiteRequestEnUS siteRequest_, String o) {
-		return SiteState.staticSolrStrAgencyKeys(siteRequest_, SiteState.staticSolrAgencyKeys(siteRequest_, SiteState.staticSetAgencyKeys(siteRequest_, o)));
-	}
-
-	public List<Long> solrAgencyKeys() {
-		List<Long> l = new ArrayList<Long>();
-		for(Long o : agencyKeys) {
-			l.add(SiteState.staticSolrAgencyKeys(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strAgencyKeys() {
-		return agencyKeys == null ? "" : agencyKeys.toString();
-	}
-
-	public List<Long> sqlAgencyKeys() {
-		return agencyKeys;
-	}
-
-	public String jsonAgencyKeys() {
-		return agencyKeys == null ? "" : agencyKeys.toString();
-	}
-
 	///////////////////////
 	// stateCompleteName //
 	///////////////////////
@@ -728,7 +618,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				stateAcsIdInit();
 				imageLeftInit();
 				imageTopInit();
-				agencyKeysInit();
 				stateCompleteNameInit();
 				promise2.complete();
 			} catch(Exception ex) {
@@ -795,8 +684,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				return oSiteState.imageLeft;
 			case "imageTop":
 				return oSiteState.imageTop;
-			case "agencyKeys":
-				return oSiteState.agencyKeys;
 			case "stateCompleteName":
 				return oSiteState.stateCompleteName;
 			default:
@@ -824,11 +711,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	public Object attributeSiteState(String var, Object val) {
 		SiteState oSiteState = (SiteState)this;
 		switch(var) {
-			case "agencyKeys":
-				oSiteState.addAgencyKeys((Long)val);
-				if(!saves.contains("agencyKeys"))
-					saves.add("agencyKeys");
-				return val;
 			default:
 				return super.attributeBaseModel(var, val);
 		}
@@ -855,8 +737,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSetImageLeft(siteRequest_, o);
 		case "imageTop":
 			return SiteState.staticSetImageTop(siteRequest_, o);
-		case "agencyKeys":
-			return SiteState.staticSetAgencyKeys(siteRequest_, o);
 		case "stateCompleteName":
 			return SiteState.staticSetStateCompleteName(siteRequest_, o);
 			default:
@@ -885,8 +765,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSolrImageLeft(siteRequest_, (Integer)o);
 		case "imageTop":
 			return SiteState.staticSolrImageTop(siteRequest_, (Integer)o);
-		case "agencyKeys":
-			return SiteState.staticSolrAgencyKeys(siteRequest_, (Long)o);
 		case "stateCompleteName":
 			return SiteState.staticSolrStateCompleteName(siteRequest_, (String)o);
 			default:
@@ -915,8 +793,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSolrStrImageLeft(siteRequest_, (Integer)o);
 		case "imageTop":
 			return SiteState.staticSolrStrImageTop(siteRequest_, (Integer)o);
-		case "agencyKeys":
-			return SiteState.staticSolrStrAgencyKeys(siteRequest_, (Long)o);
 		case "stateCompleteName":
 			return SiteState.staticSolrStrStateCompleteName(siteRequest_, (String)o);
 			default:
@@ -945,8 +821,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			return SiteState.staticSolrFqImageLeft(siteRequest_, o);
 		case "imageTop":
 			return SiteState.staticSolrFqImageTop(siteRequest_, o);
-		case "agencyKeys":
-			return SiteState.staticSolrFqAgencyKeys(siteRequest_, o);
 		case "stateCompleteName":
 			return SiteState.staticSolrFqStateCompleteName(siteRequest_, o);
 			default:
@@ -1100,10 +974,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 					oSiteState.setImageTop(imageTop);
 			}
 
-			List<Long> agencyKeys = (List<Long>)solrDocument.get("agencyKeys_stored_longs");
-			if(agencyKeys != null)
-				oSiteState.agencyKeys.addAll(agencyKeys);
-
 			if(saves.contains("stateCompleteName")) {
 				String stateCompleteName = (String)solrDocument.get("stateCompleteName_stored_string");
 				if(stateCompleteName != null)
@@ -1139,14 +1009,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 			document.addField("imageTop_indexed_int", imageTop);
 			document.addField("imageTop_stored_int", imageTop);
 		}
-		if(agencyKeys != null) {
-			for(java.lang.Long o : agencyKeys) {
-				document.addField("agencyKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : agencyKeys) {
-				document.addField("agencyKeys_stored_longs", o);
-			}
-		}
 		if(stateCompleteName != null) {
 			document.addField("stateCompleteName_indexed_string", stateCompleteName);
 			document.addField("stateCompleteName_stored_string", stateCompleteName);
@@ -1169,8 +1031,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				return "imageLeft_indexed_int";
 			case "imageTop":
 				return "imageTop_indexed_int";
-			case "agencyKeys":
-				return "agencyKeys_indexed_longs";
 			case "stateCompleteName":
 				return "stateCompleteName_indexed_string";
 			default:
@@ -1208,9 +1068,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 		oSiteState.setStateAcsId(Optional.ofNullable(solrDocument.get("stateAcsId_stored_string")).map(v -> v.toString()).orElse(null));
 		oSiteState.setImageLeft(Optional.ofNullable(solrDocument.get("imageLeft_stored_int")).map(v -> v.toString()).orElse(null));
 		oSiteState.setImageTop(Optional.ofNullable(solrDocument.get("imageTop_stored_int")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("agencyKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oSiteState.addAgencyKeys(v.toString());
-		});
 		oSiteState.setStateCompleteName(Optional.ofNullable(solrDocument.get("stateCompleteName_stored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeBaseModel(solrDocument);
@@ -1237,8 +1094,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				apiRequest.addVars("imageLeft");
 			if(!Objects.equals(imageTop, original.getImageTop()))
 				apiRequest.addVars("imageTop");
-			if(!Objects.equals(agencyKeys, original.getAgencyKeys()))
-				apiRequest.addVars("agencyKeys");
 			if(!Objects.equals(stateCompleteName, original.getStateCompleteName()))
 				apiRequest.addVars("stateCompleteName");
 			super.apiRequestBaseModel();
@@ -1250,7 +1105,7 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), stateKey, stateName, stateAbbreviation, stateAcsId, imageLeft, imageTop, agencyKeys, stateCompleteName);
+		return Objects.hash(super.hashCode(), stateKey, stateName, stateAbbreviation, stateAcsId, imageLeft, imageTop, stateCompleteName);
 	}
 
 	////////////
@@ -1270,7 +1125,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 				&& Objects.equals( stateAcsId, that.stateAcsId )
 				&& Objects.equals( imageLeft, that.imageLeft )
 				&& Objects.equals( imageTop, that.imageTop )
-				&& Objects.equals( agencyKeys, that.agencyKeys )
 				&& Objects.equals( stateCompleteName, that.stateCompleteName );
 	}
 
@@ -1288,7 +1142,6 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 		sb.append( ", stateAcsId: \"" ).append(stateAcsId).append( "\"" );
 		sb.append( ", imageLeft: " ).append(imageLeft);
 		sb.append( ", imageTop: " ).append(imageTop);
-		sb.append( ", agencyKeys: " ).append(agencyKeys);
 		sb.append( ", stateCompleteName: \"" ).append(stateCompleteName).append( "\"" );
 		sb.append(" }");
 		return sb.toString();
@@ -1300,6 +1153,5 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	public static final String VAR_stateAcsId = "stateAcsId";
 	public static final String VAR_imageLeft = "imageLeft";
 	public static final String VAR_imageTop = "imageTop";
-	public static final String VAR_agencyKeys = "agencyKeys";
 	public static final String VAR_stateCompleteName = "stateCompleteName";
 }

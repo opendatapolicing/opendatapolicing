@@ -445,49 +445,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return (SiteRequestEnUS)this;
 	}
 
-	///////////////////
-	// jsonPrincipal //
-	///////////////////
-
-	/**	 The entity jsonPrincipal
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected JsonObject jsonPrincipal;
-	@JsonIgnore
-	public Wrap<JsonObject> jsonPrincipalWrap = new Wrap<JsonObject>().var("jsonPrincipal").o(jsonPrincipal);
-
-	/**	<br/> The entity jsonPrincipal
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:jsonPrincipal">Find the entity jsonPrincipal in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _jsonPrincipal(Wrap<JsonObject> c);
-
-	public JsonObject getJsonPrincipal() {
-		return jsonPrincipal;
-	}
-
-	public void setJsonPrincipal(JsonObject jsonPrincipal) {
-		this.jsonPrincipal = jsonPrincipal;
-		this.jsonPrincipalWrap.alreadyInitialized = true;
-	}
-	public static JsonObject staticSetJsonPrincipal(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteRequestEnUS jsonPrincipalInit() {
-		if(!jsonPrincipalWrap.alreadyInitialized) {
-			_jsonPrincipal(jsonPrincipalWrap);
-			if(jsonPrincipal == null)
-				setJsonPrincipal(jsonPrincipalWrap.o);
-			jsonPrincipalWrap.o(null);
-		}
-		jsonPrincipalWrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
 	////////////
 	// userId //
 	////////////
@@ -1889,7 +1846,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				serviceRequestInit();
 				wInit();
 				userInit();
-				jsonPrincipalInit();
 				userIdInit();
 				userKeyInit();
 				sessionIdInit();
@@ -1972,8 +1928,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.w;
 			case "user":
 				return oSiteRequestEnUS.user;
-			case "jsonPrincipal":
-				return oSiteRequestEnUS.jsonPrincipal;
 			case "userId":
 				return oSiteRequestEnUS.userId;
 			case "userKey":
@@ -2323,7 +2277,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	public static final String VAR_serviceRequest = "serviceRequest";
 	public static final String VAR_w = "w";
 	public static final String VAR_user = "user";
-	public static final String VAR_jsonPrincipal = "jsonPrincipal";
 	public static final String VAR_userId = "userId";
 	public static final String VAR_userKey = "userKey";
 	public static final String VAR_sessionId = "sessionId";

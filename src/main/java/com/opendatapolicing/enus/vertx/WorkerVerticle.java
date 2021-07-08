@@ -211,48 +211,60 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				futures.add(Future.future(promise1 -> {
 					workerExecutor.executeBlocking(blockingCodeHandler -> {
 						Integer acsApiYear = config().getInteger(ConfigKeys.ACS_API_YEAR);
-						webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME&for=state:*&key=%s"
-										, acsApiYear
-										, config().getString(ConfigKeys.ACS_API_KEY)
-										))
+						webClient.post(config().getInteger(ConfigKeys.AUTH_PORT), config().getString(ConfigKeys.AUTH_HOST_NAME), config().getString(ConfigKeys.AUTH_TOKEN_URI))
 								.expect(ResponsePredicate.SC_OK)
-								.ssl(true)
-								.send()
-								.onSuccess(acsGetStateResponse -> {
-							JsonArray acsGetStateJson = acsGetStateResponse.bodyAsJsonArray();
-							String stateAcsId = acsGetStateJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(0))).findFirst().map(item -> item.getString(1)).orElse(null);
-
-							try {
+								.ssl(config().getBoolean(ConfigKeys.AUTH_SSL))
+								.authentication(new UsernamePasswordCredentials(config().getString(ConfigKeys.AUTH_RESOURCE), config().getString(ConfigKeys.AUTH_SECRET)))
+								.putHeader("Content-Type", "application/x-www-form-urlencoded")
+								.sendForm(MultiMap.caseInsensitiveMultiMap().set("grant_type", "client_credentials"))
+								.onSuccess(tokenResponse -> {
+							JsonObject token = tokenResponse.bodyAsJsonObject();
+							webClient.get(443, "api.census.gov", String.format("/data/%s/acs/acs5?get=NAME&for=state:*&key=%s"
+											, acsApiYear
+											, config().getString(ConfigKeys.ACS_API_KEY)
+											))
+									.expect(ResponsePredicate.SC_OK)
+									.ssl(true)
+									.send()
+									.onSuccess(acsGetStateResponse -> {
+								JsonArray acsGetStateJson = acsGetStateResponse.bodyAsJsonArray();
+								String stateAcsId = acsGetStateJson.stream().map(o -> (JsonArray)o).filter(items -> "North Carolina".equals(items.getString(0))).findFirst().map(item -> item.getString(1)).orElse(null);
+	
 								try {
-									JsonObject params = new JsonObject();
-									JsonObject body = new JsonObject()
-											.put(SiteState.VAR_stateName, "North Carolina")
-											.put(SiteState.VAR_stateAbbreviation, "NC")
-											.put(SiteState.VAR_stateAcsId, stateAcsId)
-											.put(SiteState.VAR_pk, "NC");
-									params.put("body", body);
-									params.put("path", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("header", new JsonObject());
-									params.put("form", new JsonObject());
-									params.put("query", new JsonObject());
-									JsonObject context = new JsonObject().put("params", params);
-									JsonObject json = new JsonObject().put("context", context);
-									vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
-										LOG.info("{} State imported. ", body.getString("stateName"));
-										blockingCodeHandler.complete();
-									}).onFailure(ex -> {
+									try {
+										JsonObject params = new JsonObject();
+										JsonObject body = new JsonObject()
+												.put(SiteState.VAR_stateName, "North Carolina")
+												.put(SiteState.VAR_stateAbbreviation, "NC")
+												.put(SiteState.VAR_stateAcsId, stateAcsId)
+												.put(SiteState.VAR_pk, "NC");
+										params.put("body", body);
+										params.put("path", new JsonObject());
+										params.put("cookie", new JsonObject());
+										params.put("header", new JsonObject());
+										params.put("form", new JsonObject());
+										params.put("query", new JsonObject());
+										JsonObject context = new JsonObject().put("params", params).put("user", token);
+										JsonObject json = new JsonObject().put("context", context);
+										vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
+											LOG.info("{} State imported. ", body.getString("stateName"));
+											blockingCodeHandler.complete();
+										}).onFailure(ex -> {
+											LOG.error(String.format("listPUTImportSiteState failed. "), ex);
+											blockingCodeHandler.fail(ex);
+										});
+									} catch(Exception ex) {
 										LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 										blockingCodeHandler.fail(ex);
-									});
+									}
 								} catch(Exception ex) {
 									LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 									blockingCodeHandler.fail(ex);
 								}
-							} catch(Exception ex) {
+							}).onFailure(ex -> {
 								LOG.error(String.format("listPUTImportSiteState failed. "), ex);
-								blockingCodeHandler.fail(ex);
-							}
+								promise1.fail(ex);
+							});
 						}).onFailure(ex -> {
 							LOG.error(String.format("listPUTImportSiteState failed. "), ex);
 							promise1.fail(ex);

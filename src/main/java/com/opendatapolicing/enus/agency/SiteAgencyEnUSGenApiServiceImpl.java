@@ -1,7 +1,5 @@
 package com.opendatapolicing.enus.agency;
 
-import com.opendatapolicing.enus.state.SiteStateEnUSApiServiceImpl;
-import com.opendatapolicing.enus.state.SiteState;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.request.api.ApiRequest;
@@ -204,7 +202,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("query", new JsonObject());
-					JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "putimportSiteAgencyFuture")).onSuccess(a -> {
 						promise1.complete();
@@ -230,97 +228,113 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void putimportSiteAgencyFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		try {
-			SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-			ApiRequest apiRequest = new ApiRequest();
-			apiRequest.setRows(1);
-			apiRequest.setNumFound(1L);
-			apiRequest.setNumPATCH(0L);
-			apiRequest.initDeepApiRequest(siteRequest);
-			siteRequest.setApiRequest_(apiRequest);
-			body.put("inheritPk", body.getValue("pk"));
-			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-				siteRequest.getRequestVars().put( "refresh", "false" );
-			}
+		user(serviceRequest).onSuccess(siteRequest -> {
+			try {
+				ApiRequest apiRequest = new ApiRequest();
+				apiRequest.setRows(1);
+				apiRequest.setNumFound(1L);
+				apiRequest.setNumPATCH(0L);
+				apiRequest.initDeepApiRequest(siteRequest);
+				siteRequest.setApiRequest_(apiRequest);
+				body.put("inheritPk", body.getValue("pk"));
+				if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+					siteRequest.getRequestVars().put( "refresh", "false" );
+				}
 
-			SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
-			searchList.setStore(true);
-			searchList.setQuery("*:*");
-			searchList.setC(SiteAgency.class);
-			searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
-			searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
-				try {
-					if(searchList.size() >= 1) {
-						SiteAgency o = searchList.getList().stream().findFirst().orElse(null);
-						SiteAgency o2 = new SiteAgency();
-						JsonObject body2 = new JsonObject();
-						for(String f : body.fieldNames()) {
-							Object bodyVal = body.getValue(f);
-							if(bodyVal instanceof JsonArray) {
-								JsonArray bodyVals = (JsonArray)bodyVal;
-								Collection<?> vals = (Collection<?>)o.obtainForClass(f);
-								if(bodyVals.size() == vals.size()) {
-									Boolean match = true;
-									for(Object val : vals) {
-										if(val != null) {
-											if(!bodyVals.contains(val.toString())) {
+				SearchList<SiteAgency> searchList = new SearchList<SiteAgency>();
+				searchList.setStore(true);
+				searchList.setQuery("*:*");
+				searchList.setC(SiteAgency.class);
+				searchList.addFilterQuery("inheritPk_indexed_string:" + ClientUtils.escapeQueryChars(body.getString("pk")));
+				searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+					try {
+						if(searchList.size() >= 1) {
+							SiteAgency o = searchList.getList().stream().findFirst().orElse(null);
+							SiteAgency o2 = new SiteAgency();
+							JsonObject body2 = new JsonObject();
+							for(String f : body.fieldNames()) {
+								Object bodyVal = body.getValue(f);
+								if(bodyVal instanceof JsonArray) {
+									JsonArray bodyVals = (JsonArray)bodyVal;
+									Collection<?> vals = (Collection<?>)o.obtainForClass(f);
+									if(bodyVals.size() == vals.size()) {
+										Boolean match = true;
+										for(Object val : vals) {
+											if(val != null) {
+												if(!bodyVals.contains(val.toString())) {
+													match = false;
+													break;
+												}
+											} else {
 												match = false;
 												break;
 											}
-										} else {
-											match = false;
-											break;
 										}
-									}
-									if(!match) {
+										if(!match) {
+											body2.put("set" + StringUtils.capitalize(f), bodyVal);
+										}
+									} else {
 										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 									}
 								} else {
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
+									o2.defineForClass(f, bodyVal);
+									o2.attributeForClass(f, bodyVal);
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.put("set" + StringUtils.capitalize(f), bodyVal);
 								}
-							} else {
-								o2.defineForClass(f, bodyVal);
-								o2.attributeForClass(f, bodyVal);
-								if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
-									body2.put("set" + StringUtils.capitalize(f), bodyVal);
 							}
-						}
-						for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
-							if(!body.fieldNames().contains(f))
-								body2.putNull("set" + StringUtils.capitalize(f));
-						}
-						if(body2.size() > 0) {
-							siteRequest.setJsonObject(body2);
-							patchSiteAgencyFuture(o, true).onSuccess(b -> {
-								LOG.info("Import SiteAgency {} succeeded, modified SiteAgency. ", body.getValue("pk"));
+							for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
+								if(!body.fieldNames().contains(f)) {
+									if(!StringUtils.containsAny(f, "pk", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+										body2.putNull("set" + StringUtils.capitalize(f));
+								}
+							}
+							if(body2.size() > 0) {
+								siteRequest.setJsonObject(body2);
+								patchSiteAgencyFuture(o, true).onSuccess(b -> {
+									LOG.info("Import SiteAgency {} succeeded, modified SiteAgency. ", body.getValue("pk"));
+									eventHandler.handle(Future.succeededFuture());
+								}).onFailure(ex -> {
+									LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
+									eventHandler.handle(Future.failedFuture(ex));
+								});
+							} else {
+								eventHandler.handle(Future.succeededFuture());
+							}
+						} else {
+							postSiteAgencyFuture(siteRequest, true).onSuccess(b -> {
+								LOG.info("Import SiteAgency {} succeeded, created new SiteAgency. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
+								eventHandler.handle(Future.failedFuture(ex));
 							});
-						} else {
-							eventHandler.handle(Future.succeededFuture());
 						}
-					} else {
-						postSiteAgencyFuture(siteRequest, true).onSuccess(b -> {
-							LOG.info("Import SiteAgency {} succeeded, created new SiteAgency. ", body.getValue("pk"));
-							eventHandler.handle(Future.succeededFuture());
-						}).onFailure(ex -> {
-							LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
-							eventHandler.handle(Future.failedFuture(ex));
-						});
+					} catch(Exception ex) {
+						LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
+						eventHandler.handle(Future.failedFuture(ex));
 					}
-				} catch(Exception ex) {
+				}).onFailure(ex -> {
 					LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
 					eventHandler.handle(Future.failedFuture(ex));
-				}
-			}).onFailure(ex -> {
+				});
+			} catch(Exception ex) {
 				LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
 				eventHandler.handle(Future.failedFuture(ex));
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
-			eventHandler.handle(Future.failedFuture(ex));
-		}
+			}
+		}).onFailure(ex -> {
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("putimportSiteAgency failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("putimportSiteAgency failed. "), ex);
+				error(null, eventHandler, ex);
+			}
+		});
 	}
 
 	public Future<ServiceResponse> response200PUTImportSiteAgency(SiteRequestEnUS siteRequest) {
@@ -376,7 +390,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("query", new JsonObject());
-					JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "postSiteAgencyFuture")).onSuccess(a -> {
 						JsonObject responseBody = (JsonObject)a.body();
@@ -410,20 +424,33 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void postSiteAgencyFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-		ApiRequest apiRequest = new ApiRequest();
-		apiRequest.setRows(1);
-		apiRequest.setNumFound(1L);
-		apiRequest.setNumPATCH(0L);
-		apiRequest.initDeepApiRequest(siteRequest);
-		siteRequest.setApiRequest_(apiRequest);
-		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-			siteRequest.getRequestVars().put( "refresh", "false" );
-		}
-		postSiteAgencyFuture(siteRequest, false).onSuccess(a -> {
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			postSiteAgencyFuture(siteRequest, false).onSuccess(a -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
+			});
 		}).onFailure(ex -> {
-			eventHandler.handle(Future.failedFuture(ex));
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("postSiteAgency failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("postSiteAgency failed. "), ex);
+				error(null, eventHandler, ex);
+			}
 		});
 	}
 
@@ -627,23 +654,13 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						bParams.add(o2.sqlAgencyTotalOther());
 						break;
 					case SiteAgency.VAR_stateKey:
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures1.add(Future.future(promise2 -> {
-								search(siteRequest).query(SiteState.class, val, inheritPk).onSuccess(pk2 -> {
-									if(!pks.contains(pk2)) {
-										pks.add(pk2);
-										classes.add("SiteState");
-									}
-									sql(siteRequest).update(SiteAgency.class, pk).set(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
+						o2.setStateKey(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_stateKey + "=$" + num);
+						num++;
+						bParams.add(o2.sqlStateKey());
 						break;
 					}
 				}
@@ -797,13 +814,13 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				Long pk = o.getPk();
 
 				JsonObject params = new JsonObject();
-				params.put("body", siteRequest.getJsonObject().put(SiteAgency.VAR_pk, pk.toString()));
-				params.put("path", new JsonObject());
+				params.put("body", siteRequest.getJsonObject());
 				params.put("cookie", new JsonObject());
 				params.put("header", new JsonObject());
 				params.put("form", new JsonObject());
+				params.put("path", new JsonObject());
 				params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-				JsonObject context = new JsonObject().put("params", params);
+				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 				JsonObject json = new JsonObject().put("context", context);
 				eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "patchSiteAgencyFuture")).onSuccess(a -> {
 					promise1.complete();
@@ -839,23 +856,36 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	@Override
 	public void patchSiteAgencyFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-		SiteRequestEnUS siteRequest = generateSiteRequestEnUS(null, serviceRequest, body);
-		SiteAgency o = new SiteAgency();
-		o.setSiteRequest_(siteRequest);
-		ApiRequest apiRequest = new ApiRequest();
-		apiRequest.setRows(1);
-		apiRequest.setNumFound(1L);
-		apiRequest.setNumPATCH(0L);
-		apiRequest.initDeepApiRequest(siteRequest);
-		siteRequest.setApiRequest_(apiRequest);
-		if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-			siteRequest.getRequestVars().put( "refresh", "false" );
-		}
-		o.setPk(body.getString(SiteAgency.VAR_pk));
-		patchSiteAgencyFuture(o, false).onSuccess(a -> {
-			eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+		user(serviceRequest).onSuccess(siteRequest -> {
+			SiteAgency o = new SiteAgency();
+			o.setSiteRequest_(siteRequest);
+			ApiRequest apiRequest = new ApiRequest();
+			apiRequest.setRows(1);
+			apiRequest.setNumFound(1L);
+			apiRequest.setNumPATCH(0L);
+			apiRequest.initDeepApiRequest(siteRequest);
+			siteRequest.setApiRequest_(apiRequest);
+			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+				siteRequest.getRequestVars().put( "refresh", "false" );
+			}
+			o.setPk(body.getString(SiteAgency.VAR_pk));
+			patchSiteAgencyFuture(o, false).onSuccess(a -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+			}).onFailure(ex -> {
+				eventHandler.handle(Future.failedFuture(ex));
+			});
 		}).onFailure(ex -> {
-			eventHandler.handle(Future.failedFuture(ex));
+			if("Inactive Token".equals(ex.getMessage())) {
+				try {
+					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+				} catch(Exception ex2) {
+					LOG.error(String.format("patchSiteAgency failed. ", ex2));
+					error(null, eventHandler, ex2);
+				}
+			} else {
+				LOG.error(String.format("patchSiteAgency failed. "), ex);
+				error(null, eventHandler, ex);
+			}
 		});
 	}
 
@@ -1037,23 +1067,13 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							bParams.add(o2.sqlAgencyTotalOther());
 						break;
 					case "setStateKey":
-						Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-							futures1.add(Future.future(promise2 -> {
-								search(siteRequest).query(SiteState.class, val, inheritPk).onSuccess(pk2 -> {
-									if(!pks.contains(pk2)) {
-										pks.add(pk2);
-										classes.add("SiteState");
-									}
-									sql(siteRequest).update(SiteAgency.class, pk).set(SiteAgency.VAR_stateKey, SiteState.class, pk2).onSuccess(a -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}).onFailure(ex -> {
-									promise2.fail(ex);
-								});
-							}));
-						});
+							o2.setStateKey(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_stateKey + "=$" + num);
+							num++;
+							bParams.add(o2.sqlStateKey());
+						break;
 				}
 			}
 			bSql.append(" WHERE pk=$" + num);
@@ -1856,33 +1876,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 
 	public Future<Void> attributeSiteAgency(SiteAgency o) {
 		Promise<Void> promise = Promise.promise();
-		try {
-			SiteRequestEnUS siteRequest = o.getSiteRequest_();
-			SqlConnection sqlConnection = siteRequest.getSqlConnection();
-			Long pk = o.getPk();
-			sqlConnection.preparedQuery("SELECT stateKey as pk1, 'stateKey' from SiteAgency where pk=$1")
-					.collecting(Collectors.toList())
-					.execute(Tuple.of(pk)
-					).onSuccess(result -> {
-				try {
-					if(result != null) {
-						for(Row definition : result.value()) {
-							o.attributeForClass(definition.getString(1), definition.getLong(0));
-						}
-					}
-					promise.complete();
-				} catch(Exception ex) {
-					LOG.error(String.format("attributeSiteAgency failed. "), ex);
-					promise.fail(ex);
-				}
-			}).onFailure(ex -> {
-				LOG.error(String.format("attributeSiteAgency failed. "), ex);
-				promise.fail(ex);
-			});
-		} catch(Exception ex) {
-			LOG.error(String.format("attributeSiteAgency failed. "), ex);
-			promise.fail(ex);
-		}
+			promise.complete();
 		return promise.future();
 	}
 
@@ -1930,36 +1924,6 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 				for(int i=0; i < pks.size(); i++) {
 					Long pk2 = pks.get(i);
 					String classSimpleName2 = classes.get(i);
-
-					if("SiteState".equals(classSimpleName2) && pk2 != null) {
-						SearchList<SiteState> searchList2 = new SearchList<SiteState>();
-						searchList2.setStore(true);
-						searchList2.setQuery("*:*");
-						searchList2.setC(SiteState.class);
-						searchList2.addFilterQuery("pk_indexed_long:" + pk2);
-						searchList2.setRows(1);
-						futures.add(Future.future(promise2 -> {
-							searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-								SiteState o2 = searchList2.getList().stream().findFirst().orElse(null);
-								if(o2 != null) {
-									JsonObject params = new JsonObject();
-									params.put("body", new JsonObject());
-									params.put("cookie", new JsonObject());
-									params.put("path", new JsonObject());
-									params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk2)));
-									JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
-									JsonObject json = new JsonObject().put("context", context);
-									eventBus.request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "patchSiteState")).onSuccess(c -> {
-										promise2.complete();
-									}).onFailure(ex -> {
-										promise2.fail(ex);
-									});
-								}
-							}).onFailure(ex -> {
-								promise2.fail(ex);
-							});
-						}));
-					}
 				}
 
 				CompositeFuture.all(futures).onSuccess(b -> {
@@ -1970,10 +1934,15 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
-					JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getJsonPrincipal());
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SiteAgency", json, new DeliveryOptions().addHeader("action", "patchSiteAgency")).onSuccess(c -> {
-						promise.complete();
+						JsonObject responseBody = (JsonObject)c.body();
+						Integer statusCode = responseBody.getInteger("statusCode");
+						if(statusCode.equals(200))
+							promise.complete();
+						else
+							promise.fail(new RuntimeException(responseBody.getString("statusMessage")));
 					}).onFailure(ex -> {
 						LOG.error("Refresh relations failed. ", ex);
 						promise.fail(ex);

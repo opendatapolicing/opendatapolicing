@@ -1,6 +1,5 @@
 package com.opendatapolicing.enus.request;  
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 
 import com.opendatapolicing.enus.request.api.ApiRequest;
-import com.opendatapolicing.enus.user.SiteUser;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.writer.AllWriter;
 
@@ -32,7 +26,7 @@ import io.vertx.sqlclient.SqlConnection;
 
 /**
  * Keyword: classSimpleNameSiteRequest
- */        
+ */       
 public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Serializable {
 
 	private static final Pattern PATTERN_SESSION = Pattern.compile("vertx-web.session=(\\w+)");
@@ -68,16 +62,9 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	protected void _user(Wrap<User> c) {
 	}
 
-	protected void _jsonPrincipal(Wrap<JsonObject> c) {
-		if(user != null) {
-			c.o(user.attributes().getJsonObject("accessToken"));
-			c.toString();
-		}
-	}
-
 	protected void _userId(Wrap<String> c) {
-		if(jsonPrincipal != null) {
-			String o = jsonPrincipal.getString("sub");
+		if(user != null) {
+			String o = user.attributes().getString("sub");
 			c.o(o);
 		}
 	}
@@ -104,42 +91,42 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	}
 
 	protected void _userName(Wrap<String> c) {
-		if(jsonPrincipal != null) {
-			String o = jsonPrincipal.getString("preferred_username");
+		if(user != null) {
+			String o = user.attributes().getJsonObject("accessToken").getString("preferred_username");
 			c.o(o);
 		}
 	}
 
 	protected void _userLastName(Wrap<String> c) {
-		if(jsonPrincipal != null) {
-			String o = jsonPrincipal.getString("family_name");
+		if(user != null) {
+			String o = user.attributes().getJsonObject("accessToken").getString("family_name");
 			c.o(o);
 		}
 	}
 
 	protected void _userFirstName(Wrap<String> c) { 
-		if(jsonPrincipal != null) {
-			String o = jsonPrincipal.getString("given_name");
+		if(user != null) {
+			String o = user.attributes().getJsonObject("accessToken").getString("given_name");
 			c.o(o);
 		}
 	}
 
 	protected void _userFullName(Wrap<String> c) {
-		if(jsonPrincipal != null) {
-			String o = jsonPrincipal.getString("name");
+		if(user != null) {
+			String o = user.attributes().getJsonObject("accessToken").getString("name");
 			c.o(o);
 		}
 	}
 
 	protected void _userEmail(Wrap<String> c) {
-		if(jsonPrincipal != null) {
-			String o = jsonPrincipal.getString("email");
+		if(user != null) {
+			String o = user.attributes().getJsonObject("accessToken").getString("email");
 			c.o(o);
 		}
 	}
 
 	protected void _userRealmRoles(List<String> o) {
-		JsonArray roles = Optional.ofNullable(jsonPrincipal).map(o1 -> o1.getJsonObject("realm_access")).map(o2 -> o2.getJsonArray("roles")).orElse(new JsonArray());
+		JsonArray roles = Optional.ofNullable(user).map(user -> user.attributes()).map(attributes -> attributes.getJsonObject("accessToken")).map(o1 -> o1.getJsonObject("realm_access")).map(o2 -> o2.getJsonArray("roles")).orElse(new JsonArray());
 		roles.stream().forEach(r -> {
 			addUserRealmRoles((String)r);
 		});
@@ -147,7 +134,7 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 
 	protected void _userResource(Wrap<JsonObject> c) {
 		String authResource = config.getString("authResource");
-		JsonObject o = Optional.ofNullable(jsonPrincipal).map(p -> p.getJsonObject("resource_access")).map(o1 -> o1.getJsonObject(authResource)).orElse(new JsonObject());
+		JsonObject o = Optional.ofNullable(user).map(user -> user.attributes()).map(p -> p.getJsonObject("resource_access")).map(o1 -> o1.getJsonObject(authResource)).orElse(new JsonObject());
 		c.o(o);
 	}
 

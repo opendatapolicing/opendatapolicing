@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.state;                           
+package com.opendatapolicing.enus.state;                         
 
 import java.util.List;
 
@@ -114,18 +114,7 @@ public class SiteState extends SiteStateGen<BaseModel> {
 	protected void _imageTop(Wrap<Integer> c) {
 	}
 
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Attribute: SiteAgency.stateKey
-	 * HtmlRow: 5
-	 * HtmlCell: 1
-	 * DisplayName.enUS: agencies
-	 */         
-	protected void _agencyKeys(List<Long> o) {}
-
-	/**   
+	/**    
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
