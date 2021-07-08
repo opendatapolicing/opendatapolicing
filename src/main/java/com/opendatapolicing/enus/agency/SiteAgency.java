@@ -1,6 +1,7 @@
 package com.opendatapolicing.enus.agency;                 
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.util.ClientUtils;
 
 import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.search.SearchList;
@@ -45,6 +46,15 @@ import io.vertx.core.Promise;
  * Rows: 300
  **/
 public class SiteAgency extends SiteAgencyGen<BaseModel> {
+
+	/**   
+	 * {@inheritDoc}
+	 * Indexed: true
+	 * Stored: true
+	 * Define: true
+	 */ 
+	protected void _stateAbbreviation(Wrap<String> c) {
+	}
 
 	/**   
 	 * {@inheritDoc}
@@ -151,18 +161,6 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 	protected void _agencyTotalOther(Wrap<Long> c) {
 	}
 
-	/**  
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 * Define: true
-	 * HtmlRow: 5
-	 * HtmlCell: 1
-	 * DisplayName.enUS: state
-	 */        
-	protected void _stateKey(Wrap<Long> c) {
-	}
-
 	/**
 	 * {@inheritDoc}
 	 * Ignore: true
@@ -170,7 +168,7 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {
 		SearchList<SiteState> l = new SearchList<>();
 		l.setQuery("*:*");
-		l.addFilterQuery("stateKey_indexed_long:" + stateKey);
+		l.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
 		l.setC(SiteState.class);
 		l.setStore(true);
 		promise.complete(l);
@@ -200,16 +198,6 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 	protected void _stateName(Wrap<String> c) {
 		if(state_ != null)
 			c.o(state_.getStateName());
-	}
-
-	/**   
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 */ 
-	protected void _stateAbbreviation(Wrap<String> c) {
-		if(state_ != null)
-			c.o(state_.getStateAbbreviation());
 	}
 
 	/**

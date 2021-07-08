@@ -554,6 +554,15 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						num++;
 						bParams.add(o2.sqlInheritPk());
 						break;
+					case SiteAgency.VAR_stateAbbreviation:
+						o2.setStateAbbreviation(jsonObject.getString(entityVar));
+						if(bParams.size() > 0) {
+							bSql.append(", ");
+						}
+						bSql.append(SiteAgency.VAR_stateAbbreviation + "=$" + num);
+						num++;
+						bParams.add(o2.sqlStateAbbreviation());
+						break;
 					case SiteAgency.VAR_agencyTitle:
 						o2.setAgencyTitle(jsonObject.getString(entityVar));
 						if(bParams.size() > 0) {
@@ -652,15 +661,6 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 						bSql.append(SiteAgency.VAR_agencyTotalOther + "=$" + num);
 						num++;
 						bParams.add(o2.sqlAgencyTotalOther());
-						break;
-					case SiteAgency.VAR_stateKey:
-						o2.setStateKey(jsonObject.getString(entityVar));
-						if(bParams.size() > 0) {
-							bSql.append(", ");
-						}
-						bSql.append(SiteAgency.VAR_stateKey + "=$" + num);
-						num++;
-						bParams.add(o2.sqlStateKey());
 						break;
 					}
 				}
@@ -978,6 +978,14 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							num++;
 							bParams.add(o2.sqlInheritPk());
 						break;
+					case "setStateAbbreviation":
+							o2.setStateAbbreviation(jsonObject.getString(entityVar));
+							if(bParams.size() > 0)
+								bSql.append(", ");
+							bSql.append(SiteAgency.VAR_stateAbbreviation + "=$" + num);
+							num++;
+							bParams.add(o2.sqlStateAbbreviation());
+						break;
 					case "setAgencyTitle":
 							o2.setAgencyTitle(jsonObject.getString(entityVar));
 							if(bParams.size() > 0)
@@ -1065,14 +1073,6 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							bSql.append(SiteAgency.VAR_agencyTotalOther + "=$" + num);
 							num++;
 							bParams.add(o2.sqlAgencyTotalOther());
-						break;
-					case "setStateKey":
-							o2.setStateKey(jsonObject.getString(entityVar));
-							if(bParams.size() > 0)
-								bSql.append(", ");
-							bSql.append(SiteAgency.VAR_stateKey + "=$" + num);
-							num++;
-							bParams.add(o2.sqlStateKey());
 						break;
 				}
 			}
@@ -1555,6 +1555,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 			}
 		}
 	}
+	public static final String VAR_stateAbbreviation = "stateAbbreviation";
 	public static final String VAR_agencyTitle = "agencyTitle";
 	public static final String VAR_agencyAcsId = "agencyAcsId";
 	public static final String VAR_agencyTotal = "agencyTotal";
@@ -1566,12 +1567,10 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 	public static final String VAR_agencyTotalLatinx = "agencyTotalLatinx";
 	public static final String VAR_agencyTotalMultiracial = "agencyTotalMultiracial";
 	public static final String VAR_agencyTotalOther = "agencyTotalOther";
-	public static final String VAR_stateKey = "stateKey";
 	public static final String VAR_stateSearch = "stateSearch";
 	public static final String VAR_state_ = "state_";
 	public static final String VAR_stateId = "stateId";
 	public static final String VAR_stateName = "stateName";
-	public static final String VAR_stateAbbreviation = "stateAbbreviation";
 	public static final String VAR_objectSuggest = "objectSuggest";
 
 	// General //

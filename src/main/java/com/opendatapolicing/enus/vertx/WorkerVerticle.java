@@ -703,7 +703,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 										.put("saves", new JsonArray()
 												.add(SiteAgency.VAR_inheritPk)
 												.add(SiteAgency.VAR_agencyTitle)
-												.add(SiteAgency.VAR_stateKey)
+												.add(SiteAgency.VAR_stateAbbreviation)
 												.add(SiteAgency.VAR_agencyAcsId)
 												.add(SiteAgency.VAR_agencyTotal)
 												.add(SiteAgency.VAR_agencyTotalWhite)
@@ -716,7 +716,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 												)
 										.put(SiteAgency.VAR_agencyTitle, agencyTitle)
 										.put(SiteAgency.VAR_pk, state.getStateAbbreviation() + "-" + agencyTitle)
-										.put(SiteAgency.VAR_stateKey, state.getStateAbbreviation())
+										.put(SiteAgency.VAR_stateAbbreviation, state.getStateAbbreviation())
 										;
 								if(agencyAcsData != null) {
 									body.put(SiteAgency.VAR_agencyTotal, agencyAcsData.getString(2));

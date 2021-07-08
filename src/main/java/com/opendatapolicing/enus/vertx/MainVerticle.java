@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.vertx;          
+package com.opendatapolicing.enus.vertx;           
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -797,7 +797,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch1.addFacetField("stopPurposeTitle_indexed_string");
 					stopSearch1.addFacetField("stopActionTitle_indexed_string");
 	//				stopSearch1.addFacetField("personGenderTitles_indexed_strings");
-	//				stopSearch1.addFacetField("personAges_indexed_integers");
+	//				stopSearch1.addFacetField("personAges_indexed_ints");
 					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(b -> {
 						List<String> urlParams = new ArrayList<String>();
 						Integer startYear = LocalDateTime.now().getYear();
@@ -813,7 +813,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								"stopDateTime_stored_string"
 								, "personGenderTitles_stored_strings"
 								, "personRaceTitles_stored_strings"
-								, "personAges_stored_integers"
+								, "personAges_stored_ints"
 								, "agencyTitle_stored_string"
 								, "stopOfficerId_stored_string"
 								, "pk_stored_long"
@@ -893,7 +893,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("age")).ifPresent(age -> {
 							try {
-								stopSearch2.addFilterQuery("personAges_indexed_integers:" + ClientUtils.escapeQueryChars(age));
+								stopSearch2.addFilterQuery("personAges_indexed_ints:" + ClientUtils.escapeQueryChars(age));
 								urlParams.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
@@ -1022,7 +1022,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							ctx.put("personGenderTitles", personGenderTitles);
 		
 							JsonArray personAges = new JsonArray();
-							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 								facetField.getValues().forEach(value -> {
 									personAges.add(value.getName());
 								});
@@ -1307,7 +1307,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					});
 					Optional.ofNullable((String)ctx.get("age")).ifPresent(age -> {
 						try {
-							stopSearch1.addFilterQuery("personAges_indexed_integers:" + ClientUtils.escapeQueryChars(age));
+							stopSearch1.addFilterQuery("personAges_indexed_ints:" + ClientUtils.escapeQueryChars(age));
 							fqParams.add("fq=age:" + URLEncoder.encode(age, "UTF-8"));
 						} catch (UnsupportedEncodingException ex) {
 							ExceptionUtils.rethrow(ex);
@@ -1326,15 +1326,24 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						agencySearch.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
 					agencySearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
 						SiteAgency agency = agencySearch.first();
-						if(agency != null) {
+						if(agency != null && agency.getAgencyTotal() != null) {
 							JsonObject agencyJson = JsonObject.mapFrom(agency);
 							Long agencyTotal = agency.getAgencyTotal();
-							agencyJson.put("agencyPercentWhite", agency.getAgencyTotalWhite() / agencyTotal);
-							agencyJson.put("agencyPercentBlack", agency.getAgencyTotalBlack() / agencyTotal);
-							agencyJson.put("agencyPercentIndigenous", agency.getAgencyTotalIndigenous() / agencyTotal);
-							agencyJson.put("agencyPercentAsian", agency.getAgencyTotalAsian() / agencyTotal);
-							agencyJson.put("agencyPercentLatinx", agency.getAgencyTotalLatinx() / agencyTotal);
-							agencyJson.put("agencyPercentOther", agency.getAgencyTotalOther() / agencyTotal);
+
+							agencyJson.put("agencyTotalWhite", agency.getAgencyTotalWhite());
+							agencyJson.put("agencyTotalBlack", agency.getAgencyTotalBlack());
+							agencyJson.put("agencyTotalIndigenous", agency.getAgencyTotalIndigenous());
+							agencyJson.put("agencyTotalAsian", agency.getAgencyTotalAsian());
+							agencyJson.put("agencyTotalLatinx", agency.getAgencyTotalLatinx());
+							agencyJson.put("agencyTotalOther", agency.getAgencyTotalOther());
+							agencyJson.put("agencyTotal", agency.getAgencyTotal());
+
+							agencyJson.put("agencyPercentWhite", agency.getAgencyTotalWhite().doubleValue() / agencyTotal.doubleValue() * 100.0);
+							agencyJson.put("agencyPercentBlack", agency.getAgencyTotalBlack().doubleValue() / agencyTotal.doubleValue() * 100.0);
+							agencyJson.put("agencyPercentIndigenous", agency.getAgencyTotalIndigenous().doubleValue() / agencyTotal.doubleValue() * 100.0);
+							agencyJson.put("agencyPercentAsian", agency.getAgencyTotalAsian().doubleValue() / agencyTotal.doubleValue() * 100.0);
+							agencyJson.put("agencyPercentLatinx", agency.getAgencyTotalLatinx().doubleValue() / agencyTotal.doubleValue() * 100.0);
+							agencyJson.put("agencyPercentOther", agency.getAgencyTotalOther().doubleValue() / agencyTotal.doubleValue() * 100.0);
 							ctx.put("agency", agencyJson);
 						}
 
@@ -1397,7 +1406,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							ctx.put("personGenderTitles", personGenderTitles);
 		
 							JsonArray personAges = new JsonArray();
-							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_integers".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 								facetField.getValues().forEach(value -> {
 									personAges.add(value.getName());
 								});
