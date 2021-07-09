@@ -1240,7 +1240,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						endDate = ZonedDateTime.of(stopYear, 12, 31, 23, 59, 59, 999999999, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
 					} else {
 						startDate = ZonedDateTime.of(2002, 1, 1, 0, 0, 0, 0, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
-						endDate = ZonedDateTime.now(ZoneId.of(config().getString(ConfigKeys.SITE_ZONE))).with(TemporalAdjusters.firstDayOfYear()).minusNanos(1).minusYears(2);
+						endDate = ZonedDateTime.now(ZoneId.of(config().getString(ConfigKeys.SITE_ZONE))).with(TemporalAdjusters.firstDayOfYear()).minusNanos(1).minusYears(1);
 					}
 					String startDateStr = startDate.toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
 					ctx.put("startDateStr", startDateStr);
