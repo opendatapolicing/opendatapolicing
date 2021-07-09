@@ -69,6 +69,7 @@ CREATE TABLE SiteAgency(
 	pk bigserial primary key
 	, inheritPk text
 	, created timestamp with time zone
+	, stateAbbreviation text
 	, agencyTitle text
 	, agencyAcsId text
 	, agencyTotal bigint
@@ -80,7 +81,6 @@ CREATE TABLE SiteAgency(
 	, agencyTotalLatinx bigint
 	, agencyTotalMultiracial bigint
 	, agencyTotalOther bigint
-	, stateKey bigint
 	);
 CREATE TABLE TrafficStop(
 	pk bigserial primary key
