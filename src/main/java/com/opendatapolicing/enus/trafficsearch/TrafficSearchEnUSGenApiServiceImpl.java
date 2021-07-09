@@ -1596,7 +1596,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 			String fq2 = fqs[1].equals("*") ? fqs[1] : TrafficSearch.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
 			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			return varIndexed + ":" + TrafficSearch.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed);
+			return varIndexed + ":" + ClientUtils.escapeQueryChars(TrafficSearch.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed)).replace("\\", "\\\\");
 		}
 	}
 

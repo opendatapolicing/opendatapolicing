@@ -1620,7 +1620,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 			String fq2 = fqs[1].equals("*") ? fqs[1] : SiteAgency.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
 			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			return varIndexed + ":" + SiteAgency.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed);
+			return varIndexed + ":" + ClientUtils.escapeQueryChars(SiteAgency.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed)).replace("\\", "\\\\");
 		}
 	}
 

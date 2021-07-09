@@ -1640,7 +1640,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			String fq2 = fqs[1].equals("*") ? fqs[1] : TrafficContraband.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), fqs[1]);
 			 return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
 		} else {
-			return varIndexed + ":" + TrafficContraband.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed);
+			return varIndexed + ":" + ClientUtils.escapeQueryChars(TrafficContraband.staticSolrFqForClass(entityVar, searchList.getSiteRequest_(), valueIndexed)).replace("\\", "\\\\");
 		}
 	}
 
