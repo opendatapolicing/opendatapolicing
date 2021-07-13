@@ -287,34 +287,6 @@
 					</annotationProcessors>
 				</configuration>
 			</plugin>
-
-			<!-- Handlebars Template Plugin -->
-			<plugin>
-				<groupId>com.github.jknack</groupId>
-				<artifactId>handlebars-maven-plugin</artifactId>
-				<version>${handlebars-maven-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>precompile</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>precompile</goal>
-						</goals>
-						<configuration>
-							<output>/usr/local/src/opendatapolicing-static/js/helpers.js</output>
-							<prefix>/usr/local/src/opendatapolicing-static/template</prefix>
-							<suffix>.hbs</suffix>
-							<handlebarsJsFile>handlebars-v4.7.6.js</handlebarsJsFile>
-							<minimize>false</minimize>
-							<runtime></runtime>
-							<amd>false</amd>
-							<encoding>UTF-8</encoding>
-							<templates>
-							</templates>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<profiles>

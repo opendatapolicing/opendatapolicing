@@ -249,11 +249,7 @@ public class BaseApiServiceImpl {
 	}
 
 	public Boolean userDefine(SiteRequestEnUS siteRequest, JsonObject jsonObject, Boolean patch) {
-		if(patch) {
-			return false;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	public void attributeArrayFuture(SiteRequestEnUS siteRequest, Class<?> c1, Long pk1, Class<?> c2, String pk2, List<Future<?>> futures, String entityVar, Boolean inheritPk) {
