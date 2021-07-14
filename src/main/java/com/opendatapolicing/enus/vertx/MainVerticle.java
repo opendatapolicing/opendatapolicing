@@ -693,7 +693,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
 			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
 			Handlebars handlebars = (Handlebars)engine.unwrap();
-			TemplateHandler templateHandler = TemplateHandler.create(engine, staticPath + "/template", "text/html");
+			TemplateHandler templateHandler = TemplateHandler.create(engine, "template", "text/html");
 
 			handlebars.registerHelper("urlencode", (Helper<String>) (value, options) -> {
 				try {
