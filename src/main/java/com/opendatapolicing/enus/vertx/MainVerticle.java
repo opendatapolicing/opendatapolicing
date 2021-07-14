@@ -421,7 +421,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					if(StringUtils.startsWith(siteBaseUrl, "https://"))
 						sessionHandler.setCookieSecureFlag(true);
 			
-					RouterBuilder.create(vertx, "src/main/resources/openapi3-enUS.yaml", b -> {
+					RouterBuilder.create(vertx, "webroot/openapi3-enUS.yaml", b -> {
 						if (b.succeeded()) {
 							RouterBuilder routerBuilder = b.result();
 							routerBuilder.mountServicesFromExtensions();
