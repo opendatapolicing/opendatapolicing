@@ -198,14 +198,14 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		Long vertxWarningExceptionSeconds = System.getenv("vertxWarningExceptionSeconds") == null ? 10 : Long.parseLong(System.getenv("vertxWarningExceptionSeconds"));
 		String clusterPublicHost = System.getenv("clusterPublicHost");
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
-		zkConfig.put("sessionTimeout", 20000000);
-		zkConfig.put("connectTimeout", 30000);
+		zkConfig.put("sessionTimeout", 20000);
+		zkConfig.put("connectTimeout", 3000);
 		zkConfig.put("rootPath", "io.vertx");
 		zkConfig.put("retry", new JsonObject() {
 			{
 				put("initialSleepTime", 100);
 				put("intervalTimes", 10000);
-				put("maxTimes", 30);
+				put("maxTimes", 3);
 			}
 		});
 		ClusterManager clusterManager = new ZookeeperClusterManager(zkConfig);
