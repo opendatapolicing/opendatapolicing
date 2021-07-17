@@ -83,9 +83,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:siteRequest_">Find the entity siteRequest_ in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> c);
+	protected abstract void _siteRequest_(Wrap<SiteRequestEnUS> w);
 
 	public SiteRequestEnUS getSiteRequest_() {
 		return siteRequest_;
@@ -127,9 +127,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _pk(Wrap<Long> c);
+	protected abstract void _pk(Wrap<Long> w);
 
 	public Long getPk() {
 		return pk;
@@ -205,9 +205,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:inheritPk">Find the entity inheritPk in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _inheritPk(Wrap<String> c);
+	protected abstract void _inheritPk(Wrap<String> w);
 
 	public String getInheritPk() {
 		return inheritPk;
@@ -275,9 +275,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:id">Find the entity id in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _id(Wrap<String> c);
+	protected abstract void _id(Wrap<String> w);
 
 	public String getId() {
 		return id;
@@ -338,7 +338,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ZonedDateTimeSerializer.class)
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSV'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime created;
 	@JsonIgnore
@@ -348,9 +348,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:created">Find the entity created in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _created(Wrap<ZonedDateTime> c);
+	protected abstract void _created(Wrap<ZonedDateTime> w);
 
 	public ZonedDateTime getCreated() {
 		return created;
@@ -375,7 +375,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		if(StringUtils.endsWith(o, "Z"))
 			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		else
-			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME).truncatedTo(ChronoUnit.MILLIS);
 	}
 	@JsonIgnore
 	public void setCreated(Date o) {
@@ -431,7 +431,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ZonedDateTimeSerializer.class)
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSV'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime modified;
 	@JsonIgnore
@@ -441,9 +441,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:modified">Find the entity modified in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _modified(Wrap<ZonedDateTime> c);
+	protected abstract void _modified(Wrap<ZonedDateTime> w);
 
 	public ZonedDateTime getModified() {
 		return modified;
@@ -468,7 +468,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 		if(StringUtils.endsWith(o, "Z"))
 			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		else
-			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME).truncatedTo(ChronoUnit.MILLIS);
 	}
 	@JsonIgnore
 	public void setModified(Date o) {
@@ -531,9 +531,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalName">Find the entity classCanonicalName in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _classCanonicalName(Wrap<String> c);
+	protected abstract void _classCanonicalName(Wrap<String> w);
 
 	public String getClassCanonicalName() {
 		return classCanonicalName;
@@ -601,9 +601,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classSimpleName">Find the entity classSimpleName in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _classSimpleName(Wrap<String> c);
+	protected abstract void _classSimpleName(Wrap<String> w);
 
 	public String getClassSimpleName() {
 		return classSimpleName;
@@ -855,9 +855,9 @@ public abstract class BaseModelGen<DEV> extends Object {
 	 *  is defined as null before being initialized. 
 	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:objectTitle">Find the entity objectTitle in Solr</a>
 	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
+	 * @param w is for wrapping a value to assign to this entity during initialization. 
 	 **/
-	protected abstract void _objectTitle(Wrap<String> c);
+	protected abstract void _objectTitle(Wrap<String> w);
 
 	public String getObjectTitle() {
 		return objectTitle;

@@ -9,7 +9,6 @@ import io.vertx.core.MultiMap;
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
 import java.text.NumberFormat;
-import java.util.Stack;
 import java.util.ArrayList;
 import io.vertx.sqlclient.SqlConnection;
 import org.apache.commons.collections.CollectionUtils;
@@ -354,51 +353,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 			serviceRequestWrap.o(null);
 		}
 		serviceRequestWrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
-	///////
-	// w //
-	///////
-
-	/**	 The entity w
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonProperty
-	@JsonInclude(Include.NON_NULL)
-	protected AllWriter w;
-	@JsonIgnore
-	public Wrap<AllWriter> wWrap = new Wrap<AllWriter>().var("w").o(w);
-
-	/**	<br/> The entity w
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:w">Find the entity w in Solr</a>
-	 * <br/>
-	 * @param c is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _w(Wrap<AllWriter> c);
-
-	public AllWriter getW() {
-		return w;
-	}
-
-	public void setW(AllWriter w) {
-		this.w = w;
-		this.wWrap.alreadyInitialized = true;
-	}
-	public static AllWriter staticSetW(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected SiteRequestEnUS wInit() {
-		if(!wWrap.alreadyInitialized) {
-			_w(wWrap);
-			if(w == null)
-				setW(wWrap.o);
-			wWrap.o(null);
-		}
-		if(w != null)
-			w.initDeepForClass(siteRequest_);
-		wWrap.alreadyInitialized(true);
 		return (SiteRequestEnUS)this;
 	}
 
@@ -1311,47 +1265,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 		return userResourceRoles == null ? "" : userResourceRoles.toString();
 	}
 
-	//////////////
-	// xmlStack //
-	//////////////
-
-	/**	 The entity xmlStack
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut Stack<String>(). 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonInclude(Include.NON_NULL)
-	protected Stack<String> xmlStack = new Stack<String>();
-	@JsonIgnore
-	public Wrap<Stack<String>> xmlStackWrap = new Wrap<Stack<String>>().var("xmlStack").o(xmlStack);
-
-	/**	<br/> The entity xmlStack
-	 *  It is constructed before being initialized with the constructor by default Stack<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.request.SiteRequestEnUS&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:xmlStack">Find the entity xmlStack in Solr</a>
-	 * <br/>
-	 * @param xmlStack is the entity already constructed. 
-	 **/
-	protected abstract void _xmlStack(Stack<String> o);
-
-	public Stack<String> getXmlStack() {
-		return xmlStack;
-	}
-
-	public void setXmlStack(Stack<String> xmlStack) {
-		this.xmlStack = xmlStack;
-		this.xmlStackWrap.alreadyInitialized = true;
-	}
-	public static String staticSetXmlStack(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	protected SiteRequestEnUS xmlStackInit() {
-		if(!xmlStackWrap.alreadyInitialized) {
-			_xmlStack(xmlStack);
-		}
-		xmlStackWrap.alreadyInitialized(true);
-		return (SiteRequestEnUS)this;
-	}
-
 	//////////////////
 	// solrDocument //
 	//////////////////
@@ -1844,7 +1757,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				jsonObjectInit();
 				solrQueryInit();
 				serviceRequestInit();
-				wInit();
 				userInit();
 				userIdInit();
 				userKeyInit();
@@ -1858,7 +1770,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				userRealmRolesInit();
 				userResourceInit();
 				userResourceRolesInit();
-				xmlStackInit();
 				solrDocumentInit();
 				pageAdminInit();
 				requestPkInit();
@@ -1878,8 +1789,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	/////////////////
 
 	public void siteRequestSiteRequestEnUS(SiteRequestEnUS siteRequest_) {
-		if(w != null)
-			w.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -1924,8 +1833,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.solrQuery;
 			case "serviceRequest":
 				return oSiteRequestEnUS.serviceRequest;
-			case "w":
-				return oSiteRequestEnUS.w;
 			case "user":
 				return oSiteRequestEnUS.user;
 			case "userId":
@@ -1952,8 +1859,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 				return oSiteRequestEnUS.userResource;
 			case "userResourceRoles":
 				return oSiteRequestEnUS.userResourceRoles;
-			case "xmlStack":
-				return oSiteRequestEnUS.xmlStack;
 			case "solrDocument":
 				return oSiteRequestEnUS.solrDocument;
 			case "pageAdmin":
@@ -2275,7 +2180,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	public static final String VAR_jsonObject = "jsonObject";
 	public static final String VAR_solrQuery = "solrQuery";
 	public static final String VAR_serviceRequest = "serviceRequest";
-	public static final String VAR_w = "w";
 	public static final String VAR_user = "user";
 	public static final String VAR_userId = "userId";
 	public static final String VAR_userKey = "userKey";
@@ -2289,7 +2193,6 @@ public abstract class SiteRequestEnUSGen<DEV> extends Object {
 	public static final String VAR_userRealmRoles = "userRealmRoles";
 	public static final String VAR_userResource = "userResource";
 	public static final String VAR_userResourceRoles = "userResourceRoles";
-	public static final String VAR_xmlStack = "xmlStack";
 	public static final String VAR_solrDocument = "solrDocument";
 	public static final String VAR_pageAdmin = "pageAdmin";
 	public static final String VAR_requestPk = "requestPk";

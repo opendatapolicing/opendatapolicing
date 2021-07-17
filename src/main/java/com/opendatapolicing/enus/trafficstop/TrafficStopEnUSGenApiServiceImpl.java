@@ -90,6 +90,7 @@ import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.client.solrj.response.FacetField;
 import java.util.Map.Entry;
 import java.util.Iterator;
+import java.util.Base64;
 import java.time.ZonedDateTime;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.commons.collections.CollectionUtils;
@@ -202,7 +203,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("query", new JsonObject());
-				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "putimportTrafficStopFuture")).onSuccess(a -> {
 						promise1.complete();
@@ -390,10 +391,11 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("query", new JsonObject());
-				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
+					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "postTrafficStopFuture")).onSuccess(a -> {
-						JsonObject responseBody = (JsonObject)a.body();
+						JsonObject responseMessage = (JsonObject)a.body();
+						JsonObject responseBody = new JsonObject(new String(Base64.getDecoder().decode(responseMessage.getString("payload")), Charset.forName("UTF-8")));
 						apiRequest.setPk(Long.parseLong(responseBody.getString("pk")));
 						eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
 						LOG.debug(String.format("postTrafficStop succeeded. "));
@@ -434,8 +436,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
 				siteRequest.getRequestVars().put( "refresh", "false" );
 			}
-			postTrafficStopFuture(siteRequest, false).onSuccess(a -> {
-				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+			postTrafficStopFuture(siteRequest, false).onSuccess(o -> {
+				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(JsonObject.mapFrom(o).encodePrettily()))));
 			}).onFailure(ex -> {
 				eventHandler.handle(Future.failedFuture(ex));
 			});
@@ -855,19 +857,10 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		List<Future> futures = new ArrayList<>();
 		SiteRequestEnUS siteRequest = listTrafficStop.getSiteRequest_();
 		listTrafficStop.getList().forEach(o -> {
+			SiteRequestEnUS siteRequest2 = generateSiteRequestEnUS(siteRequest.getUser(), siteRequest.getServiceRequest(), siteRequest.getJsonObject());
+			o.setSiteRequest_(siteRequest2);
 			futures.add(Future.future(promise1 -> {
-				Long pk = o.getPk();
-
-				JsonObject params = new JsonObject();
-				params.put("body", siteRequest.getJsonObject());
-				params.put("cookie", new JsonObject());
-				params.put("header", new JsonObject());
-				params.put("form", new JsonObject());
-				params.put("path", new JsonObject());
-				params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pk)));
-				JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
-				JsonObject json = new JsonObject().put("context", context);
-				eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "patchTrafficStopFuture")).onSuccess(a -> {
+				patchTrafficStopFuture(o, false).onSuccess(a -> {
 					promise1.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("listPATCHTrafficStop failed. "), ex);
@@ -902,35 +895,49 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	@Override
 	public void patchTrafficStopFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
 		user(serviceRequest).onSuccess(siteRequest -> {
-			TrafficStop o = new TrafficStop();
-			o.setSiteRequest_(siteRequest);
-			ApiRequest apiRequest = new ApiRequest();
-			apiRequest.setRows(1);
-			apiRequest.setNumFound(1L);
-			apiRequest.setNumPATCH(0L);
-			apiRequest.initDeepApiRequest(siteRequest);
-			siteRequest.setApiRequest_(apiRequest);
-			if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-				siteRequest.getRequestVars().put( "refresh", "false" );
-			}
-			o.setPk(body.getString(TrafficStop.VAR_pk));
-			patchTrafficStopFuture(o, false).onSuccess(a -> {
-				eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
-			}).onFailure(ex -> {
-				eventHandler.handle(Future.failedFuture(ex));
-			});
-		}).onFailure(ex -> {
-			if("Inactive Token".equals(ex.getMessage())) {
-				try {
-					eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-				} catch(Exception ex2) {
-					LOG.error(String.format("patchTrafficStop failed. ", ex2));
-					error(null, eventHandler, ex2);
-				}
-			} else {
+			try {
+				siteRequest.setJsonObject(body);
+				serviceRequest.getParams().getJsonObject("query").put("rows", 1);
+				searchTrafficStopList(siteRequest, false, true, true, "/api/traffic-stop", "PATCH").onSuccess(listTrafficStop -> {
+					try {
+						TrafficStop o = listTrafficStop.first();
+						if(o != null && listTrafficStop.getQueryResponse().getResults().getNumFound() == 1) {
+							ApiRequest apiRequest = new ApiRequest();
+							apiRequest.setRows(1);
+							apiRequest.setNumFound(1L);
+							apiRequest.setNumPATCH(0L);
+							apiRequest.initDeepApiRequest(siteRequest);
+							siteRequest.setApiRequest_(apiRequest);
+							if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+								siteRequest.getRequestVars().put( "refresh", "false" );
+							}
+							if(apiRequest.getNumFound() == 1L)
+								apiRequest.setOriginal(o);
+							apiRequest.setPk(listTrafficStop.first().getPk());
+							eventBus.publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
+							patchTrafficStopFuture(o, false).onSuccess(a -> {
+								eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+							}).onFailure(ex -> {
+								eventHandler.handle(Future.failedFuture(ex));
+							});
+						} else {
+							eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
+						}
+					} catch(Exception ex) {
+						LOG.error(String.format("patchTrafficStop failed. "), ex);
+						error(siteRequest, eventHandler, ex);
+					}
+				}).onFailure(ex -> {
+					LOG.error(String.format("patchTrafficStop failed. "), ex);
+					error(siteRequest, eventHandler, ex);
+				});
+			} catch(Exception ex) {
 				LOG.error(String.format("patchTrafficStop failed. "), ex);
 				error(null, eventHandler, ex);
 			}
+		}).onFailure(ex -> {
+			LOG.error(String.format("patchTrafficStop failed. "), ex);
+			error(null, eventHandler, ex);
 		});
 	}
 
@@ -1983,7 +1990,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
-				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?commitWithin=10000&overwrite=true&wt=json");
+				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?softCommit=true&overwrite=true&wt=json");
 				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
 				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
@@ -2028,13 +2035,13 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
-					eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "patchTrafficStop")).onSuccess(c -> {
-						JsonObject responseBody = (JsonObject)c.body();
-						Integer statusCode = responseBody.getInteger("statusCode");
+					eventBus.request("opendatapolicing-enUS-TrafficStop", json, new DeliveryOptions().addHeader("action", "patchTrafficStopFuture")).onSuccess(c -> {
+						JsonObject responseMessage = (JsonObject)c.body();
+						Integer statusCode = responseMessage.getInteger("statusCode");
 						if(statusCode.equals(200))
 							promise.complete();
 						else
-							promise.fail(new RuntimeException(responseBody.getString("statusMessage")));
+							promise.fail(new RuntimeException(responseMessage.getString("statusMessage")));
 					}).onFailure(ex -> {
 						LOG.error("Refresh relations failed. ", ex);
 						promise.fail(ex);

@@ -31,7 +31,7 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * {@inheritDoc}
 	 * Ignore: true
 	 */
-	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {}
+	protected void _siteRequest_(Wrap<SiteRequestEnUS> w) {}
 
 	/**
 	 * {@inheritDoc}
@@ -43,7 +43,7 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * HtmlCell: 1
 	 * DisplayName.enUS: primary key
 	 */
-	protected void _pk(Wrap<Long> c) {}
+	protected void _pk(Wrap<Long> w) {}
 
 	/**
 	 * {@inheritDoc}
@@ -52,15 +52,15 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * InheritPrimaryKey: true
 	 * Define: true
 	 */
-	protected void _inheritPk(Wrap<String> c) {}
+	protected void _inheritPk(Wrap<String> w) {}
 
 	/**
 	 * {@inheritDoc}
 	 * UniqueKey: true
 	 */
-	protected void _id(Wrap<String> c) {
+	protected void _id(Wrap<String> w) {
 		if(pk != null)
-			c.o(getClass().getSimpleName() + "_" + pk.toString());
+			w.o(getClass().getSimpleName() + "_" + pk.toString());
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * HtmlColumn: 2
 	 * DisplayName.enUS: created
 	 */
-	protected void _created(Wrap<ZonedDateTime> c) {}
+	protected void _created(Wrap<ZonedDateTime> w) {}
 
 	/**
 	 * {@inheritDoc}
@@ -87,8 +87,8 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * HtmlCell: 3
 	 * DisplayName.enUS: modified
 	 */ 
-	protected void _modified(Wrap<ZonedDateTime> c) {
-		c.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
+	protected void _modified(Wrap<ZonedDateTime> w) {
+		w.o(ZonedDateTime.now(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))));
 	}
 
 	/**
@@ -96,9 +96,8 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 */ 
-	protected void _classCanonicalName(Wrap<String> c) {
-		String o = getClass().getCanonicalName();
-		c.o(o);
+	protected void _classCanonicalName(Wrap<String> w) {
+		w.o(getClass().getCanonicalName());
 	}
 
 	/**
@@ -106,9 +105,8 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * Indexed: true
 	 * Stored: true
 	 */ 
-	protected void _classSimpleName(Wrap<String> c) {
-		String o = getClass().getSimpleName();
-		c.o(o);
+	protected void _classSimpleName(Wrap<String> w) {
+		w.o(getClass().getSimpleName());
 	}
 
 	/**
@@ -139,9 +137,9 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * VarTitle: true
 	 * HtmlColumn: 2
 	 */ 
-	protected void _objectTitle(Wrap<String> c) {
+	protected void _objectTitle(Wrap<String> w) {
 		if(pk != null)
-			c.o(pk.toString());
+			w.o(pk.toString());
 	}
 
 	/**
