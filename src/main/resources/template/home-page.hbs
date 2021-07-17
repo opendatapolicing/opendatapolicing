@@ -1,0 +1,152 @@
+
+{{#partial "head_content"}}
+		<title>Open Data Policing</title>
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="keywords" content="">
+		<script src="{{staticBaseUrl}}/js/sockjs.js"></script>
+		<script src="{{staticBaseUrl}}/js/vertx-eventbus.js"></script>
+		<script src="{{staticBaseUrl}}/js/enUS/TrafficStopPage.js"></script>
+		<script src="{{staticBaseUrl}}/js/enUS/TrafficPersonPage.js"></script>
+		<script src="{{staticBaseUrl}}/js/enUS/TrafficSearchPage.js"></script>
+		<script src="{{staticBaseUrl}}/js/enUS/SearchBasisPage.js"></script>
+		<script src="{{staticBaseUrl}}/js/enUS/ContrabandPage.js"></script>
+
+		<script>//<![CDATA[
+		$(document).ready(function() {
+			window.eventBus = new EventBus('/eventbus');
+			websocketHomePage();
+		});
+
+		async function websocketHomePage(tableName, success) {
+			window.eventBus.onopen = function () {
+				registerHandlerHomePage('TrafficStop', websocketTrafficStopInner);
+				registerHandlerHomePage('TrafficPerson', websocketTrafficPersonInner);
+				registerHandlerHomePage('TrafficSearch', websocketTrafficSearchInner);
+				registerHandlerHomePage('SearchBasis', websocketSearchBasisInner);
+				registerHandlerHomePage('TrafficContraband', websocketTrafficContrabandInner);
+			}
+		}
+
+		function registerHandlerHomePage(tableName, success) {
+			window.eventBus.registerHandler('websocket' + tableName, function (error, message) {
+				var json = message.body;
+				var id = json['id'];
+				var pk = json['pk'];
+				var pkPage = $('#' + tableName + 'Form :input[name=pk]').val();
+				var pks = json['pks'];
+				var empty = json['empty'];
+				var numFound = parseInt(json['numFound']);
+				var numPATCH = parseInt(json['numPATCH']);
+				var percent = Math.floor( numPATCH / numFound * 100 ) + '%';
+				var $box = $('<div>').attr('class', 'w3-quarter box-' + id + ' ').attr('id', 'box-' + id).attr('data-numPATCH', numPATCH);
+				var $margin = $('<div>').attr('class', 'w3-margin ').attr('id', 'margin-' + id);
+				var $card = $('<div>').attr('class', 'w3-card w3-white ').attr('id', 'card-' + id);
+				var $header = $('<div>').attr('class', 'w3-container fa-pale-green ').attr('id', 'header-' + id);
+				var $i = $('<i>').attr('class', 'far fa-newspaper w3-margin-right ').attr('id', 'icon-' + id);
+				var $headerSpan = $('<span>').attr('class', '').text('modify traffic stops in ' + json.timeRemaining);
+				var $x = $('<span>').attr('class', 'w3-button w3-display-topright ').attr('onclick', '$("#card-' + id + '").hide(); ').attr('id', 'x-' + id);
+				var $body = $('<div>').attr('class', 'w3-container w3-padding ').attr('id', 'text-' + id);
+				var $bar = $('<div>').attr('class', 'w3-light-gray ').attr('id', 'bar-' + id);
+				var $progress = $('<div>').attr('class', 'w3-pale-green ').attr('style', 'height: 24px; width: ' + percent + '; ').attr('id', 'progress-' + id).text(numPATCH + '/' + numFound);
+				$card.append($header);
+				$header.append($i);
+				$header.append($headerSpan);
+				$header.append($x);
+				$body.append($bar);
+				$bar.append($progress);
+				$card.append($body);
+				$box.append($margin);
+				$margin.append($card);
+				if(numPATCH < numFound) {
+					var $old_box = $('.box-' + id);
+					if(!$old_box.size()) {
+						$('.top-box').append($box);
+					} else if($old_box && $old_box.attr('data-numPATCH') < numFound) {
+						$('.box-' + id).html($margin);
+					}
+				} else {
+					$('.box-' + id).remove();
+				}
+				if(pk && pkPage && pk == pkPage) {
+					if(success)
+						success(json);
+				}
+			});
+		}
+		//]]></script>
+{{/partial}}
+
+{{#partial "body_content"}}
+	<div id='wrap'>
+
+		<div class="w3-2017-navy-peony w3-padding-64 ">
+			<div class="w3-content w3-center ">
+				<div class="row">
+					<h1>Open Data Policing</h1>
+					<p>Search all known <span id="state-names">{{#each states}}{{#if @first}}{{else}}, {{/if}}{{stateName}}{{/each}}</span> traffic stops</p>
+				</div>
+				<div id="state-list" class="w3-row" style="height: 208px; ">
+					{{#each states}}
+					<div class="w3-rest ">
+						<img src="{{staticBaseUrl}}/svg/state-{{stateAbbreviation}}.svg" class="state-img w3-img " style="height: 128px; "/>
+						<p><span class="state-stop-count ">{{stopCountStr}}</span><span> stops</span></p>
+						<a class="state-search-link " href="/state/{{objectId}}" class="w3-btn ">{{stateName}} {{stateAbbreviation}}</a>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</div>
+
+		<div class="w3-text-white " style="background-image: url('{{staticBaseUrl}}/jpg/cars-at-day.jpg'); background-size: cover; text-shadow: 1px 1px 0 #444; ">
+			<div class="w3-content ">
+				<div class="w3-roww3-padding-32 ">
+					<div class="w3-rest ">
+						<blockquote>
+							<p class="w3-xlarge ">“This platform presents the information in a manner that
+								increases the transparency of the Fayetteville Police Department
+								and improves the community and police relationship.”</p>
+							<footer class="w3-text-light-gray ">­— Harold Medlock, Fayetteville Police Chief</footer>
+						</blockquote>
+					</div>
+				</div>
+				<div class="w3-row w3-padding-32 ">
+					<hr class="">
+					<div class="w3-third w3-mobile w3-container ">
+						<h3>Locate an Officer's Career Stop and Search History</h3>
+						<p class="justify">Stopped by the police? Use our “Find a
+							Stop” feature to locate your traffic stop. Click on the
+							associated Officer ID number to display the enforcement history
+							of the officer who stopped you. Maryland data includes an
+							officer’s stop, search, and contraband seizure data, broken down
+							by race and ethnicity. North Carolina data includes these
+							features in addition to use-of-force data (traffic stops only).</p>
+					</div>
+					<div class="w3-third w3-mobile w3-container ">
+						<h3>Review Departmental Enforcement Patterns</h3>
+						<p class="justify">Learn more about the enforcement patterns
+							of individual police agencies. Metrics include stops, searches,
+							search rates, contraband seizure rates, and the likelihood of
+							search for individual stop causes—each broken down by race and
+							ethnicity. Click on the “Agencies” tab to review who is stopped
+							and searched in a given jurisdiction and how enforcement patterns
+							compare to local demographics, displayed through the most
+							recently available census data.</p>
+					</div>
+					<div class="w3-third w3-mobile w3-container ">
+						<h3>Compare Enforcement Practices Among Officers and
+							Jurisdictions</h3>
+						<p class="justify">Our platform allows users—including those
+							in police management—to easily compare enforcement patterns among
+							individual officers and agencies, evaluate the frequency and
+							efficiency of searches, and monitor for racially disparate
+							enforcement practices. Police managers who possess a master list
+							of Officer ID codes can bypass the “Find a Stop” page to directly
+							access data on individual officers under their command.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+{{/partial}}
+{{> base-page}}
+

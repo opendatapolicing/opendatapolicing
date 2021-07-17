@@ -195,14 +195,14 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		Long vertxWarningExceptionSeconds = System.getenv("vertxWarningExceptionSeconds") == null ? 10 : Long.parseLong(System.getenv("vertxWarningExceptionSeconds"));
 		String clusterPublicHost = System.getenv("clusterPublicHost");
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
-		zkConfig.put("sessionTimeout", 20000000);
-		zkConfig.put("connectTimeout", 30000);
+		zkConfig.put("sessionTimeout", 20000);
+		zkConfig.put("connectTimeout", 3000);
 		zkConfig.put("rootPath", "opendatapolicing");
 		zkConfig.put("retry", new JsonObject() {
 			{
 				put("initialSleepTime", 100);
 				put("intervalTimes", 10000);
-				put("maxTimes", 30);
+				put("maxTimes", 3);
 			}
 		});
 		ClusterManager clusterManager = new ZookeeperClusterManager(zkConfig);
@@ -418,7 +418,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					if(StringUtils.startsWith(siteBaseUrl, "https://"))
 						sessionHandler.setCookieSecureFlag(true);
 			
-					RouterBuilder.create(vertx, "src/main/resources/openapi3-enUS.yaml", b -> {
+					RouterBuilder.create(vertx, "webroot/openapi3-enUS.yaml", b -> {
 						if (b.succeeded()) {
 							RouterBuilder routerBuilder = b.result();
 							routerBuilder.mountServicesFromExtensions();
@@ -690,7 +690,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
 			HandlebarsTemplateEngine engine = HandlebarsTemplateEngine.create(vertx);
 			Handlebars handlebars = (Handlebars)engine.unwrap();
-			TemplateHandler templateHandler = TemplateHandler.create(engine, staticPath + "/template", "text/html");
+			TemplateHandler templateHandler = TemplateHandler.create(engine, "template", "text/html");
 
 			handlebars.registerHelper("urlencode", (Helper<String>) (value, options) -> {
 				try {

@@ -73,7 +73,7 @@ public class AppSwagger2 extends AppSwagger2Gen<Object> {
 	}
 
 	protected void _openApiYamlPath(Wrap<String> c) {
-		c.o(appPath + "/src/main/resources/" + ("2.0".equals(apiVersion) ? "swagger2" : "openapi3") + "-enUS.yaml");
+		c.o(appPath + "/src/main/resources/webroot/" + ("2.0".equals(apiVersion) ? "swagger2" : "openapi3") + "-enUS.yaml");
 	}
 
 	protected void _openApiYamlFile(Wrap<File> c) {
