@@ -94,7 +94,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 
 					promise.complete(true);
 				}).onFailure(ex -> {
-					LOG.error(String.format("indexTrafficStop failed. "), ex);
+					LOG.error(String.format("Search failed. "), ex);
 					promise.fail(ex);
 				});
 			} else {
@@ -157,7 +157,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 						promise.fail(ex);
 					}
 				}).onFailure(ex -> {
-					LOG.error(String.format("indexTrafficStop failed. "), new RuntimeException(ex));
+					LOG.error(String.format("Search failed. "), new RuntimeException(ex));
 					promise.fail(ex);
 				});
 			} else {
@@ -165,7 +165,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			}
 		} catch (Exception ex) {
 			promise.fail(ex);
-			LOG.error(String.format("indexTrafficStop failed. "), ex);
+			LOG.error(String.format("Search failed. "), ex);
 		}
 	}
 
@@ -927,12 +927,6 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 	@Override()
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-//		sb.append("ListeRecherche { ");
-//		list.stream().forEach(o -> {
-//			sb.append(o);
-//		});
-//		sb.append(" }");
-//		return sb.toString();
 		
 		try {
 			sb.append(URLDecoder.decode(solrQuery.toString(), "UTF-8")).append("\n");

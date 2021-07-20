@@ -26,7 +26,7 @@ import io.vertx.sqlclient.SqlConnection;
 
 /**
  * Keyword: classSimpleNameSiteRequest
- */       
+ */     
 public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Serializable {
 
 	private static final Pattern PATTERN_SESSION = Pattern.compile(".*vertx-web.session=(\\w+).*");
@@ -54,9 +54,6 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 	}
 
 	protected void _serviceRequest(Wrap<ServiceRequest> c) {
-	}
-
-	protected void _w(Wrap<AllWriter> c) {
 	}
 
 	protected void _user(Wrap<User> c) {
@@ -144,19 +141,6 @@ public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Seria
 			addUserResourceRoles((String)r);
 		});
 	}
-
-//	protected void _siteUser_(Wrap<SiteUser> c) { 
-//		if(userId != null) {
-//			SiteUser o = new SiteUser();
-//			o.setUserName(userName);
-//			o.setUserFirstName(userFirstName);
-//			o.setUserLastName(userLastName);
-//			o.setUserId(userId);
-//			c.o(o);
-//		}
-//	}
-
-	protected void _xmlStack(Stack<String> o) {}
 
 	protected void _solrDocument(Wrap<SolrDocument> c) {  
 	}

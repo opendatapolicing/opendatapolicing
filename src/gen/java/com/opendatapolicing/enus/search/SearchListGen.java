@@ -459,6 +459,8 @@ public abstract class SearchListGen<DEV> {
 			Promise<QueryResponse> promise2 = Promise.promise();
 			_queryResponse(promise2);
 			promise2.future().onSuccess(o -> {
+				setQueryResponse(o);
+				queryResponseWrap.alreadyInitialized(true);
 				promise.complete(o);
 			}).onFailure(ex -> {
 				promise.fail(ex);

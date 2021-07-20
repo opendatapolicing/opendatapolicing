@@ -136,9 +136,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 	AuthorizationProvider authorizationProvider;
 
-
-	public static final String CONFIG_staticPath = "staticPath";
-
 	/**	
 	 *	The main method for the Vert.x application that runs the Vert.x Runner class
 	 **/
@@ -200,7 +197,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
 		zkConfig.put("sessionTimeout", 20000);
 		zkConfig.put("connectTimeout", 3000);
-		zkConfig.put("rootPath", "io.vertx");
+		zkConfig.put("rootPath", "opendatapolicing");
 		zkConfig.put("retry", new JsonObject() {
 			{
 				put("initialSleepTime", 100);
@@ -574,7 +571,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					String solrHostName = config().getString(ConfigKeys.SOLR_HOST_NAME);
 					Integer solrPort = config().getInteger(ConfigKeys.SOLR_PORT);
 					String solrCollection = config().getString(ConfigKeys.SOLR_COLLECTION);
-					String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, query.toQueryString() + "&suggest=true&terms=true&terms.fl=stopPurposeTitle_indexed_string");
+					String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, query.toQueryString());
 					webClient.get(solrPort, solrHostName, solrRequestUri).send().onSuccess(b -> {
 						try {
 							a.complete(Status.OK());
@@ -1427,7 +1424,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					ctx.fail(ex);
 				}
 			});
-
 
 			router.get("/api").handler(ctx -> {
 				ctx.reroute("/template/openapi");

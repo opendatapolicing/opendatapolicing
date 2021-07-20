@@ -472,7 +472,7 @@ public abstract class TrafficSearchGen<DEV> extends BaseModel {
 	@JsonProperty
 	@JsonDeserialize(using = ZonedDateTimeDeserializer.class)
 	@JsonSerialize(using = ZonedDateTimeSerializer.class)
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSV'['VV']'")
 	@JsonInclude(Include.NON_NULL)
 	protected ZonedDateTime stopDateTime;
 	@JsonIgnore
@@ -509,7 +509,7 @@ public abstract class TrafficSearchGen<DEV> extends BaseModel {
 		if(StringUtils.endsWith(o, "Z"))
 			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		else
-			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'['VV']'")).truncatedTo(ChronoUnit.MILLIS);
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME).truncatedTo(ChronoUnit.MILLIS);
 	}
 	@JsonIgnore
 	public void setStopDateTime(Date o) {
