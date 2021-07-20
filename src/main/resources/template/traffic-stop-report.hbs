@@ -687,35 +687,17 @@ function svgContrabandHitRate() {
 			$theadRow.append('<th>Year</th>')
 			var yearRows = {}
 			var totalRows = {}
-			var whiteContrabandPivotData = contrabandData.facet_pivot['personRaceTitle'].find(x => x.value === 'White');
-			var whiteSearchPivotData = searchData.facet_pivot['personRaceTitle'].find(x => x.value === 'White')
 			var graphData = [];
 			for (i = 0; i < contrabandData.facet_pivot['personRaceTitle'].length; i++) {
 				var currentContrabandPivotData = contrabandData.facet_pivot['personRaceTitle'][i];
+				var currentSearchPivotData = searchData.facet_pivot['personRaceTitle'][i];
+				var z = currentContrabandPivotData.count / currentSearchPivotData.count;
 	
-				if(currentContrabandPivotData.value != 'White') {
-					var itemValues = [];
-					var itemData = { key: currentContrabandPivotData.value + ' vs. White', seriesIndex: i, values: itemValues };
-					for (j = 0; j < currentContrabandPivotData.pivot.length; j++) {
-						var currentContrabandRangeData = currentContrabandPivotData.pivot[j];
-						var whiteContrabandRangeData = whiteContrabandPivotData.pivot.find(x => x.value === currentContrabandRangeData.value);
-						var currentSearchPivotData = searchData.facet_pivot['personRaceTitle'].find(x => x.value === currentContrabandPivotData.value);
-						if(currentSearchPivotData && currentSearchPivotData.pivot) {
-							var a = currentContrabandRangeData.count;
-							var b = currentSearchPivotData.pivot.find(x => x.value === currentContrabandRangeData.value).count;
-							var c = b == 0 ? 0 : (a / b);
-							var aWhite = whiteContrabandRangeData.count;
-							var bWhite = whiteSearchPivotData.pivot.find(x => x.value === currentContrabandRangeData.value).count;
-							var cWhite = bWhite == 0 ? 0 : (aWhite / bWhite);
-							var z = (c - cWhite)/cWhite;
-							if(!c || !isFinite(z))
-								z = 0;
-							var itemRangeValues = { label: currentContrabandRangeData.value, value: z }
-							itemValues.push(itemRangeValues);
-						}
-					}
-					graphData.push(itemData);
-				}
+				var itemValues = [];
+				var itemData = { key: currentContrabandPivotData.value, seriesIndex: i, values: itemValues };
+				var itemRangeValues = { label: currentContrabandPivotData.value, value: z }
+				itemValues.push(itemRangeValues);
+				graphData.push(itemData);
 			}
 			for (i = 0; i < contrabandData.facet_pivot['personRaceTitle'].length; i++) {
 				var pivotData = contrabandData.facet_pivot['personRaceTitle'][i];
@@ -764,7 +746,7 @@ function svgContrabandHitRate() {
 					;
 	
 				chart.yAxis
-					.axisLabel('Contrabands resulting in contraband found')
+					.axisLabel('Searches resulting in contraband found')
 					.tickFormat(d3.format('%'));
 					;
 	
@@ -914,6 +896,7 @@ function svgUseOfForceTotal(stopUseOfForceData) {
 			$( "#tabsSearchRatePercentOfStops" ).tabs();
 			$( "#tabsSearchRatePercentTotal" ).tabs();
 			$( "#tabsCauseLikelihoodPercent" ).tabs();
+			$( "#tabsContrabandHitRate" ).tabs();
 			$( "#tabsUseOfForceTotal" ).tabs();
 
 			var url1 = "{{siteBaseUrl}}/api/traffic-stop?rows=0&facet=true&facet.sort=index&facet.range.start={{startDateStr}}&facet.range.end={{endDateStr}}&facet.range.gap=%2B1YEAR&facet.range={!tag=r1}stopDateTime&facet.pivot={!range=r1}personRaceTitles,stopPurposeTitle"
@@ -936,7 +919,7 @@ function svgUseOfForceTotal(stopUseOfForceData) {
 					svgSearchRatePie();
 					svgSearchRatePercentTotal();
 					svgCauseLikelihoodPercent();
-					//svgContrabandHitRate();
+					svgContrabandHitRate();
 					svgUseOfForceTotal(stopUseOfForceData);
 					svgUseOfForcePie(stopUseOfForceData);
 				});
@@ -1217,7 +1200,28 @@ function svgUseOfForceTotal(stopUseOfForceData) {
 				<div class="w3-row w3-margin-top w3-margin-bottom ">
 					<h3 class="w3-text-2017-navy-peony ">Contraband "Hit-Rate"</h3>
 					<p>This graph displays the percentage of searches that uncovered contraband for a given race/ethnic composition group. Adjusting the drop down menu will display the hit rate on a year-by-year basis. </p>
-					<svg id="svgContrabandHitRate" style="height: 400px; "></svg>
+					<div id="tabsContrabandHitRate">
+						<ul>
+							<li><a href="#tabsContrabandHitRate-1">Chart</a></li>
+							<li><a href="#tabsContrabandHitRate-2">Data</a></li>
+						</ul>
+						<div id="tabsContrabandHitRate-1">
+							<div>
+								<svg id="svgContrabandHitRate" style="height: 600px; "></svg>
+							</div>
+							<p class="font-style-italic ">Some percentages may be based on low levels of observation. Click the "Data" tab to review the actual raw counts from the NC Department of Justice. </p>
+						</div>
+						<div id="tabsContrabandHitRate-2">
+							<table class="w3-table w3-striped w3-border w3-bordered w3-hoverable ">
+								<thead id="theadContrabandHitRate" class="font-weight-bold ">
+									<tr id="theadRowContrabandHitRate">
+									</tr>
+								</thead>
+								<tbody id="tbodyContrabandHitRate">
+								</tbody>
+							</table>
+						</div>
+					</div>
 				</div>
 
 				<div class="w3-row w3-margin-top w3-margin-bottom ">

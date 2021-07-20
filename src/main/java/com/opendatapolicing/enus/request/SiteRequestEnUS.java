@@ -29,7 +29,7 @@ import io.vertx.sqlclient.SqlConnection;
  */       
 public class SiteRequestEnUS extends SiteRequestEnUSGen<Object> implements Serializable {
 
-	private static final Pattern PATTERN_SESSION = Pattern.compile("vertx-web.session=(\\w+)");
+	private static final Pattern PATTERN_SESSION = Pattern.compile(".*vertx-web.session=(\\w+).*");
 
 	/**	
 	 *	The site configuration. 

@@ -277,9 +277,26 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 
 		// facets //
 		NamedList<Object> facets = new SimpleOrderedMap<Object>();
-		Optional.ofNullable(((Map<String, ? extends Object>)map.get("facets"))).orElse(new HashMap<>()).forEach((key, value) -> {
-			facets.add(key, value);
-		});
+		Optional.ofNullable(((Map<String, ? extends Object>) map.get("facets"))).orElse(new HashMap<>())
+				.forEach((key, value) -> {
+					if (value instanceof LinkedHashMap) {
+						LinkedHashMap<String, Object> linkedHashMap1 = (LinkedHashMap<String, Object>) value;
+						SimpleOrderedMap simpleOrderedMap1 = new SimpleOrderedMap<Object>();
+						facets.add(key, simpleOrderedMap1);
+						ArrayList<LinkedHashMap<String, Object>> bucketsIn = (ArrayList<LinkedHashMap<String, Object>>) linkedHashMap1
+								.get("buckets");
+						ArrayList<SimpleOrderedMap<Object>> bucketsOut = new ArrayList<SimpleOrderedMap<Object>>();
+						simpleOrderedMap1.add("buckets", bucketsOut);
+						bucketsIn.forEach(bucket -> {
+							SimpleOrderedMap simpleOrderedMap2 = new SimpleOrderedMap<Object>();
+							simpleOrderedMap2.add("val", bucket.get("val").toString());
+							simpleOrderedMap2.add("count", bucket.get("count"));
+							bucketsOut.add(simpleOrderedMap2);
+						});
+					} else {
+						facets.add(key, value);
+					}
+				});
 
 		// Look for known things
 		l.add("responseHeader", new NamedList<Object>(((Map<String, ? extends Object>)map.get("responseHeader"))));
