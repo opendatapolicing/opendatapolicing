@@ -4923,125 +4923,191 @@ components:
           items:
             type: object
             properties:
-              agencyKey:
+              stateAbbreviation:
                 type: string
-              agencyName:
+              agencyTitle:
                 type: string
-              stateKey:
+              agencyAcsId:
                 type: string
-              imageLeft:
+              agencyTotal:
                 type: string
-              imageTop:
+              agencyTotalWhite:
                 type: string
-              imageCoords:
+              agencyTotalBlack:
+                type: string
+              agencyTotalIndigenous:
+                type: string
+              agencyTotalAsian:
+                type: string
+              agencyTotalPacificIslander:
+                type: string
+              agencyTotalLatinx:
+                type: string
+              agencyTotalMultiracial:
+                type: string
+              agencyTotalOther:
                 type: string
               stateId:
                 type: string
               stateName:
                 type: string
-              stateAbbreviation:
-                type: string
-              agencyOnlyName:
-                type: string
-              agencyCompleteName:
+              objectSuggest:
                 type: string
     POSTSiteAgencyRequest:
       allOf:
         - type: object
           properties:
-            agencyKey:
+            stateAbbreviation:
               type: string
-            agencyName:
+            agencyTitle:
               type: string
-            stateKey:
+            agencyAcsId:
               type: string
-            imageLeft:
+            agencyTotal:
               type: string
-            imageTop:
+            agencyTotalWhite:
               type: string
-            imageCoords:
+            agencyTotalBlack:
+              type: string
+            agencyTotalIndigenous:
+              type: string
+            agencyTotalAsian:
+              type: string
+            agencyTotalPacificIslander:
+              type: string
+            agencyTotalLatinx:
+              type: string
+            agencyTotalMultiracial:
+              type: string
+            agencyTotalOther:
               type: string
             stateId:
               type: string
             stateName:
               type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
+            objectSuggest:
               type: string
     POSTSiteAgencyResponse:
       allOf:
         - type: object
           properties:
-            agencyKey:
+            stateAbbreviation:
               type: string
-            agencyName:
+            agencyTitle:
               type: string
-            stateKey:
+            agencyAcsId:
               type: string
-            imageLeft:
+            agencyTotal:
               type: string
-            imageTop:
+            agencyTotalWhite:
               type: string
-            imageCoords:
+            agencyTotalBlack:
+              type: string
+            agencyTotalIndigenous:
+              type: string
+            agencyTotalAsian:
+              type: string
+            agencyTotalPacificIslander:
+              type: string
+            agencyTotalLatinx:
+              type: string
+            agencyTotalMultiracial:
+              type: string
+            agencyTotalOther:
               type: string
             stateId:
               type: string
             stateName:
               type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
+            objectSuggest:
               type: string
     PATCHSiteAgencyRequest:
       allOf:
         - type: object
           properties:
-            setAgencyKey:
+            setStateAbbreviation:
               type: string
               nullable: true
-            removeAgencyKey:
+            removeStateAbbreviation:
               type: string
-            removeAllAgencyKey:
+            removeAllStateAbbreviation:
               type: string
-            setAgencyName:
-              type: string
-              nullable: true
-            removeAgencyName:
-              type: string
-            removeAllAgencyName:
-              type: string
-            setStateKey:
+            setAgencyTitle:
               type: string
               nullable: true
-            removeStateKey:
+            removeAgencyTitle:
               type: string
-            removeAllStateKey:
+            removeAllAgencyTitle:
               type: string
-            setImageLeft:
-              type: string
-              nullable: true
-            removeImageLeft:
-              type: string
-            removeAllImageLeft:
-              type: string
-            setImageTop:
+            setAgencyAcsId:
               type: string
               nullable: true
-            removeImageTop:
+            removeAgencyAcsId:
               type: string
-            removeAllImageTop:
+            removeAllAgencyAcsId:
               type: string
-            setImageCoords:
+            setAgencyTotal:
               type: string
               nullable: true
-            removeImageCoords:
+            removeAgencyTotal:
               type: string
-            removeAllImageCoords:
+            removeAllAgencyTotal:
+              type: string
+            setAgencyTotalWhite:
+              type: string
+              nullable: true
+            removeAgencyTotalWhite:
+              type: string
+            removeAllAgencyTotalWhite:
+              type: string
+            setAgencyTotalBlack:
+              type: string
+              nullable: true
+            removeAgencyTotalBlack:
+              type: string
+            removeAllAgencyTotalBlack:
+              type: string
+            setAgencyTotalIndigenous:
+              type: string
+              nullable: true
+            removeAgencyTotalIndigenous:
+              type: string
+            removeAllAgencyTotalIndigenous:
+              type: string
+            setAgencyTotalAsian:
+              type: string
+              nullable: true
+            removeAgencyTotalAsian:
+              type: string
+            removeAllAgencyTotalAsian:
+              type: string
+            setAgencyTotalPacificIslander:
+              type: string
+              nullable: true
+            removeAgencyTotalPacificIslander:
+              type: string
+            removeAllAgencyTotalPacificIslander:
+              type: string
+            setAgencyTotalLatinx:
+              type: string
+              nullable: true
+            removeAgencyTotalLatinx:
+              type: string
+            removeAllAgencyTotalLatinx:
+              type: string
+            setAgencyTotalMultiracial:
+              type: string
+              nullable: true
+            removeAgencyTotalMultiracial:
+              type: string
+            removeAllAgencyTotalMultiracial:
+              type: string
+            setAgencyTotalOther:
+              type: string
+              nullable: true
+            removeAgencyTotalOther:
+              type: string
+            removeAllAgencyTotalOther:
               type: string
             setStateId:
               type: string
@@ -5057,72 +5123,100 @@ components:
               type: string
             removeAllStateName:
               type: string
-            setStateAbbreviation:
+            setObjectSuggest:
               type: string
               nullable: true
-            removeStateAbbreviation:
+            removeObjectSuggest:
               type: string
-            removeAllStateAbbreviation:
-              type: string
-            setAgencyOnlyName:
-              type: string
-              nullable: true
-            removeAgencyOnlyName:
-              type: string
-            removeAllAgencyOnlyName:
-              type: string
-            setAgencyCompleteName:
-              type: string
-              nullable: true
-            removeAgencyCompleteName:
-              type: string
-            removeAllAgencyCompleteName:
+            removeAllObjectSuggest:
               type: string
     PATCHSiteAgencyResponse:
       allOf:
         - type: object
           properties:
-            setAgencyKey:
+            setStateAbbreviation:
               type: string
               nullable: true
-            removeAgencyKey:
+            removeStateAbbreviation:
               type: string
-            removeAllAgencyKey:
+            removeAllStateAbbreviation:
               type: string
-            setAgencyName:
-              type: string
-              nullable: true
-            removeAgencyName:
-              type: string
-            removeAllAgencyName:
-              type: string
-            setStateKey:
+            setAgencyTitle:
               type: string
               nullable: true
-            removeStateKey:
+            removeAgencyTitle:
               type: string
-            removeAllStateKey:
+            removeAllAgencyTitle:
               type: string
-            setImageLeft:
-              type: string
-              nullable: true
-            removeImageLeft:
-              type: string
-            removeAllImageLeft:
-              type: string
-            setImageTop:
+            setAgencyAcsId:
               type: string
               nullable: true
-            removeImageTop:
+            removeAgencyAcsId:
               type: string
-            removeAllImageTop:
+            removeAllAgencyAcsId:
               type: string
-            setImageCoords:
+            setAgencyTotal:
               type: string
               nullable: true
-            removeImageCoords:
+            removeAgencyTotal:
               type: string
-            removeAllImageCoords:
+            removeAllAgencyTotal:
+              type: string
+            setAgencyTotalWhite:
+              type: string
+              nullable: true
+            removeAgencyTotalWhite:
+              type: string
+            removeAllAgencyTotalWhite:
+              type: string
+            setAgencyTotalBlack:
+              type: string
+              nullable: true
+            removeAgencyTotalBlack:
+              type: string
+            removeAllAgencyTotalBlack:
+              type: string
+            setAgencyTotalIndigenous:
+              type: string
+              nullable: true
+            removeAgencyTotalIndigenous:
+              type: string
+            removeAllAgencyTotalIndigenous:
+              type: string
+            setAgencyTotalAsian:
+              type: string
+              nullable: true
+            removeAgencyTotalAsian:
+              type: string
+            removeAllAgencyTotalAsian:
+              type: string
+            setAgencyTotalPacificIslander:
+              type: string
+              nullable: true
+            removeAgencyTotalPacificIslander:
+              type: string
+            removeAllAgencyTotalPacificIslander:
+              type: string
+            setAgencyTotalLatinx:
+              type: string
+              nullable: true
+            removeAgencyTotalLatinx:
+              type: string
+            removeAllAgencyTotalLatinx:
+              type: string
+            setAgencyTotalMultiracial:
+              type: string
+              nullable: true
+            removeAgencyTotalMultiracial:
+              type: string
+            removeAllAgencyTotalMultiracial:
+              type: string
+            setAgencyTotalOther:
+              type: string
+              nullable: true
+            removeAgencyTotalOther:
+              type: string
+            removeAllAgencyTotalOther:
               type: string
             setStateId:
               type: string
@@ -5138,26 +5232,12 @@ components:
               type: string
             removeAllStateName:
               type: string
-            setStateAbbreviation:
+            setObjectSuggest:
               type: string
               nullable: true
-            removeStateAbbreviation:
+            removeObjectSuggest:
               type: string
-            removeAllStateAbbreviation:
-              type: string
-            setAgencyOnlyName:
-              type: string
-              nullable: true
-            removeAgencyOnlyName:
-              type: string
-            removeAllAgencyOnlyName:
-              type: string
-            setAgencyCompleteName:
-              type: string
-              nullable: true
-            removeAgencyCompleteName:
-              type: string
-            removeAllAgencyCompleteName:
+            removeAllObjectSuggest:
               type: string
     SearchSiteAgencyResponse:
       allOf:
@@ -5165,105 +5245,137 @@ components:
           items:
             type: object
             properties:
-              agencyKey:
+              stateAbbreviation:
                 type: string
-              agencyName:
+              agencyTitle:
                 type: string
-              stateKey:
+              agencyAcsId:
                 type: string
-              imageLeft:
+              agencyTotal:
                 type: string
-              imageTop:
+              agencyTotalWhite:
                 type: string
-              imageCoords:
+              agencyTotalBlack:
+                type: string
+              agencyTotalIndigenous:
+                type: string
+              agencyTotalAsian:
+                type: string
+              agencyTotalPacificIslander:
+                type: string
+              agencyTotalLatinx:
+                type: string
+              agencyTotalMultiracial:
+                type: string
+              agencyTotalOther:
                 type: string
               stateId:
                 type: string
               stateName:
                 type: string
-              stateAbbreviation:
-                type: string
-              agencyOnlyName:
-                type: string
-              agencyCompleteName:
+              objectSuggest:
                 type: string
     PUTImportSiteAgencyRequest:
       allOf:
         - type: object
           properties:
-            agencyKey:
+            stateAbbreviation:
               type: string
-            agencyName:
+            agencyTitle:
               type: string
-            stateKey:
+            agencyAcsId:
               type: string
-            imageLeft:
+            agencyTotal:
               type: string
-            imageTop:
+            agencyTotalWhite:
               type: string
-            imageCoords:
+            agencyTotalBlack:
+              type: string
+            agencyTotalIndigenous:
+              type: string
+            agencyTotalAsian:
+              type: string
+            agencyTotalPacificIslander:
+              type: string
+            agencyTotalLatinx:
+              type: string
+            agencyTotalMultiracial:
+              type: string
+            agencyTotalOther:
               type: string
             stateId:
               type: string
             stateName:
               type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
+            objectSuggest:
               type: string
     PUTImportSiteAgencyResponse:
       allOf:
         - type: object
           properties:
-            agencyKey:
+            stateAbbreviation:
               type: string
-            agencyName:
+            agencyTitle:
               type: string
-            stateKey:
+            agencyAcsId:
               type: string
-            imageLeft:
+            agencyTotal:
               type: string
-            imageTop:
+            agencyTotalWhite:
               type: string
-            imageCoords:
+            agencyTotalBlack:
+              type: string
+            agencyTotalIndigenous:
+              type: string
+            agencyTotalAsian:
+              type: string
+            agencyTotalPacificIslander:
+              type: string
+            agencyTotalLatinx:
+              type: string
+            agencyTotalMultiracial:
+              type: string
+            agencyTotalOther:
               type: string
             stateId:
               type: string
             stateName:
               type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
+            objectSuggest:
               type: string
     GETSiteAgencyResponse:
       allOf:
         - type: object
           properties:
-            agencyKey:
+            stateAbbreviation:
               type: string
-            agencyName:
+            agencyTitle:
               type: string
-            stateKey:
+            agencyAcsId:
               type: string
-            imageLeft:
+            agencyTotal:
               type: string
-            imageTop:
+            agencyTotalWhite:
               type: string
-            imageCoords:
+            agencyTotalBlack:
+              type: string
+            agencyTotalIndigenous:
+              type: string
+            agencyTotalAsian:
+              type: string
+            agencyTotalPacificIslander:
+              type: string
+            agencyTotalLatinx:
+              type: string
+            agencyTotalMultiracial:
+              type: string
+            agencyTotalOther:
               type: string
             stateId:
               type: string
             stateName:
               type: string
-            stateAbbreviation:
-              type: string
-            agencyOnlyName:
-              type: string
-            agencyCompleteName:
+            objectSuggest:
               type: string
     AdminSearchSearchBasisResponse:
       allOf:
@@ -6549,14 +6661,12 @@ components:
                 type: string
               stateAbbreviation:
                 type: string
+              stateAcsId:
+                type: string
               imageLeft:
                 type: string
               imageTop:
                 type: string
-              agencyKeys:
-                type: array
-                items:
-                  type: string
               stateCompleteName:
                 type: string
     POSTSiteStateRequest:
@@ -6569,14 +6679,12 @@ components:
               type: string
             stateAbbreviation:
               type: string
+            stateAcsId:
+              type: string
             imageLeft:
               type: string
             imageTop:
               type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
             stateCompleteName:
               type: string
     POSTSiteStateResponse:
@@ -6589,14 +6697,12 @@ components:
               type: string
             stateAbbreviation:
               type: string
+            stateAcsId:
+              type: string
             imageLeft:
               type: string
             imageTop:
               type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
             stateCompleteName:
               type: string
     PATCHSiteStateRequest:
@@ -6624,6 +6730,13 @@ components:
               type: string
             removeAllStateAbbreviation:
               type: string
+            setStateAcsId:
+              type: string
+              nullable: true
+            removeStateAcsId:
+              type: string
+            removeAllStateAcsId:
+              type: string
             setImageLeft:
               type: string
               nullable: true
@@ -6638,23 +6751,6 @@ components:
               type: string
             removeAllImageTop:
               type: string
-            setAgencyKeys:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removeAgencyKeys:
-              type: string
-            removeAllAgencyKeys:
-              type: array
-              items:
-                type: string
-            addAgencyKeys:
-              type: string
-            addAllAgencyKeys:
-              type: array
-              items:
-                type: string
             setStateCompleteName:
               type: string
               nullable: true
@@ -6687,6 +6783,13 @@ components:
               type: string
             removeAllStateAbbreviation:
               type: string
+            setStateAcsId:
+              type: string
+              nullable: true
+            removeStateAcsId:
+              type: string
+            removeAllStateAcsId:
+              type: string
             setImageLeft:
               type: string
               nullable: true
@@ -6701,23 +6804,6 @@ components:
               type: string
             removeAllImageTop:
               type: string
-            setAgencyKeys:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removeAgencyKeys:
-              type: string
-            removeAllAgencyKeys:
-              type: array
-              items:
-                type: string
-            addAgencyKeys:
-              type: string
-            addAllAgencyKeys:
-              type: array
-              items:
-                type: string
             setStateCompleteName:
               type: string
               nullable: true
@@ -6737,14 +6823,12 @@ components:
                 type: string
               stateAbbreviation:
                 type: string
+              stateAcsId:
+                type: string
               imageLeft:
                 type: string
               imageTop:
                 type: string
-              agencyKeys:
-                type: array
-                items:
-                  type: string
               stateCompleteName:
                 type: string
     PUTImportSiteStateRequest:
@@ -6757,14 +6841,12 @@ components:
               type: string
             stateAbbreviation:
               type: string
+            stateAcsId:
+              type: string
             imageLeft:
               type: string
             imageTop:
               type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
             stateCompleteName:
               type: string
     PUTImportSiteStateResponse:
@@ -6777,14 +6859,12 @@ components:
               type: string
             stateAbbreviation:
               type: string
+            stateAcsId:
+              type: string
             imageLeft:
               type: string
             imageTop:
               type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
             stateCompleteName:
               type: string
     GETSiteStateResponse:
@@ -6797,14 +6877,12 @@ components:
               type: string
             stateAbbreviation:
               type: string
+            stateAcsId:
+              type: string
             imageLeft:
               type: string
             imageTop:
               type: string
-            agencyKeys:
-              type: array
-              items:
-                type: string
             stateCompleteName:
               type: string
     AdminSearchTrafficContrabandResponse:
@@ -10503,6 +10581,14 @@ components:
                 type: array
                 items:
                   type: string
+              personGenderTitles:
+                type: array
+                items:
+                  type: string
+              personAges:
+                type: array
+                items:
+                  type: string
               trafficSearchRaceTitles:
                 type: array
                 items:
@@ -10553,6 +10639,14 @@ components:
               type: array
               items:
                 type: string
+            personGenderTitles:
+              type: array
+              items:
+                type: string
+            personAges:
+              type: array
+              items:
+                type: string
             trafficSearchRaceTitles:
               type: array
               items:
@@ -10600,6 +10694,14 @@ components:
             stopCityId:
               type: string
             personRaceTitles:
+              type: array
+              items:
+                type: string
+            personGenderTitles:
+              type: array
+              items:
+                type: string
+            personAges:
               type: array
               items:
                 type: string
@@ -10758,6 +10860,40 @@ components:
             addPersonRaceTitles:
               type: string
             addAllPersonRaceTitles:
+              type: array
+              items:
+                type: string
+            setPersonGenderTitles:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonGenderTitles:
+              type: string
+            removeAllPersonGenderTitles:
+              type: array
+              items:
+                type: string
+            addPersonGenderTitles:
+              type: string
+            addAllPersonGenderTitles:
+              type: array
+              items:
+                type: string
+            setPersonAges:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonAges:
+              type: string
+            removeAllPersonAges:
+              type: array
+              items:
+                type: string
+            addPersonAges:
+              type: string
+            addAllPersonAges:
               type: array
               items:
                 type: string
@@ -10932,6 +11068,40 @@ components:
               type: array
               items:
                 type: string
+            setPersonGenderTitles:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonGenderTitles:
+              type: string
+            removeAllPersonGenderTitles:
+              type: array
+              items:
+                type: string
+            addPersonGenderTitles:
+              type: string
+            addAllPersonGenderTitles:
+              type: array
+              items:
+                type: string
+            setPersonAges:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removePersonAges:
+              type: string
+            removeAllPersonAges:
+              type: array
+              items:
+                type: string
+            addPersonAges:
+              type: string
+            addAllPersonAges:
+              type: array
+              items:
+                type: string
             setTrafficSearchRaceTitles:
               type: array
               nullable: true
@@ -10997,6 +11167,14 @@ components:
                 type: array
                 items:
                   type: string
+              personGenderTitles:
+                type: array
+                items:
+                  type: string
+              personAges:
+                type: array
+                items:
+                  type: string
               trafficSearchRaceTitles:
                 type: array
                 items:
@@ -11044,6 +11222,14 @@ components:
             stopCityId:
               type: string
             personRaceTitles:
+              type: array
+              items:
+                type: string
+            personGenderTitles:
+              type: array
+              items:
+                type: string
+            personAges:
               type: array
               items:
                 type: string
@@ -11097,6 +11283,14 @@ components:
               type: array
               items:
                 type: string
+            personGenderTitles:
+              type: array
+              items:
+                type: string
+            personAges:
+              type: array
+              items:
+                type: string
             trafficSearchRaceTitles:
               type: array
               items:
@@ -11144,6 +11338,14 @@ components:
             stopCityId:
               type: string
             personRaceTitles:
+              type: array
+              items:
+                type: string
+            personGenderTitles:
+              type: array
+              items:
+                type: string
+            personAges:
               type: array
               items:
                 type: string
