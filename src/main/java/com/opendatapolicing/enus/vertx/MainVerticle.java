@@ -1267,7 +1267,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						stopSearch2.set("facet.mincount", "1");
 						stopSearch2.set("facet.sort", "index");
 						stopSearch2.set("facet.range.end", endDateStr);
-						List<String> fqParams = new ArrayList<String>();
 						List<String> fqParamsWithoutYear = new ArrayList<String>();
 						ctx.put("siteZone", config().getValue(ConfigKeys.SITE_ZONE));
 						ctx.put("ACS_API_YEAR", config().getValue(ConfigKeys.ACS_API_YEAR));
@@ -1276,8 +1275,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						if(agencyTitle != null) {
 							try {
 								stopSearch2.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
-								fqParams.add("fq=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
-								fqParamsWithoutYear.add("fq=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
+								fqParamsWithoutYear.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
 							}
@@ -1285,8 +1283,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						Optional.ofNullable((String)ctx.get("stateAbbreviation")).ifPresent(stateAbbreviation -> {
 							try {
 								stopSearch2.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
-								fqParams.add("fq=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
-								fqParamsWithoutYear.add("fq=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
+								fqParamsWithoutYear.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
 							}
@@ -1294,8 +1291,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						Optional.ofNullable((String)ctx.get("stopOfficerId")).ifPresent(stopOfficerId -> {
 							try {
 								stopSearch2.addFilterQuery("stopOfficerId_indexed_string:" + ClientUtils.escapeQueryChars(stopOfficerId));
-								fqParams.add("fq=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
-								fqParamsWithoutYear.add("fq=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
+								fqParamsWithoutYear.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
 							}
@@ -1303,8 +1299,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						Optional.ofNullable((String)ctx.get("race")).ifPresent(race -> {
 							try {
 								stopSearch2.addFilterQuery("personRaceTitles_indexed_strings:" + ClientUtils.escapeQueryChars(race));
-								fqParams.add("fq=race:" + URLEncoder.encode(race, "UTF-8"));
-								fqParamsWithoutYear.add("fq=race:" + URLEncoder.encode(race, "UTF-8"));
+								fqParamsWithoutYear.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
 							}
@@ -1312,8 +1307,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						Optional.ofNullable((String)ctx.get("gender")).ifPresent(gender -> {
 							try {
 								stopSearch2.addFilterQuery("personGenderTitles_indexed_strings:" + ClientUtils.escapeQueryChars(gender));
-								fqParams.add("fq=gender:" + URLEncoder.encode(gender, "UTF-8"));
-								fqParamsWithoutYear.add("fq=gender:" + URLEncoder.encode(gender, "UTF-8"));
+								fqParamsWithoutYear.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
 							}
@@ -1321,8 +1315,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						Optional.ofNullable((String)ctx.get("age")).ifPresent(age -> {
 							try {
 								stopSearch2.addFilterQuery("personAges_indexed_ints:" + ClientUtils.escapeQueryChars(age));
-								fqParams.add("fq=age:" + URLEncoder.encode(age, "UTF-8"));
-								fqParamsWithoutYear.add("fq=age:" + URLEncoder.encode(age, "UTF-8"));
+								fqParamsWithoutYear.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
 							}
@@ -1330,13 +1323,11 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						Optional.ofNullable((String)ctx.get("stopYear")).ifPresent(stopYear -> {
 							try {
 								stopSearch2.addFilterQuery("stopYear_indexed_int:" + ClientUtils.escapeQueryChars(stopYear));
-								fqParams.add("fq=stopYear:" + URLEncoder.encode(stopYear, "UTF-8"));
-							} catch (UnsupportedEncodingException ex) {
+							} catch (Exception ex) {
 								ExceptionUtils.rethrow(ex);
 							}
 						});
-						ctx.put("apiUriParams", String.format("%s&rows=0&facet=true", StringUtils.join(fqParams, "&")));
-						ctx.put("fqParamsWithoutYear", StringUtils.join(fqParams, "&"));
+						ctx.put("fqParamsWithoutYear", StringUtils.join(fqParamsWithoutYear, "&"));
 		
 						SearchList<SiteAgency> agencySearch = new SearchList<SiteAgency>();
 						agencySearch.setStore(true);
@@ -1437,7 +1428,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								ctx.put("personAges", personAges);
 		
 								ctx.put("stopJson", stopJson.toString());
-								ctx.put("fqParams", String.format("%s", StringUtils.join(fqParams, "&")));
 		
 								ctx.next();
 							}).onFailure(ex -> {
