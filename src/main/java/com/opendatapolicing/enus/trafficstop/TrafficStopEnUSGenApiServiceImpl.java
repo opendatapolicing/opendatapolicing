@@ -1670,8 +1670,6 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	public static final String VAR_personRaceTitles = "personRaceTitles";
 	public static final String VAR_personGenderTitles = "personGenderTitles";
 	public static final String VAR_personAges = "personAges";
-	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
-	public static final String VAR_trafficSearchRaceTitles = "trafficSearchRaceTitles";
 
 	// General //
 

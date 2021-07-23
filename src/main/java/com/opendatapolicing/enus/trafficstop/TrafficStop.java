@@ -387,36 +387,6 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 			}
 		}
 	}
-
-	/**
-	 * {@inheritDoc}
-	 * Ignore: true
-	 */ 
-	protected void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise) { 
-		SearchList<TrafficSearch> l = new SearchList<>();
-		l.setQuery("*:*");
-		l.addFilterQuery("stopId_indexed_string:" + inheritPk);
-		l.setC(TrafficSearch.class);
-		l.setRows(0);
-		l.addFacetField("personRaceTitle_indexed_string");
-		l.setStore(true);
-		promise.complete(l);
-	}
-
-	/** 
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
-	 */
-	protected void _trafficSearchRaceTitles(List<String> l) {
-		FacetField field = trafficSearchSearch.getQueryResponse().getFacetField("personRaceTitle_indexed_string");
-		if(field != null) {
-			for(Count count : field.getValues()) {
-				if(count.getCount() > 0)
-					l.add(count.getName());
-			}
-		}
-	}
 //
 //	/**   
 //	 * {@inheritDoc}

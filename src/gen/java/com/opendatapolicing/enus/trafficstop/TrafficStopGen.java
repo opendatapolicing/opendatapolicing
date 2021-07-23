@@ -12,7 +12,6 @@ import java.util.Map;
 import io.vertx.core.json.JsonObject;
 import com.opendatapolicing.enus.java.ZonedDateTimeSerializer;
 import java.time.ZoneOffset;
-import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import java.math.RoundingMode;
 import com.opendatapolicing.enus.wrap.Wrap;
 import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
@@ -1836,157 +1835,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 		return personAges == null ? "" : personAges.toString();
 	}
 
-	/////////////////////////
-	// trafficSearchSearch //
-	/////////////////////////
-
-	/**	 The entity trafficSearchSearch
-	 *	 is defined as null before being initialized. 
-	 */
-	@JsonIgnore
-	@JsonInclude(Include.NON_NULL)
-	protected SearchList<TrafficSearch> trafficSearchSearch;
-	@JsonIgnore
-	public Wrap<SearchList<TrafficSearch>> trafficSearchSearchWrap = new Wrap<SearchList<TrafficSearch>>().var("trafficSearchSearch").o(trafficSearchSearch);
-
-	/**	<br/> The entity trafficSearchSearch
-	 *  is defined as null before being initialized. 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchSearch">Find the entity trafficSearchSearch in Solr</a>
-	 * <br/>
-	 * @param promise is for wrapping a value to assign to this entity during initialization. 
-	 **/
-	protected abstract void _trafficSearchSearch(Promise<SearchList<TrafficSearch>> promise);
-
-	public SearchList<TrafficSearch> getTrafficSearchSearch() {
-		return trafficSearchSearch;
-	}
-
-	public void setTrafficSearchSearch(SearchList<TrafficSearch> trafficSearchSearch) {
-		this.trafficSearchSearch = trafficSearchSearch;
-		this.trafficSearchSearchWrap.alreadyInitialized = true;
-	}
-	public static SearchList<TrafficSearch> staticSetTrafficSearchSearch(SiteRequestEnUS siteRequest_, String o) {
-		return null;
-	}
-	protected Future<SearchList<TrafficSearch>> trafficSearchSearchPromise() {
-		Promise<SearchList<TrafficSearch>> promise = Promise.promise();
-		if(!trafficSearchSearchWrap.alreadyInitialized) {
-			Promise<SearchList<TrafficSearch>> promise2 = Promise.promise();
-			_trafficSearchSearch(promise2);
-			promise2.future().onSuccess(o -> {
-				if(o != null && trafficSearchSearch == null) {
-					o.promiseDeepForClass(siteRequest_).onSuccess(a -> {
-						setTrafficSearchSearch(o);
-						trafficSearchSearchWrap.alreadyInitialized(true);
-						promise.complete(o);
-					}).onFailure(ex -> {
-						promise.fail(ex);
-					});
-				} else {
-					trafficSearchSearchWrap.alreadyInitialized(true);
-					promise.complete(o);
-				}
-			}).onFailure(ex -> {
-				promise.fail(ex);
-			});
-		} else {
-			promise.complete();
-		}
-		return promise.future();
-	}
-
-	/////////////////////////////
-	// trafficSearchRaceTitles //
-	/////////////////////////////
-
-	/**	 The entity trafficSearchRaceTitles
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonInclude(Include.NON_NULL)
-	protected List<String> trafficSearchRaceTitles = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> trafficSearchRaceTitlesWrap = new Wrap<List<String>>().var("trafficSearchRaceTitles").o(trafficSearchRaceTitles);
-
-	/**	<br/> The entity trafficSearchRaceTitles
-	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.trafficstop.TrafficStop&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:trafficSearchRaceTitles">Find the entity trafficSearchRaceTitles in Solr</a>
-	 * <br/>
-	 * @param trafficSearchRaceTitles is the entity already constructed. 
-	 **/
-	protected abstract void _trafficSearchRaceTitles(List<String> l);
-
-	public List<String> getTrafficSearchRaceTitles() {
-		return trafficSearchRaceTitles;
-	}
-
-	public void setTrafficSearchRaceTitles(List<String> trafficSearchRaceTitles) {
-		this.trafficSearchRaceTitles = trafficSearchRaceTitles;
-		this.trafficSearchRaceTitlesWrap.alreadyInitialized = true;
-	}
-	public static String staticSetTrafficSearchRaceTitles(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	public TrafficStop addTrafficSearchRaceTitles(String...objets) {
-		for(String o : objets) {
-			addTrafficSearchRaceTitles(o);
-		}
-		return (TrafficStop)this;
-	}
-	public TrafficStop addTrafficSearchRaceTitles(String o) {
-		if(o != null && !trafficSearchRaceTitles.contains(o))
-			this.trafficSearchRaceTitles.add(o);
-		return (TrafficStop)this;
-	}
-	@JsonIgnore
-	public void setTrafficSearchRaceTitles(JsonArray objets) {
-		trafficSearchRaceTitles.clear();
-		for(int i = 0; i < objets.size(); i++) {
-			String o = objets.getString(i);
-			addTrafficSearchRaceTitles(o);
-		}
-	}
-	protected TrafficStop trafficSearchRaceTitlesInit() {
-		if(!trafficSearchRaceTitlesWrap.alreadyInitialized) {
-			_trafficSearchRaceTitles(trafficSearchRaceTitles);
-		}
-		trafficSearchRaceTitlesWrap.alreadyInitialized(true);
-		return (TrafficStop)this;
-	}
-
-	public static String staticSolrTrafficSearchRaceTitles(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrTrafficSearchRaceTitles(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqTrafficSearchRaceTitles(SiteRequestEnUS siteRequest_, String o) {
-		return TrafficStop.staticSolrStrTrafficSearchRaceTitles(siteRequest_, TrafficStop.staticSolrTrafficSearchRaceTitles(siteRequest_, TrafficStop.staticSetTrafficSearchRaceTitles(siteRequest_, o)));
-	}
-
-	public List<String> solrTrafficSearchRaceTitles() {
-		List<String> l = new ArrayList<String>();
-		for(String o : trafficSearchRaceTitles) {
-			l.add(TrafficStop.staticSolrTrafficSearchRaceTitles(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strTrafficSearchRaceTitles() {
-		return trafficSearchRaceTitles == null ? "" : trafficSearchRaceTitles.toString();
-	}
-
-	public List<String> sqlTrafficSearchRaceTitles() {
-		return trafficSearchRaceTitles;
-	}
-
-	public String jsonTrafficSearchRaceTitles() {
-		return trafficSearchRaceTitles == null ? "" : trafficSearchRaceTitles.toString();
-	}
-
 	//////////////
 	// initDeep //
 	//////////////
@@ -2066,23 +1914,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 				promise2.fail(ex);
 			}
 			return promise2.future();
-		}).compose(a -> {
-			Promise<Void> promise2 = Promise.promise();
-			trafficSearchSearchPromise().onSuccess(trafficSearchSearch -> {
-				promise2.complete();
-			}).onFailure(ex -> {
-				promise2.fail(ex);
-			});
-			return promise2.future();
-		}).compose(a -> {
-			Promise<Void> promise2 = Promise.promise();
-			try {
-				trafficSearchRaceTitlesInit();
-				promise2.complete();
-			} catch(Exception ex) {
-				promise2.fail(ex);
-			}
-			return promise2.future();
 		}).onSuccess(a -> {
 			promise.complete();
 		}).onFailure(ex -> {
@@ -2103,8 +1934,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 			super.siteRequestBaseModel(siteRequest_);
 		if(personSearch != null)
 			personSearch.setSiteRequest_(siteRequest_);
-		if(trafficSearchSearch != null)
-			trafficSearchSearch.setSiteRequest_(siteRequest_);
 	}
 
 	public void siteRequestForClass(SiteRequestEnUS siteRequest_) {
@@ -2181,10 +2010,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 				return oTrafficStop.personGenderTitles;
 			case "personAges":
 				return oTrafficStop.personAges;
-			case "trafficSearchSearch":
-				return oTrafficStop.trafficSearchSearch;
-			case "trafficSearchRaceTitles":
-				return oTrafficStop.trafficSearchRaceTitles;
 			default:
 				return super.obtainBaseModel(var);
 		}
@@ -2268,8 +2093,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 			return TrafficStop.staticSetPersonGenderTitles(siteRequest_, o);
 		case "personAges":
 			return TrafficStop.staticSetPersonAges(siteRequest_, o);
-		case "trafficSearchRaceTitles":
-			return TrafficStop.staticSetTrafficSearchRaceTitles(siteRequest_, o);
 			default:
 				return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -2328,8 +2151,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 			return TrafficStop.staticSolrPersonGenderTitles(siteRequest_, (String)o);
 		case "personAges":
 			return TrafficStop.staticSolrPersonAges(siteRequest_, (Integer)o);
-		case "trafficSearchRaceTitles":
-			return TrafficStop.staticSolrTrafficSearchRaceTitles(siteRequest_, (String)o);
 			default:
 				return BaseModel.staticSolrBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -2388,8 +2209,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 			return TrafficStop.staticSolrStrPersonGenderTitles(siteRequest_, (String)o);
 		case "personAges":
 			return TrafficStop.staticSolrStrPersonAges(siteRequest_, (Integer)o);
-		case "trafficSearchRaceTitles":
-			return TrafficStop.staticSolrStrTrafficSearchRaceTitles(siteRequest_, (String)o);
 			default:
 				return BaseModel.staticSolrStrBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -2448,8 +2267,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 			return TrafficStop.staticSolrFqPersonGenderTitles(siteRequest_, o);
 		case "personAges":
 			return TrafficStop.staticSolrFqPersonAges(siteRequest_, o);
-		case "trafficSearchRaceTitles":
-			return TrafficStop.staticSolrFqTrafficSearchRaceTitles(siteRequest_, o);
 			default:
 				return BaseModel.staticSolrFqBaseModel(entityVar,  siteRequest_, o);
 		}
@@ -2818,12 +2635,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 				if(personAges != null)
 					oTrafficStop.personAges.addAll(personAges);
 			}
-
-			if(saves.contains("trafficSearchRaceTitles")) {
-				List<String> trafficSearchRaceTitles = (List<String>)solrDocument.get("trafficSearchRaceTitles_stored_strings");
-				if(trafficSearchRaceTitles != null)
-					oTrafficStop.trafficSearchRaceTitles.addAll(trafficSearchRaceTitles);
-			}
 		}
 
 		super.populateBaseModel(solrDocument);
@@ -2930,14 +2741,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 				document.addField("personAges_stored_ints", o);
 			}
 		}
-		if(trafficSearchRaceTitles != null) {
-			for(java.lang.String o : trafficSearchRaceTitles) {
-				document.addField("trafficSearchRaceTitles_indexed_strings", o);
-			}
-			for(java.lang.String o : trafficSearchRaceTitles) {
-				document.addField("trafficSearchRaceTitles_stored_strings", o);
-			}
-		}
 		super.indexBaseModel(document);
 
 	}
@@ -2988,8 +2791,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 				return "personGenderTitles_indexed_strings";
 			case "personAges":
 				return "personAges_indexed_ints";
-			case "trafficSearchRaceTitles":
-				return "trafficSearchRaceTitles_indexed_strings";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -3046,9 +2847,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 		});
 		Optional.ofNullable((List<?>)solrDocument.get("personAges_stored_ints")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oTrafficStop.addPersonAges(v.toString());
-		});
-		Optional.ofNullable((List<?>)solrDocument.get("trafficSearchRaceTitles_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oTrafficStop.addTrafficSearchRaceTitles(v.toString());
 		});
 
 		super.storeBaseModel(solrDocument);
@@ -3107,8 +2905,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 				apiRequest.addVars("personGenderTitles");
 			if(!Objects.equals(personAges, original.getPersonAges()))
 				apiRequest.addVars("personAges");
-			if(!Objects.equals(trafficSearchRaceTitles, original.getTrafficSearchRaceTitles()))
-				apiRequest.addVars("trafficSearchRaceTitles");
 			super.apiRequestBaseModel();
 		}
 	}
@@ -3118,7 +2914,7 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(super.hashCode(), stateAbbreviation, stateName, agencyTitle, stopDateTime, stopYear, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personRaceTitles, personGenderTitles, personAges, trafficSearchRaceTitles);
+		return Objects.hash(super.hashCode(), stateAbbreviation, stateName, agencyTitle, stopDateTime, stopYear, stopPurposeNum, stopPurposeTitle, stopActionNum, stopActionTitle, stopDriverArrest, stopPassengerArrest, stopEncounterForce, stopEngageForce, stopOfficerInjury, stopDriverInjury, stopPassengerInjury, stopOfficerId, stopLocationId, stopCityId, personRaceTitles, personGenderTitles, personAges);
 	}
 
 	////////////
@@ -3153,8 +2949,7 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 				&& Objects.equals( stopCityId, that.stopCityId )
 				&& Objects.equals( personRaceTitles, that.personRaceTitles )
 				&& Objects.equals( personGenderTitles, that.personGenderTitles )
-				&& Objects.equals( personAges, that.personAges )
-				&& Objects.equals( trafficSearchRaceTitles, that.trafficSearchRaceTitles );
+				&& Objects.equals( personAges, that.personAges );
 	}
 
 	//////////////
@@ -3187,7 +2982,6 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 		sb.append( ", personRaceTitles: " ).append(personRaceTitles);
 		sb.append( ", personGenderTitles: " ).append(personGenderTitles);
 		sb.append( ", personAges: " ).append(personAges);
-		sb.append( ", trafficSearchRaceTitles: " ).append(trafficSearchRaceTitles);
 		sb.append(" }");
 		return sb.toString();
 	}
@@ -3215,6 +3009,4 @@ public abstract class TrafficStopGen<DEV> extends BaseModel {
 	public static final String VAR_personRaceTitles = "personRaceTitles";
 	public static final String VAR_personGenderTitles = "personGenderTitles";
 	public static final String VAR_personAges = "personAges";
-	public static final String VAR_trafficSearchSearch = "trafficSearchSearch";
-	public static final String VAR_trafficSearchRaceTitles = "trafficSearchRaceTitles";
 }
