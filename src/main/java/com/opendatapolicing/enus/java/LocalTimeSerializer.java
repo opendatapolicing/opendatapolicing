@@ -9,6 +9,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
+/**
+ * Keyword: classSimpleNameLocalTimeSerializer
+ */
 public class LocalTimeSerializer extends JsonSerializer<LocalTime> {
 
 	public static DateTimeFormatter FORMATTimeDisplay = DateTimeFormatter.ofPattern("h:mm a", Locale.US);

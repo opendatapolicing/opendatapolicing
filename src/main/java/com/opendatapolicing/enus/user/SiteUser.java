@@ -7,8 +7,6 @@ import com.opendatapolicing.enus.wrap.Wrap;
 
 
 /**   
- * CanonicalName.enUS: org.computate.scolaire.enUS.user.SiteUser
- * 
  * Model: true
  * Api: true
  * Indexed: true
@@ -23,7 +21,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * 
  * Keyword: classSimpleNameSiteUser
  * Role.enUS: SiteAdmin
- * Filter: utilisateurId
+ * Filter: userId
  * Saves: true
  * 
  * AName.enUS: a site user
@@ -34,7 +32,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * RoleUser: true
  * Role.enUS: SiteAdmin
  */
-public class SiteUser extends SiteUserGen<BaseModel> {   
+public class SiteUser extends SiteUserGen<BaseModel> {
 
 	/**   
 	 * {@inheritDoc}

@@ -39,6 +39,7 @@ import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
 import java.util.List;
 import io.vertx.ext.auth.User;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;

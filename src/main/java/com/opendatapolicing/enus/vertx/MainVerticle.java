@@ -155,7 +155,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 			retrieverOptions.addStore(new ConfigStoreOptions().setType("file").setFormat("properties").setConfig(new JsonObject().put("path", "application.properties")));
 
-			String configPath = System.getenv("configPath");
+			String configPath = System.getenv(ConfigKeys.CONFIG_PATH);
 			if(StringUtils.isNotBlank(configPath)) {
 				ConfigStoreOptions configIni = new ConfigStoreOptions().setType("file").setFormat("properties").setConfig(new JsonObject().put("path", configPath));
 				retrieverOptions.addStore(configIni);
@@ -188,12 +188,12 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
 		CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(zookeeperHosts, retryPolicy);
 		curatorFramework.start();
-		Integer clusterPort = System.getenv("clusterPort") == null ? null : Integer.parseInt(System.getenv("clusterPort"));
-		String clusterHost = System.getenv("clusterHost");
-		Integer clusterPublicPort = System.getenv("clusterPublicPort") == null ? null : Integer.parseInt(System.getenv("clusterPublicPort"));
-		Integer siteInstances = System.getenv(ConfigKeys.SITE_INSTANCES) == null ? 1 : Integer.parseInt(System.getenv(ConfigKeys.SITE_INSTANCES));
-		Long vertxWarningExceptionSeconds = System.getenv("vertxWarningExceptionSeconds") == null ? 10 : Long.parseLong(System.getenv("vertxWarningExceptionSeconds"));
-		String clusterPublicHost = System.getenv("clusterPublicHost");
+		Integer clusterPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
+		String clusterHostName = System.getenv(ConfigKeys.CLUSTER_HOST_NAME);
+		Integer clusterPublicPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PUBLIC_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
+		Integer siteInstances = Optional.ofNullable(System.getenv(ConfigKeys.SITE_INSTANCES)).map(s -> Integer.parseInt(s)).orElse(null);
+		Long vertxWarningExceptionSeconds = Optional.ofNullable(System.getenv(ConfigKeys.VERTX_WARNING_EXCEPTION_SECONDS)).map(s -> Long.parseLong(s)).orElse(10L);
+		String clusterPublicHostName = System.getenv(ConfigKeys.CLUSTER_PUBLIC_HOST_NAME);
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
 		zkConfig.put("sessionTimeout", 20000);
 		zkConfig.put("connectTimeout", 3000);
@@ -209,30 +209,30 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		VertxOptions vertxOptions = new VertxOptions();
 		// For OpenShift
 		EventBusOptions eventBusOptions = new EventBusOptions();
-		String hostname = System.getenv("HOSTNAME");
-		String openshiftService = System.getenv("openshiftService");
-		if(clusterHost == null) {
-			clusterHost = hostname;
+		String hostname = System.getenv(ConfigKeys.HOSTNAME);
+		String openshiftService = System.getenv(ConfigKeys.OPENSHIFT_SERVICE);
+		if(clusterHostName == null) {
+			clusterHostName = hostname;
 		}
-		if(clusterPublicHost == null) {
+		if(clusterPublicHostName == null) {
 			if(hostname != null && openshiftService != null) {
-				clusterPublicHost = hostname + "." + openshiftService;
+				clusterPublicHostName = hostname + "." + openshiftService;
 			}
 		}
-		if(clusterHost != null) {
-			LOG.info(String.format("clusterHost: %s", clusterHost));
-			eventBusOptions.setHost(clusterHost);
+		if(clusterHostName != null) {
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_HOST_NAME, clusterHostName));
+			eventBusOptions.setHost(clusterHostName);
 		}
 		if(clusterPort != null) {
-			LOG.info(String.format("clusterPort: %s", clusterPort));
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PORT, clusterPort));
 			eventBusOptions.setPort(clusterPort);
 		}
-		if(clusterPublicHost != null) {
-			LOG.info(String.format("clusterPublicHost: %s", clusterPublicHost));
-			eventBusOptions.setClusterPublicHost(clusterPublicHost);
+		if(clusterPublicHostName != null) {
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PUBLIC_HOST_NAME, clusterPublicHostName));
+			eventBusOptions.setClusterPublicHost(clusterPublicHostName);
 		}
 		if(clusterPublicPort != null) {
-			LOG.info(String.format("clusterPublicPort: %s", clusterPublicPort));
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PUBLIC_PORT, clusterPublicPort));
 			eventBusOptions.setClusterPublicPort(clusterPublicPort);
 		}
 		vertxOptions.setEventBusOptions(eventBusOptions);

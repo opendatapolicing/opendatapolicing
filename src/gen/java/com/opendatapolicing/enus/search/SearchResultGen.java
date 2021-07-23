@@ -31,6 +31,7 @@ import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;

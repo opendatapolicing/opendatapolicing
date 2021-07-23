@@ -8,357 +8,387 @@ public class ConfigKeys {
 	/**
 	 * The path to the config file of the site. 
 	 **/
-	public static final String CONFIG_PATH = "configPath";
+	public static final String CONFIG_PATH = "CONFIG_PATH";
 
 	/**
 	 * The INI Configuration Object for the config file. 
 	 **/
-	public static final String CONFIG = "config";
+	public static final String CONFIG = "CONFIG";
+
+	/**
+	 * The cluster host name. 
+	 **/
+	public static final String CLUSTER_HOST_NAME = "CLUSTER_HOST_NAME";
+
+	/**
+	 * The cluster port. 
+	 **/
+	public static final String CLUSTER_PORT = "CLUSTER_PORT";
+
+	/**
+	 * The cluster public host name. 
+	 **/
+	public static final String CLUSTER_PUBLIC_HOST_NAME = "CLUSTER_PUBLIC_HOST_NAME";
+
+	/**
+	 * The cluster public port. 
+	 **/
+	public static final String CLUSTER_PUBLIC_PORT = "CLUSTER_PUBLIC_PORT";
+
+	/**
+	 * The hostname environment variable. 
+	 **/
+	public static final String HOSTNAME = "HOSTNAME";
+
+	/**
+	 * The OpenShift project. 
+	 **/
+	public static final String OPENSHIFT_SERVICE = "OPENSHIFT_SERVICE";
 
 	/**
 	 * The name of the principal group of settings of the config for this website. 
 	 **/
-	public static final String SITE_IDENTIFIER = "siteIdentifier";
+	public static final String SITE_IDENTIFIER = "SITE_IDENTIFIER";
 
 	/**
 	 * The path to the project of the site cloned from git. 
 	 **/
-	public static final String APP_PATH = "appPath";
+	public static final String APP_PATH = "APP_PATH";
 
 	/**
 	 * The path to the basic authentication properties file with users and passwords. 
 	 **/
-	public static final String DOC_ROOT = "docRoot";
+	public static final String DOC_ROOT = "DOC_ROOT";
 
 	/**
 	 * The path to the docroot for the project. 
 	 **/
-	public static final String COMPANY_NAME = "companyName";
+	public static final String COMPANY_NAME = "COMPANY_NAME";
 
 	/**
 	 * The domain name of the site. 
 	 **/
-	public static final String DOMAIN_NAME = "domainName";
+	public static final String DOMAIN_NAME = "DOMAIN_NAME";
 
 	/**
 	 * The host name of the site. 
 	 **/
-	public static final String SITE_HOST_NAME = "siteHostName";
+	public static final String SITE_HOST_NAME = "SITE_HOST_NAME";
 
 	/**
 	 * The port of the site. 
 	 **/
-	public static final String SITE_PORT = "sitePort";
+	public static final String SITE_PORT = "SITE_PORT";
 
 	/**
 	 * The number of instances of the Vertx verticle to deploy. 
 	 **/
-	public static final String SITE_INSTANCES = "siteInstances";
+	public static final String SITE_INSTANCES = "SITE_INSTANCES";
 
 	/**
 	 * The Auth realm of the site. 
 	 **/
-	public static final String API_COUNTER_PAUSE = "apiCounterPause";
+	public static final String API_COUNTER_PAUSE = "API_COUNTER_PAUSE";
 
 	/**
 	 * 
 	 **/
-	public static final String API_COUNTER_RESUME = "apiCounterResume";
+	public static final String API_COUNTER_RESUME = "API_COUNTER_RESUME";
 
 	/**
 	 * 
 	 **/
-	public static final String API_COUNTER_FETCH = "apiCounterFetch";
+	public static final String API_COUNTER_FETCH = "API_COUNTER_FETCH";
 
 	/**
 	 * 
 	 **/
-	public static final String AUTH_REALM = "authRealm";
+	public static final String AUTH_REALM = "AUTH_REALM";
 
 	/**
 	 * The Auth client ID of the site. 
 	 **/
-	public static final String AUTH_RESOURCE = "authResource";
+	public static final String AUTH_RESOURCE = "AUTH_RESOURCE";
 
 	/**
 	 * The Auth client secret of the site. 
 	 **/
-	public static final String AUTH_SECRET = "authSecret";
+	public static final String AUTH_SECRET = "AUTH_SECRET";
 
 	/**
 	 * Whether SSL is required in Auth for the site. 
 	 **/
-	public static final String AUTH_SSL_REQUIRED = "authSslRequired";
+	public static final String AUTH_SSL_REQUIRED = "AUTH_SSL_REQUIRED";
 
 	/**
-	 * Enable SSL Passthrough
+	 * Enable SSL Passthrough. 
 	 **/
-	public static final String SSL_PASSTHROUGH = "sslPassthrough";
+	public static final String SSL_PASSTHROUGH = "SSL_PASSTHROUGH";
 
 	/**
 	 * The path to the Java keystore for the site. 
 	 **/
-	public static final String SSL_JKS_PATH = "sslJksPath";
+	public static final String SSL_JKS_PATH = "SSL_JKS_PATH";
 
 	/**
 	 * The password for the Java keystore for the site. 
 	 **/
-	public static final String SSL_JKS_PASSWORD = "sslJksPassword";
+	public static final String SSL_JKS_PASSWORD = "SSL_JKS_PASSWORD";
 
 	/**
 	 * The port to the Auth server. 
 	 **/
-	public static final String AUTH_PORT = "authPort";
+	public static final String AUTH_PORT = "AUTH_PORT";
 
 	/**
 	 * Whether the Auth server uses SSL. 
 	 **/
-	public static final String AUTH_SSL = "authSsl";
+	public static final String AUTH_SSL = "AUTH_SSL";
 
 	/**
 	 * The token URI to the Auth server. 
 	 **/
-	public static final String AUTH_TOKEN_URI = "authTokenUri";
+	public static final String AUTH_TOKEN_URI = "AUTH_TOKEN_URI";
 
 	/**
 	 * 
 	 **/
-	public static final String AUTH_HOST_NAME = "authHostName";
+	public static final String AUTH_HOST_NAME = "AUTH_HOST_NAME";
 
 	/**
 	 * The URL of the Auth server. 
 	 **/
-	public static final String AUTH_URL = "authUrl";
+	public static final String AUTH_URL = "AUTH_URL";
 
 	/**
 	 * The base URL for the URLs of the site. 
 	 **/
-	public static final String SITE_BASE_URL = "siteBaseUrl";
+	public static final String SITE_BASE_URL = "SITE_BASE_URL";
 
 	/**
 	 * The display name of the site. 
 	 **/
-	public static final String SITE_DISPLAY_NAME = "siteDisplayName";
+	public static final String SITE_DISPLAY_NAME = "SITE_DISPLAY_NAME";
 
 	/**
 	 * The class name of the JDBC driver class for the database. 
 	 **/
-	public static final String JDBC_DRIVER_CLASS = "jdbcDriverClass";
+	public static final String JDBC_DRIVER_CLASS = "JDBC_DRIVER_CLASS";
 
 	/**
 	 * The username for the database. 
 	 **/
-	public static final String JDBC_USERNAME = "jdbcUsername";
+	public static final String JDBC_USERNAME = "JDBC_USERNAME";
 
 	/**
 	 * The password for the database. 
 	 **/
-	public static final String JDBC_PASSWORD = "jdbcPassword";
+	public static final String JDBC_PASSWORD = "JDBC_PASSWORD";
 
 	/**
 	 * The max pool size for the database. 
 	 **/
-	public static final String JDBC_MAX_POOL_SIZE = "jdbcMaxPoolSize";
+	public static final String JDBC_MAX_POOL_SIZE = "JDBC_MAX_POOL_SIZE";
 
 	/**
 	 * Set the maximum connection request allowed in the wait queue, any requests beyond the max size will result in an failure. If the value is set to a negative number then the queue will be unbounded. 
 	 **/
-	public static final String JDBC_MAX_WAIT_QUEUE_SIZE = "jdbcMaxWaitQueueSize";
+	public static final String JDBC_MAX_WAIT_QUEUE_SIZE = "JDBC_MAX_WAIT_QUEUE_SIZE";
 
 	/**
 	 * The max pool size for the database. 
 	 **/
-	public static final String JDBC_MIN_POOL_SIZE = "jdbcMinPoolSize";
+	public static final String JDBC_MIN_POOL_SIZE = "JDBC_MIN_POOL_SIZE";
 
 	/**
 	 * The max statements for the database. 
 	 **/
-	public static final String JDBC_MAX_STATEMENTS = "jdbcMaxStatements";
+	public static final String JDBC_MAX_STATEMENTS = "JDBC_MAX_STATEMENTS";
 
 	/**
 	 * The max statements per connection for the database. 
 	 **/
-	public static final String JDBC_MAX_STATEMENTS_PER_CONNECTION = "jdbcMaxStatementsPerConnection";
+	public static final String JDBC_MAX_STATEMENTS_PER_CONNECTION = "JDBC_MAX_STATEMENTS_PER_CONNECTION";
 
 	/**
 	 * The max idle time for the database. 
 	 **/
-	public static final String JDBC_MAX_IDLE_TIME = "jdbcMaxIdleTime";
+	public static final String JDBC_MAX_IDLE_TIME = "JDBC_MAX_IDLE_TIME";
 
 	/**
 	 * The max idle time for the connection to the database. 
 	 **/
-	public static final String JDBC_CONNECT_TIMEOUT = "jdbcConnectTimeout";
+	public static final String JDBC_CONNECT_TIMEOUT = "JDBC_CONNECT_TIMEOUT";
 
 	/**
 	 * The JDBC URL to the database. 
 	 **/
-	public static final String JDBC_HOST = "jdbcHost";
+	public static final String JDBC_HOST = "JDBC_HOST";
 
 	/**
 	 * The JDBC URL to the database. 
 	 **/
-	public static final String JDBC_PORT = "jdbcPort";
+	public static final String JDBC_PORT = "JDBC_PORT";
 
 	/**
 	 * The JDBC URL to the database. 
 	 **/
-	public static final String JDBC_DATABASE = "jdbcDatabase";
+	public static final String JDBC_DATABASE = "JDBC_DATABASE";
 
 	/**
 	 * The hostname to the SOLR search engine. 
 	 **/
-	public static final String SOLR_HOST_NAME = "solrHostName";
+	public static final String SOLR_HOST_NAME = "SOLR_HOST_NAME";
 
 	/**
 	 * The port to the SOLR search engine. 
 	 **/
-	public static final String SOLR_PORT = "solrPort";
+	public static final String SOLR_PORT = "SOLR_PORT";
 
 	/**
 	 * The Solr collection. 
 	 **/
-	public static final String SOLR_COLLECTION = "solrCollection";
+	public static final String SOLR_COLLECTION = "SOLR_COLLECTION";
 
 	/**
 	 * The URL to the SOLR search engine for the computate project. 
 	 **/
-	public static final String SOLR_URL_COMPUTATE = "solrUrlComputate";
+	public static final String SOLR_URL_COMPUTATE = "SOLR_URL_COMPUTATE";
 
 	/**
 	 * The Email account for the site. 
 	 **/
-	public static final String ACCOUNT_EMAIL = "accountEmail";
+	public static final String ACCOUNT_EMAIL = "ACCOUNT_EMAIL";
 
 	/**
 	 * The OpenID Connect role for an administrator. 
 	 **/
-	public static final String ROLE_ADMIN = "roleAdmin";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
 	/**
 	 * The email address for the administrator of the site for the error reports. 
 	 **/
-	public static final String EMAIL_ADMIN = "emailAdmin";
+	public static final String EMAIL_ADMIN = "EMAIL_ADMIN";
 
 	/**
 	 * The version of OpenAPI used with Vert.x which should probably be 3.0. 
 	 **/
-	public static final String OPEN_API_VERSION = "openApiVersion";
+	public static final String OPEN_API_VERSION = "OPEN_API_VERSION";
 
 	/**
 	 * The description of your site API. 
 	 **/
-	public static final String API_DESCRIPTION = "apiDescription";
+	public static final String API_DESCRIPTION = "API_DESCRIPTION";
 
 	/**
 	 * The title of your site API. 
 	 **/
-	public static final String API_TITLE = "apiTitle";
+	public static final String API_TITLE = "API_TITLE";
 
 	/**
 	 * The terms of service of your site API. 
 	 **/
-	public static final String API_TERMS_SERVICE = "apiTermsService";
+	public static final String API_TERMS_SERVICE = "API_TERMS_SERVICE";
 
 	/**
 	 * The version of your site API. 
 	 **/
-	public static final String API_VERSION = "apiVersion";
+	public static final String API_VERSION = "API_VERSION";
 
 	/**
 	 * The contact email of your site API. 
 	 **/
-	public static final String API_CONTACT_EMAIL = "apiContactEmail";
+	public static final String API_CONTACT_EMAIL = "API_CONTACT_EMAIL";
 
 	/**
 	 * The open source license name of your site API. 
 	 **/
-	public static final String API_LICENSE_NAME = "apiLicenseName";
+	public static final String API_LICENSE_NAME = "API_LICENSE_NAME";
 
 	/**
 	 * The open source license URL of your site API. 
 	 **/
-	public static final String API_LICENSE_URL = "apiLicenseUrl";
+	public static final String API_LICENSE_URL = "API_LICENSE_URL";
 
 	/**
 	 * The host name of your site API. 
 	 **/
-	public static final String API_HOST_NAME = "apiHostName";
+	public static final String API_HOST_NAME = "API_HOST_NAME";
 
 	/**
 	 * The base path of your site API. 
 	 **/
-	public static final String API_BASE_PATH = "apiBasePath";
+	public static final String API_BASE_PATH = "API_BASE_PATH";
 
 	/**
 	 * The base URL of your static files. 
 	 **/
-	public static final String STATIC_BASE_URL = "staticBaseUrl";
+	public static final String STATIC_BASE_URL = "STATIC_BASE_URL";
 
 	/**
 	 * The path to the static files for the site. 
 	 **/
-	public static final String STATIC_PATH = "staticPath";
+	public static final String STATIC_PATH = "STATIC_PATH";
 
 	/**
 	 * 
 	 **/
-	public static final String IMPORT_PATH = "importPath";
+	public static final String IMPORT_PATH = "IMPORT_PATH";
 
 	/**
 	 * The SMTP host name for sending email. 
 	 **/
-	public static final String EMAIL_HOST = "emailHost";
+	public static final String EMAIL_HOST = "EMAIL_HOST";
 
 	/**
 	 * The SMTP port for sending email. 
 	 **/
-	public static final String EMAIL_PORT = "emailPort";
+	public static final String EMAIL_PORT = "EMAIL_PORT";
 
 	/**
 	 * The SMTP username for sending email. 
 	 **/
-	public static final String EMAIL_USERNAME = "emailUsername";
+	public static final String EMAIL_USERNAME = "EMAIL_USERNAME";
 
 	/**
 	 * The SMTP password for sending email. 
 	 **/
-	public static final String EMAIL_PASSWORD = "emailPassword";
+	public static final String EMAIL_PASSWORD = "EMAIL_PASSWORD";
 
 	/**
 	 * The from address for sending email. 
 	 **/
-	public static final String EMAIL_FROM = "emailFrom";
+	public static final String EMAIL_FROM = "EMAIL_FROM";
 
 	/**
 	 * Whether authentication is required for sending email. 
 	 **/
-	public static final String EMAIL_AUTH = "emailAuth";
+	public static final String EMAIL_AUTH = "EMAIL_AUTH";
 
 	/**
 	 * Whether SSL is required for sending email. 
 	 **/
-	public static final String EMAIL_SSL = "emailSsl";
+	public static final String EMAIL_SSL = "EMAIL_SSL";
 
 	/**
 	 * The default timezone of the site. 
 	 **/
-	public static final String SITE_ZONE = "siteZone";
+	public static final String SITE_ZONE = "SITE_ZONE";
 
 	/**
 	 * 
 	 **/
-	public static final String TIMER_DB_SOLR_SYNC_IN_SECONDS = "timerDbSolrSyncInSeconds";
+	public static final String TIMER_DB_SOLR_SYNC_IN_SECONDS = "TIMER_DB_SOLR_SYNC_IN_SECONDS";
 
 	/**
 	 * 
 	 **/
-	public static final String ENABLE_DB_SOLR_SYNC = "enableDbSolrSync";
+	public static final String ENABLE_DB_SOLR_SYNC = "ENABLE_DB_SOLR_SYNC";
 
 	/**
 	 * 
 	 **/
-	public static final String ENABLE_REFRESH_DATA = "enableRefreshData";
+	public static final String ENABLE_REFRESH_DATA = "ENABLE_REFRESH_DATA";
 
 	/**
 	 * 
@@ -368,27 +398,27 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
-	public static final String WORKER_POOL_SIZE = "workerPoolSize";
+	public static final String WORKER_POOL_SIZE = "WORKER_POOL_SIZE";
 
 	/**
 	 * 
 	 **/
-	public static final String VERTX_WARNING_EXCEPTION_SECONDS = "vertxWarningExceptionSeconds";
+	public static final String VERTX_WARNING_EXCEPTION_SECONDS = "VERTX_WARNING_EXCEPTION_SECONDS";
 
 	/**
 	 * 
 	 **/
-	public static final String ZOOKEEPER_HOST_NAME = "zookeeperHostName";
+	public static final String ZOOKEEPER_HOST_NAME = "ZOOKEEPER_HOST_NAME";
 
 	/**
 	 * 
 	 **/
-	public static final String ZOOKEEPER_PORT = "zookeeperPort";
+	public static final String ZOOKEEPER_PORT = "ZOOKEEPER_PORT";
 
 	/**
 	 * 
 	 **/
-	public static final String ZOOKEEPER_HOSTS = "zookeeperHosts";
+	public static final String ZOOKEEPER_HOSTS = "ZOOKEEPER_HOSTS";
 
 	/**
 	 * 

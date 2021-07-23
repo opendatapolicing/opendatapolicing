@@ -355,7 +355,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private Future<Void> syncData(String tableName) {
 		Promise<Void> promise = Promise.promise();
 		try {
-			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, tableName), true)) {
+			if(config().getBoolean(String.format("%s_%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, tableName), true)) {
 
 				LOG.info(String.format(syncDataStarted, tableName));
 				pgPool.withTransaction(sqlConnection -> {
@@ -519,7 +519,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private Future<Void> refreshData(String tableName) {
 		Promise<Void> promise = Promise.promise();
 		try {
-			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_REFRESH_DATA, tableName), true)) {
+			if(config().getBoolean(String.format("%s_%s", ConfigKeys.ENABLE_REFRESH_DATA, tableName), true)) {
 				webClient.post(config().getInteger(ConfigKeys.AUTH_PORT), config().getString(ConfigKeys.AUTH_HOST_NAME), config().getString(ConfigKeys.AUTH_TOKEN_URI))
 						.expect(ResponsePredicate.SC_OK)
 						.ssl(config().getBoolean(ConfigKeys.AUTH_SSL))
@@ -566,7 +566,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	private Future<Void> syncAgencies() {
 		Promise<Void> promise = Promise.promise();
 		try {
-			if(config().getBoolean(String.format("%s%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, "SiteAgency"), true)) {
+			if(config().getBoolean(String.format("%s_%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, "SiteAgency"), true)) {
 				SiteRequestEnUS siteRequest = new SiteRequestEnUS();
 				siteRequest.setConfig(config());
 				siteRequest.setWebClient(webClient);

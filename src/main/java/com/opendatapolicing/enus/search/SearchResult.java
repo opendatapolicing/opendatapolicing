@@ -8,7 +8,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
  * Keyword: classSimpleNameSearchResult
  */
 public class SearchResult extends SearchResultGen<Object> {
-	
+
 	protected void _siteRequest_(Wrap<SiteRequestEnUS> c) {
 	}
 
