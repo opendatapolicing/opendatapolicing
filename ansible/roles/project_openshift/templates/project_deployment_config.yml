@@ -41,137 +41,140 @@ spec:
             - mountPath: /opt/keystore
               name: volume-keystore
               readOnly: true
+            - mountPath: /opt/template
+              name: volume-template
+              readOnly: true
           env:
-            - name: authRealm
+            - name: AUTH_REALM
               valueFrom:
                 secretKeyRef:
-                  key: authRealm
+                  key: AUTH_REALM
                   name: opendatapolicing-secret
-            - name: authResource
+            - name: AUTH_RESOURCE
               valueFrom:
                 secretKeyRef:
-                  key: authResource
+                  key: AUTH_RESOURCE
                   name: opendatapolicing-secret
-            - name: authSecret
+            - name: AUTH_SECRET
               valueFrom:
                 secretKeyRef:
-                  key: authSecret
+                  key: AUTH_SECRET
                   name: opendatapolicing-secret
-            - name: authUrl
+            - name: AUTH_URL
               valueFrom:
                 secretKeyRef:
-                  key: authUrl
+                  key: AUTH_URL
                   name: opendatapolicing-secret
-            - name: emailAuth
+            - name: EMAIL_AUTH
               valueFrom:
                 secretKeyRef:
-                  key: emailAuth
+                  key: EMAIL_AUTH
                   name: opendatapolicing-secret
-            - name: emailFrom
+            - name: EMAIL_FROM
               valueFrom:
                 secretKeyRef:
-                  key: emailFrom
+                  key: EMAIL_FROM
                   name: opendatapolicing-secret
-            - name: emailHost
+            - name: EMAIL_HOST
               valueFrom:
                 secretKeyRef:
-                  key: emailHost
+                  key: EMAIL_HOST
                   name: opendatapolicing-secret
-            - name: emailPassword
+            - name: EMAIL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: emailPassword
+                  key: EMAIL_PASSWORD
                   name: opendatapolicing-secret
-            - name: emailPort
+            - name: EMAIL_PORT
               valueFrom:
                 secretKeyRef:
-                  key: emailPort
+                  key: EMAIL_PORT
                   name: opendatapolicing-secret
-            - name: emailSsl
+            - name: EMAIL_SSL
               valueFrom:
                 secretKeyRef:
-                  key: emailSsl
+                  key: EMAIL_SSL
                   name: opendatapolicing-secret
-            - name: emailUsername
+            - name: EMAIL_USERNAME
               valueFrom:
                 secretKeyRef:
-                  key: emailUsername
+                  key: EMAIL_USERNAME
                   name: opendatapolicing-secret
-            - name: jdbcHost
+            - name: JDBC_HOST
               valueFrom:
                 secretKeyRef:
-                  key: jdbcHost
+                  key: JDBC_HOST
                   name: opendatapolicing-secret
-            - name: jdbcPort
+            - name: JDBC_PORT
               valueFrom:
                 secretKeyRef:
-                  key: jdbcPort
+                  key: JDBC_PORT
                   name: opendatapolicing-secret
-            - name: jdbcDatabase
+            - name: JDBC_DATABASE
               valueFrom:
                 secretKeyRef:
-                  key: jdbcDatabase
+                  key: JDBC_DATABASE
                   name: opendatapolicing-secret
-            - name: jdbcUsername
+            - name: JDBC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  key: jdbcUsername
+                  key: JDBC_USERNAME
                   name: opendatapolicing-secret
-            - name: jdbcPassword
+            - name: JDBC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: jdbcPassword
+                  key: JDBC_PASSWORD
                   name: opendatapolicing-secret
-            - name: sslPassthrough
+            - name: SSL_PASSTHROUGH
               valueFrom:
                 secretKeyRef:
-                  key: sslPassthrough
+                  key: SSL_PASSTHROUGH
                   name: opendatapolicing-secret
-            - name: sslAlias
+            - name: SSL_ALIAS
               valueFrom:
                 secretKeyRef:
-                  key: sslAlias
+                  key: SSL_ALIAS
                   name: opendatapolicing-secret
-            - name: sslJksPassword
+            - name: SSL_JKS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: sslJksPassword
+                  key: SSL_JKS_PASSWORD
                   name: opendatapolicing-secret
-            - name: sslJksPath
+            - name: SSL_JKS_PATH
               valueFrom:
                 secretKeyRef:
-                  key: sslJksPath
+                  key: SSL_JKS_PATH
                   name: opendatapolicing-secret
-            - name: sslKeystorePath
+            - name: SSL_KEYSTORE_PATH
               valueFrom:
                 secretKeyRef:
-                  key: sslKeystorePath
+                  key: SSL_KEYSTORE_PATH
                   name: opendatapolicing-secret
-            - name: openshiftService
+            - name: OPENSHIFT_SERVICE
               value: "opendatapolicing"
-            - name: clusterPort
+            - name: CLUSTER_PORT
               value: "8081"
-            - name: zookeeperHostName
+            - name: ZOOKEEPER_HOST_NAME
               value: "{{ZOOKEEPER_HOST_NAME}}"
-            - name: zookeeperPort
+            - name: ZOOKEEPER_PORT
               value: "{{ZOOKEEPER_PORT}}"
-            - name: solrHostName
+            - name: SOLR_HOST_NAME
               value: "{{SOLR_HOST_NAME}}"
-            - name: solrPort
+            - name: SOLR_PORT
               value: "{{SOLR_PORT}}"
-            - name: solrUrl
+            - name: SOLR_URL
               value: "http://{{SOLR_HOST_NAME}}:{{SOLR_PORT}}/solr/{{PROJECT_SOLR_COLLECTION}}"
-            - name: siteHostName
+            - name: SITE_HOST_NAME
               value: "{{PROJECT_SITE_HOST_NAME_ENUS}}"
-            - name: sitePort
+            - name: SITE_PORT
               value: "{{PROJECT_SITE_PORT}}"
-            - name: siteBaseUrl
+            - name: SITE_BASE_URL
               value: "{{PROJECT_SITE_BASE_URL_ENUS}}"
-            - name: numberExecutors
+            - name: NUMBER_EXECUTORS
               value: "{{PROJECT_NUMBER_EXECUTORS}}"
-            - name: staticBaseUrl
+            - name: STATIC_BASE_URL
               value: "{{PROJECT_STATIC_BASE_URL}}"
-            - name: siteZone
+            - name: SITE_ZONE
               value: "{{PROJECT_SITE_ZONE}}"
             - name: JAVA_MAIN_CLASS
               value: "{{PROJECT_JAVA_MAIN_CLASS_ENUS}}"
@@ -180,6 +183,10 @@ spec:
           secret:
             defaultMode: 420
             secretName: opendatapolicing-keystore
+        - name: volume-template
+          configMap:
+            defaultMode: 420
+            name: opendatapolicing-template
   triggers:
     - imageChangeParams:
         automatic: true

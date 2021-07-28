@@ -202,7 +202,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * Val.Complete.enUS:Importing initial data completed. 
 	 * Val.Fail.enUS:Importing initial data failed. 
 	 * Val.Skip.enUS:data import skipped. 
-	 **/  
+	 **/
 	private Future<Void> importData() {
 		Promise<Void> promise = Promise.promise();
 		try {

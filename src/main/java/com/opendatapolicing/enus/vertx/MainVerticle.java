@@ -97,6 +97,7 @@ import io.vertx.ext.web.handler.TemplateHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.openapi.RouterBuilder;
+import io.vertx.ext.web.sstore.ClusteredSessionStore;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import io.vertx.pgclient.PgConnectOptions;
@@ -107,7 +108,7 @@ import io.vertx.sqlclient.PoolOptions;
 /**	
  *	A Java class to start the Vert.x application as a main method. 
  * Keyword: classSimpleNameVerticle
- **/  
+ **/
 public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
 
@@ -191,16 +192,16 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		Integer clusterPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
 		String clusterHostName = System.getenv(ConfigKeys.CLUSTER_HOST_NAME);
 		Integer clusterPublicPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PUBLIC_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
-		Integer siteInstances = Optional.ofNullable(System.getenv(ConfigKeys.SITE_INSTANCES)).map(s -> Integer.parseInt(s)).orElse(null);
+		Integer siteInstances = Optional.ofNullable(System.getenv(ConfigKeys.SITE_INSTANCES)).map(s -> Integer.parseInt(s)).orElse(1);
 		Long vertxWarningExceptionSeconds = Optional.ofNullable(System.getenv(ConfigKeys.VERTX_WARNING_EXCEPTION_SECONDS)).map(s -> Long.parseLong(s)).orElse(10L);
 		String clusterPublicHostName = System.getenv(ConfigKeys.CLUSTER_PUBLIC_HOST_NAME);
 		zkConfig.put("zookeeperHosts", zookeeperHosts);
-		zkConfig.put("sessionTimeout", 20000);
+		zkConfig.put("sessionTimeout", 500000);
 		zkConfig.put("connectTimeout", 3000);
 		zkConfig.put("rootPath", "opendatapolicing");
 		zkConfig.put("retry", new JsonObject() {
 			{
-				put("initialSleepTime", 100);
+				put("initialSleepTime", 3000);
 				put("intervalTimes", 10000);
 				put("maxTimes", 3);
 			}
@@ -412,7 +413,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						oauth2AuthHandler.setupCallback(tempRouter.get("/callback"));
 					}
 			
-			//		ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
+//					ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
 					LocalSessionStore sessionStore = LocalSessionStore.create(vertx, "opendatapolicing-sessions");
 					SessionHandler sessionHandler = SessionHandler.create(sessionStore);
 					if(StringUtils.startsWith(siteBaseUrl, "https://"))
@@ -551,7 +552,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
-			siteInstances = System.getenv("siteInstances") == null ? 1 : Integer.parseInt(System.getenv("siteInstances"));
+			siteInstances = Optional.ofNullable(System.getenv(ConfigKeys.SITE_INSTANCES)).map(s -> Integer.parseInt(s)).orElse(1);
 			workerPoolSize = System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? null : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE));
 
 			healthCheckHandler.register("database", 2000, a -> {
@@ -589,7 +590,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 				}
 			});
 			healthCheckHandler.register("vertx", 2000, a -> {
-				a.complete(Status.OK(new JsonObject().put("siteInstances", siteInstances).put("workerPoolSize", workerPoolSize)));
+				a.complete(Status.OK(new JsonObject().put(ConfigKeys.SITE_INSTANCES, siteInstances).put("workerPoolSize", workerPoolSize)));
 			});
 			router.get("/health").handler(healthCheckHandler);
 			LOG.info(configureHealthChecksComplete);
@@ -1477,7 +1478,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 				}
 			}
 		} catch(Exception ex) {
-			LOG.error(String.format("searchTrafficStop failed. "), ex);
+			LOG.error(String.format("putVarsInRoutingContext failed. "), ex);
 			promise.fail(ex);
 		}
 		return promise.future();

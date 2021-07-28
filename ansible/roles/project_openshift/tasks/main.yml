@@ -4,6 +4,11 @@
 # Mission: create the Ansible tasks for deploying the application to OpenShift
 # Milestone: Automate Project Deployment
 # Column: Automate Project Deployment
+
+- name: Upload template configmap
+  shell: "oc login {{PROJECT_HOST}} --token={{PROJECT_TOKEN}} && oc create configmap opendatapolicing-template --from-file=/usr/local/src/opendatapolicing-static/template/ --dry-run -o yaml -n {{PROJECT_NAMESPACE}} | oc apply -n {{PROJECT_NAMESPACE}} -f -"
+  ignore_errors: true
+
 - name: Install opendatapolicing image stream on OpenShift
   k8s:
     state: present

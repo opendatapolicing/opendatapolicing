@@ -121,7 +121,7 @@ PROJECT_DB_PASSWORD_ENUS: "..."
 # The PostgreSQL database name of the site.
 PROJECT_DB_NAME_ENUS: opendatapolicing
 # The Java main class of the site.
-PROJECT_JAVA_MAIN_CLASS_ENUS: com.opendatapolicing.enus.vertx.AppVertx
+PROJECT_JAVA_MAIN_CLASS_ENUS: com.opendatapolicing.enus.vertx.MainVerticle
 # The backup directory of the site.
 PROJECT_BACKUP_DIR_ENUS: "{{ lookup('env', 'ODP_ANSIBLE_STATIC') }}/data/enUS"
 # The restore directory of the site.
