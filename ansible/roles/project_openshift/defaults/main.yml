@@ -172,9 +172,9 @@ SSL_P12_PASSWORD: "..."
 # The keystore file password.
 SSL_JKS_PASSWORD: "{{SSL_P12_PASSWORD}}"
 # The keystore file base64 encoded (base64 -w 0 /opt/keystore/computate.org.jks).
-SSL_JKS_BASE64: "..."
+SSL_JKS_BASE64: "{{ lookup('file', '{{ SSL_JKS_PATH }}') | b64encode }}"
 # The jceks file base64 encoded (base64 -w 0 /opt/keystore/computate.org.jceks).
-SSL_JCEKS_BASE64: "..."
+SSL_JCEKS_BASE64: "{{ lookup('file', '{{ SSL_JCEKS_PATH }}') | b64encode }}"
 
 #######################################
 # OpenID Connect auth server defaults #

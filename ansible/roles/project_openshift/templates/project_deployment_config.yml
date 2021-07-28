@@ -41,7 +41,7 @@ spec:
             - mountPath: /opt/keystore
               name: volume-keystore
               readOnly: true
-            - mountPath: /opt/template
+            - mountPath: /opt/static/template
               name: volume-template
               readOnly: true
           env:
@@ -75,6 +75,8 @@ spec:
                 secretKeyRef:
                   key: AUTH_SSL
                   name: opendatapolicing-secret
+            - name: AUTH_TOKEN_URI
+              value: "{{AUTH_TOKEN_URI}}"
             - name: EMAIL_AUTH
               valueFrom:
                 secretKeyRef:
@@ -160,6 +162,11 @@ spec:
                 secretKeyRef:
                   key: SSL_KEYSTORE_PATH
                   name: opendatapolicing-secret
+            - name: ACS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: ACS_API_KEY
+                  name: opendatapolicing-secret
             - name: OPENSHIFT_SERVICE
               value: "opendatapolicing"
             - name: CLUSTER_PORT
@@ -184,6 +191,8 @@ spec:
               value: "{{PROJECT_NUMBER_EXECUTORS}}"
             - name: STATIC_BASE_URL
               value: "{{PROJECT_STATIC_BASE_URL}}"
+            - name: STATIC_PATH
+              value: "{{PROJECT_STATIC_PATH}}"
             - name: SITE_ZONE
               value: "{{PROJECT_SITE_ZONE}}"
             - name: JAVA_MAIN_CLASS

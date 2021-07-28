@@ -1,4 +1,4 @@
-package com.opendatapolicing.enus.trafficstop;                                                                
+package com.opendatapolicing.enus.trafficstop;                                                                   
 
 import java.io.IOException;
 import java.time.ZonedDateTime;

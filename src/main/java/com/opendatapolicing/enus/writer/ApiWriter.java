@@ -739,6 +739,12 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(6, "type: array");
 				wPaths.tl(6, "items:");
 				wPaths.tl(7, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: cursorMark");
+				wPaths.tl(5, "description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: string");
 			}
 		}
 
