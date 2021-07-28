@@ -392,7 +392,11 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			String siteBaseUrl = config().getString(ConfigKeys.SITE_BASE_URL);
 
 			OAuth2Options oauth2ClientOptions = new OAuth2Options();
-			oauth2ClientOptions.setSite(config().getString(ConfigKeys.AUTH_URL) + "/realms/" + config().getString(ConfigKeys.AUTH_REALM));
+			Boolean authSsl = config().getBoolean(ConfigKeys.AUTH_SSL);
+			String authHostName = config().getString(ConfigKeys.AUTH_HOST_NAME);
+			Integer authPort = config().getInteger(ConfigKeys.AUTH_PORT);
+			String authUrl = String.format("%s://%s%s/auth", (authSsl ? "https" : "http"), authHostName, (authPort == 443 || authPort == 80 ? "" : ":" + authPort));
+			oauth2ClientOptions.setSite(authUrl + "/realms/" + config().getString(ConfigKeys.AUTH_REALM));
 			oauth2ClientOptions.setTenant(config().getString(ConfigKeys.AUTH_REALM));
 			oauth2ClientOptions.setClientID(config().getString(ConfigKeys.AUTH_RESOURCE));
 			oauth2ClientOptions.setClientSecret(config().getString(ConfigKeys.AUTH_SECRET));

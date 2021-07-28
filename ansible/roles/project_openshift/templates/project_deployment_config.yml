@@ -60,10 +60,20 @@ spec:
                 secretKeyRef:
                   key: AUTH_SECRET
                   name: opendatapolicing-secret
-            - name: AUTH_URL
+            - name: AUTH_HOST_NAME
               valueFrom:
                 secretKeyRef:
-                  key: AUTH_URL
+                  key: AUTH_HOST_NAME
+                  name: opendatapolicing-secret
+            - name: AUTH_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: AUTH_PORT
+                  name: opendatapolicing-secret
+            - name: AUTH_SSL
+              valueFrom:
+                secretKeyRef:
+                  key: AUTH_SSL
                   name: opendatapolicing-secret
             - name: EMAIL_AUTH
               valueFrom:
