@@ -28,6 +28,7 @@ import io.vertx.core.Future;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import io.vertx.core.AbstractVerticle;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
