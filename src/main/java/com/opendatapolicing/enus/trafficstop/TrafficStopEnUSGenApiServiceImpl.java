@@ -1329,6 +1329,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
 			List<String> fls = listTrafficStop.getFields();
 
@@ -1339,6 +1340,9 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 				json.put("searchTime", searchTime);
 				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
 			}
 			JsonArray l = new JsonArray();
 			listTrafficStop.getList().stream().forEach(o -> {
@@ -1516,6 +1520,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
 			List<String> fls = listTrafficStop.getFields();
 
@@ -1526,6 +1531,9 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 				json.put("searchTime", searchTime);
 				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
 			}
 			JsonArray l = new JsonArray();
 			listTrafficStop.getList().stream().forEach(o -> {
@@ -1807,6 +1815,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				String valueSort = null;
 				Integer valueStart = null;
 				Integer valueRows = null;
+				String valueCursorMark = null;
 				String paramName = paramRequest.getKey();
 				Object paramValuesObject = paramRequest.getValue();
 				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
@@ -1903,6 +1912,10 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 									entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
 									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
 									searchTrafficStopVar(uri, apiMethod, searchList, entityVar, valueIndexed);
+									break;
+								case "cursorMark":
+									valueCursorMark = (String)paramObject;
+									searchList.add("cursorMark", (String)paramObject);
 									break;
 							}
 						}

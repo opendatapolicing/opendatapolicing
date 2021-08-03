@@ -194,7 +194,7 @@ spec:
             - name: STATIC_PATH
               value: "{{PROJECT_STATIC_PATH}}"
             - name: SITE_ZONE
-              value: "{{PROJECT_SITE_ZONE}}"
+              value: "{{PROJECT_SITE_ZONE_ENUS}}"
             - name: JAVA_MAIN_CLASS
               value: "{{PROJECT_JAVA_MAIN_CLASS_ENUS}}"
       volumes:

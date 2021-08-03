@@ -156,6 +156,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -316,6 +322,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -455,6 +467,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -591,6 +609,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -761,6 +785,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -921,6 +951,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -1060,6 +1096,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -1196,6 +1238,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -1366,6 +1414,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -1526,6 +1580,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -1665,6 +1725,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -1801,6 +1867,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -1971,6 +2043,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -2131,6 +2209,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -2270,6 +2354,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -2406,6 +2496,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -2576,6 +2672,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -2736,6 +2838,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -2875,6 +2983,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -3011,6 +3125,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -3181,6 +3301,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -3341,6 +3467,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -3480,6 +3612,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -3616,6 +3754,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -3786,6 +3930,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -3946,6 +4096,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -4085,6 +4241,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -4221,6 +4383,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -4394,6 +4562,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: >+
@@ -4529,6 +4703,12 @@ paths:
             type: array
             items:
               type: string
+        - in: query
+          name: cursorMark
+          description: 'To use a cursor with the API, specify a cursorMark parameter with the value of *. In addition to returning the top N sorted results (where you can control N using the rows parameter) the API response will also include an encoded String named nextCursorMark. You then take the nextCursorMark String value from the response, and pass it back to API as the cursorMark parameter for your next request. You can repeat this process until you’ve fetched as many docs as you want, or until the nextCursorMark returned matches the cursorMark you’ve already specified — indicating that there are no more results. '
+          required: false
+          schema:
+            type: string
       requestBody:
         description: >+
         required: true
@@ -10589,10 +10769,6 @@ components:
                 type: array
                 items:
                   type: string
-              trafficSearchRaceTitles:
-                type: array
-                items:
-                  type: string
     POSTTrafficStopRequest:
       allOf:
         - type: object
@@ -10647,10 +10823,6 @@ components:
               type: array
               items:
                 type: string
-            trafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
     POSTTrafficStopResponse:
       allOf:
         - type: object
@@ -10702,10 +10874,6 @@ components:
               items:
                 type: string
             personAges:
-              type: array
-              items:
-                type: string
-            trafficSearchRaceTitles:
               type: array
               items:
                 type: string
@@ -10897,23 +11065,6 @@ components:
               type: array
               items:
                 type: string
-            setTrafficSearchRaceTitles:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removeTrafficSearchRaceTitles:
-              type: string
-            removeAllTrafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
-            addTrafficSearchRaceTitles:
-              type: string
-            addAllTrafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
     PATCHTrafficStopResponse:
       allOf:
         - type: object
@@ -11102,23 +11253,6 @@ components:
               type: array
               items:
                 type: string
-            setTrafficSearchRaceTitles:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removeTrafficSearchRaceTitles:
-              type: string
-            removeAllTrafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
-            addTrafficSearchRaceTitles:
-              type: string
-            addAllTrafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
     SearchTrafficStopResponse:
       allOf:
         - type: array
@@ -11172,10 +11306,6 @@ components:
                 items:
                   type: string
               personAges:
-                type: array
-                items:
-                  type: string
-              trafficSearchRaceTitles:
                 type: array
                 items:
                   type: string
@@ -11233,10 +11363,6 @@ components:
               type: array
               items:
                 type: string
-            trafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
     PUTImportTrafficStopResponse:
       allOf:
         - type: object
@@ -11291,10 +11417,6 @@ components:
               type: array
               items:
                 type: string
-            trafficSearchRaceTitles:
-              type: array
-              items:
-                type: string
     GETTrafficStopResponse:
       allOf:
         - type: object
@@ -11346,10 +11468,6 @@ components:
               items:
                 type: string
             personAges:
-              type: array
-              items:
-                type: string
-            trafficSearchRaceTitles:
               type: array
               items:
                 type: string

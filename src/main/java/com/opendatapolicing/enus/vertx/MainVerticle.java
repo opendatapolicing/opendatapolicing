@@ -585,7 +585,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							a.fail(ex);
 						}
 					}).onFailure(ex -> {
-						LOG.error(String.format("indexTrafficStop failed. "), new RuntimeException(ex));
+						LOG.error(String.format("Solr request failed. "), new RuntimeException(ex));
 						a.fail(ex);
 					});
 				} catch (Exception e) {

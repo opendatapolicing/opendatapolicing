@@ -73,7 +73,7 @@
     definition: "{{ lookup('template', 'project_route.yml') }}"
     validate_certs: false
 - name: Create Solr collection
-  shell: "oc login {{PROJECT_HOST}} --token={{REDHAT_OPENSHIFT_TOKEN}} && oc exec $(oc get pod -l app=computate-solr -o jsonpath='{.items[0].metadata.name}') -n opendatapolicing -- /opt/solr/bin/solr create_collection -c site -n computate || true"
+  shell: "oc login {{PROJECT_HOST}} --token={{REDHAT_OPENSHIFT_TOKEN}} && oc exec $(oc get pod -l app=computate-solr -o jsonpath='{.items[0].metadata.name}' -n {{ SOLR_NAMESPACE }}) -n opendatapolicing -- /opt/solr/bin/solr create_collection -c {{ PROJECT_SOLR_COLLECTION }} -n computate || true"
   register: create_collection
 - name: Print create_collection command
   debug:
