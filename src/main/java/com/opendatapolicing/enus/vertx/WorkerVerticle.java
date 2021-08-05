@@ -24,6 +24,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.apache.commons.net.util.TrustManagerUtils;
@@ -348,8 +349,10 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							if(client.login(remoteUsername, remotePassword)) {
 								client.execPBSZ(0);  // Set protection buffer size
 								client.execPROT("P"); // Set data channel protection to private
-								client.enterLocalPassiveMode();
 								client.cwd(StringUtils.substringBeforeLast(remotePath, "/"));
+								client.type(FTP.BINARY_FILE_TYPE);
+								client.setFileType(FTP.BINARY_FILE_TYPE);
+								client.enterLocalPassiveMode();
 								FileOutputStream os = new FileOutputStream(zipPath, false);
 								if(client.retrieveFile(StringUtils.substringAfterLast(remotePath, "/"), os)) {
 									os.flush();
