@@ -86,11 +86,6 @@ public class ConfigKeys {
 	public static final String SITE_INSTANCES = "SITE_INSTANCES";
 
 	/**
-	 * The Auth realm of the site. 
-	 **/
-	public static final String API_COUNTER_PAUSE = "API_COUNTER_PAUSE";
-
-	/**
 	 * 
 	 **/
 	public static final String API_COUNTER_RESUME = "API_COUNTER_RESUME";
@@ -378,6 +373,11 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String FTP_MAX_RECORD_SIZE = "FTP_MAX_RECORD_SIZE";
+
+	/**
+	 * 
+	 **/
 	public static final String FTP_SYNC_HOST_NAME = "FTP_SYNC_HOST_NAME";
 
 	/**
@@ -409,6 +409,11 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String TIMER_FTP_SYNC_IN_SECONDS = "TIMER_FTP_SYNC_IN_SECONDS";
+
+	/**
+	 * 
+	 **/
+	public static final String ENABLE_FTP_DOWNLOAD = "ENABLE_FTP_DOWNLOAD";
 
 	/**
 	 * 

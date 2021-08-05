@@ -22,6 +22,7 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
@@ -333,56 +334,61 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			vertx.setTimer(millis, a -> {
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					try {
-						String zipPath = config().getString(ConfigKeys.FTP_SYNC_PATH_ZIP);
-						String remotePath = config().getString(ConfigKeys.FTP_SYNC_REMOTE_PATH);
-						String remoteHostName = config().getString(ConfigKeys.FTP_SYNC_HOST_NAME);
-						Integer remotePort = config().getInteger(ConfigKeys.FTP_SYNC_PORT);
-						String remoteUsername = config().getString(ConfigKeys.FTP_SYNC_USERNAME);
-						String remotePassword = config().getString(ConfigKeys.FTP_SYNC_PASSWORD);
-
-						FTPSClient client = new FTPSClient(false);
-						client.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-						client.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
-						client.connect(remoteHostName, remotePort);
-						int connectReply = client.getReplyCode();
-						if (FTPReply.isPositiveCompletion(connectReply)){
-							if(client.login(remoteUsername, remotePassword)) {
-								client.execPBSZ(0);  // Set protection buffer size
-								client.execPROT("P"); // Set data channel protection to private
-								client.cwd(StringUtils.substringBeforeLast(remotePath, "/"));
-								client.type(FTP.BINARY_FILE_TYPE);
-								client.setFileType(FTP.BINARY_FILE_TYPE);
-								client.enterLocalPassiveMode();
-								FileOutputStream os = new FileOutputStream(zipPath, false);
-								if(client.retrieveFile(StringUtils.substringAfterLast(remotePath, "/"), os)) {
-									os.flush();
-									os.close();
-									client.logout();
-									try (ZipFile zipFile = new ZipFile(new File(zipPath), ZipFile.OPEN_READ, Charset.forName("UTF-8"))) {
-										Enumeration<? extends ZipEntry> entries = zipFile.entries();
-										Path destFolderPath = Paths.get(zipPath).getParent();
-										while (entries.hasMoreElements()) {
-											ZipEntry entry = entries.nextElement();
-											Path entryPath = destFolderPath.resolve(entry.getName());
-											if (entry.isDirectory()) {
-												Files.createDirectories(entryPath);
-											} else {
-												Files.createDirectories(entryPath.getParent());
-												try (InputStream in = zipFile.getInputStream(entry)) {
-													try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
-														IOUtils.copy(in, out);
+						if(config().getBoolean(ConfigKeys.ENABLE_FTP_DOWNLOAD)) {
+							String zipPath = config().getString(ConfigKeys.FTP_SYNC_PATH_ZIP);
+							String remotePath = config().getString(ConfigKeys.FTP_SYNC_REMOTE_PATH);
+							String remoteHostName = config().getString(ConfigKeys.FTP_SYNC_HOST_NAME);
+							Integer remotePort = config().getInteger(ConfigKeys.FTP_SYNC_PORT);
+							String remoteUsername = config().getString(ConfigKeys.FTP_SYNC_USERNAME);
+							String remotePassword = config().getString(ConfigKeys.FTP_SYNC_PASSWORD);
+	
+							FTPSClient client = new FTPSClient(false);
+							client.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+							client.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
+							client.connect(remoteHostName, remotePort);
+							int connectReply = client.getReplyCode();
+							if (FTPReply.isPositiveCompletion(connectReply)){
+								if(client.login(remoteUsername, remotePassword)) {
+									client.execPBSZ(0);  // Set protection buffer size
+									client.execPROT("P"); // Set data channel protection to private
+									client.cwd(StringUtils.substringBeforeLast(remotePath, "/"));
+									client.type(FTP.BINARY_FILE_TYPE);
+									client.setFileType(FTP.BINARY_FILE_TYPE);
+									client.enterLocalPassiveMode();
+									FileOutputStream os = new FileOutputStream(zipPath, false);
+									if(client.retrieveFile(StringUtils.substringAfterLast(remotePath, "/"), os)) {
+										os.flush();
+										os.close();
+										client.logout();
+										try (ZipFile zipFile = new ZipFile(new File(zipPath), ZipFile.OPEN_READ, Charset.forName("UTF-8"))) {
+											Enumeration<? extends ZipEntry> entries = zipFile.entries();
+											Path destFolderPath = Paths.get(zipPath).getParent();
+											while (entries.hasMoreElements()) {
+												ZipEntry entry = entries.nextElement();
+												Path entryPath = destFolderPath.resolve(entry.getName());
+												if (entry.isDirectory()) {
+													Files.createDirectories(entryPath);
+												} else {
+													Files.createDirectories(entryPath.getParent());
+													try (InputStream in = zipFile.getInputStream(entry)) {
+														try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
+															IOUtils.copy(in, out);
+														}
 													}
 												}
 											}
-										}
-										syncFtpRecord("TrafficStop", "NC").onSuccess(c -> {
-											syncFtpRecord("TrafficPerson", "NC").onSuccess(d -> {
-												syncFtpRecord("TrafficSearch", "NC").onSuccess(e -> {
-													syncFtpRecord("SearchBasis", "NC").onSuccess(f -> {
-														syncFtpRecord("TrafficContraband", "NC").onSuccess(g -> {
-															syncAgencies().onSuccess(h -> {
-																LOG.info(syncDbToSolrComplete);
-																promise.complete();
+											syncFtpRecord("TrafficStop", "NC").onSuccess(c -> {
+												syncFtpRecord("TrafficPerson", "NC").onSuccess(d -> {
+													syncFtpRecord("TrafficSearch", "NC").onSuccess(e -> {
+														syncFtpRecord("SearchBasis", "NC").onSuccess(f -> {
+															syncFtpRecord("TrafficContraband", "NC").onSuccess(g -> {
+																syncAgencies().onSuccess(h -> {
+																	LOG.info(syncDbToSolrComplete);
+																	promise.complete();
+																}).onFailure(ex -> {
+																	LOG.error(syncDbToSolrFail, ex);
+																	promise.fail(ex);
+																});
 															}).onFailure(ex -> {
 																LOG.error(syncDbToSolrFail, ex);
 																promise.fail(ex);
@@ -403,30 +409,60 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 												LOG.error(syncDbToSolrFail, ex);
 												promise.fail(ex);
 											});
-										}).onFailure(ex -> {
+										} catch(Exception ex) {
 											LOG.error(syncDbToSolrFail, ex);
 											promise.fail(ex);
-										});
-									} catch(Exception ex) {
+										}
+									} else {
+										client.noop();
+										client.logout();
+										RuntimeException ex = new RuntimeException(String.format("Ftp retrieve error"));
 										LOG.error(syncDbToSolrFail, ex);
 										promise.fail(ex);
 									}
 								} else {
-									client.noop();
-									client.logout();
-									RuntimeException ex = new RuntimeException(String.format("Ftp retrieve error"));
+									RuntimeException ex = new RuntimeException(String.format("Ftp login error error"));
 									LOG.error(syncDbToSolrFail, ex);
 									promise.fail(ex);
 								}
 							} else {
-								RuntimeException ex = new RuntimeException(String.format("Ftp login error error"));
+								RuntimeException ex = new RuntimeException(String.format("Ftp connect error %s", connectReply));
 								LOG.error(syncDbToSolrFail, ex);
 								promise.fail(ex);
 							}
 						} else {
-							RuntimeException ex = new RuntimeException(String.format("Ftp connect error %s", connectReply));
-							LOG.error(syncDbToSolrFail, ex);
-							promise.fail(ex);
+							syncFtpRecord("TrafficStop", "NC").onSuccess(c -> {
+								syncFtpRecord("TrafficPerson", "NC").onSuccess(d -> {
+									syncFtpRecord("TrafficSearch", "NC").onSuccess(e -> {
+										syncFtpRecord("SearchBasis", "NC").onSuccess(f -> {
+											syncFtpRecord("TrafficContraband", "NC").onSuccess(g -> {
+												syncAgencies().onSuccess(h -> {
+													LOG.info(syncDbToSolrComplete);
+													promise.complete();
+												}).onFailure(ex -> {
+													LOG.error(syncDbToSolrFail, ex);
+													promise.fail(ex);
+												});
+											}).onFailure(ex -> {
+												LOG.error(syncDbToSolrFail, ex);
+												promise.fail(ex);
+											});
+										}).onFailure(ex -> {
+											LOG.error(syncDbToSolrFail, ex);
+											promise.fail(ex);
+										});
+									}).onFailure(ex -> {
+										LOG.error(syncDbToSolrFail, ex);
+										promise.fail(ex);
+									});
+								}).onFailure(ex -> {
+									LOG.error(syncDbToSolrFail, ex);
+									promise.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(syncDbToSolrFail, ex);
+								promise.fail(ex);
+							});
 						}
 					} catch(Exception ex) {
 						LOG.error(syncDbToSolrFail, ex);
@@ -496,10 +532,11 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	
 	
 						vertx.fileSystem().open(path, new OpenOptions().setRead(true)).onSuccess(stream -> {
-							RecordParser recordParser = RecordParser.newDelimited("\n", bufferedLine -> {
+							RecordParser recordParser = RecordParser.newDelimited("\n");
+							recordParser.handler(bufferedLine -> {
 								try {
 									apiCounter.incrementQueueNum();
-									String[] values = bufferedLine.toString().split("\t");
+									String[] values = bufferedLine.toString().trim().split("\t");
 									String pkStr = null;
 	
 									JsonObject body = null;
@@ -530,13 +567,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 												.put(TrafficStop.VAR_stopDateTime, values[2])
 												.put(TrafficStop.VAR_stopPurposeNum, values[3])
 												.put(TrafficStop.VAR_stopActionNum, values[4])
-												.put(TrafficStop.VAR_stopDriverArrest, values[5])
-												.put(TrafficStop.VAR_stopPassengerArrest, values[6])
-												.put(TrafficStop.VAR_stopEncounterForce, values[7])
-												.put(TrafficStop.VAR_stopEngageForce, values[8])
-												.put(TrafficStop.VAR_stopOfficerInjury, values[9])
-												.put(TrafficStop.VAR_stopDriverInjury, values[10])
-												.put(TrafficStop.VAR_stopPassengerInjury, values[11])
+												.put(TrafficStop.VAR_stopDriverArrest, BooleanUtils.toBoolean(values[5], "1", "0"))
+												.put(TrafficStop.VAR_stopPassengerArrest, BooleanUtils.toBoolean(values[6], "1", "0"))
+												.put(TrafficStop.VAR_stopEncounterForce, BooleanUtils.toBoolean(values[7], "1", "0"))
+												.put(TrafficStop.VAR_stopEngageForce, BooleanUtils.toBoolean(values[8], "1", "0"))
+												.put(TrafficStop.VAR_stopOfficerInjury, BooleanUtils.toBoolean(values[9], "1", "0"))
+												.put(TrafficStop.VAR_stopDriverInjury, BooleanUtils.toBoolean(values[10], "1", "0"))
+												.put(TrafficStop.VAR_stopPassengerInjury, BooleanUtils.toBoolean(values[11], "1", "0"))
 												.put(TrafficStop.VAR_stopOfficerId, values[12])
 												.put(TrafficStop.VAR_stopLocationId, values[13])
 												.put(TrafficStop.VAR_stopCityId, values[14])
@@ -639,17 +676,19 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 														, new JsonObject().put(
 																"params"
 																, new JsonObject()
-																		.put("body", new JsonObject().put("pk", pkStr))
+																		.put("body", body)
 																		.put("path", new JsonObject())
 																		.put("cookie", new JsonObject())
-																		.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + pkStr)).put("var", new JsonArray().add("refresh:false")))
+																		.put("query", new JsonObject())
+																		.put("query", new JsonObject().put("var", new JsonArray().add("refresh:false")))
 														)
 												)
 												, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", tableName))).onSuccess(a -> {
 											apiCounter.incrementTotalNum();
 											apiCounter.decrementQueueNum();
 											if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= 0) {
-												stream.fetch(apiCounterFetch);
+//												stream.fetch(apiCounterFetch);
+												recordParser.fetch(apiCounterFetch);
 												apiRequest.setNumPATCH(apiCounter.getTotalNum());
 												apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 												vertx.eventBus().publish(String.format("websocket%s", tableName), JsonObject.mapFrom(apiRequest));
@@ -665,8 +704,11 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								}
 							});
 
-							stream.pause();
-							stream.fetch(apiCounterFetch);
+//							stream.pause();
+//							stream.fetch(apiCounterFetch);
+							recordParser.maxRecordSize(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE));
+							recordParser.pause();
+							recordParser.fetch(apiCounterFetch);
 							stream.handler(recordParser).exceptionHandler(ex -> {
 								LOG.error(String.format(syncFtpRecordFail, tableName), new RuntimeException(ex));
 								promise.fail(ex);

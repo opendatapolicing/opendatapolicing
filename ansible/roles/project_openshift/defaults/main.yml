@@ -127,7 +127,7 @@ PROJECT_JAVA_MAIN_CLASS_ENUS: com.opendatapolicing.enus.vertx.MainVerticle
 # The backup directory of the site.
 PROJECT_BACKUP_DIR_ENUS: "{{ lookup('env', 'ODP_ANSIBLE_STATIC') }}/data/enUS"
 # The restore directory of the site.
-PROJECT_RESTORE_DIR_ENUS: /home/ctate/backup/opendatapolicing-dev/enUS
+PROJECT_RESTORE_DIR_ENUS: /opt/ftp-dev/enUS
 
 #################
 # SMTP defaults #
@@ -228,3 +228,51 @@ AUTH_RESOURCE: example.com
 AUTH_SECRET: "..."
 # The Auth URL.
 AUTH_URL: https://sso.example.com/auth
+
+# The size of the persistent volume for downloading FTP data and extracting the contents. 
+FTP_VOLUME_SIZE: 10Gi
+
+API_COUNTER_PAUSE: 110
+API_COUNTER_RESUME: 1
+API_COUNTER_FETCH: 10
+
+ENABLE_IMPORT_DATA: false
+
+TIMER_DB_SOLR_SYNC_IN_SECONDS: 1
+ENABLE_DB_SOLR_SYNC: false
+ENABLE_DB_SOLR_SYNC_TrafficContraband: true
+ENABLE_DB_SOLR_SYNC_SearchBasis: true
+ENABLE_DB_SOLR_SYNC_TrafficSearch: true
+ENABLE_DB_SOLR_SYNC_TrafficPerson: true
+ENABLE_DB_SOLR_SYNC_TrafficStop: true
+ENABLE_DB_SOLR_SYNC_SiteAgency: true
+
+ENABLE_REFRESH_DATA: false
+ENABLE_REFRESH_DATA_TrafficContraband: true
+ENABLE_REFRESH_DATA_SearchBasis: true
+ENABLE_REFRESH_DATA_TrafficSearch: true
+ENABLE_REFRESH_DATA_TrafficPerson: true
+ENABLE_REFRESH_DATA_TrafficStop: true
+
+TIMER_DB_SOLR_SYNC_IN_SECONDS: 1
+ENABLE_FTP_DOWNLOAD: true
+ENABLE_FTP_SYNC: false
+ENABLE_FTP_SYNC_TrafficStop: true
+ENABLE_FTP_SYNC_TrafficPerson: true
+ENABLE_FTP_SYNC_TrafficSearch: true
+ENABLE_FTP_SYNC_SearchBasis: true
+ENABLE_FTP_SYNC_TrafficContraband: true
+FTP_SYNC_PATH_TrafficStop: /opt/ftp/Stop.txt
+FTP_SYNC_PATH_TrafficPerson: /opt/ftp/PERSON.txt
+FTP_SYNC_PATH_TrafficSearch: /opt/ftp/Search.txt
+FTP_SYNC_PATH_TrafficContraband: /opt/ftp/Contraband.txt
+FTP_SYNC_PATH_TrafficSearchBasis: /opt/ftp/SearchBasis.txt
+FTP_MAX_RECORD_SIZE: 10000
+FTP_SYNC_HOST_NAME: 
+FTP_SYNC_PORT: 21
+FTP_SYNC_USERNAME: 
+FTP_SYNC_PASSWORD: 
+FTP_SYNC_REMOTE_PATH: 
+FTP_SYNC_PATH_ZIP: 
+
+ACS_API_KEY: 
