@@ -1496,7 +1496,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	 * Val.Ssl.enUS:Configuring SSL: %s
 	 * 
 	 *	Start the Vert.x server. 
-	 *	Démarrer le serveur Vert.x. 
 	 **/
 	private Future<Void> startServer() {
 		Promise<Void> promise = Promise.promise();

@@ -378,7 +378,52 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String FTP_SYNC_HOST_NAME = "FTP_SYNC_HOST_NAME";
+
+	/**
+	 * 
+	 **/
+	public static final String FTP_SYNC_PORT = "FTP_SYNC_PORT";
+
+	/**
+	 * 
+	 **/
+	public static final String FTP_SYNC_USERNAME = "FTP_SYNC_USERNAME";
+
+	/**
+	 * 
+	 **/
+	public static final String FTP_SYNC_PASSWORD = "FTP_SYNC_PASSWORD";
+
+	/**
+	 * 
+	 **/
+	public static final String FTP_SYNC_REMOTE_PATH = "FTP_SYNC_REMOTE_PATH";
+
+	/**
+	 * 
+	 **/
 	public static final String TIMER_DB_SOLR_SYNC_IN_SECONDS = "TIMER_DB_SOLR_SYNC_IN_SECONDS";
+
+	/**
+	 * 
+	 **/
+	public static final String TIMER_FTP_SYNC_IN_SECONDS = "TIMER_FTP_SYNC_IN_SECONDS";
+
+	/**
+	 * 
+	 **/
+	public static final String ENABLE_FTP_SYNC = "ENABLE_FTP_SYNC";
+
+	/**
+	 * 
+	 **/
+	public static final String FTP_SYNC_PATH = "FTP_SYNC_PATH";
+
+	/**
+	 * 
+	 **/
+	public static final String FTP_SYNC_PATH_ZIP = "FTP_SYNC_PATH_ZIP";
 
 	/**
 	 * 
