@@ -9,6 +9,16 @@
   shell: "oc login {{PROJECT_HOST}} --token={{PROJECT_TOKEN}} && oc create configmap opendatapolicing-template --from-file=/usr/local/src/opendatapolicing-static/template/ --dry-run -o yaml -n {{PROJECT_NAMESPACE}} | oc apply -n {{PROJECT_NAMESPACE}} -f -"
   ignore_errors: true
 
+- name: Install opendatapolicing FTP persistent volume claim on OpenShift
+  k8s: 
+    state: present
+    name: opendatapolicing-persistent-volume-claim-ftp
+    host: "{{PROJECT_HOST}}"
+    api_key: "{{PROJECT_TOKEN}}"
+    namespace: "{{PROJECT_NAMESPACE}}"
+    definition: "{{ lookup('template', 'project_persistent_volume_claim_ftp.yml') }}"
+    validate_certs: false
+
 - name: Install opendatapolicing image stream on OpenShift
   k8s:
     state: present
@@ -73,7 +83,7 @@
     definition: "{{ lookup('template', 'project_route.yml') }}"
     validate_certs: false
 - name: Create Solr collection
-  shell: "oc login {{PROJECT_HOST}} --token={{REDHAT_OPENSHIFT_TOKEN}} && oc exec $(oc get pod -l app=computate-solr -o jsonpath='{.items[0].metadata.name}') -n opendatapolicing -- /opt/solr/bin/solr create_collection -c site -n computate || true"
+  shell: "oc login {{PROJECT_HOST}} --token={{REDHAT_OPENSHIFT_TOKEN}} && oc exec $(oc get pod -l app=computate-solr -o jsonpath='{.items[0].metadata.name}' -n {{ SOLR_NAMESPACE }}) -n opendatapolicing -- /opt/solr/bin/solr create_collection -c {{ PROJECT_SOLR_COLLECTION }} -n computate || true"
   register: create_collection
 - name: Print create_collection command
   debug:

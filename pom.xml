@@ -11,7 +11,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertx.verticle>com.opendatapolicing.enUS.vertx.AppVertx</vertx.verticle>
 
 		<!-- maven plugin versions -->
 		<maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
@@ -22,6 +21,9 @@
 		<vertx.version>4.0.2</vertx.version>
 		<handlebars-maven-plugin.version>4.2.0</handlebars-maven-plugin.version>
 		<apache-curator.version>4.3.0</apache-curator.version>
+		<postgresql.version>42.2.2.jre7</postgresql.version>
+		<solr.version>8.4.1</solr.version>
+		<junit.version>4.13.1</junit.version>
 	</properties>
 
 	<dependencyManagement>
@@ -68,18 +70,18 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.2.jre7</version>
+			<version>${postgresql.version}</version>
 		</dependency>
 		<!-- Apache Solr Search Engine -->
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
-			<version>8.4.1</version>
+			<version>${solr.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-core</artifactId>
-			<version>8.4.1</version>
+			<version>${solr.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -227,6 +229,7 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-health-check</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>io.opentracing.contrib</groupId>
 			<artifactId>opentracing-vertx-web</artifactId>
@@ -237,14 +240,29 @@
 			<artifactId>opentracing-solr-client</artifactId>
 			<version>0.1.0</version>
 		</dependency>
+
+		<!-- FTP -->
+
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+
 		<!-- Unit Testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
 			<scope>test</scope>
-			<version>4.13.1</version>
 		</dependency>
 	</dependencies>
+
 	<build>
 
 		<!-- Source Directory Configuration -->
@@ -289,6 +307,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<profiles>
 		<!-- OpenShift Code Signing Plugins -->
 		<profile>

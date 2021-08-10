@@ -25,7 +25,7 @@ public class AppOpenApi3 extends AppOpenApi3Gen<AppSwagger2> {
 
 	public static void  main(String[] args) {
 		Configurations configurations = new Configurations();
-		String configPath = System.getenv("configPath");
+		String configPath = System.getenv(ConfigKeys.CONFIG_PATH);
 		File configFile = new File(configPath);
 
 		if(configFile.exists()) {

@@ -1,14 +1,34 @@
 package com.opendatapolicing.enus.vertx;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPReply;
+import org.apache.commons.net.ftp.FTPSClient;
+import org.apache.commons.net.util.TrustManagerUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.slf4j.Logger;
@@ -19,7 +39,11 @@ import com.opendatapolicing.enus.config.ConfigKeys;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.request.api.ApiRequest;
 import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.searchbasis.SearchBasis;
 import com.opendatapolicing.enus.state.SiteState;
+import com.opendatapolicing.enus.trafficcontraband.TrafficContraband;
+import com.opendatapolicing.enus.trafficperson.TrafficPerson;
+import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.trafficstop.TrafficStop;
 
 import io.vertx.core.AbstractVerticle;
@@ -29,8 +53,10 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.parsetools.RecordParser;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
 import io.vertx.ext.mail.MailClient;
 import io.vertx.ext.mail.MailConfig;
@@ -73,7 +99,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 						configureEmail().compose(d -> 
 							importData().compose(e -> 
 								syncDbToSolr().compose(f -> 
-									refreshAllData()
+									syncFtp().compose(g -> 
+										refreshAllData()
+									)
 								)
 							)
 						)
@@ -295,6 +323,422 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	}
 
 	/**	
+	 * Val.Complete.enUS:Syncing FTP files completed. 
+	 * Val.Fail.enUS:Syncing FTP files failed. 
+	 * Val.Skip.enUS:Skip syncing FTP files. 
+	 **/
+	private Future<Void> syncFtp() {
+		Promise<Void> promise = Promise.promise();
+		if(config().getBoolean(ConfigKeys.ENABLE_FTP_SYNC, false)) {
+			Long millis = 1000L * config().getInteger(ConfigKeys.TIMER_FTP_SYNC_IN_SECONDS, 10);
+			vertx.setTimer(millis, a -> {
+				workerExecutor.executeBlocking(blockingCodeHandler -> {
+					try {
+						if(config().getBoolean(ConfigKeys.ENABLE_FTP_DOWNLOAD)) {
+							String zipPath = config().getString(ConfigKeys.FTP_SYNC_PATH_ZIP);
+							String remotePath = config().getString(ConfigKeys.FTP_SYNC_REMOTE_PATH);
+							String remoteHostName = config().getString(ConfigKeys.FTP_SYNC_HOST_NAME);
+							Integer remotePort = config().getInteger(ConfigKeys.FTP_SYNC_PORT);
+							String remoteUsername = config().getString(ConfigKeys.FTP_SYNC_USERNAME);
+							String remotePassword = config().getString(ConfigKeys.FTP_SYNC_PASSWORD);
+	
+							FTPSClient client = new FTPSClient(false);
+							client.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+							client.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
+							client.connect(remoteHostName, remotePort);
+							int connectReply = client.getReplyCode();
+							if (FTPReply.isPositiveCompletion(connectReply)){
+								if(client.login(remoteUsername, remotePassword)) {
+									client.execPBSZ(0);  // Set protection buffer size
+									client.execPROT("P"); // Set data channel protection to private
+									client.cwd(StringUtils.substringBeforeLast(remotePath, "/"));
+									client.type(FTP.BINARY_FILE_TYPE);
+									client.setFileType(FTP.BINARY_FILE_TYPE);
+									client.enterLocalPassiveMode();
+									FileOutputStream os = new FileOutputStream(zipPath, false);
+									if(client.retrieveFile(StringUtils.substringAfterLast(remotePath, "/"), os)) {
+										os.flush();
+										os.close();
+										client.logout();
+										try (ZipFile zipFile = new ZipFile(new File(zipPath), ZipFile.OPEN_READ, Charset.forName("UTF-8"))) {
+											Enumeration<? extends ZipEntry> entries = zipFile.entries();
+											Path destFolderPath = Paths.get(zipPath).getParent();
+											while (entries.hasMoreElements()) {
+												ZipEntry entry = entries.nextElement();
+												Path entryPath = destFolderPath.resolve(entry.getName());
+												if (entry.isDirectory()) {
+													Files.createDirectories(entryPath);
+												} else {
+													Files.createDirectories(entryPath.getParent());
+													try (InputStream in = zipFile.getInputStream(entry)) {
+														try (OutputStream out = new FileOutputStream(entryPath.toFile())) {
+															IOUtils.copy(in, out);
+														}
+													}
+												}
+											}
+											syncFtpRecord("TrafficStop", "NC").onSuccess(c -> {
+												syncFtpRecord("TrafficPerson", "NC").onSuccess(d -> {
+													syncFtpRecord("TrafficSearch", "NC").onSuccess(e -> {
+														syncFtpRecord("SearchBasis", "NC").onSuccess(f -> {
+															syncFtpRecord("TrafficContraband", "NC").onSuccess(g -> {
+																syncAgencies().onSuccess(h -> {
+																	LOG.info(syncDbToSolrComplete);
+																	promise.complete();
+																}).onFailure(ex -> {
+																	LOG.error(syncDbToSolrFail, ex);
+																	promise.fail(ex);
+																});
+															}).onFailure(ex -> {
+																LOG.error(syncDbToSolrFail, ex);
+																promise.fail(ex);
+															});
+														}).onFailure(ex -> {
+															LOG.error(syncDbToSolrFail, ex);
+															promise.fail(ex);
+														});
+													}).onFailure(ex -> {
+														LOG.error(syncDbToSolrFail, ex);
+														promise.fail(ex);
+													});
+												}).onFailure(ex -> {
+													LOG.error(syncDbToSolrFail, ex);
+													promise.fail(ex);
+												});
+											}).onFailure(ex -> {
+												LOG.error(syncDbToSolrFail, ex);
+												promise.fail(ex);
+											});
+										} catch(Exception ex) {
+											LOG.error(syncDbToSolrFail, ex);
+											promise.fail(ex);
+										}
+									} else {
+										client.noop();
+										client.logout();
+										RuntimeException ex = new RuntimeException(String.format("Ftp retrieve error"));
+										LOG.error(syncDbToSolrFail, ex);
+										promise.fail(ex);
+									}
+								} else {
+									RuntimeException ex = new RuntimeException(String.format("Ftp login error error"));
+									LOG.error(syncDbToSolrFail, ex);
+									promise.fail(ex);
+								}
+							} else {
+								RuntimeException ex = new RuntimeException(String.format("Ftp connect error %s", connectReply));
+								LOG.error(syncDbToSolrFail, ex);
+								promise.fail(ex);
+							}
+						} else {
+							syncFtpRecord("TrafficStop", "NC").onSuccess(c -> {
+								syncFtpRecord("TrafficPerson", "NC").onSuccess(d -> {
+									syncFtpRecord("TrafficSearch", "NC").onSuccess(e -> {
+										syncFtpRecord("SearchBasis", "NC").onSuccess(f -> {
+											syncFtpRecord("TrafficContraband", "NC").onSuccess(g -> {
+												syncAgencies().onSuccess(h -> {
+													LOG.info(syncDbToSolrComplete);
+													promise.complete();
+												}).onFailure(ex -> {
+													LOG.error(syncDbToSolrFail, ex);
+													promise.fail(ex);
+												});
+											}).onFailure(ex -> {
+												LOG.error(syncDbToSolrFail, ex);
+												promise.fail(ex);
+											});
+										}).onFailure(ex -> {
+											LOG.error(syncDbToSolrFail, ex);
+											promise.fail(ex);
+										});
+									}).onFailure(ex -> {
+										LOG.error(syncDbToSolrFail, ex);
+										promise.fail(ex);
+									});
+								}).onFailure(ex -> {
+									LOG.error(syncDbToSolrFail, ex);
+									promise.fail(ex);
+								});
+							}).onFailure(ex -> {
+								LOG.error(syncDbToSolrFail, ex);
+								promise.fail(ex);
+							});
+						}
+					} catch(Exception ex) {
+						LOG.error(syncDbToSolrFail, ex);
+						promise.fail(ex);
+					}
+				}, false).onSuccess(b -> {
+					promise.complete();
+				}).onFailure(ex -> {
+					LOG.error(String.format("listPUTImportSiteState failed. "), ex);
+					promise.fail(ex);
+				});
+			});
+		} else {
+			LOG.info(syncDbToSolrSkip);
+			promise.complete();
+		}
+		return promise.future();
+	}
+
+	/**	
+	 * Sync %s data from FTP. 
+	 * Val.Complete.enUS:%s FTP sync completed. 
+	 * Val.Fail.enUS:%s FTP sync failed. 
+	 * Val.CounterResetFail.enUS:%s FTP sync failed to reset counter. 
+	 * Val.Skip.enUS:%s FTP sync skipped. 
+	 * Val.Started.enUS:%s FTP sync started. 
+	 **/
+	private Future<Void> syncFtpRecord(String tableName, String stateAbbreviation) {
+		Promise<Void> promise = Promise.promise();
+		try {
+			if(config().getBoolean(String.format("%s_%s", ConfigKeys.ENABLE_FTP_SYNC, tableName), true)) {
+
+				String path = config().getString(String.format("%s_%s", ConfigKeys.FTP_SYNC_PATH, tableName));
+				vertx.fileSystem().open(path, new OpenOptions().setRead(true)).onSuccess(lineStream -> {
+					LOG.info(String.format(syncFtpRecordStarted, tableName));
+					ApiCounter lineCounter = new ApiCounter();
+					Long apiCounterResume = config().getLong(ConfigKeys.API_COUNTER_RESUME);
+					Integer apiCounterFetch = config().getInteger(ConfigKeys.API_COUNTER_FETCH);
+					lineCounter.setTotalNum(0L);
+
+					RecordParser lineParser = RecordParser.newDelimited("\n", bufferedLine -> {
+						lineCounter.incrementTotalNum();
+					});
+
+					lineStream.handler(lineParser).exceptionHandler(ex -> {
+						LOG.error(String.format(syncFtpRecordFail, tableName), new RuntimeException(ex));
+						promise.fail(ex);
+					}).endHandler(v -> {
+						lineStream.close();
+						Long lines = lineCounter.getTotalNum();
+
+						ApiCounter apiCounter = new ApiCounter();
+						apiCounter.setTotalNum(0L);
+						apiCounter.setQueueNum(0L);
+
+						SiteRequestEnUS siteRequest = new SiteRequestEnUS();
+						siteRequest.setConfig(config());
+						siteRequest.initDeepSiteRequestEnUS(siteRequest);
+
+						ApiRequest apiRequest = new ApiRequest();
+						apiRequest.setRows(apiCounterFetch.intValue());
+						apiRequest.setNumFound(lines);
+						apiRequest.setNumPATCH(apiCounter.getQueueNum());
+						apiRequest.setCreated(ZonedDateTime.now(ZoneId.of(config().getString(ConfigKeys.SITE_ZONE))));
+						apiRequest.initDeepApiRequest(siteRequest);
+						vertx.eventBus().publish(String.format("websocket%s", tableName), JsonObject.mapFrom(apiRequest));
+	
+	
+						vertx.fileSystem().open(path, new OpenOptions().setRead(true)).onSuccess(stream -> {
+							RecordParser recordParser = RecordParser.newDelimited("\n");
+							recordParser.handler(bufferedLine -> {
+								try {
+									apiCounter.incrementQueueNum();
+									String[] values = bufferedLine.toString().trim().split("\t");
+									String pkStr = null;
+	
+									JsonObject body = null;
+									if(values.length >= 15 && "TrafficStop".equals(tableName)) {
+										pkStr = values[0];
+										body = new JsonObject()
+												.put("saves", new JsonArray()
+														.add(TrafficStop.VAR_inheritPk)
+														.add(TrafficStop.VAR_agencyTitle)
+														.add(TrafficStop.VAR_stateAbbreviation)
+														.add(TrafficStop.VAR_stopDateTime)
+														.add(TrafficStop.VAR_stopPurposeNum)
+														.add(TrafficStop.VAR_stopActionNum)
+														.add(TrafficStop.VAR_stopDriverArrest)
+														.add(TrafficStop.VAR_stopPassengerArrest)
+														.add(TrafficStop.VAR_stopEncounterForce)
+														.add(TrafficStop.VAR_stopEngageForce)
+														.add(TrafficStop.VAR_stopOfficerInjury)
+														.add(TrafficStop.VAR_stopDriverInjury)
+														.add(TrafficStop.VAR_stopPassengerInjury)
+														.add(TrafficStop.VAR_stopOfficerId)
+														.add(TrafficStop.VAR_stopLocationId)
+														.add(TrafficStop.VAR_stopCityId)
+														)
+												.put(TrafficStop.VAR_pk, values[0])
+												.put(TrafficStop.VAR_agencyTitle, values[1])
+												.put(TrafficStop.VAR_stateAbbreviation, stateAbbreviation)
+												.put(TrafficStop.VAR_stopDateTime, values[2])
+												.put(TrafficStop.VAR_stopPurposeNum, values[3])
+												.put(TrafficStop.VAR_stopActionNum, values[4])
+												.put(TrafficStop.VAR_stopDriverArrest, BooleanUtils.toBoolean(values[5], "1", "0"))
+												.put(TrafficStop.VAR_stopPassengerArrest, BooleanUtils.toBoolean(values[6], "1", "0"))
+												.put(TrafficStop.VAR_stopEncounterForce, BooleanUtils.toBoolean(values[7], "1", "0"))
+												.put(TrafficStop.VAR_stopEngageForce, BooleanUtils.toBoolean(values[8], "1", "0"))
+												.put(TrafficStop.VAR_stopOfficerInjury, BooleanUtils.toBoolean(values[9], "1", "0"))
+												.put(TrafficStop.VAR_stopDriverInjury, BooleanUtils.toBoolean(values[10], "1", "0"))
+												.put(TrafficStop.VAR_stopPassengerInjury, BooleanUtils.toBoolean(values[11], "1", "0"))
+												.put(TrafficStop.VAR_stopOfficerId, values[12])
+												.put(TrafficStop.VAR_stopLocationId, values[13])
+												.put(TrafficStop.VAR_stopCityId, values[14])
+												;
+									} else if(values.length >= 7 && "TrafficPerson".equals(tableName)) {
+										pkStr = values[0];
+										body = new JsonObject()
+												.put("saves", new JsonArray()
+														.add(TrafficPerson.VAR_inheritPk)
+														.add(TrafficPerson.VAR_stopId)
+														.add(TrafficPerson.VAR_personTypeId)
+														.add(TrafficPerson.VAR_personAge)
+														.add(TrafficPerson.VAR_personGenderId)
+														.add(TrafficPerson.VAR_personEthnicityId)
+														.add(TrafficPerson.VAR_personRaceId)
+														)
+												.put(TrafficPerson.VAR_pk, values[0])
+												.put(TrafficPerson.VAR_stopId, values[1])
+												.put(TrafficPerson.VAR_personTypeId, values[2])
+												.put(TrafficPerson.VAR_personAge, values[3])
+												.put(TrafficPerson.VAR_personGenderId, values[4])
+												.put(TrafficPerson.VAR_personEthnicityId, values[5])
+												.put(TrafficPerson.VAR_personRaceId, values[6])
+												;
+									} else if(values.length >= 11 && "TrafficSearch".equals(tableName)) {
+										pkStr = values[0];
+										body = new JsonObject()
+												.put("saves", new JsonArray()
+														.add(TrafficSearch.VAR_inheritPk)
+														.add(TrafficSearch.VAR_personId)
+														.add(TrafficSearch.VAR_searchTypeNum)
+														.add(TrafficSearch.VAR_searchVehicle)
+														.add(TrafficSearch.VAR_searchDriver)
+														.add(TrafficSearch.VAR_searchPassenger)
+														.add(TrafficSearch.VAR_searchProperty)
+														.add(TrafficSearch.VAR_searchVehicleSiezed)
+														.add(TrafficSearch.VAR_searchPersonalPropertySiezed)
+														.add(TrafficSearch.VAR_searchOtherPropertySiezed)
+														)
+												.put(TrafficSearch.VAR_pk, values[0])
+												.put(TrafficSearch.VAR_personId, values[1])
+												.put(TrafficSearch.VAR_searchTypeNum, values[3])
+												.put(TrafficSearch.VAR_searchVehicle, values[4])
+												.put(TrafficSearch.VAR_searchDriver, values[5])
+												.put(TrafficSearch.VAR_searchPassenger, values[6])
+												.put(TrafficSearch.VAR_searchProperty, values[7])
+												.put(TrafficSearch.VAR_searchVehicleSiezed, values[8])
+												.put(TrafficSearch.VAR_searchPersonalPropertySiezed, values[9])
+												.put(TrafficSearch.VAR_searchOtherPropertySiezed, values[10])
+												;
+									} else if(values.length >= 14 && "TrafficContraband".equals(tableName)) {
+										pkStr = values[0];
+										body = new JsonObject()
+												.put("saves", new JsonArray()
+														.add(TrafficContraband.VAR_inheritPk)
+														.add(TrafficContraband.VAR_searchId)
+														.add(TrafficContraband.VAR_contrabandOunces)
+														.add(TrafficContraband.VAR_contrabandPounds)
+														.add(TrafficContraband.VAR_contrabandPints)
+														.add(TrafficContraband.VAR_contrabandGallons)
+														.add(TrafficContraband.VAR_contrabandDosages)
+														.add(TrafficContraband.VAR_contrabandGrams)
+														.add(TrafficContraband.VAR_contrabandKilos)
+														.add(TrafficContraband.VAR_contrabandMoney)
+														.add(TrafficContraband.VAR_contrabandWeapons)
+														.add(TrafficContraband.VAR_contrabandDollarAmount)
+														)
+												.put(TrafficContraband.VAR_pk, values[0])
+												.put(TrafficContraband.VAR_searchId, values[1])
+												.put(TrafficContraband.VAR_contrabandOunces, values[4])
+												.put(TrafficContraband.VAR_contrabandPounds, values[5])
+												.put(TrafficContraband.VAR_contrabandPints, values[6])
+												.put(TrafficContraband.VAR_contrabandGallons, values[7])
+												.put(TrafficContraband.VAR_contrabandDosages, values[8])
+												.put(TrafficContraband.VAR_contrabandGrams, values[9])
+												.put(TrafficContraband.VAR_contrabandKilos, values[10])
+												.put(TrafficContraband.VAR_contrabandMoney, values[11])
+												.put(TrafficContraband.VAR_contrabandWeapons, values[12])
+												.put(TrafficContraband.VAR_contrabandDollarAmount, values[13])
+												;
+									} else if(values.length >= 5 && "SearchBasis".equals(tableName)) {
+										pkStr = values[0];
+										body = new JsonObject()
+												.put("saves", new JsonArray()
+														.add(SearchBasis.VAR_inheritPk)
+														.add(SearchBasis.VAR_searchId)
+														.add(SearchBasis.VAR_searchBasisId)
+														)
+												.put(SearchBasis.VAR_pk, values[0])
+												.put(SearchBasis.VAR_searchId, values[1])
+												.put(SearchBasis.VAR_searchBasisId, values[4])
+												;
+									}
+	
+									if(body != null) {
+										vertx.eventBus().request(
+												String.format("opendatapolicing-enUS-%s", tableName)
+												, new JsonObject().put(
+														"context"
+														, new JsonObject().put(
+																"params"
+																, new JsonObject()
+																		.put("body", body)
+																		.put("path", new JsonObject())
+																		.put("cookie", new JsonObject())
+																		.put("query", new JsonObject())
+																		.put("query", new JsonObject().put("var", new JsonArray().add("refresh:false")))
+														)
+												)
+												, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", tableName))).onSuccess(a -> {
+											apiCounter.incrementTotalNum();
+											apiCounter.decrementQueueNum();
+											if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= 0) {
+//												stream.fetch(apiCounterFetch);
+												recordParser.fetch(apiCounterFetch);
+												apiRequest.setNumPATCH(apiCounter.getTotalNum());
+												apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
+												vertx.eventBus().publish(String.format("websocket%s", tableName), JsonObject.mapFrom(apiRequest));
+											}
+										}).onFailure(ex -> {
+											LOG.error(String.format(syncFtpRecordFail, tableName), ex);
+											promise.fail(ex);
+										});
+									}
+								} catch (Exception ex) {
+									LOG.error(String.format(syncFtpRecordFail, tableName), ex);
+									promise.fail(ex);
+								}
+							});
+
+//							stream.pause();
+//							stream.fetch(apiCounterFetch);
+							recordParser.maxRecordSize(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE));
+							recordParser.pause();
+							recordParser.fetch(apiCounterFetch);
+							stream.handler(recordParser).exceptionHandler(ex -> {
+								LOG.error(String.format(syncFtpRecordFail, tableName), new RuntimeException(ex));
+								promise.fail(ex);
+							}).endHandler(w -> {
+								stream.close();
+		
+								LOG.info(String.format(syncFtpRecordComplete, tableName));
+								promise.complete();
+							});
+						}).onFailure(ex -> {
+							LOG.error(String.format(syncFtpRecordFail, tableName), ex);
+							promise.fail(ex);
+						});
+					});
+				}).onFailure(ex -> {
+					LOG.error(String.format(syncFtpRecordFail, tableName), ex);
+					promise.fail(ex);
+				});
+			} else {
+				LOG.info(String.format(syncFtpRecordSkip, tableName));
+				promise.complete();
+			}
+		} catch (Exception ex) {
+			LOG.error(String.format(syncFtpRecordFail, tableName), ex);
+			promise.fail(ex);
+		}
+		return promise.future();
+	}
+
+	/**	
 	 * Val.Complete.enUS:Syncing database to Solr completed. 
 	 * Val.Fail.enUS:Syncing database to Solr failed. 
 	 * Val.Skip.enUS:Skip syncing database to Solr. 
@@ -304,11 +748,11 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		if(config().getBoolean(ConfigKeys.ENABLE_DB_SOLR_SYNC, false)) {
 			Long millis = 1000L * config().getInteger(ConfigKeys.TIMER_DB_SOLR_SYNC_IN_SECONDS, 10);
 			vertx.setTimer(millis, a -> {
-				syncData("TrafficStop").onSuccess(b -> {
-					syncData("TrafficPerson").onSuccess(c -> {
-						syncData("TrafficSearch").onSuccess(d -> {
-							syncData("SearchBasis").onSuccess(e -> {
-								syncData("TrafficContraband").onSuccess(f -> {
+				syncDbToSolrRecord("TrafficStop").onSuccess(b -> {
+					syncDbToSolrRecord("TrafficPerson").onSuccess(c -> {
+						syncDbToSolrRecord("TrafficSearch").onSuccess(d -> {
+							syncDbToSolrRecord("SearchBasis").onSuccess(e -> {
+								syncDbToSolrRecord("TrafficContraband").onSuccess(f -> {
 									syncAgencies().onSuccess(g -> {
 										LOG.info(syncDbToSolrComplete);
 										promise.complete();
@@ -352,12 +796,12 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * Val.Skip.enUS:%s data sync skipped. 
 	 * Val.Started.enUS:%s data sync started. 
 	 **/
-	private Future<Void> syncData(String tableName) {
+	private Future<Void> syncDbToSolrRecord(String tableName) {
 		Promise<Void> promise = Promise.promise();
 		try {
 			if(config().getBoolean(String.format("%s_%s", ConfigKeys.ENABLE_DB_SOLR_SYNC, tableName), true)) {
 
-				LOG.info(String.format(syncDataStarted, tableName));
+				LOG.info(String.format(syncDbToSolrRecordStarted, tableName));
 				pgPool.withTransaction(sqlConnection -> {
 					Promise<Void> promise1 = Promise.promise();
 					sqlConnection.query(String.format("SELECT count(pk) FROM %s", tableName)).execute().onSuccess(countRowSet -> {
@@ -388,11 +832,11 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 										stream.pause();
 										stream.fetch(apiCounterFetch);
 										stream.exceptionHandler(ex -> {
-											LOG.error(String.format(syncDataFail, tableName), new RuntimeException(ex));
+											LOG.error(String.format(syncDbToSolrRecordFail, tableName), new RuntimeException(ex));
 											promise1.fail(ex);
 										});
 										stream.endHandler(v -> {
-											LOG.info(String.format(syncDataComplete, tableName));
+											LOG.info(String.format(syncDbToSolrRecordComplete, tableName));
 											promise1.complete();
 										});
 										stream.handler(row -> {
@@ -421,46 +865,46 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 														vertx.eventBus().publish(String.format("websocket%s", tableName), JsonObject.mapFrom(apiRequest));
 													}
 												}).onFailure(ex -> {
-													LOG.error(String.format(syncDataFail, tableName), ex);
+													LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 													promise1.fail(ex);
 												});
 											} catch (Exception ex) {
-												LOG.error(String.format(syncDataFail, tableName), ex);
+												LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 												promise1.fail(ex);
 											}
 										});
 									} catch (Exception ex) {
-										LOG.error(String.format(syncDataFail, tableName), ex);
+										LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 										promise1.fail(ex);
 									}
 								}).onFailure(ex -> {
-									LOG.error(String.format(syncDataFail, tableName), ex);
+									LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 									promise1.fail(ex);
 								});
 							} else {
 								promise1.complete();
 							}
 						} catch (Exception ex) {
-							LOG.error(String.format(syncDataFail, tableName), ex);
+							LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 							promise1.fail(ex);
 						}
 					}).onFailure(ex -> {
-						LOG.error(String.format(syncDataFail, tableName), ex);
+						LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 						promise1.fail(ex);
 					});
 					return promise1.future();
 				}).onSuccess(a -> {
 					promise.complete();
 				}).onFailure(ex -> {
-					LOG.error(String.format(syncDataFail, tableName), ex);
+					LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 					promise.fail(ex);
 				});
 			} else {
-				LOG.info(String.format(syncDataSkip, tableName));
+				LOG.info(String.format(syncDbToSolrRecordSkip, tableName));
 				promise.complete();
 			}
 		} catch (Exception ex) {
-			LOG.error(String.format(syncDataFail, tableName), ex);
+			LOG.error(String.format(syncDbToSolrRecordFail, tableName), ex);
 			promise.fail(ex);
 		}
 		return promise.future();

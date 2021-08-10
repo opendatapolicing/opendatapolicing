@@ -1,11 +1,16 @@
 package com.opendatapolicing.enus.trafficstop;                                                                 
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.common.SolrInputDocument;
@@ -14,9 +19,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.opendatapolicing.enus.base.BaseModel;
+import com.opendatapolicing.enus.config.ConfigKeys;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
-import com.opendatapolicing.enus.trafficsearch.TrafficSearch;
 import com.opendatapolicing.enus.wrap.Wrap;
 
 import io.vertx.core.Promise;
@@ -94,6 +100,9 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	// Fields //
 	////////////
 
+	public static final String FTP_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	public static final DateTimeFormatter FTP_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(FTP_DATE_TIME_FORMAT, Locale.US);
+
 	/**    
 	 * {@inheritDoc}
 	 * Indexed: true
@@ -108,6 +117,14 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	@Override
 	public String strStopDateTime() {
 		return stopDateTime == null ? "" : stopDateTime.format(DateTimeFormatter.ofPattern("M/d/yyyy h:mm a", Locale.forLanguageTag("en-US"))).replace(" 12:00 AM", " midnight");
+	}
+	public static ZonedDateTime staticSetStopDateTime(SiteRequestEnUS siteRequest_, String o) {
+		if(StringUtils.contains(o, " "))
+			return o == null ? null : LocalDateTime.parse(o, FTP_DATE_TIME_FORMATTER).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else if(StringUtils.endsWith(o, "Z"))
+			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else
+			return o == null ? null : ZonedDateTime.parse(o, DateTimeFormatter.ISO_DATE_TIME).truncatedTo(ChronoUnit.MILLIS);
 	}
 
 	/**    

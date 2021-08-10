@@ -148,10 +148,17 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
 					try {
 						JsonObject json = a.bodyAsJsonObject();
-						Map<String, Object> map = json.getMap();
-						QueryResponse r = generateSolrQueryResponse(map);
-						setQueryResponse(r);
-						promise.complete(r);
+						JsonObject error = Optional.ofNullable(json.getJsonObject("error")).orElse(null);
+						if(error == null) {
+							Map<String, Object> map = json.getMap();
+							QueryResponse r = generateSolrQueryResponse(map);
+							setQueryResponse(r);
+							promise.complete(r);
+						} else {
+							RuntimeException ex = new RuntimeException(error.toString());
+							LOG.error(String.format("Could not read response from Solr: http://%s:%s%s", solrHostName, solrPort, solrRequestUri), ex);
+							promise.fail(ex);
+						}
 					} catch(Exception ex) {
 						LOG.error(String.format("Could not read response from Solr: http://%s:%s%s", solrHostName, solrPort, solrRequestUri), ex);
 						promise.fail(ex);

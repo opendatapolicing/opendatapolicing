@@ -50,6 +50,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
 import java.time.temporal.ChronoUnit;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -1367,7 +1368,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		}
 		if(id != null) {
 			document.addField("id", id);
-			document.addField("id_indexed_string", id);
 		}
 		if(created != null) {
 			document.addField("created_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
@@ -1418,7 +1418,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 			case "inheritPk":
 				return "inheritPk_indexed_string";
 			case "id":
-				return "id_indexed_string";
+				return "id";
 			case "created":
 				return "created_indexed_date";
 			case "modified":

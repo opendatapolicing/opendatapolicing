@@ -585,7 +585,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							a.fail(ex);
 						}
 					}).onFailure(ex -> {
-						LOG.error(String.format("indexTrafficStop failed. "), new RuntimeException(ex));
+						LOG.error(String.format("Solr request failed. "), new RuntimeException(ex));
 						a.fail(ex);
 					});
 				} catch (Exception e) {
@@ -1496,7 +1496,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	 * Val.Ssl.enUS:Configuring SSL: %s
 	 * 
 	 *	Start the Vert.x server. 
-	 *	Démarrer le serveur Vert.x. 
 	 **/
 	private Future<Void> startServer() {
 		Promise<Void> promise = Promise.promise();
