@@ -326,6 +326,11 @@ public class ConfigKeys {
 	public static final String STATIC_PATH = "STATIC_PATH";
 
 	/**
+	 * The path to the handlebars template files for the site. 
+	 **/
+	public static final String TEMPLATE_PATH = "TEMPLATE_PATH";
+
+	/**
 	 * 
 	 **/
 	public static final String IMPORT_PATH = "IMPORT_PATH";
