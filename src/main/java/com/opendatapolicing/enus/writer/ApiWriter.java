@@ -745,6 +745,18 @@ public class ApiWriter extends ApiWriterGen<Object> implements Comparable<ApiWri
 				wPaths.tl(5, "required: false");
 				wPaths.tl(5, "schema:");
 				wPaths.tl(6, "type: string");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: softCommit");
+				wPaths.tl(5, "description: 'Solr performs a soft commit, meaning that Solr will commit the changes to the data structures quickly, but not guarantee that the Lucene index files are written to stable storage. '");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: boolean");
+				wPaths.tl(4, "- in: query");
+				wPaths.tl(5, "name: commitWithin");
+				wPaths.tl(5, "description: 'The commit within setting allows forcing document commits to happen in a defined time period. '");
+				wPaths.tl(5, "required: false");
+				wPaths.tl(5, "schema:");
+				wPaths.tl(6, "type: integer");
 			}
 		}
 
