@@ -506,6 +506,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					RecordParser lineParser = RecordParser.newDelimited("\n", bufferedLine -> {
 						lineCounter.incrementTotalNum();
 					});
+					lineParser.maxRecordSize(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE));
 
 					lineStream.handler(lineParser).exceptionHandler(ex -> {
 						LOG.error(String.format(syncFtpRecordFail, tableName), new RuntimeException(ex));
