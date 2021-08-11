@@ -202,7 +202,14 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 					params.put("cookie", new JsonObject());
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
-					params.put("query", new JsonObject());
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit);
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "putimportTrafficContrabandFuture")).onSuccess(a -> {
@@ -338,6 +345,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		});
 	}
 
+
 	public Future<ServiceResponse> response200PUTImportTrafficContraband(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -390,7 +398,14 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 					params.put("cookie", new JsonObject());
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
-					params.put("query", new JsonObject());
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit);
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "postTrafficContrabandFuture")).onSuccess(a -> {
@@ -692,6 +707,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		return promise.future();
 	}
 
+
 	public Future<ServiceResponse> response200POSTTrafficContraband(TrafficContraband o) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -732,7 +748,6 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 						)
 					));
 				} else {
-					serviceRequest.getParams().getJsonObject("query").put("rows", 100);
 					searchTrafficContrabandList(siteRequest, false, true, true, "/api/contraband", "PATCH").onSuccess(listTrafficContraband -> {
 						try {
 							List<String> roles2 = Arrays.asList("SiteAdmin");
@@ -753,7 +768,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 								siteRequest.setApiRequest_(apiRequest);
 								if(apiRequest.getNumFound() == 1L)
 									apiRequest.setOriginal(listTrafficContraband.first());
-								apiRequest.setPk(listTrafficContraband.first().getPk());
+								apiRequest.setPk(Optional.ofNullable(listTrafficContraband.first()).map(o2 -> o2.getPk()).orElse(null));
 								eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
 
 								listPATCHTrafficContraband(apiRequest, listTrafficContraband).onSuccess(e -> {
@@ -859,7 +874,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							}
 							if(apiRequest.getNumFound() == 1L)
 								apiRequest.setOriginal(o);
-							apiRequest.setPk(listTrafficContraband.first().getPk());
+							apiRequest.setPk(Optional.ofNullable(listTrafficContraband.first()).map(o2 -> o2.getPk()).orElse(null));
 							eventBus.publish("websocketTrafficContraband", JsonObject.mapFrom(apiRequest).toString());
 							patchTrafficContrabandFuture(o, false).onSuccess(a -> {
 								eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -1103,6 +1118,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		return promise.future();
 	}
 
+
 	public Future<ServiceResponse> response200PATCHTrafficContraband(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1155,6 +1171,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			}
 		});
 	}
+
 
 
 	public Future<ServiceResponse> response200GETTrafficContraband(SearchList<TrafficContraband> listTrafficContraband) {
@@ -1214,6 +1231,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	}
 
 
+
 	public Future<ServiceResponse> response200SearchTrafficContraband(SearchList<TrafficContraband> listTrafficContraband) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1227,6 +1245,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
 			List<String> fls = listTrafficContraband.getFields();
 
@@ -1237,6 +1256,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 				json.put("searchTime", searchTime);
 				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
 			}
 			JsonArray l = new JsonArray();
 			listTrafficContraband.getList().stream().forEach(o -> {
@@ -1401,6 +1423,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 	}
 
 
+
 	public Future<ServiceResponse> response200AdminSearchTrafficContraband(SearchList<TrafficContraband> listTrafficContraband) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1414,6 +1437,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
 			List<String> fls = listTrafficContraband.getFields();
 
@@ -1424,6 +1448,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 				json.put("searchTime", searchTime);
 				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
 			}
 			JsonArray l = new JsonArray();
 			listTrafficContraband.getList().stream().forEach(o -> {
@@ -1677,22 +1704,17 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 		try {
 			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").stream().filter(paramRequest -> "var".equals(paramRequest.getKey()) && paramRequest.getValue() != null).findFirst().ifPresent(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
-				String paramName = paramRequest.getKey();
 				Object paramValuesObject = paramRequest.getValue();
 				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
 
 				try {
 					for(Object paramObject : paramObjects) {
-						switch(paramName) {
-							case "var":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								siteRequest.getRequestVars().put(entityVar, valueIndexed);
-								break;
-						}
+						entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+						valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+						siteRequest.getRequestVars().put(entityVar, valueIndexed);
 					}
 				} catch(Exception ex) {
 					LOG.error(String.format("searchTrafficContraband failed. "), ex);
@@ -1736,6 +1758,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				String valueSort = null;
 				Integer valueStart = null;
 				Integer valueRows = null;
+				String valueCursorMark = null;
 				String paramName = paramRequest.getKey();
 				Object paramValuesObject = paramRequest.getValue();
 				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
@@ -1833,6 +1856,10 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
 									searchTrafficContrabandVar(uri, apiMethod, searchList, entityVar, valueIndexed);
 									break;
+								case "cursorMark":
+									valueCursorMark = (String)paramObject;
+									searchList.add("cursorMark", (String)paramObject);
+									break;
 							}
 						}
 						searchTrafficContrabandUri(uri, apiMethod, searchList);
@@ -1917,7 +1944,9 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 				String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
-				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?softCommit=true&overwrite=true&wt=json");
+				Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+				Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+				String solrRequestUri = String.format("/solr/%s/update%s%s%s", solrCollection, "?overwrite=true&wt=json", softCommit ? "&softCommit=true" : "", commitWithin != null ? ("&commitWithin=" + commitWithin) : "");
 				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
 				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
@@ -1959,7 +1988,15 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
-					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit);
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					query.put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk()));
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-TrafficContraband", json, new DeliveryOptions().addHeader("action", "patchTrafficContrabandFuture")).onSuccess(c -> {

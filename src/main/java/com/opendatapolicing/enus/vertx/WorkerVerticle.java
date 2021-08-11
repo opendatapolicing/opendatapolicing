@@ -343,7 +343,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							String remotePassword = config().getString(ConfigKeys.FTP_SYNC_PASSWORD);
 	
 							FTPSClient client = new FTPSClient(false);
-							client.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
+//							client.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
 							client.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
 							client.connect(remoteHostName, remotePort);
 							int connectReply = client.getReplyCode();
@@ -680,7 +680,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 																		.put("path", new JsonObject())
 																		.put("cookie", new JsonObject())
 																		.put("query", new JsonObject())
-																		.put("query", new JsonObject().put("var", new JsonArray().add("refresh:false")))
+																		.put("query", new JsonObject().put("var", new JsonArray().add("refresh:false")).put("commitWithin", 10000))
 														)
 												)
 												, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", tableName))).onSuccess(a -> {

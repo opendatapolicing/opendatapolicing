@@ -55,6 +55,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
 import java.time.temporal.ChronoUnit;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -202,7 +202,14 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					params.put("cookie", new JsonObject());
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
-					params.put("query", new JsonObject());
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit);
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "putimportSearchBasisFuture")).onSuccess(a -> {
@@ -338,6 +345,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		});
 	}
 
+
 	public Future<ServiceResponse> response200PUTImportSearchBasis(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -390,7 +398,14 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					params.put("cookie", new JsonObject());
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
-					params.put("query", new JsonObject());
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit);
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "postSearchBasisFuture")).onSuccess(a -> {
@@ -611,6 +626,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		return promise.future();
 	}
 
+
 	public Future<ServiceResponse> response200POSTSearchBasis(SearchBasis o) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -651,7 +667,6 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 						)
 					));
 				} else {
-					serviceRequest.getParams().getJsonObject("query").put("rows", 100);
 					searchSearchBasisList(siteRequest, false, true, true, "/api/search-basis", "PATCH").onSuccess(listSearchBasis -> {
 						try {
 							List<String> roles2 = Arrays.asList("SiteAdmin");
@@ -672,7 +687,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								siteRequest.setApiRequest_(apiRequest);
 								if(apiRequest.getNumFound() == 1L)
 									apiRequest.setOriginal(listSearchBasis.first());
-								apiRequest.setPk(listSearchBasis.first().getPk());
+								apiRequest.setPk(Optional.ofNullable(listSearchBasis.first()).map(o2 -> o2.getPk()).orElse(null));
 								eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
 
 								listPATCHSearchBasis(apiRequest, listSearchBasis).onSuccess(e -> {
@@ -778,7 +793,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							}
 							if(apiRequest.getNumFound() == 1L)
 								apiRequest.setOriginal(o);
-							apiRequest.setPk(listSearchBasis.first().getPk());
+							apiRequest.setPk(Optional.ofNullable(listSearchBasis.first()).map(o2 -> o2.getPk()).orElse(null));
 							eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
 							patchSearchBasisFuture(o, false).onSuccess(a -> {
 								eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -950,6 +965,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		return promise.future();
 	}
 
+
 	public Future<ServiceResponse> response200PATCHSearchBasis(SiteRequestEnUS siteRequest) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1002,6 +1018,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			}
 		});
 	}
+
 
 
 	public Future<ServiceResponse> response200GETSearchBasis(SearchList<SearchBasis> listSearchBasis) {
@@ -1061,6 +1078,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	}
 
 
+
 	public Future<ServiceResponse> response200SearchSearchBasis(SearchList<SearchBasis> listSearchBasis) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1074,6 +1092,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
 			List<String> fls = listSearchBasis.getFields();
 
@@ -1084,6 +1103,9 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 				json.put("searchTime", searchTime);
 				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
 			}
 			JsonArray l = new JsonArray();
 			listSearchBasis.getList().stream().forEach(o -> {
@@ -1248,6 +1270,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 	}
 
 
+
 	public Future<ServiceResponse> response200AdminSearchSearchBasis(SearchList<SearchBasis> listSearchBasis) {
 		Promise<ServiceResponse> promise = Promise.promise();
 		try {
@@ -1261,6 +1284,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			Integer returnedNum = responseSearch.getResults().size();
 			String searchTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(searchInMillis), TimeUnit.MILLISECONDS.toMillis(searchInMillis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(searchInMillis)));
 			String transmissionTime = String.format("%d.%03d sec", TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis), TimeUnit.MILLISECONDS.toMillis(transmissionInMillis) - TimeUnit.SECONDS.toSeconds(TimeUnit.MILLISECONDS.toSeconds(transmissionInMillis)));
+			String nextCursorMark = responseSearch.getNextCursorMark();
 			Exception exceptionSearch = responseSearch.getException();
 			List<String> fls = listSearchBasis.getFields();
 
@@ -1271,6 +1295,9 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves")) {
 				json.put("searchTime", searchTime);
 				json.put("transmissionTime", transmissionTime);
+			}
+			if(nextCursorMark != null) {
+				json.put("nextCursorMark", nextCursorMark);
 			}
 			JsonArray l = new JsonArray();
 			listSearchBasis.getList().stream().forEach(o -> {
@@ -1516,22 +1543,17 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 		try {
 			ServiceRequest serviceRequest = siteRequest.getServiceRequest();
 
-			serviceRequest.getParams().getJsonObject("query").forEach(paramRequest -> {
+			serviceRequest.getParams().getJsonObject("query").stream().filter(paramRequest -> "var".equals(paramRequest.getKey()) && paramRequest.getValue() != null).findFirst().ifPresent(paramRequest -> {
 				String entityVar = null;
 				String valueIndexed = null;
-				String paramName = paramRequest.getKey();
 				Object paramValuesObject = paramRequest.getValue();
 				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
 
 				try {
 					for(Object paramObject : paramObjects) {
-						switch(paramName) {
-							case "var":
-								entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
-								valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-								siteRequest.getRequestVars().put(entityVar, valueIndexed);
-								break;
-						}
+						entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
+						valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
+						siteRequest.getRequestVars().put(entityVar, valueIndexed);
 					}
 				} catch(Exception ex) {
 					LOG.error(String.format("searchSearchBasis failed. "), ex);
@@ -1575,6 +1597,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				String valueSort = null;
 				Integer valueStart = null;
 				Integer valueRows = null;
+				String valueCursorMark = null;
 				String paramName = paramRequest.getKey();
 				Object paramValuesObject = paramRequest.getValue();
 				JsonArray paramObjects = paramValuesObject instanceof JsonArray ? (JsonArray)paramValuesObject : new JsonArray().add(paramValuesObject);
@@ -1672,6 +1695,10 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 									valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
 									searchSearchBasisVar(uri, apiMethod, searchList, entityVar, valueIndexed);
 									break;
+								case "cursorMark":
+									valueCursorMark = (String)paramObject;
+									searchList.add("cursorMark", (String)paramObject);
+									break;
 							}
 						}
 						searchSearchBasisUri(uri, apiMethod, searchList);
@@ -1756,7 +1783,9 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
-				String solrRequestUri = String.format("/solr/%s/update%s", solrCollection, "?softCommit=true&overwrite=true&wt=json");
+				Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+				Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+				String solrRequestUri = String.format("/solr/%s/update%s%s%s", solrCollection, "?overwrite=true&wt=json", softCommit ? "&softCommit=true" : "", commitWithin != null ? ("&commitWithin=" + commitWithin) : "");
 				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
 				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
@@ -1798,7 +1827,15 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					params.put("header", new JsonObject());
 					params.put("form", new JsonObject());
 					params.put("path", new JsonObject());
-					params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk())));
+					JsonObject query = new JsonObject();
+					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
+					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
+					if(softCommit);
+						query.put("softCommit", softCommit);
+					if(commitWithin != null)
+						query.put("commitWithin", commitWithin);
+					query.put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk()));
+					params.put("query", query);
 					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
 					JsonObject json = new JsonObject().put("context", context);
 					eventBus.request("opendatapolicing-enUS-SearchBasis", json, new DeliveryOptions().addHeader("action", "patchSearchBasisFuture")).onSuccess(c -> {

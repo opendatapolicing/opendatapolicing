@@ -46,6 +46,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.apache.solr.client.solrj.SolrClient;
 import io.vertx.core.json.JsonArray;
 import org.apache.solr.common.SolrDocument;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;

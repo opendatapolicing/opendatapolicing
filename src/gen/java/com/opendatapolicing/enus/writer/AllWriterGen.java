@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.Objects;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.buffer.Buffer;
+import com.opendatapolicing.enus.java.LocalDateSerializer;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonInclude;

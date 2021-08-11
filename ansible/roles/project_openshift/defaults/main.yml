@@ -262,6 +262,8 @@ ENABLE_FTP_SYNC_TrafficPerson: true
 ENABLE_FTP_SYNC_TrafficSearch: true
 ENABLE_FTP_SYNC_SearchBasis: true
 ENABLE_FTP_SYNC_TrafficContraband: true
+FTP_SYNC_PATH: /opt/ftp
+FTP_SYNC_PATH_ZIP: /opt/ftp/STOPS_Extract.zip
 FTP_SYNC_PATH_TrafficStop: /opt/ftp/Stop.txt
 FTP_SYNC_PATH_TrafficPerson: /opt/ftp/PERSON.txt
 FTP_SYNC_PATH_TrafficSearch: /opt/ftp/Search.txt
@@ -273,6 +275,6 @@ FTP_SYNC_PORT: 21
 FTP_SYNC_USERNAME: 
 FTP_SYNC_PASSWORD: 
 FTP_SYNC_REMOTE_PATH: 
-FTP_SYNC_PATH_ZIP: 
+# The path to extract the FTP files. 
 
 ACS_API_KEY: 

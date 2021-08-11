@@ -5,9 +5,9 @@
 # Column: Setup Tasks
 
 - name: Generate keystore and other files based on certificate and key from certbot
-  hosts: "{{target}}"
+  hosts: localhost
   connection: local
   vars_files:
-    - "{{ lookup('env', 'ODP_ANSIBLE_INVENTORY') }}/vaults/{{ lookup('env', 'VAULT_ID') }}/vault"
+    - "/usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault"
   roles: 
     - project_certbot
