@@ -269,7 +269,7 @@ FTP_SYNC_PATH_TrafficPerson: /opt/ftp/PERSON.txt
 FTP_SYNC_PATH_TrafficSearch: /opt/ftp/Search.txt
 FTP_SYNC_PATH_TrafficContraband: /opt/ftp/Contraband.txt
 FTP_SYNC_PATH_TrafficSearchBasis: /opt/ftp/SearchBasis.txt
-FTP_MAX_RECORD_SIZE: 10000
+FTP_MAX_RECORD_SIZE: 100
 FTP_SYNC_HOST_NAME: 
 FTP_SYNC_PORT: 21
 FTP_SYNC_USERNAME: 
