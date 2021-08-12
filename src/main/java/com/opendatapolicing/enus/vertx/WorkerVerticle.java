@@ -497,6 +497,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 				String path = config().getString(String.format("%s_%s", ConfigKeys.FTP_SYNC_PATH, tableName));
 				vertx.fileSystem().open(path, new OpenOptions().setRead(true)).onSuccess(lineStream -> {
+					lineStream.setReadBufferSize(config().getInteger(ConfigKeys.READ_BUFFER_SIZE));
 					LOG.info(String.format(syncFtpRecordStarted, tableName));
 					ApiCounter lineCounter = new ApiCounter();
 					Long apiCounterResume = config().getLong(ConfigKeys.API_COUNTER_RESUME);
@@ -512,6 +513,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 						LOG.error(String.format(syncFtpRecordFail, tableName), new RuntimeException(ex));
 						promise.fail(ex);
 					}).endHandler(v -> {
+						lineStream.flush();
 						lineStream.close();
 						Long lines = lineCounter.getTotalNum();
 
@@ -533,6 +535,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	
 	
 						vertx.fileSystem().open(path, new OpenOptions().setRead(true)).onSuccess(stream -> {
+//							stream.setReadLength(10000);
+							stream.setReadBufferSize(config().getInteger(ConfigKeys.READ_BUFFER_SIZE));
 							RecordParser recordParser = RecordParser.newDelimited("\n");
 							recordParser.handler(bufferedLine -> {
 								try {
@@ -714,6 +718,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								LOG.error(String.format(syncFtpRecordFail, tableName), new RuntimeException(ex));
 								promise.fail(ex);
 							}).endHandler(w -> {
+								stream.flush();
 								stream.close();
 		
 								LOG.info(String.format(syncFtpRecordComplete, tableName));

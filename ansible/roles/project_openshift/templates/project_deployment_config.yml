@@ -217,9 +217,15 @@ spec:
               value: "{{PROJECT_SITE_ZONE_ENUS}}"
             - name: JAVA_MAIN_CLASS
               value: "{{PROJECT_JAVA_MAIN_CLASS_ENUS}}"
+            - name: SITE_INSTANCES
+              value: "{{SITE_INSTANCES}}"
+            - name: WORKER_POOL_SIZE
+              value: "{{WORKER_POOL_SIZE}}"
 
-            - name: API_COUNTER_PAUSE
-              value: "{{API_COUNTER_PAUSE}}"
+            - name: READ_BUFFER_SIZE
+              value: "{{READ_BUFFER_SIZE}}"
+            - name: API_COUNTER_FETCH
+              value: "{{API_COUNTER_FETCH}}"
             - name: API_COUNTER_RESUME
               value: "{{API_COUNTER_RESUME}}"
             - name: API_COUNTER_FETCH

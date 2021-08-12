@@ -229,12 +229,17 @@ AUTH_SECRET: "..."
 # The Auth URL.
 AUTH_URL: https://sso.example.com/auth
 
+# The number of Vert.X verticle instances
+SITE_INSTANCES: 5
+# The size of the Vert.X worker pool
+WORKER_POOL_SIZE: 5
+
 # The size of the persistent volume for downloading FTP data and extracting the contents. 
 FTP_VOLUME_SIZE: 10Gi
 
-API_COUNTER_PAUSE: 110
-API_COUNTER_RESUME: 1
-API_COUNTER_FETCH: 10
+READ_BUFFER_SIZE: 1000
+API_COUNTER_RESUME: 100
+API_COUNTER_FETCH: 200
 
 ENABLE_IMPORT_DATA: false
 

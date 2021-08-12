@@ -378,6 +378,11 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String READ_BUFFER_SIZE = "READ_BUFFER_SIZE";
+
+	/**
+	 * 
+	 **/
 	public static final String FTP_MAX_RECORD_SIZE = "FTP_MAX_RECORD_SIZE";
 
 	/**
