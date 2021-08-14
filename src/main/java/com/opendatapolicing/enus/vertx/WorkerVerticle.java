@@ -578,7 +578,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				RecordParser recordParser = RecordParser.newDelimited(STR_NEW_LINE, stream);
 				Optional.ofNullable(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE)).ifPresent(ftpMaxRecordSize -> {
 					recordParser.maxRecordSize(ftpMaxRecordSize);
-				})
+				});
 				recordParser.pause();
 				recordParser.handler(bufferedLine -> {
 					try {
