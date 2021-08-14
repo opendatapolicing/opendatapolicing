@@ -512,14 +512,18 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 				String path = config().getString(String.format("%s_%s", ConfigKeys.FTP_SYNC_PATH, tableName));
 				vertx.fileSystem().open(path, new OpenOptions().setRead(true)).onSuccess(lineStream -> {
-					lineStream.setReadBufferSize(config().getInteger(ConfigKeys.READ_BUFFER_SIZE));
+					Optional.ofNullable(config().getInteger(ConfigKeys.READ_BUFFER_SIZE)).ifPresent(readBufferSize -> {
+						lineStream.setReadBufferSize(readBufferSize);
+					});
 					LOG.info(String.format(syncFtpRecordStarted, tableName));
 					ApiCounter lineCounter = new ApiCounter();
 					Integer apiCounterFetch = config().getInteger(ConfigKeys.API_COUNTER_FETCH);
 					lineCounter.setTotalNum(0L);
 
 					RecordParser lineParser = RecordParser.newDelimited("\n", lineStream);
-					lineParser.maxRecordSize(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE));
+					Optional.ofNullable(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE)).ifPresent(ftpMaxRecordSize -> {
+						lineParser.maxRecordSize(ftpMaxRecordSize);
+					});
 
 					lineStream.handler(bufferedLine -> {
 						lineCounter.incrementTotalNum();
