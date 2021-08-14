@@ -87,6 +87,33 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String syncFtpRecordStarted1 = "%s FTP sync started. ";
 	public static final String syncFtpRecordStarted = syncFtpRecordStarted1;
 
+	public static final String syncFtpHandleBodyEventBusName1 = "opendatapolicing-enUS-%s";
+	public static final String syncFtpHandleBodyEventBusName = syncFtpHandleBodyEventBusName1;
+	public static final String syncFtpHandleBodyContext1 = "context";
+	public static final String syncFtpHandleBodyContext = syncFtpHandleBodyContext1;
+	public static final String syncFtpHandleBodyParams1 = "params";
+	public static final String syncFtpHandleBodyParams = syncFtpHandleBodyParams1;
+	public static final String syncFtpHandleBodyBody1 = "body";
+	public static final String syncFtpHandleBodyBody = syncFtpHandleBodyBody1;
+	public static final String syncFtpHandleBodyPath1 = "path";
+	public static final String syncFtpHandleBodyPath = syncFtpHandleBodyPath1;
+	public static final String syncFtpHandleBodyCookie1 = "cookie";
+	public static final String syncFtpHandleBodyCookie = syncFtpHandleBodyCookie1;
+	public static final String syncFtpHandleBodyQuery1 = "query";
+	public static final String syncFtpHandleBodyQuery = syncFtpHandleBodyQuery1;
+	public static final String syncFtpHandleBodyVar1 = "var";
+	public static final String syncFtpHandleBodyVar = syncFtpHandleBodyVar1;
+	public static final String syncFtpHandleBodyRefreshFalse1 = "refresh:false";
+	public static final String syncFtpHandleBodyRefreshFalse = syncFtpHandleBodyRefreshFalse1;
+	public static final String syncFtpHandleBodyCommitWithin1 = "commitWithin";
+	public static final String syncFtpHandleBodyCommitWithin = syncFtpHandleBodyCommitWithin1;
+	public static final String syncFtpHandleBodyAction1 = "action";
+	public static final String syncFtpHandleBodyAction = syncFtpHandleBodyAction1;
+	public static final String syncFtpHandleBodyPutImportFuture1 = "putimport%sFuture";
+	public static final String syncFtpHandleBodyPutImportFuture = syncFtpHandleBodyPutImportFuture1;
+	public static final String syncFtpHandleBodyWebSocket1 = "websocket%s";
+	public static final String syncFtpHandleBodyWebSocket = syncFtpHandleBodyWebSocket1;
+
 	public static final String syncDbToSolrComplete1 = "Syncing database to Solr completed. ";
 	public static final String syncDbToSolrComplete = syncDbToSolrComplete1;
 	public static final String syncDbToSolrFail1 = "Syncing database to Solr failed. ";
@@ -349,6 +376,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, importDataSkip1, syncFtpComplete1, syncFtpFail1, syncFtpSkip1, syncFtpRecordComplete1, syncFtpRecordFail1, syncFtpRecordCounterResetFail1, syncFtpRecordSkip1, syncFtpRecordStarted1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDbToSolrRecordComplete1, syncDbToSolrRecordFail1, syncDbToSolrRecordCounterResetFail1, syncDbToSolrRecordSkip1, syncDbToSolrRecordStarted1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1, syncAgenciesComplete1, syncAgenciesFail1, syncAgenciesSkip1, syncAgenciesFacetsComplete1, syncAgenciesFacetsFail1, syncAgenciesFacetsSkip1 };
+	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, importDataSkip1, syncFtpComplete1, syncFtpFail1, syncFtpSkip1, syncFtpRecordComplete1, syncFtpRecordFail1, syncFtpRecordCounterResetFail1, syncFtpRecordSkip1, syncFtpRecordStarted1, syncFtpHandleBodyEventBusName1, syncFtpHandleBodyContext1, syncFtpHandleBodyParams1, syncFtpHandleBodyBody1, syncFtpHandleBodyPath1, syncFtpHandleBodyCookie1, syncFtpHandleBodyQuery1, syncFtpHandleBodyVar1, syncFtpHandleBodyRefreshFalse1, syncFtpHandleBodyCommitWithin1, syncFtpHandleBodyAction1, syncFtpHandleBodyPutImportFuture1, syncFtpHandleBodyWebSocket1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDbToSolrRecordComplete1, syncDbToSolrRecordFail1, syncDbToSolrRecordCounterResetFail1, syncDbToSolrRecordSkip1, syncDbToSolrRecordStarted1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1, syncAgenciesComplete1, syncAgenciesFail1, syncAgenciesSkip1, syncAgenciesFacetsComplete1, syncAgenciesFacetsFail1, syncAgenciesFacetsSkip1 };
 
 }
