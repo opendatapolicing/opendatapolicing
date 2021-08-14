@@ -349,34 +349,34 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 									syncFtpRecord("SearchBasis", stateAbbreviation).onSuccess(f -> {
 										syncFtpRecord("TrafficContraband", stateAbbreviation).onSuccess(g -> {
 											syncAgencies().onSuccess(h -> {
-												LOG.info(syncDbToSolrComplete);
+												LOG.info(syncFtpComplete);
 												promise.complete();
 											}).onFailure(ex -> {
-												LOG.error(syncDbToSolrFail, ex);
+												LOG.error(syncFtpFail, ex);
 												promise.fail(ex);
 											});
 										}).onFailure(ex -> {
-											LOG.error(syncDbToSolrFail, ex);
+											LOG.error(syncFtpFail, ex);
 											promise.fail(ex);
 										});
 									}).onFailure(ex -> {
-										LOG.error(syncDbToSolrFail, ex);
+										LOG.error(syncFtpFail, ex);
 										promise.fail(ex);
 									});
 								}).onFailure(ex -> {
-									LOG.error(syncDbToSolrFail, ex);
+									LOG.error(syncFtpFail, ex);
 									promise.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(syncDbToSolrFail, ex);
+								LOG.error(syncFtpFail, ex);
 								promise.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(syncDbToSolrFail, ex);
+							LOG.error(syncFtpFail, ex);
 							promise.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(syncDbToSolrFail, ex);
+						LOG.error(syncFtpFail, ex);
 						promise.fail(ex);
 					});
 				}, false).onSuccess(b -> {
@@ -439,7 +439,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 										}
 									}
 								}
-								LOG.info(syncFtpComplete);
 								promise.complete();
 							} catch(Exception ex) {
 								LOG.error(syncFtpFail, ex);
