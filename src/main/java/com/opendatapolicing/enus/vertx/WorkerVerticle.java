@@ -572,9 +572,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			apiCounter.setQueueNum(LONG_ZERO);
 
 			vertx.fileSystem().open(path, new OpenOptions().setRead(true)).onSuccess(stream -> {
-				stream.setReadBufferSize(config().getInteger(ConfigKeys.READ_BUFFER_SIZE));
+				Optional.ofNullable(config().getInteger(ConfigKeys.READ_BUFFER_SIZE)).ifPresent(readBufferSize -> {
+					stream.setReadBufferSize(readBufferSize);
+				});
 				RecordParser recordParser = RecordParser.newDelimited(STR_NEW_LINE, stream);
-				recordParser.maxRecordSize(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE));
+				Optional.ofNullable(config().getInteger(ConfigKeys.FTP_MAX_RECORD_SIZE)).ifPresent(ftpMaxRecordSize -> {
+					recordParser.maxRecordSize(ftpMaxRecordSize);
+				})
 				recordParser.pause();
 				recordParser.handler(bufferedLine -> {
 					try {
