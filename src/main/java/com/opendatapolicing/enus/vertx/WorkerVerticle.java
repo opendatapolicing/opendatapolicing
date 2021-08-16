@@ -823,8 +823,17 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				}
 				promise.complete();
 			}).onFailure(ex -> {
-				LOG.error(String.format(syncFtpRecordFail, tableName), ex);
-				promise.fail(ex);
+//				LOG.error(String.format(syncFtpRecordFail, tableName), ex);
+//				promise.fail(ex);
+				apiCounter.incrementTotalNum();
+				apiCounter.decrementQueueNum();
+				if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
+					recordParser.fetch(apiCounterFetch);
+					apiRequest.setNumPATCH(apiCounter.getTotalNum());
+					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
+					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
+				}
+				promise.complete();
 			});
 		} else {
 			promise.complete();
