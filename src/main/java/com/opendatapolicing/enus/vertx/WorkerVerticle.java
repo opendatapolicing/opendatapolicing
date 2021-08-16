@@ -83,6 +83,10 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 	public static final Long LONG_ZERO = 0L;
 
+	private Integer jdbcMaxPoolSize;
+
+	private Integer jdbcMaxWaitQueueSize;
+
 	/**
 	 * A io.vertx.ext.jdbc.JDBCClient for connecting to the relational database PostgreSQL. 
 	 **/
@@ -154,20 +158,20 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			PgConnectOptions pgOptions = new PgConnectOptions();
-			Integer jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1);
-
 			pgOptions.setPort(config().getInteger(ConfigKeys.JDBC_PORT));
 			pgOptions.setHost(config().getString(ConfigKeys.JDBC_HOST));
 			pgOptions.setDatabase(config().getString(ConfigKeys.JDBC_DATABASE));
 			pgOptions.setUser(config().getString(ConfigKeys.JDBC_USERNAME));
 			pgOptions.setPassword(config().getString(ConfigKeys.JDBC_PASSWORD));
-			pgOptions.setIdleTimeout(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME, 24));
-			pgOptions.setIdleTimeoutUnit(TimeUnit.HOURS);
-			pgOptions.setConnectTimeout(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT, 86400000));
+			pgOptions.setIdleTimeout(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME, 10));
+			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
+			pgOptions.setConnectTimeout(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT, 5));
 
 			PoolOptions poolOptions = new PoolOptions();
+			jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1);
+			jdbcMaxWaitQueueSize = config().getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10);
 			poolOptions.setMaxSize(jdbcMaxPoolSize);
-			poolOptions.setMaxWaitQueueSize(config().getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10));
+			poolOptions.setMaxWaitQueueSize(jdbcMaxWaitQueueSize);
 
 			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
 
