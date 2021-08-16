@@ -990,8 +990,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
-				promise.fail(ex);
 				LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
+				promise.fail(ex);
 				error(siteRequest, null, ex);
 			}).compose(trafficStop -> {
 				Promise<TrafficStop> promise2 = Promise.promise();
