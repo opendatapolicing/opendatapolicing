@@ -525,7 +525,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 						lineParser.maxRecordSize(ftpMaxRecordSize);
 					});
 
-					lineStream.handler(bufferedLine -> {
+					lineParser.handler(bufferedLine -> {
 						lineCounter.incrementTotalNum();
 					}).exceptionHandler(ex -> {
 						LOG.error(String.format(syncFtpRecordFail, tableName), new RuntimeException(ex));
