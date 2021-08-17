@@ -815,7 +815,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					, new DeliveryOptions().addHeader(syncFtpHandleBodyAction, String.format(syncFtpHandleBodyPutImportFuture, tableName))).onSuccess(a -> {
 				apiCounter.incrementTotalNum();
 				apiCounter.decrementQueueNum();
-				if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
+				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
 					recordParser.fetch(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
@@ -823,11 +823,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				}
 				promise.complete();
 			}).onFailure(ex -> {
-//				LOG.error(String.format(syncFtpRecordFail, tableName), ex);
-//				promise.fail(ex);
 				apiCounter.incrementTotalNum();
 				apiCounter.decrementQueueNum();
-				if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
+				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
 					recordParser.fetch(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
@@ -961,7 +959,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 														, new DeliveryOptions().addHeader("action", String.format("patch%sFuture", tableName))).onSuccess(a -> {
 													apiCounter.incrementTotalNum();
 													apiCounter.decrementQueueNum();
-													if(apiCounter.getQueueNum().compareTo(apiCounterResume) == 0) {
+													if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
 														stream.fetch(apiCounterFetch);
 														apiRequest.setNumPATCH(apiCounter.getTotalNum());
 														apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
