@@ -182,62 +182,62 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	}
 
 	public static void  run() {
-//		JsonObject zkConfig = new JsonObject();
-//		String zookeeperHostName = System.getenv(ConfigKeys.ZOOKEEPER_HOST_NAME);
-//		Integer zookeeperPort = Integer.parseInt(Optional.ofNullable(System.getenv(ConfigKeys.ZOOKEEPER_PORT)).orElse("2181"));
-//		String zookeeperHosts = Optional.ofNullable(System.getenv(ConfigKeys.ZOOKEEPER_HOSTS)).orElse(zookeeperHostName + ":" + zookeeperPort);
-//		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
-//		CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(zookeeperHosts, retryPolicy);
-//		curatorFramework.start();
-//		Integer clusterPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
-//		String clusterHostName = System.getenv(ConfigKeys.CLUSTER_HOST_NAME);
-//		Integer clusterPublicPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PUBLIC_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
+		JsonObject zkConfig = new JsonObject();
+		String zookeeperHostName = System.getenv(ConfigKeys.ZOOKEEPER_HOST_NAME);
+		Integer zookeeperPort = Integer.parseInt(Optional.ofNullable(System.getenv(ConfigKeys.ZOOKEEPER_PORT)).orElse("2181"));
+		String zookeeperHosts = Optional.ofNullable(System.getenv(ConfigKeys.ZOOKEEPER_HOSTS)).orElse(zookeeperHostName + ":" + zookeeperPort);
+		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
+		CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(zookeeperHosts, retryPolicy);
+		curatorFramework.start();
+		Integer clusterPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
+		String clusterHostName = System.getenv(ConfigKeys.CLUSTER_HOST_NAME);
+		Integer clusterPublicPort = Optional.ofNullable(System.getenv(ConfigKeys.CLUSTER_PUBLIC_PORT)).map(s -> Integer.parseInt(s)).orElse(null);
 		Integer siteInstances = Optional.ofNullable(System.getenv(ConfigKeys.SITE_INSTANCES)).map(s -> Integer.parseInt(s)).orElse(1);
 		Long vertxWarningExceptionSeconds = Optional.ofNullable(System.getenv(ConfigKeys.VERTX_WARNING_EXCEPTION_SECONDS)).map(s -> Long.parseLong(s)).orElse(10L);
-//		String clusterPublicHostName = System.getenv(ConfigKeys.CLUSTER_PUBLIC_HOST_NAME);
-//		zkConfig.put("zookeeperHosts", zookeeperHosts);
-//		zkConfig.put("sessionTimeout", 500000);
-//		zkConfig.put("connectTimeout", 3000);
-//		zkConfig.put("rootPath", "opendatapolicing");
-//		zkConfig.put("retry", new JsonObject() {
-//			{
-//				put("initialSleepTime", 3000);
-//				put("intervalTimes", 10000);
-//				put("maxTimes", 3);
-//			}
-//		});
-//		ClusterManager clusterManager = new ZookeeperClusterManager(zkConfig);
+		String clusterPublicHostName = System.getenv(ConfigKeys.CLUSTER_PUBLIC_HOST_NAME);
+		zkConfig.put("zookeeperHosts", zookeeperHosts);
+		zkConfig.put("sessionTimeout", 500000);
+		zkConfig.put("connectTimeout", 3000);
+		zkConfig.put("rootPath", "opendatapolicing");
+		zkConfig.put("retry", new JsonObject() {
+			{
+				put("initialSleepTime", 3000);
+				put("intervalTimes", 10000);
+				put("maxTimes", 3);
+			}
+		});
+		ClusterManager clusterManager = new ZookeeperClusterManager(zkConfig);
 		VertxOptions vertxOptions = new VertxOptions();
 		// For OpenShift
 		EventBusOptions eventBusOptions = new EventBusOptions();
 		String hostname = System.getenv(ConfigKeys.HOSTNAME);
-//		String openshiftService = System.getenv(ConfigKeys.OPENSHIFT_SERVICE);
-//		if(clusterHostName == null) {
-//			clusterHostName = hostname;
-//		}
-//		if(clusterPublicHostName == null) {
-//			if(hostname != null && openshiftService != null) {
-//				clusterPublicHostName = hostname + "." + openshiftService;
-//			}
-//		}
-//		if(clusterHostName != null) {
-//			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_HOST_NAME, clusterHostName));
-//			eventBusOptions.setHost(clusterHostName);
-//		}
-//		if(clusterPort != null) {
-//			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PORT, clusterPort));
-//			eventBusOptions.setPort(clusterPort);
-//		}
-//		if(clusterPublicHostName != null) {
-//			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PUBLIC_HOST_NAME, clusterPublicHostName));
-//			eventBusOptions.setClusterPublicHost(clusterPublicHostName);
-//		}
-//		if(clusterPublicPort != null) {
-//			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PUBLIC_PORT, clusterPublicPort));
-//			eventBusOptions.setClusterPublicPort(clusterPublicPort);
-//		}
+		String openshiftService = System.getenv(ConfigKeys.OPENSHIFT_SERVICE);
+		if(clusterHostName == null) {
+			clusterHostName = hostname;
+		}
+		if(clusterPublicHostName == null) {
+			if(hostname != null && openshiftService != null) {
+				clusterPublicHostName = hostname + "." + openshiftService;
+			}
+		}
+		if(clusterHostName != null) {
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_HOST_NAME, clusterHostName));
+			eventBusOptions.setHost(clusterHostName);
+		}
+		if(clusterPort != null) {
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PORT, clusterPort));
+			eventBusOptions.setPort(clusterPort);
+		}
+		if(clusterPublicHostName != null) {
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PUBLIC_HOST_NAME, clusterPublicHostName));
+			eventBusOptions.setClusterPublicHost(clusterPublicHostName);
+		}
+		if(clusterPublicPort != null) {
+			LOG.info(String.format("%s: %s", ConfigKeys.CLUSTER_PUBLIC_PORT, clusterPublicPort));
+			eventBusOptions.setClusterPublicPort(clusterPublicPort);
+		}
 		vertxOptions.setEventBusOptions(eventBusOptions);
-//		vertxOptions.setClusterManager(clusterManager);
+		vertxOptions.setClusterManager(clusterManager);
 		vertxOptions.setWarningExceptionTime(vertxWarningExceptionSeconds);
 		vertxOptions.setWarningExceptionTimeUnit(TimeUnit.SECONDS);
 		vertxOptions.setWorkerPoolSize(System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? 5 : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE)));
@@ -274,14 +274,14 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			});
 		};
 
-//		Vertx.clusteredVertx(vertxOptions).onSuccess(vertx -> {
-//			runner.accept(vertx);
-//		}).onFailure(ex -> {
-//			LOG.error("Creating clustered Vertx failed. ", ex);
-//			ExceptionUtils.rethrow(ex);
-//		});
-		Vertx vertx = Vertx.vertx(vertxOptions);
-		runner.accept(vertx);
+		Vertx.clusteredVertx(vertxOptions).onSuccess(vertx -> {
+			runner.accept(vertx);
+		}).onFailure(ex -> {
+			LOG.error("Creating clustered Vertx failed. ", ex);
+			ExceptionUtils.rethrow(ex);
+		});
+//		Vertx vertx = Vertx.vertx(vertxOptions);
+//		runner.accept(vertx);
 	}
 
 	/**	
