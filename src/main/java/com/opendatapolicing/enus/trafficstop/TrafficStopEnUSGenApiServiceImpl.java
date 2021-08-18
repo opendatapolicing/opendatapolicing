@@ -939,7 +939,9 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			LocalDateTime time1 = LocalDateTime.now();
 			pgPool.withTransaction(sqlConnection -> {
 				LocalDateTime time2 = LocalDateTime.now();
-				LOG.info("PgPool withTransaction time in seconds: {}", time1.until(time2, ChronoUnit.MILLIS)/1000D);
+				Long diff = time1.until(time2, ChronoUnit.MILLIS);
+				if(diff > 1000L)
+					LOG.info("PgPool withTransaction time in seconds: {}", time1.until(time2, ChronoUnit.MILLIS)/1000D);
 				Promise<TrafficStop> promise1 = Promise.promise();
 				siteRequest.setSqlConnection(sqlConnection);
 				sqlPATCHTrafficStop(o, inheritPk).onSuccess(trafficStop -> {
@@ -2001,7 +2003,9 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				LocalDateTime time1 = LocalDateTime.now();
 				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					LocalDateTime time2 = LocalDateTime.now();
-					LOG.info("Solr POST time in seconds: {}", time1.until(time2, ChronoUnit.MILLIS)/1000D);
+					Long diff = time1.until(time2, ChronoUnit.MILLIS);
+					if(diff > 1000L)
+						LOG.info("Solr POST time in seconds: {}", time1.until(time2, ChronoUnit.MILLIS)/1000D);
 					promise.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("indexTrafficStop failed. "), new RuntimeException(ex));
