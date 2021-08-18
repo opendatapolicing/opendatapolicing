@@ -43,15 +43,6 @@ import com.opendatapolicing.enus.base.BaseModel;
  **/
 public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	protected static final Logger LOG = LoggerFactory.getLogger(WorkerVerticle.class);
-	public static final String configureDataConnectionError1 = "Could not open the database client connection. ";
-	public static final String configureDataConnectionError = configureDataConnectionError1;
-	public static final String configureDataConnectionSuccess1 = "The database client connection was successful. ";
-	public static final String configureDataConnectionSuccess = configureDataConnectionSuccess1;
-	public static final String configureDataInitError1 = "Could not initialize the database tables. ";
-	public static final String configureDataInitError = configureDataInitError1;
-	public static final String configureDataInitSuccess1 = "The database tables were created successfully. ";
-	public static final String configureDataInitSuccess = configureDataInitSuccess1;
-
 	public static final String configureSharedWorkerExecutorFail1 = "Could not configure the shared worker executor. ";
 	public static final String configureSharedWorkerExecutorFail = configureSharedWorkerExecutorFail1;
 	public static final String configureSharedWorkerExecutorComplete1 = "The shared worker executor \"{}\" was configured successfully. ";
@@ -113,24 +104,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String syncFtpHandleBodyPutImportFuture = syncFtpHandleBodyPutImportFuture1;
 	public static final String syncFtpHandleBodyWebSocket1 = "websocket%s";
 	public static final String syncFtpHandleBodyWebSocket = syncFtpHandleBodyWebSocket1;
-
-	public static final String syncDbToSolrComplete1 = "Syncing database to Solr completed. ";
-	public static final String syncDbToSolrComplete = syncDbToSolrComplete1;
-	public static final String syncDbToSolrFail1 = "Syncing database to Solr failed. ";
-	public static final String syncDbToSolrFail = syncDbToSolrFail1;
-	public static final String syncDbToSolrSkip1 = "Skip syncing database to Solr. ";
-	public static final String syncDbToSolrSkip = syncDbToSolrSkip1;
-
-	public static final String syncDbToSolrRecordComplete1 = "%s data sync completed. ";
-	public static final String syncDbToSolrRecordComplete = syncDbToSolrRecordComplete1;
-	public static final String syncDbToSolrRecordFail1 = "%s data sync failed. ";
-	public static final String syncDbToSolrRecordFail = syncDbToSolrRecordFail1;
-	public static final String syncDbToSolrRecordCounterResetFail1 = "%s data sync failed to reset counter. ";
-	public static final String syncDbToSolrRecordCounterResetFail = syncDbToSolrRecordCounterResetFail1;
-	public static final String syncDbToSolrRecordSkip1 = "%s data sync skipped. ";
-	public static final String syncDbToSolrRecordSkip = syncDbToSolrRecordSkip1;
-	public static final String syncDbToSolrRecordStarted1 = "%s data sync started. ";
-	public static final String syncDbToSolrRecordStarted = syncDbToSolrRecordStarted1;
 
 	public static final String refreshAllDataComplete1 = "Refresh all data completed. ";
 	public static final String refreshAllDataComplete = refreshAllDataComplete1;
@@ -376,6 +349,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] WorkerVerticleVals = new String[] { configureDataConnectionError1, configureDataConnectionSuccess1, configureDataInitError1, configureDataInitSuccess1, configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, importDataSkip1, syncFtpComplete1, syncFtpFail1, syncFtpSkip1, syncFtpRecordComplete1, syncFtpRecordFail1, syncFtpRecordCounterResetFail1, syncFtpRecordSkip1, syncFtpRecordStarted1, syncFtpHandleBodyEventBusName1, syncFtpHandleBodyContext1, syncFtpHandleBodyParams1, syncFtpHandleBodyBody1, syncFtpHandleBodyPath1, syncFtpHandleBodyCookie1, syncFtpHandleBodyQuery1, syncFtpHandleBodyVar1, syncFtpHandleBodyRefreshFalse1, syncFtpHandleBodyCommitWithin1, syncFtpHandleBodyAction1, syncFtpHandleBodyPutImportFuture1, syncFtpHandleBodyWebSocket1, syncDbToSolrComplete1, syncDbToSolrFail1, syncDbToSolrSkip1, syncDbToSolrRecordComplete1, syncDbToSolrRecordFail1, syncDbToSolrRecordCounterResetFail1, syncDbToSolrRecordSkip1, syncDbToSolrRecordStarted1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1, syncAgenciesComplete1, syncAgenciesFail1, syncAgenciesSkip1, syncAgenciesFacetsComplete1, syncAgenciesFacetsFail1, syncAgenciesFacetsSkip1 };
+	public static final String[] WorkerVerticleVals = new String[] { configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, importDataSkip1, syncFtpComplete1, syncFtpFail1, syncFtpSkip1, syncFtpRecordComplete1, syncFtpRecordFail1, syncFtpRecordCounterResetFail1, syncFtpRecordSkip1, syncFtpRecordStarted1, syncFtpHandleBodyEventBusName1, syncFtpHandleBodyContext1, syncFtpHandleBodyParams1, syncFtpHandleBodyBody1, syncFtpHandleBodyPath1, syncFtpHandleBodyCookie1, syncFtpHandleBodyQuery1, syncFtpHandleBodyVar1, syncFtpHandleBodyRefreshFalse1, syncFtpHandleBodyCommitWithin1, syncFtpHandleBodyAction1, syncFtpHandleBodyPutImportFuture1, syncFtpHandleBodyWebSocket1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1, syncAgenciesComplete1, syncAgenciesFail1, syncAgenciesSkip1, syncAgenciesFacetsComplete1, syncAgenciesFacetsFail1, syncAgenciesFacetsSkip1 };
 
 }
