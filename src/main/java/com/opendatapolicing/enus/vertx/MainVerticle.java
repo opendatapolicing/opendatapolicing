@@ -61,6 +61,7 @@ import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.CompositeFuture;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -97,7 +98,6 @@ import io.vertx.ext.web.handler.TemplateHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.openapi.RouterBuilder;
-import io.vertx.ext.web.sstore.ClusteredSessionStore;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import io.vertx.pgclient.PgConnectOptions;
@@ -118,14 +118,22 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 	private Integer workerPoolSize;
 
-	private Integer jdbcMaxPoolSize;
-
-	private Integer jdbcMaxWaitQueueSize;
+//	private Integer jdbcMaxPoolSize;
+//
+//	private Integer jdbcMaxWaitQueueSize;
 
 	/**
 	 * A io.vertx.ext.jdbc.JDBCClient for connecting to the relational database PostgreSQL. 
 	 **/
 	private PgPool pgPool;
+
+	public PgPool getPgPool() {
+		return pgPool;
+	}
+
+	public void setPgPool(PgPool pgPool) {
+		this.pgPool = pgPool;
+	}
 
 	private WebClient webClient;
 
@@ -243,31 +251,52 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		vertxOptions.setWorkerPoolSize(System.getenv(ConfigKeys.WORKER_POOL_SIZE) == null ? 5 : Integer.parseInt(System.getenv(ConfigKeys.WORKER_POOL_SIZE)));
 		Consumer<Vertx> runner = vertx -> {
 			configureConfig(vertx).onSuccess(config -> {
-				try {
-					List<Future> futures = new ArrayList<>();
+				configureData(vertx, config).onSuccess(pgPool -> {
+					try {
+						List<Future> futures = new ArrayList<>();
+	
+						DeploymentOptions deploymentOptions = new DeploymentOptions();
+//						deploymentOptions.setInstances(siteInstances);
+						deploymentOptions.setConfig(config);
+			
+						DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
+						mailVerticleDeploymentOptions.setConfig(config);
+						mailVerticleDeploymentOptions.setWorker(true);
+			
+						DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
+						workerVerticleDeploymentOptions.setConfig(config);
+						workerVerticleDeploymentOptions.setInstances(1);
+			
+						for(Integer i = 0; i < siteInstances; i++) {
+							MainVerticle mainVerticle = new MainVerticle();
+							mainVerticle.setPgPool(pgPool);
+							futures.add(vertx.deployVerticle(mainVerticle, deploymentOptions));
+						}
+						CompositeFuture.all(futures).onSuccess(a -> {
+							LOG.info("Started main verticle. ");
+							vertx.deployVerticle(WorkerVerticle.class, workerVerticleDeploymentOptions).onSuccess(b -> {
+								LOG.info("Started worker verticle. ");
+							}).onFailure(ex -> {
+								LOG.error("Failed to start worker verticle. ", ex);
+							});
+						}).onFailure(ex -> {
+							LOG.error("Failed to start main verticle. ", ex);
+						});
 
-					DeploymentOptions deploymentOptions = new DeploymentOptions();
-					deploymentOptions.setInstances(siteInstances);
-					deploymentOptions.setConfig(config);
-		
-					DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
-					mailVerticleDeploymentOptions.setConfig(config);
-					mailVerticleDeploymentOptions.setWorker(true);
-		
-					DeploymentOptions workerVerticleDeploymentOptions = new DeploymentOptions();
-					workerVerticleDeploymentOptions.setConfig(config);
-					workerVerticleDeploymentOptions.setInstances(1);
-		
-					vertx.deployVerticle(MainVerticle.class, deploymentOptions).onSuccess(a -> {
-						vertx.deployVerticle(WorkerVerticle.class, workerVerticleDeploymentOptions);
-						LOG.info("Started main verticle. ");
-					}).onFailure(ex -> {
-						LOG.error("Failed to start main verticle. ", ex);
-					});
-				} catch (Throwable ex) {
+//						vertx.deployVerticle(MainVerticle.class, deploymentOptions).onSuccess(a -> {
+//							vertx.deployVerticle(WorkerVerticle.class, workerVerticleDeploymentOptions);
+//							LOG.info("Started main verticle. ");
+//						}).onFailure(ex -> {
+//							LOG.error("Failed to start main verticle. ", ex);
+//						});
+					} catch (Throwable ex) {
+						LOG.error("Creating clustered Vertx failed. ", ex);
+						ExceptionUtils.rethrow(ex);
+					}
+				}).onFailure(ex -> {
 					LOG.error("Creating clustered Vertx failed. ", ex);
 					ExceptionUtils.rethrow(ex);
-				}
+				});
 			}).onFailure(ex -> {
 				LOG.error("Creating clustered Vertx failed. ", ex);
 				ExceptionUtils.rethrow(ex);
@@ -294,7 +323,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 		try {
 			Future<Void> promiseSteps = configureWebClient().compose(a ->
-				configureData().compose(b -> 
+//				configureData().compose(b -> 
 					configureOpenApi().compose(d -> 
 						configureHealthChecks().compose(e -> 
 							configureSharedWorkerExecutor().compose(f -> 
@@ -310,7 +339,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							)
 						)
 					)
-				)
+//				)
 			);
 			promiseSteps.onComplete(startPromise);
 		} catch (Exception ex) {
@@ -333,6 +362,50 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 		return promise.future();
 	}
+//
+//	/**	
+//	 * 
+//	 * Val.ConnectionError.enUS:Could not open the database client connection. 
+//	 * Val.ConnectionSuccess.enUS:The database client connection was successful. 
+//	 * 
+//	 * Val.InitError.enUS:Could not initialize the database tables. 
+//	 * Val.InitSuccess.enUS:The database tables were created successfully. 
+//	 * 
+//	 *	Configure shared database connections across the cluster for massive scaling of the application. 
+//	 *	Return a promise that configures a shared database client connection. 
+//	 *	Load the database configuration into a shared io.vertx.ext.jdbc.JDBCClient for a scalable, clustered datasource connection pool. 
+//	 *	Initialize the database tables if not already created for the first time. 
+//	 **/
+//	private Future<Void> configureData() {
+//		Promise<Void> promise = Promise.promise();
+//		try {
+//			PgConnectOptions pgOptions = new PgConnectOptions();
+//			pgOptions.setPort(config().getInteger(ConfigKeys.JDBC_PORT));
+//			pgOptions.setHost(config().getString(ConfigKeys.JDBC_HOST));
+//			pgOptions.setDatabase(config().getString(ConfigKeys.JDBC_DATABASE));
+//			pgOptions.setUser(config().getString(ConfigKeys.JDBC_USERNAME));
+//			pgOptions.setPassword(config().getString(ConfigKeys.JDBC_PASSWORD));
+//			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME)).ifPresent(idleTimeout -> pgOptions.setIdleTimeout(idleTimeout));
+//			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
+//			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT)).ifPresent(connectTimeout -> pgOptions.setConnectTimeout(connectTimeout));
+//
+//			PoolOptions poolOptions = new PoolOptions();
+//			jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE);
+//			jdbcMaxWaitQueueSize = config().getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE);
+//			poolOptions.setMaxSize(jdbcMaxPoolSize);
+//			poolOptions.setMaxWaitQueueSize(jdbcMaxWaitQueueSize);
+//
+//			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
+//
+//			LOG.info(configureDataInitSuccess);
+//			promise.complete();
+//		} catch (Exception ex) {
+//			LOG.error(configureDataInitError, ex);
+//			promise.fail(ex);
+//		}
+//
+//		return promise.future();
+//	}
 
 	/**	
 	 * 
@@ -347,29 +420,29 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	 *	Load the database configuration into a shared io.vertx.ext.jdbc.JDBCClient for a scalable, clustered datasource connection pool. 
 	 *	Initialize the database tables if not already created for the first time. 
 	 **/
-	private Future<Void> configureData() {
-		Promise<Void> promise = Promise.promise();
+	private static Future<PgPool> configureData(Vertx vertx, JsonObject config) {
+		Promise<PgPool> promise = Promise.promise();
 		try {
 			PgConnectOptions pgOptions = new PgConnectOptions();
-			pgOptions.setPort(config().getInteger(ConfigKeys.JDBC_PORT));
-			pgOptions.setHost(config().getString(ConfigKeys.JDBC_HOST));
-			pgOptions.setDatabase(config().getString(ConfigKeys.JDBC_DATABASE));
-			pgOptions.setUser(config().getString(ConfigKeys.JDBC_USERNAME));
-			pgOptions.setPassword(config().getString(ConfigKeys.JDBC_PASSWORD));
-			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME)).ifPresent(idleTimeout -> pgOptions.setIdleTimeout(idleTimeout));
+			pgOptions.setPort(config.getInteger(ConfigKeys.JDBC_PORT));
+			pgOptions.setHost(config.getString(ConfigKeys.JDBC_HOST));
+			pgOptions.setDatabase(config.getString(ConfigKeys.JDBC_DATABASE));
+			pgOptions.setUser(config.getString(ConfigKeys.JDBC_USERNAME));
+			pgOptions.setPassword(config.getString(ConfigKeys.JDBC_PASSWORD));
+			Optional.ofNullable(config.getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME)).ifPresent(idleTimeout -> pgOptions.setIdleTimeout(idleTimeout));
 			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT)).ifPresent(connectTimeout -> pgOptions.setConnectTimeout(connectTimeout));
+			Optional.ofNullable(config.getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT)).ifPresent(connectTimeout -> pgOptions.setConnectTimeout(connectTimeout));
 
 			PoolOptions poolOptions = new PoolOptions();
-			jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE);
-			jdbcMaxWaitQueueSize = config().getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE);
+			Integer jdbcMaxPoolSize = config.getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE);
+			Integer jdbcMaxWaitQueueSize = config.getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE);
 			poolOptions.setMaxSize(jdbcMaxPoolSize);
 			poolOptions.setMaxWaitQueueSize(jdbcMaxWaitQueueSize);
 
-			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
+			PgPool pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
 
 			LOG.info(configureDataInitSuccess);
-			promise.complete();
+			promise.complete(pgPool);
 		} catch (Exception ex) {
 			LOG.error(configureDataInitError, ex);
 			promise.fail(ex);
@@ -564,7 +637,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			healthCheckHandler.register("database", 2000, a -> {
 				pgPool.preparedQuery("select current_timestamp").execute(selectCAsync -> {
 					if(selectCAsync.succeeded()) {
-						a.complete(Status.OK(new JsonObject().put("jdbcMaxPoolSize", jdbcMaxPoolSize).put("jdbcMaxWaitQueueSize", jdbcMaxWaitQueueSize)));
+//						a.complete(Status.OK(new JsonObject().put("jdbcMaxPoolSize", jdbcMaxPoolSize).put("jdbcMaxWaitQueueSize", jdbcMaxWaitQueueSize)));
+						a.complete(Status.OK(new JsonObject()));
 					} else {
 						LOG.error(configureHealthChecksErrorDatabase, a.future().cause());
 						promise.fail(a.future().cause());
