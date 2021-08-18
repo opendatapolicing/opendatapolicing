@@ -800,6 +800,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		JsonObject body = syncFtpBody(tableName, stateAbbreviation, bufferedLine);
 		if(body != null) {
 			DeliveryOptions deliveryOptions = new DeliveryOptions();
+			deliveryOptions.addHeader(syncFtpHandleBodyAction, String.format(syncFtpHandleBodyPutImportFuture, tableName));
 			deliveryOptions.setSendTimeout(config().getInteger(ConfigKeys.VERTX_WORKER_SEND_TIMEOUT_MILLIS));
 			vertx.eventBus().request(
 					String.format(syncFtpHandleBodyEventBusName, tableName)
@@ -815,7 +816,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 											.put(syncFtpHandleBodyQuery, new JsonObject().put(syncFtpHandleBodyVar, new JsonArray().add(syncFtpHandleBodyRefreshFalse)).put(syncFtpHandleBodyCommitWithin, INT_COMMIT_WITHIN))
 							)
 					)
-					, new DeliveryOptions().addHeader(syncFtpHandleBodyAction, String.format(syncFtpHandleBodyPutImportFuture, tableName))).onSuccess(a -> {
+					, deliveryOptions).onSuccess(a -> {
 				apiCounter.incrementTotalNum();
 				apiCounter.decrementQueueNum();
 				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
