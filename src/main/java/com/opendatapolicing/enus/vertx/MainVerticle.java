@@ -356,9 +356,9 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			pgOptions.setDatabase(config().getString(ConfigKeys.JDBC_DATABASE));
 			pgOptions.setUser(config().getString(ConfigKeys.JDBC_USERNAME));
 			pgOptions.setPassword(config().getString(ConfigKeys.JDBC_PASSWORD));
-			pgOptions.setIdleTimeout(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME));
+			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME)).ifPresent(idleTimeout -> pgOptions.setIdleTimeout(idleTimeout));
 			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-			pgOptions.setConnectTimeout(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT));
+			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT)).ifPresent(connectTimeout -> pgOptions.setConnectTimeout(connectTimeout));
 
 			PoolOptions poolOptions = new PoolOptions();
 			jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE);
