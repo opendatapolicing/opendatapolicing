@@ -819,13 +819,14 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					, deliveryOptions).onSuccess(a -> {
 				apiCounter.incrementTotalNum();
 				apiCounter.decrementQueueNum();
-				recordParser.fetch(1);
 				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
 					LOG.info("FETCH Success");
 					recordParser.fetch(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
+				} else if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
+					recordParser.fetch(1);
 				}
 				promise.complete();
 			}).onFailure(ex -> {
@@ -838,6 +839,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
+				} else if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
+					recordParser.fetch(1);
 				}
 				promise.complete();
 			});
