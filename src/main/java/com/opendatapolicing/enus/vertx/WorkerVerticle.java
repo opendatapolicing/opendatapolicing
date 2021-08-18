@@ -283,7 +283,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 										params.put("cookie", new JsonObject());
 										params.put("header", new JsonObject());
 										params.put("form", new JsonObject());
-										params.put("query", new JsonObject().put("commitWithin", INT_COMMIT_WITHIN));
+										params.put("query", new JsonObject().put("commitWithin", SOLR_COMMIT_WITHIN));
 										JsonObject context = new JsonObject().put("params", params).put("user", token);
 										JsonObject json = new JsonObject().put("context", context);
 										vertx.eventBus().request("opendatapolicing-enUS-SiteState", json, new DeliveryOptions().addHeader("action", "putimportSiteStateFuture")).onSuccess(a -> {
@@ -1176,6 +1176,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * @param state 
 	 **/  
 	private Future<Void> syncAgenciesFacets(SiteState state, SearchList<TrafficStop> stopSearch1, Integer facetOffset) {
+		Integer commitWithin = config().getInteger(ConfigKeys.SOLR_WORKER_COMMIT_WITHIN_MILLIS);
 		Promise<Void> promise = Promise.promise();
 		try {
 			FacetField agencyTitleFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
@@ -1279,7 +1280,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 								params.put("body", body);
 								params.put("path", new JsonObject());
 								params.put("cookie", new JsonObject());
-								params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")).put("commitWithin", INT_COMMIT_WITHIN));
+								params.put("query", new JsonObject().put("q", "*:*").put("var", new JsonArray().add("refresh:false")).put("commitWithin", commitWithin));
 								JsonObject context = new JsonObject().put("params", params);
 								JsonObject json = new JsonObject().put("context", context);
 								vertx.eventBus().request(String.format("opendatapolicing-enUS-%s", "SiteAgency"), json, new DeliveryOptions().addHeader("action", String.format("putimport%sFuture", "SiteAgency"))).onSuccess(a -> {

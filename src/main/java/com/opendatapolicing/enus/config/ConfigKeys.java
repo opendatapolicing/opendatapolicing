@@ -489,4 +489,9 @@ public class ConfigKeys {
 	 * 
 	 **/
 	public static final String ACS_API_KEY = "ACS_API_KEY";
+
+	/**
+	 * 
+	 **/
+	public static final String SOLR_WORKER_COMMIT_WITHIN_MILLIS = "SOLR_WORKER_COMMIT_WITHIN_MILLIS";
 }
