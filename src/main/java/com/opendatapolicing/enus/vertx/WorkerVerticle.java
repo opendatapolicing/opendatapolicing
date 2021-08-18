@@ -799,6 +799,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		apiCounter.incrementQueueNum();
 		JsonObject body = syncFtpBody(tableName, stateAbbreviation, bufferedLine);
 		if(body != null) {
+			DeliveryOptions deliveryOptions = new DeliveryOptions();
+			deliveryOptions.setSendTimeout(config().getInteger(ConfigKeys.VERTX_WORKER_SEND_TIMEOUT_MILLIS));
 			vertx.eventBus().request(
 					String.format(syncFtpHandleBodyEventBusName, tableName)
 					, new JsonObject().put(
