@@ -819,7 +819,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					, deliveryOptions).onSuccess(a -> {
 				apiCounter.incrementTotalNum();
 				apiCounter.decrementQueueNum();
-				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
+				if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
 					LOG.info("FETCH Success");
 					recordParser.fetch(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
@@ -830,7 +830,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			}).onFailure(ex -> {
 				apiCounter.incrementTotalNum();
 				apiCounter.decrementQueueNum();
-				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
+				if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
 					LOG.info("FETCH Failure");
 					recordParser.fetch(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
@@ -965,7 +965,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 //														, new DeliveryOptions().addHeader("action", String.format("patch%sFuture", tableName))).onSuccess(a -> {
 //													apiCounter.incrementTotalNum();
 //													apiCounter.decrementQueueNum();
-//													if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
+//													if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
 //														stream.fetch(apiCounterFetch);
 //														apiRequest.setNumPATCH(apiCounter.getTotalNum());
 //														apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
