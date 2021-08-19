@@ -694,22 +694,22 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							.add(TrafficStop.VAR_stopLocationId)
 							.add(TrafficStop.VAR_stopCityId)
 							)
-					.put(TrafficStop.VAR_pk, values[INT_0])
-					.put(TrafficStop.VAR_agencyTitle, values[INT_1])
+					.put(TrafficStop.VAR_pk, values.length > INT_0 ? values[INT_0] : null)
+					.put(TrafficStop.VAR_agencyTitle, values.length > INT_1 ? values[INT_1] : null)
 					.put(TrafficStop.VAR_stateAbbreviation, stateAbbreviation)
-					.put(TrafficStop.VAR_stopDateTime, values[INT_2])
-					.put(TrafficStop.VAR_stopPurposeNum, values[INT_3])
-					.put(TrafficStop.VAR_stopActionNum, values[INT_4])
-					.put(TrafficStop.VAR_stopDriverArrest, BooleanUtils.toBoolean(values[INT_5], STR_1, STR_0))
-					.put(TrafficStop.VAR_stopPassengerArrest, BooleanUtils.toBoolean(values[INT_6], STR_1, STR_0))
-					.put(TrafficStop.VAR_stopEncounterForce, BooleanUtils.toBoolean(values[INT_7], STR_1, STR_0))
-					.put(TrafficStop.VAR_stopEngageForce, BooleanUtils.toBoolean(values[INT_8], STR_1, STR_0))
-					.put(TrafficStop.VAR_stopOfficerInjury, BooleanUtils.toBoolean(values[INT_9], STR_1, STR_0))
-					.put(TrafficStop.VAR_stopDriverInjury, BooleanUtils.toBoolean(values[INT_10], STR_1, STR_0))
-					.put(TrafficStop.VAR_stopPassengerInjury, BooleanUtils.toBoolean(values[INT_11], STR_1, STR_0))
-					.put(TrafficStop.VAR_stopOfficerId, values[INT_12])
-					.put(TrafficStop.VAR_stopLocationId, values[INT_13])
-					.put(TrafficStop.VAR_stopCityId, values[INT_14])
+					.put(TrafficStop.VAR_stopDateTime, values.length > INT_2 ? values[INT_2] : null)
+					.put(TrafficStop.VAR_stopPurposeNum, values.length > INT_3 ? values[INT_3] : null)
+					.put(TrafficStop.VAR_stopActionNum, values.length > INT_4 ? values[INT_4] : null)
+					.put(TrafficStop.VAR_stopDriverArrest, BooleanUtils.toBoolean(values.length > INT_5 ? values[INT_5] : null, STR_1, STR_0))
+					.put(TrafficStop.VAR_stopPassengerArrest, BooleanUtils.toBoolean(values.length > INT_6 ? values[INT_6] : null, STR_1, STR_0))
+					.put(TrafficStop.VAR_stopEncounterForce, BooleanUtils.toBoolean(values.length > INT_7 ? values[INT_7] : null, STR_1, STR_0))
+					.put(TrafficStop.VAR_stopEngageForce, BooleanUtils.toBoolean(values.length > INT_8 ? values[INT_8] : null, STR_1, STR_0))
+					.put(TrafficStop.VAR_stopOfficerInjury, BooleanUtils.toBoolean(values.length > INT_9 ? values[INT_9] : null, STR_1, STR_0))
+					.put(TrafficStop.VAR_stopDriverInjury, BooleanUtils.toBoolean(values.length > INT_10 ? values[INT_10] : null, STR_1, STR_0))
+					.put(TrafficStop.VAR_stopPassengerInjury, BooleanUtils.toBoolean(values.length > INT_11 ? values[INT_11] : null, STR_1, STR_0))
+					.put(TrafficStop.VAR_stopOfficerId, values.length > INT_12 ? values[INT_12] : null)
+					.put(TrafficStop.VAR_stopLocationId, values.length > INT_13 ? values[INT_13] : null)
+					.put(TrafficStop.VAR_stopCityId, values.length > INT_14 ? values[INT_14] : null)
 					;
 		} else if(values.length >= INT_7 && STR_TrafficPerson.equals(tableName)) {
 			return new JsonObject()
@@ -722,13 +722,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							.add(TrafficPerson.VAR_personEthnicityId)
 							.add(TrafficPerson.VAR_personRaceId)
 							)
-					.put(TrafficPerson.VAR_pk, values[INT_0])
-					.put(TrafficPerson.VAR_stopId, values[INT_1])
-					.put(TrafficPerson.VAR_personTypeId, values[INT_2])
-					.put(TrafficPerson.VAR_personAge, values[INT_3])
-					.put(TrafficPerson.VAR_personGenderId, values[INT_4])
-					.put(TrafficPerson.VAR_personEthnicityId, values[INT_5])
-					.put(TrafficPerson.VAR_personRaceId, values[INT_6])
+					.put(TrafficPerson.VAR_pk, values.length > INT_0 ? values[INT_0] : null)
+					.put(TrafficPerson.VAR_stopId, values.length > INT_1 ? values[INT_1] : null)
+					.put(TrafficPerson.VAR_personTypeId, values.length > INT_2 ? values[INT_2] : null)
+					.put(TrafficPerson.VAR_personAge, values.length > INT_3 ? values[INT_3] : null)
+					.put(TrafficPerson.VAR_personGenderId, values.length > INT_4 ? values[INT_4] : null)
+					.put(TrafficPerson.VAR_personEthnicityId, values.length > INT_5 ? values[INT_5] : null)
+					.put(TrafficPerson.VAR_personRaceId, values.length > INT_6 ? values[INT_6] : null)
 					;
 		} else if(values.length >= INT_11 && STR_TrafficSearch.equals(tableName)) {
 			return new JsonObject()
@@ -744,16 +744,16 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							.add(TrafficSearch.VAR_searchPersonalPropertySiezed)
 							.add(TrafficSearch.VAR_searchOtherPropertySiezed)
 							)
-					.put(TrafficSearch.VAR_pk, values[INT_0])
-					.put(TrafficSearch.VAR_personId, values[INT_1])
-					.put(TrafficSearch.VAR_searchTypeNum, values[INT_3])
-					.put(TrafficSearch.VAR_searchVehicle, values[INT_4])
-					.put(TrafficSearch.VAR_searchDriver, values[INT_5])
-					.put(TrafficSearch.VAR_searchPassenger, values[INT_6])
-					.put(TrafficSearch.VAR_searchProperty, values[INT_7])
-					.put(TrafficSearch.VAR_searchVehicleSiezed, values[INT_8])
-					.put(TrafficSearch.VAR_searchPersonalPropertySiezed, values[INT_9])
-					.put(TrafficSearch.VAR_searchOtherPropertySiezed, values[INT_10])
+					.put(TrafficSearch.VAR_pk, values.length > INT_0 ? values[INT_0] : null)
+					.put(TrafficSearch.VAR_personId, values.length > INT_1 ? values[INT_1] : null)
+					.put(TrafficSearch.VAR_searchTypeNum, values.length > INT_3 ? values[INT_3] : null)
+					.put(TrafficSearch.VAR_searchVehicle, values.length > INT_4 ? values[INT_4] : null)
+					.put(TrafficSearch.VAR_searchDriver, values.length > INT_5 ? values[INT_5] : null)
+					.put(TrafficSearch.VAR_searchPassenger, values.length > INT_6 ? values[INT_6] : null)
+					.put(TrafficSearch.VAR_searchProperty, values.length > INT_7 ? values[INT_7] : null)
+					.put(TrafficSearch.VAR_searchVehicleSiezed, values.length > INT_8 ? values[INT_8] : null)
+					.put(TrafficSearch.VAR_searchPersonalPropertySiezed, values.length > INT_9 ? values[INT_9] : null)
+					.put(TrafficSearch.VAR_searchOtherPropertySiezed, values.length > INT_10 ? values[INT_10] : null)
 					;
 		} else if(values.length >= INT_14 && STR_TrafficContraband.equals(tableName)) {
 			return new JsonObject()
@@ -771,18 +771,18 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							.add(TrafficContraband.VAR_contrabandWeapons)
 							.add(TrafficContraband.VAR_contrabandDollarAmount)
 							)
-					.put(TrafficContraband.VAR_pk, values[INT_0])
-					.put(TrafficContraband.VAR_searchId, values[INT_1])
-					.put(TrafficContraband.VAR_contrabandOunces, values[INT_4])
-					.put(TrafficContraband.VAR_contrabandPounds, values[INT_5])
-					.put(TrafficContraband.VAR_contrabandPints, values[INT_6])
-					.put(TrafficContraband.VAR_contrabandGallons, values[INT_7])
-					.put(TrafficContraband.VAR_contrabandDosages, values[INT_8])
-					.put(TrafficContraband.VAR_contrabandGrams, values[INT_9])
-					.put(TrafficContraband.VAR_contrabandKilos, values[INT_10])
-					.put(TrafficContraband.VAR_contrabandMoney, values[INT_11])
-					.put(TrafficContraband.VAR_contrabandWeapons, values[INT_12])
-					.put(TrafficContraband.VAR_contrabandDollarAmount, values[INT_13])
+					.put(TrafficContraband.VAR_pk, values.length > INT_0 ? values[INT_0] : null)
+					.put(TrafficContraband.VAR_searchId, values.length > INT_1 ? values[INT_1] : null)
+					.put(TrafficContraband.VAR_contrabandOunces, values.length > INT_4 ? values[INT_4] : null)
+					.put(TrafficContraband.VAR_contrabandPounds, values.length > INT_5 ? values[INT_5] : null)
+					.put(TrafficContraband.VAR_contrabandPints, values.length > INT_6 ? values[INT_6] : null)
+					.put(TrafficContraband.VAR_contrabandGallons, values.length > INT_7 ? values[INT_7] : null)
+					.put(TrafficContraband.VAR_contrabandDosages, values.length > INT_8 ? values[INT_8] : null)
+					.put(TrafficContraband.VAR_contrabandGrams, values.length > INT_9 ? values[INT_9] : null)
+					.put(TrafficContraband.VAR_contrabandKilos, values.length > INT_10 ? values[INT_10] : null)
+					.put(TrafficContraband.VAR_contrabandMoney, values.length > INT_11 ? values[INT_11] : null)
+					.put(TrafficContraband.VAR_contrabandWeapons, values.length > INT_12 ? values[INT_12] : null)
+					.put(TrafficContraband.VAR_contrabandDollarAmount, values.length > INT_13 ? values[INT_13] : null)
 					;
 		} else if(values.length >= INT_5 && STR_SearchBasis.equals(tableName)) {
 			return new JsonObject()
@@ -791,9 +791,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							.add(SearchBasis.VAR_searchId)
 							.add(SearchBasis.VAR_searchBasisId)
 							)
-					.put(SearchBasis.VAR_pk, values[INT_0])
-					.put(SearchBasis.VAR_searchId, values[INT_1])
-					.put(SearchBasis.VAR_searchBasisId, values[INT_4])
+					.put(SearchBasis.VAR_pk, values.length > INT_0 ? values[INT_0] : null)
+					.put(SearchBasis.VAR_searchId, values.length > INT_1 ? values[INT_1] : null)
+					.put(SearchBasis.VAR_searchBasisId, values.length > INT_4 ? values[INT_4] : null)
 					;
 		} else {
 			return null;
@@ -838,8 +838,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					)
 					, deliveryOptions).onSuccess(a -> {
 				apiCounter.incrementQueueNum();
-				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
 					LOG.info("{} {} {} {} {}", apiCounter.getTotalNum(), apiCounter.getQueueNum(), apiCounterResume, apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO, apiCounter.getTotalNum() - apiCounter.getQueueNum());
+				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
 					recordParser.fetch(apiCounterFetch);
 					apiCounter.incrementTotalNum(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
@@ -860,6 +860,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				promise.complete();
 			});
 		} else {
+			apiCounter.incrementQueueNum();
 			promise.complete();
 		}
 		return promise.future();
