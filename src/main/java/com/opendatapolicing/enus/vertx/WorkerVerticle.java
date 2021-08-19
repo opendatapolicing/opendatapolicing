@@ -598,13 +598,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				});
 				recordParser.pause();
 
-//				Long periodicId = vertx.setPeriodic(1, periodicHandler -> {
-//					if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
-//						LOG.info("FETCH FROM PERIODIC TIMER");
-//						recordParser.fetch(apiCounterFetch);
-//						apiCounter.incrementTotalNum(apiCounterFetch);
-//					}
-//				});
+				Long periodicId = vertx.setPeriodic(1, periodicHandler -> {
+					if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
+						LOG.info("FETCH FROM PERIODIC TIMER");
+						recordParser.fetch(apiCounterFetch);
+						apiCounter.incrementTotalNum(apiCounterFetch);
+					}
+				});
 
 				recordParser.handler(bufferedLine -> {
 					try {
@@ -623,7 +623,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				}).endHandler(w -> {
 					stream.flush();
 					stream.close();
-//					vertx.cancelTimer(periodicId);
+					vertx.cancelTimer(periodicId);
 
 					LOG.info(String.format(syncFtpRecordComplete, tableName));
 					promise.complete();
@@ -837,9 +837,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					, deliveryOptions).onSuccess(a -> {
 				apiCounter.incrementQueueNum();
 				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
-					LOG.info("FETCH Success");
-					recordParser.fetch(apiCounterFetch);
 					apiCounter.incrementTotalNum(apiCounterFetch);
+					recordParser.fetch(apiCounterFetch);
+					LOG.info("FETCH Success");
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
@@ -848,9 +848,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			}).onFailure(ex -> {
 				apiCounter.incrementQueueNum();
 				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
-					LOG.info("FETCH Failure");
-					recordParser.fetch(apiCounterFetch);
 					apiCounter.incrementTotalNum(apiCounterFetch);
+					recordParser.fetch(apiCounterFetch);
+					LOG.info("FETCH Failure");
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
