@@ -838,7 +838,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					)
 					, deliveryOptions).onSuccess(a -> {
 				apiCounter.incrementQueueNum();
-					LOG.info("{} {} {} {} {}", apiCounter.getTotalNum(), apiCounter.getQueueNum(), apiCounterResume, apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO, apiCounter.getTotalNum() - apiCounter.getQueueNum());
+//					LOG.info("{} {} {} {} {}", apiCounter.getTotalNum(), apiCounter.getQueueNum(), apiCounterResume, apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO, apiCounter.getTotalNum() - apiCounter.getQueueNum());
 				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
 					recordParser.fetch(apiCounterFetch);
 					apiCounter.incrementTotalNum(apiCounterFetch);
