@@ -339,11 +339,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * Val.Complete.enUS:Syncing FTP files completed. 
 	 * Val.Fail.enUS:Syncing FTP files failed. 
 	 * Val.Skip.enUS:Skip syncing FTP files. 
+	 * Val.Started.enUS:Started syncing FTP files. 
 	 **/
 	private Future<Void> syncFtp() {
 		Promise<Void> promise = Promise.promise();
 		String stateAbbreviation = "NC";
 		if(config().getBoolean(ConfigKeys.ENABLE_FTP_SYNC, false)) {
+			LOG.info(syncFtpStarted);
 			Long millis = 1000L * config().getInteger(ConfigKeys.TIMER_FTP_SYNC_IN_SECONDS, 10);
 			vertx.setTimer(millis, a -> {
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
@@ -354,8 +356,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 									syncFtpRecord("SearchBasis", stateAbbreviation).onSuccess(f -> {
 										syncFtpRecord("TrafficContraband", stateAbbreviation).onSuccess(g -> {
 											syncAgencies().onSuccess(h -> {
-												LOG.info(syncFtpComplete);
-												promise.complete();
+												syncFtpRecord("TrafficStop", stateAbbreviation).onSuccess(i -> {
+													LOG.info(syncFtpComplete);
+													promise.complete();
+												}).onFailure(ex -> {
+													LOG.error(syncFtpFail, ex);
+													promise.fail(ex);
+												});
 											}).onFailure(ex -> {
 												LOG.error(syncFtpFail, ex);
 												promise.fail(ex);
@@ -488,6 +495,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			if(config().getBoolean(String.format("%s_%s", ConfigKeys.ENABLE_FTP_SYNC, tableName), true)) {
+				LOG.info(String.format(syncFtpRecordStarted, tableName));
 				syncFtpRecordCount(tableName, stateAbbreviation).onSuccess(apiRequest -> {
 					syncFtpRecordData(tableName, stateAbbreviation, apiRequest).onSuccess(b -> {
 						promise.complete();
@@ -574,7 +582,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		try {
 			String path = config().getString(String.format("%s_%s", ConfigKeys.FTP_SYNC_PATH, tableName));
 			Long apiCounterResume = config().getLong(ConfigKeys.API_COUNTER_RESUME);
-			Integer apiCounterFetch = config().getInteger(ConfigKeys.API_COUNTER_FETCH);
+			Long apiCounterFetch = config().getLong(ConfigKeys.API_COUNTER_FETCH);
 
 			ApiCounter apiCounter = new ApiCounter();
 			apiCounter.setTotalNum(LONG_ZERO);
@@ -589,6 +597,15 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					recordParser.maxRecordSize(ftpMaxRecordSize);
 				});
 				recordParser.pause();
+
+//				Long periodicId = vertx.setPeriodic(1, periodicHandler -> {
+//					if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
+//						LOG.info("FETCH FROM PERIODIC TIMER");
+//						recordParser.fetch(apiCounterFetch);
+//						apiCounter.incrementTotalNum(apiCounterFetch);
+//					}
+//				});
+
 				recordParser.handler(bufferedLine -> {
 					try {
 						syncFtpHandleBody(tableName, stateAbbreviation, bufferedLine, apiRequest, recordParser, apiCounter, apiCounterResume, apiCounterFetch).onSuccess(a -> {
@@ -606,11 +623,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				}).endHandler(w -> {
 					stream.flush();
 					stream.close();
+//					vertx.cancelTimer(periodicId);
 
 					LOG.info(String.format(syncFtpRecordComplete, tableName));
 					promise.complete();
 				});
 				recordParser.fetch(apiCounterFetch);
+				apiCounter.incrementTotalNum(apiCounterFetch);
 			}).onFailure(ex -> {
 				LOG.error(String.format(syncFtpRecordFail, tableName), ex);
 				promise.fail(ex);
@@ -794,9 +813,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 	 * Val.PutImportFuture.enUS:putimport%sFuture
 	 * Val.WebSocket.enUS:websocket%s
 	 */
-	private Future<Void> syncFtpHandleBody(String tableName, String stateAbbreviation, Buffer bufferedLine, ApiRequest apiRequest, RecordParser recordParser, ApiCounter apiCounter, Long apiCounterResume, Integer apiCounterFetch) {
+	private Future<Void> syncFtpHandleBody(String tableName, String stateAbbreviation, Buffer bufferedLine, ApiRequest apiRequest, RecordParser recordParser, ApiCounter apiCounter, Long apiCounterResume, Long apiCounterFetch) {
 		Promise<Void> promise = Promise.promise();
-		apiCounter.incrementQueueNum();
 		JsonObject body = syncFtpBody(tableName, stateAbbreviation, bufferedLine);
 		if(body != null) {
 			DeliveryOptions deliveryOptions = new DeliveryOptions();
@@ -817,30 +835,25 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 							)
 					)
 					, deliveryOptions).onSuccess(a -> {
-				apiCounter.incrementTotalNum();
-				apiCounter.decrementQueueNum();
-				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
+				apiCounter.incrementQueueNum();
+				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
 					LOG.info("FETCH Success");
 					recordParser.fetch(apiCounterFetch);
+					apiCounter.incrementTotalNum(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
-				} else if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
-					recordParser.fetch(1);
 				}
 				promise.complete();
 			}).onFailure(ex -> {
-				apiCounter.incrementTotalNum();
-				apiCounter.decrementQueueNum();
-				recordParser.fetch(1);
-				if(apiCounter.getQueueNum().compareTo(apiCounterResume) == INT_ZERO) {
+				apiCounter.incrementQueueNum();
+				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
 					LOG.info("FETCH Failure");
 					recordParser.fetch(apiCounterFetch);
+					apiCounter.incrementTotalNum(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
-				} else if(apiCounter.getQueueNum().compareTo(apiCounterResume) <= INT_ZERO) {
-					recordParser.fetch(1);
 				}
 				promise.complete();
 			});

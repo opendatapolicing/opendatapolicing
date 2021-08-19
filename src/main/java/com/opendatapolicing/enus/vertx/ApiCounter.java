@@ -16,6 +16,10 @@ public class ApiCounter {
 		return totalNum;
 	}
 
+	public void incrementTotalNum(Long num) {
+		this.totalNum+=num;
+	}
+
 	public void incrementTotalNum() {
 		this.totalNum++;
 	}
@@ -28,6 +32,10 @@ public class ApiCounter {
 
 	public Long getQueueNum() {
 		return queueNum;
+	}
+
+	public void incrementQueueNum(Long num) {
+		this.queueNum+=num;
 	}
 
 	public void incrementQueueNum() {

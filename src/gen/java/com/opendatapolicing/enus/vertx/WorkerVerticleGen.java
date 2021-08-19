@@ -66,6 +66,8 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 	public static final String syncFtpFail = syncFtpFail1;
 	public static final String syncFtpSkip1 = "Skip syncing FTP files. ";
 	public static final String syncFtpSkip = syncFtpSkip1;
+	public static final String syncFtpStarted1 = "Started syncing FTP files. ";
+	public static final String syncFtpStarted = syncFtpStarted1;
 
 	public static final String syncFtpRecordComplete1 = "%s FTP sync completed. ";
 	public static final String syncFtpRecordComplete = syncFtpRecordComplete1;
@@ -349,6 +351,6 @@ public abstract class WorkerVerticleGen<DEV> extends AbstractVerticle {
 		return sb.toString();
 	}
 
-	public static final String[] WorkerVerticleVals = new String[] { configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, importDataSkip1, syncFtpComplete1, syncFtpFail1, syncFtpSkip1, syncFtpRecordComplete1, syncFtpRecordFail1, syncFtpRecordCounterResetFail1, syncFtpRecordSkip1, syncFtpRecordStarted1, syncFtpHandleBodyEventBusName1, syncFtpHandleBodyContext1, syncFtpHandleBodyParams1, syncFtpHandleBodyBody1, syncFtpHandleBodyPath1, syncFtpHandleBodyCookie1, syncFtpHandleBodyQuery1, syncFtpHandleBodyVar1, syncFtpHandleBodyRefreshFalse1, syncFtpHandleBodyCommitWithin1, syncFtpHandleBodyAction1, syncFtpHandleBodyPutImportFuture1, syncFtpHandleBodyWebSocket1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1, syncAgenciesComplete1, syncAgenciesFail1, syncAgenciesSkip1, syncAgenciesFacetsComplete1, syncAgenciesFacetsFail1, syncAgenciesFacetsSkip1 };
+	public static final String[] WorkerVerticleVals = new String[] { configureSharedWorkerExecutorFail1, configureSharedWorkerExecutorComplete1, configureEmailComplete1, configureEmailFail1, importDataComplete1, importDataFail1, importDataSkip1, syncFtpComplete1, syncFtpFail1, syncFtpSkip1, syncFtpStarted1, syncFtpRecordComplete1, syncFtpRecordFail1, syncFtpRecordCounterResetFail1, syncFtpRecordSkip1, syncFtpRecordStarted1, syncFtpHandleBodyEventBusName1, syncFtpHandleBodyContext1, syncFtpHandleBodyParams1, syncFtpHandleBodyBody1, syncFtpHandleBodyPath1, syncFtpHandleBodyCookie1, syncFtpHandleBodyQuery1, syncFtpHandleBodyVar1, syncFtpHandleBodyRefreshFalse1, syncFtpHandleBodyCommitWithin1, syncFtpHandleBodyAction1, syncFtpHandleBodyPutImportFuture1, syncFtpHandleBodyWebSocket1, refreshAllDataComplete1, refreshAllDataFail1, refreshAllDataSkip1, refreshDataComplete1, refreshDataFail1, refreshDataSkip1, syncAgenciesComplete1, syncAgenciesFail1, syncAgenciesSkip1, syncAgenciesFacetsComplete1, syncAgenciesFacetsFail1, syncAgenciesFacetsSkip1 };
 
 }
