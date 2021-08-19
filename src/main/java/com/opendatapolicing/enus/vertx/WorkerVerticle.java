@@ -600,8 +600,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				Long periodicId = vertx.setPeriodic(config().getLong(ConfigKeys.API_CHECK_TIMER_MILLIS), periodicHandler -> {
 					if(apiCounter.getTotalNum().equals(apiCounter.getTotalNumOld())) {
 						LOG.info("FETCH FROM PERIODIC TIMER");
-						apiCounter.setTotalNum(apiCounter.getQueueNum() + apiCounterFetch);
+						apiCounter.setTotalNum(apiCounter.getQueueNum());
 						recordParser.fetch(apiCounterFetch);
+						apiCounter.incrementTotalNum(apiCounterFetch);
 					}
 					apiCounter.setQueueNumOld(apiCounter.getQueueNum());
 					apiCounter.setTotalNumOld(apiCounter.getTotalNum());
@@ -839,8 +840,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				apiCounter.incrementQueueNum();
 				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
 					LOG.info("{} {} {} {} {}", apiCounter.getTotalNum(), apiCounter.getQueueNum(), apiCounterResume, apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO, apiCounter.getTotalNum() - apiCounter.getQueueNum());
-					apiCounter.incrementTotalNum(apiCounterFetch);
 					recordParser.fetch(apiCounterFetch);
+					apiCounter.incrementTotalNum(apiCounterFetch);
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
@@ -849,8 +850,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 			}).onFailure(ex -> {
 				apiCounter.incrementQueueNum();
 				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
-					apiCounter.incrementTotalNum(apiCounterFetch);
 					recordParser.fetch(apiCounterFetch);
+					apiCounter.incrementTotalNum(apiCounterFetch);
 					LOG.info("FETCH Failure");
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
