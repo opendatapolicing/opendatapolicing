@@ -495,7 +495,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		Promise<Void> promise = Promise.promise();
 		try {
 			if(config().getBoolean(String.format("%s_%s", ConfigKeys.ENABLE_FTP_SYNC, tableName), true)) {
-				LOG.info(String.format(syncFtpRecordStarted, tableName));
 				syncFtpRecordCount(tableName, stateAbbreviation).onSuccess(apiRequest -> {
 					syncFtpRecordData(tableName, stateAbbreviation, apiRequest).onSuccess(b -> {
 						promise.complete();
@@ -598,7 +597,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				});
 				recordParser.pause();
 
-				Long periodicId = vertx.setPeriodic(10, periodicHandler -> {
+				Long periodicId = vertx.setPeriodic(config().getLong(ConfigKeys.API_CHECK_TIMER_MILLIS), periodicHandler -> {
 					if(apiCounter.getTotalNum().equals(apiCounter.getTotalNumOld())) {
 						LOG.info("FETCH FROM PERIODIC TIMER");
 						recordParser.fetch(apiCounterFetch);

@@ -98,6 +98,11 @@ public class ConfigKeys {
 	/**
 	 * 
 	 **/
+	public static final String API_CHECK_TIMER_MILLIS = "API_CHECK_TIMER_MILLIS";
+
+	/**
+	 * 
+	 **/
 	public static final String AUTH_REALM = "AUTH_REALM";
 
 	/**
