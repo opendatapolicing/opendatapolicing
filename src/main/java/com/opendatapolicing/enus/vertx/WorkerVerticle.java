@@ -599,7 +599,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				recordParser.pause();
 
 				Long periodicId = vertx.setPeriodic(10, periodicHandler -> {
-					if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO || apiCounter.getTotalNum().equals(apiCounter.getTotalNumOld())) {
+					if(apiCounter.getTotalNum().equals(apiCounter.getTotalNumOld())) {
 						LOG.info("FETCH FROM PERIODIC TIMER");
 						recordParser.fetch(apiCounterFetch);
 						apiCounter.incrementTotalNum(apiCounterFetch);
