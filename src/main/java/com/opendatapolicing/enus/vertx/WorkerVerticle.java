@@ -598,12 +598,14 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				});
 				recordParser.pause();
 
-				Long periodicId = vertx.setPeriodic(1, periodicHandler -> {
-					if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
+				Long periodicId = vertx.setPeriodic(10, periodicHandler -> {
+					if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO || apiCounter.getTotalNum().equals(apiCounter.getTotalNumOld())) {
 						LOG.info("FETCH FROM PERIODIC TIMER");
 						recordParser.fetch(apiCounterFetch);
 						apiCounter.incrementTotalNum(apiCounterFetch);
 					}
+					apiCounter.setQueueNumOld(apiCounter.getQueueNum());
+					apiCounter.setTotalNumOld(apiCounter.getTotalNum());
 				});
 
 				recordParser.handler(bufferedLine -> {

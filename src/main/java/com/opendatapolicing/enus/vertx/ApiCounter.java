@@ -49,4 +49,29 @@ public class ApiCounter {
 	public void setQueueNum(Long countNum) {
 		this.queueNum = countNum;
 	}
+
+
+
+
+
+
+	private Long totalNumOld;
+
+	public Long getTotalNumOld() {
+		return totalNumOld;
+	}
+
+	public void setTotalNumOld(Long totalNumOld) {
+		this.totalNumOld = totalNumOld;
+	}
+
+	private Long queueNumOld;
+
+	public Long getQueueNumOld() {
+		return queueNumOld;
+	}
+
+	public void setQueueNumOld(Long countNumOld) {
+		this.queueNumOld = countNumOld;
+	}
 }
