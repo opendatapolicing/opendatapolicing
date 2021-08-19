@@ -674,7 +674,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 	private JsonObject syncFtpBody(String tableName, String stateAbbreviation, Buffer bufferedLine) {
 		String[] values = bufferedLine.toString().trim().split(STR_TAB);
-		if(values.length >= INT_15 && STR_TrafficStop.equals(tableName)) {
+		if(STR_TrafficStop.equals(tableName)) {
 			return new JsonObject()
 					.put(STR_saves, new JsonArray()
 							.add(TrafficStop.VAR_inheritPk)
@@ -711,7 +711,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					.put(TrafficStop.VAR_stopLocationId, values.length > INT_13 ? values[INT_13] : null)
 					.put(TrafficStop.VAR_stopCityId, values.length > INT_14 ? values[INT_14] : null)
 					;
-		} else if(values.length >= INT_7 && STR_TrafficPerson.equals(tableName)) {
+		} else if(STR_TrafficPerson.equals(tableName)) {
 			return new JsonObject()
 					.put(STR_saves, new JsonArray()
 							.add(TrafficPerson.VAR_inheritPk)
@@ -730,7 +730,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					.put(TrafficPerson.VAR_personEthnicityId, values.length > INT_5 ? values[INT_5] : null)
 					.put(TrafficPerson.VAR_personRaceId, values.length > INT_6 ? values[INT_6] : null)
 					;
-		} else if(values.length >= INT_11 && STR_TrafficSearch.equals(tableName)) {
+		} else if(STR_TrafficSearch.equals(tableName)) {
 			return new JsonObject()
 					.put(STR_saves, new JsonArray()
 							.add(TrafficSearch.VAR_inheritPk)
@@ -755,7 +755,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					.put(TrafficSearch.VAR_searchPersonalPropertySiezed, values.length > INT_9 ? values[INT_9] : null)
 					.put(TrafficSearch.VAR_searchOtherPropertySiezed, values.length > INT_10 ? values[INT_10] : null)
 					;
-		} else if(values.length >= INT_14 && STR_TrafficContraband.equals(tableName)) {
+		} else if(STR_TrafficContraband.equals(tableName)) {
 			return new JsonObject()
 					.put(STR_saves, new JsonArray()
 							.add(TrafficContraband.VAR_inheritPk)
@@ -784,7 +784,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 					.put(TrafficContraband.VAR_contrabandWeapons, values.length > INT_12 ? values[INT_12] : null)
 					.put(TrafficContraband.VAR_contrabandDollarAmount, values.length > INT_13 ? values[INT_13] : null)
 					;
-		} else if(values.length >= INT_5 && STR_SearchBasis.equals(tableName)) {
+		} else if(STR_SearchBasis.equals(tableName)) {
 			return new JsonObject()
 					.put(STR_saves, new JsonArray()
 							.add(SearchBasis.VAR_inheritPk)
