@@ -841,7 +841,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				if(apiCounterResume.compareTo(apiCounter.getTotalNum() - apiCounter.getQueueNum()) >= INT_ZERO) {
 					apiCounter.incrementTotalNum(apiCounterFetch);
 					recordParser.fetch(apiCounterFetch);
-					LOG.info("FETCH Success");
+//					LOG.info("FETCH Success");
 					apiRequest.setNumPATCH(apiCounter.getTotalNum());
 					apiRequest.setTimeRemaining(apiRequest.calculateTimeRemaining());
 					vertx.eventBus().publish(String.format(syncFtpHandleBodyWebSocket, tableName), JsonObject.mapFrom(apiRequest));
