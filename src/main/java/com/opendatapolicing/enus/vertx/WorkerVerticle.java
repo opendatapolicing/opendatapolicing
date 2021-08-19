@@ -599,6 +599,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 				Long periodicId = vertx.setPeriodic(config().getLong(ConfigKeys.API_CHECK_TIMER_MILLIS), periodicHandler -> {
 					if(apiCounter.getTotalNum().equals(apiCounter.getTotalNumOld())) {
+						apiCounter.setTotalNum(apiCounter.getQueueNum());
 						LOG.info("FETCH FROM PERIODIC TIMER");
 						recordParser.fetch(apiCounterFetch);
 						apiCounter.incrementTotalNum(apiCounterFetch);
