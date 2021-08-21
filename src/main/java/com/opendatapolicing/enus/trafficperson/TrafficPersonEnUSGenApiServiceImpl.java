@@ -205,7 +205,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -401,7 +401,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -485,57 +485,53 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 								indexTrafficPerson(trafficPerson).onSuccess(e -> {
 									promise1.complete(trafficPerson);
 								}).onFailure(ex -> {
-									LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(trafficPerson -> {
 				Promise<TrafficPerson> promise2 = Promise.promise();
 				refreshTrafficPerson(trafficPerson).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						trafficPerson.apiRequestTrafficPerson();
-						eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
+					try {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficPerson.apiRequestTrafficPerson();
+							eventBus.publish("websocketTrafficPerson", JsonObject.mapFrom(apiRequest).toString());
+						}
+						promise2.complete(trafficPerson);
+					} catch(Exception ex) {
+						LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
+						promise.fail(ex);
 					}
-					promise2.complete(trafficPerson);
 				}).onFailure(ex -> {
-					LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(trafficPerson -> {
 				promise.complete(trafficPerson);
-				LOG.debug(String.format("postTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postTrafficPersonFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -635,12 +631,12 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value TrafficPerson.personRaceTitle failed", ex);
+						LOG.error(String.format("attributeTrafficPerson failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -872,47 +868,39 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							indexTrafficPerson(trafficPerson).onSuccess(e -> {
 								promise1.complete(trafficPerson);
 							}).onFailure(ex -> {
-								LOG.error(String.format("patchTrafficPersonFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("patchTrafficPersonFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("patchTrafficPersonFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchTrafficPersonFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(trafficPerson -> {
 				Promise<TrafficPerson> promise2 = Promise.promise();
 				refreshTrafficPerson(trafficPerson).onSuccess(a -> {
 					promise2.complete(trafficPerson);
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchTrafficPersonFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(trafficPerson -> {
 				promise.complete(trafficPerson);
-				LOG.debug(String.format("patchTrafficPersonFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchTrafficPersonFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -1003,12 +991,12 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value TrafficPerson.personRaceTitle failed", ex);
+						LOG.error(String.format("attributeTrafficPerson failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -1530,7 +1518,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
 			sqlConnection.preparedQuery("INSERT INTO TrafficPerson(created) VALUES($1) RETURNING pk")
 					.collecting(Collectors.toList())
@@ -1542,8 +1530,9 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 				o.setSiteRequest_(siteRequest);
 				promise.complete(o);
 			}).onFailure(ex -> {
-				LOG.error("createTrafficPerson failed. ", ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error("createTrafficPerson failed. ", ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("createTrafficPerson failed. "), ex);
@@ -1812,8 +1801,9 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("defineTrafficPerson failed. "), ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("defineTrafficPerson failed. "), ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("defineTrafficPerson failed. "), ex);
@@ -1886,7 +1876,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);

@@ -483,47 +483,39 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 							indexSiteUser(siteUser).onSuccess(e -> {
 								promise1.complete(siteUser);
 							}).onFailure(ex -> {
-								LOG.error(String.format("patchSiteUserFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("patchSiteUserFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("patchSiteUserFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSiteUserFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(siteUser -> {
 				Promise<SiteUser> promise2 = Promise.promise();
 				refreshSiteUser(siteUser).onSuccess(a -> {
 					promise2.complete(siteUser);
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSiteUserFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(siteUser -> {
 				promise.complete(siteUser);
-				LOG.debug(String.format("patchSiteUserFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchSiteUserFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -614,12 +606,12 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SiteUser.userFullName failed", ex);
+						LOG.error(String.format("attributeSiteUser failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -684,7 +676,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -768,57 +760,53 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 								indexSiteUser(siteUser).onSuccess(e -> {
 									promise1.complete(siteUser);
 								}).onFailure(ex -> {
-									LOG.error(String.format("postSiteUserFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("postSiteUserFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postSiteUserFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postSiteUserFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSiteUserFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(siteUser -> {
 				Promise<SiteUser> promise2 = Promise.promise();
 				refreshSiteUser(siteUser).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						siteUser.apiRequestSiteUser();
-						eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+					try {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							siteUser.apiRequestSiteUser();
+							eventBus.publish("websocketSiteUser", JsonObject.mapFrom(apiRequest).toString());
+						}
+						promise2.complete(siteUser);
+					} catch(Exception ex) {
+						LOG.error(String.format("postSiteUserFuture failed. "), ex);
+						promise.fail(ex);
 					}
-					promise2.complete(siteUser);
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSiteUserFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(siteUser -> {
 				promise.complete(siteUser);
-				LOG.debug(String.format("postSiteUserFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postSiteUserFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -918,12 +906,12 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SiteUser.userFullName failed", ex);
+						LOG.error(String.format("attributeSiteUser failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -975,7 +963,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
 			sqlConnection.preparedQuery("INSERT INTO SiteUser(created) VALUES($1) RETURNING pk")
 					.collecting(Collectors.toList())
@@ -987,8 +975,9 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 				o.setSiteRequest_(siteRequest);
 				promise.complete(o);
 			}).onFailure(ex -> {
-				LOG.error("createSiteUser failed. ", ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error("createSiteUser failed. ", ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("createSiteUser failed. "), ex);
@@ -1269,8 +1258,9 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("defineSiteUser failed. "), ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("defineSiteUser failed. "), ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("defineSiteUser failed. "), ex);
@@ -1333,39 +1323,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
 					String classSimpleName2 = classes.get(i);
 				}
 
-				CompositeFuture.all(futures).onSuccess(b -> {
-					JsonObject params = new JsonObject();
-					params.put("body", new JsonObject());
-					params.put("cookie", new JsonObject());
-					params.put("header", new JsonObject());
-					params.put("form", new JsonObject());
-					params.put("path", new JsonObject());
-					JsonObject query = new JsonObject();
-					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
-					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
-						query.put("softCommit", softCommit);
-					if(commitWithin != null)
-						query.put("commitWithin", commitWithin);
-					query.put("q", "*:*").put("fq", new JsonArray().add("pk:" + o.getPk()));
-					params.put("query", query);
-					JsonObject context = new JsonObject().put("params", params).put("user", Optional.ofNullable(siteRequest.getUser()).map(user -> user.principal()).orElse(null));
-					JsonObject json = new JsonObject().put("context", context);
-					eventBus.request("opendatapolicing-enUS-SiteUser", json, new DeliveryOptions().addHeader("action", "patchSiteUserFuture")).onSuccess(c -> {
-						JsonObject responseMessage = (JsonObject)c.body();
-						Integer statusCode = responseMessage.getInteger("statusCode");
-						if(statusCode.equals(200))
-							promise.complete();
-						else
-							promise.fail(new RuntimeException(responseMessage.getString("statusMessage")));
-					}).onFailure(ex -> {
-						LOG.error("Refresh relations failed. ", ex);
-						promise.fail(ex);
-					});
-				}).onFailure(ex -> {
-					LOG.error("Refresh relations failed. ", ex);
-					promise.fail(ex);
-				});
+				promise.complete();
 			} else {
 				promise.complete();
 			}

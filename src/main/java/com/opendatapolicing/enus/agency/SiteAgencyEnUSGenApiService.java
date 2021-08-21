@@ -12,6 +12,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.ext.web.api.service.WebApiServiceGen;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.templ.handlebars.HandlebarsTemplateEngine;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.pgclient.PgPool;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;

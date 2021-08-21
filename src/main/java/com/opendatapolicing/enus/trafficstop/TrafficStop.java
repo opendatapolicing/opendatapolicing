@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.opendatapolicing.enus.base.BaseModel;
 import com.opendatapolicing.enus.config.ConfigKeys;
+import com.opendatapolicing.enus.java.ZonedDateTimeDeserializer;
 import com.opendatapolicing.enus.request.SiteRequestEnUS;
 import com.opendatapolicing.enus.search.SearchList;
 import com.opendatapolicing.enus.trafficperson.TrafficPerson;
@@ -121,6 +122,8 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	public static ZonedDateTime staticSetStopDateTime(SiteRequestEnUS siteRequest_, String o) {
 		if(StringUtils.contains(o, " "))
 			return o == null ? null : LocalDateTime.parse(o, FTP_DATE_TIME_FORMATTER).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
+		else if(StringUtils.contains(o, "["))
+			return o == null ? null : ZonedDateTime.parse(o, ZonedDateTimeDeserializer.ZONED_DATE_TIME_FORMATTER);
 		else if(StringUtils.endsWith(o, "Z"))
 			return o == null ? null : Instant.parse(o).atZone(ZoneId.of(siteRequest_.getConfig().getString(ConfigKeys.SITE_ZONE))).truncatedTo(ChronoUnit.MILLIS);
 		else

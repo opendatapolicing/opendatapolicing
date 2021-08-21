@@ -1309,207 +1309,237 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					siteRequest.setConfig(config());
 					siteRequest.initDeepSiteRequestEnUS(siteRequest);
 
-					String stopYearStr = (String)ctx.data().get("stopYear");
-					ZonedDateTime startDate = null;
-					ZonedDateTime endDate = null;
-					if(stopYearStr != null) {
-						Integer stopYear = Integer.parseInt(stopYearStr);
-						startDate = ZonedDateTime.of(stopYear, 1, 1, 0, 0, 0, 0, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
-						endDate = ZonedDateTime.of(stopYear, 12, 31, 23, 59, 59, 999999999, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
-					} else {
-						startDate = ZonedDateTime.of(2002, 1, 1, 0, 0, 0, 0, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
-						endDate = ZonedDateTime.now(ZoneId.of(config().getString(ConfigKeys.SITE_ZONE))).with(TemporalAdjusters.firstDayOfYear()).minusNanos(1).minusYears(1);
-					}
-					String startDateStr = startDate.toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
-					ctx.put("startDateStr", startDateStr);
-					String endDateStr = endDate.toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
-					ctx.put("endDateStr", endDateStr);
+					SearchList<TrafficStop> stopSearch1 = new SearchList<TrafficStop>();
+					stopSearch1.setStore(true);
+					stopSearch1.setQuery("*:*");
+					stopSearch1.setC(TrafficStop.class);
+					stopSearch1.setRows(0);
+					stopSearch1.addFacetField("stopYear_indexed_int");
+					stopSearch1.addFacetField("personRaceTitles_indexed_strings");
+					stopSearch1.addFacetField("stopPurposeTitle_indexed_string");
+					stopSearch1.addFacetField("stopActionTitle_indexed_string");
+					stopSearch1.set("facet.mincount", "1");
+					stopSearch1.set("facet.sort", "index");
 
-					SearchList<TrafficStop> stopSearch2 = new SearchList<TrafficStop>();
-					stopSearch2.setStore(true);
-					stopSearch2.setQuery("*:*");
-					stopSearch2.setC(TrafficStop.class);
-					stopSearch2.setRows(0);
-					stopSearch2.addFacetField("stopYear_indexed_int");
-					stopSearch2.addFacetField("personRaceTitles_indexed_strings");
-					stopSearch2.addFacetField("stopPurposeTitle_indexed_string");
-					stopSearch2.addFacetField("stopActionTitle_indexed_string");
-					stopSearch2.addFilterQuery(String.format("stopDateTime_indexed_date:[%s TO %s]", startDateStr, endDateStr));
-					stopSearch2.set("facet.mincount", "1");
-					stopSearch2.set("facet.sort", "index");
-					stopSearch2.set("facet.range.end", endDateStr);
-					List<String> fqParamsWithoutYear = new ArrayList<String>();
-					List<String> fqParamsWithoutStopPurposeTitle = new ArrayList<String>();
-					ctx.put("siteZone", config().getValue(ConfigKeys.SITE_ZONE));
-					ctx.put("ACS_API_YEAR", config().getValue(ConfigKeys.ACS_API_YEAR));
-					String agencyTitle = ctx.get("agencyTitle");
+					stopSearch1.setC(TrafficStop.class);
+					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(d -> {
 
-					if(agencyTitle != null) {
-						try {
-							stopSearch2.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
-							fqParamsWithoutYear.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
-							fqParamsWithoutStopPurposeTitle.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					}
-					Optional.ofNullable((String)ctx.get("stateAbbreviation")).ifPresent(stateAbbreviation -> {
-						try {
-							stopSearch2.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
-							fqParamsWithoutYear.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
-							fqParamsWithoutStopPurposeTitle.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					Optional.ofNullable((String)ctx.get("stopPurposeTitle")).ifPresent(stopPurposeTitle -> {
-						try {
-							stopSearch2.addFilterQuery("stopPurposeTitle_indexed_string:" + ClientUtils.escapeQueryChars(stopPurposeTitle));
-							fqParamsWithoutYear.add("var=stopPurposeTitle:" + URLEncoder.encode(stopPurposeTitle, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					Optional.ofNullable((String)ctx.get("stopOfficerId")).ifPresent(stopOfficerId -> {
-						try {
-							stopSearch2.addFilterQuery("stopOfficerId_indexed_string:" + ClientUtils.escapeQueryChars(stopOfficerId));
-							fqParamsWithoutYear.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
-							fqParamsWithoutStopPurposeTitle.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					Optional.ofNullable((String)ctx.get("race")).ifPresent(race -> {
-						try {
-							stopSearch2.addFilterQuery("personRaceTitles_indexed_strings:" + ClientUtils.escapeQueryChars(race));
-							fqParamsWithoutYear.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
-							fqParamsWithoutStopPurposeTitle.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					Optional.ofNullable((String)ctx.get("gender")).ifPresent(gender -> {
-						try {
-							stopSearch2.addFilterQuery("personGenderTitles_indexed_strings:" + ClientUtils.escapeQueryChars(gender));
-							fqParamsWithoutYear.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
-							fqParamsWithoutStopPurposeTitle.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					Optional.ofNullable((String)ctx.get("age")).ifPresent(age -> {
-						try {
-							stopSearch2.addFilterQuery("personAges_indexed_ints:" + ClientUtils.escapeQueryChars(age));
-							fqParamsWithoutYear.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
-							fqParamsWithoutStopPurposeTitle.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
-						} catch (UnsupportedEncodingException ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					Optional.ofNullable((String)ctx.get("stopYear")).ifPresent(stopYear -> {
-						try {
-							stopSearch2.addFilterQuery("stopYear_indexed_int:" + ClientUtils.escapeQueryChars(stopYear));
-							fqParamsWithoutStopPurposeTitle.add("var=stopYear:" + URLEncoder.encode(stopYear, "UTF-8"));
-						} catch (Exception ex) {
-							ExceptionUtils.rethrow(ex);
-						}
-					});
-					ctx.put("fqParamsWithoutYear", StringUtils.join(fqParamsWithoutYear, "&"));
-					ctx.put("fqParamsWithoutStopPurposeTitle", StringUtils.join(fqParamsWithoutStopPurposeTitle, "&"));
+						JsonArray stopYears = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopYear_indexed_int".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								stopYears.add(value.getName());
+							});
+						});
+						ctx.put("stopYears", stopYears);
+
+						JsonArray stopPurposeTitles = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								stopPurposeTitles.add(value.getName());
+							});
+						});
+						ctx.put("stopPurposeTitles", stopPurposeTitles);
+
+						JsonArray personActionTitles = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								personActionTitles.add(value.getName());
+							});
+						});
+						ctx.put("personActionTitles", personActionTitles);
 	
-					SearchList<SiteAgency> agencySearch = new SearchList<SiteAgency>();
-					agencySearch.setStore(true);
-					agencySearch.setQuery("*:*");
-					agencySearch.setC(SiteAgency.class);
-					agencySearch.setRows(1);
-					if(agencyTitle == null)
-						agencySearch.addFilterQuery("agencyTitle_indexed_string:------");
-					else
-						agencySearch.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
-					agencySearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
-						SiteAgency agency = agencySearch.first();
-						if(agency != null && agency.getAgencyTotal() != null) {
-							JsonObject agencyJson = JsonObject.mapFrom(agency);
-							Long agencyTotal = agency.getAgencyTotal();
-
-							agencyJson.put("agencyTotalWhite", agency.getAgencyTotalWhite());
-							agencyJson.put("agencyTotalBlack", agency.getAgencyTotalBlack());
-							agencyJson.put("agencyTotalIndigenous", agency.getAgencyTotalIndigenous());
-							agencyJson.put("agencyTotalAsian", agency.getAgencyTotalAsian());
-							agencyJson.put("agencyTotalLatinx", agency.getAgencyTotalLatinx());
-							agencyJson.put("agencyTotalOther", agency.getAgencyTotalOther());
-							agencyJson.put("agencyTotal", agency.getAgencyTotal());
-
-							agencyJson.put("agencyPercentWhite", agency.getAgencyTotalWhite().doubleValue() / agencyTotal.doubleValue() * 100.0);
-							agencyJson.put("agencyPercentBlack", agency.getAgencyTotalBlack().doubleValue() / agencyTotal.doubleValue() * 100.0);
-							agencyJson.put("agencyPercentIndigenous", agency.getAgencyTotalIndigenous().doubleValue() / agencyTotal.doubleValue() * 100.0);
-							agencyJson.put("agencyPercentAsian", agency.getAgencyTotalAsian().doubleValue() / agencyTotal.doubleValue() * 100.0);
-							agencyJson.put("agencyPercentLatinx", agency.getAgencyTotalLatinx().doubleValue() / agencyTotal.doubleValue() * 100.0);
-							agencyJson.put("agencyPercentOther", agency.getAgencyTotalOther().doubleValue() / agencyTotal.doubleValue() * 100.0);
-							ctx.put("agency", agencyJson);
+						JsonArray personRaceTitles = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								personRaceTitles.add(value.getName());
+							});
+						});
+						ctx.put("personRaceTitles", personRaceTitles);
+	
+						JsonArray personGenderTitles = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								personGenderTitles.add(value.getName());
+							});
+						});
+						ctx.put("personGenderTitles", personGenderTitles);
+	
+						JsonArray personAges = new JsonArray();
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							facetField.getValues().forEach(value -> {
+								personAges.add(value.getName());
+							});
+						});
+						ctx.put("personAges", personAges);
+	
+						String stopYearStr = (String)ctx.data().get("stopYear");
+						ZonedDateTime startDate = null;
+						ZonedDateTime endDate = null;
+						if(stopYearStr != null) {
+							Integer stopYear = Integer.parseInt(stopYearStr);
+							startDate = ZonedDateTime.of(stopYear, 1, 1, 0, 0, 0, 0, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
+							endDate = ZonedDateTime.of(stopYear, 12, 31, 23, 59, 59, 999999999, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
+						} else {
+							startDate = ZonedDateTime.of(2002, 1, 1, 0, 0, 0, 0, ZoneId.of(config().getString(ConfigKeys.SITE_ZONE)));
+							endDate = ZonedDateTime.now(ZoneId.of(config().getString(ConfigKeys.SITE_ZONE))).with(TemporalAdjusters.firstDayOfYear()).minusNanos(1).minusYears(1);
 						}
-
+						String startDateStr = startDate.toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
+						ctx.put("startDateStr", startDateStr);
+						String endDateStr = endDate.toInstant().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
+						ctx.put("endDateStr", endDateStr);
+	
+						SearchList<TrafficStop> stopSearch2 = new SearchList<TrafficStop>();
+						stopSearch2.setStore(true);
+						stopSearch2.setQuery("*:*");
 						stopSearch2.setC(TrafficStop.class);
-						stopSearch2.promiseDeepForClass(siteRequest).onSuccess(d -> {
-							Long numFound = stopSearch2.getQueryResponse().getResults().getNumFound();
+						stopSearch2.setRows(0);
+						stopSearch2.addFilterQuery(String.format("stopDateTime_indexed_date:[%s TO %s]", startDateStr, endDateStr));
+						stopSearch2.set("facet.mincount", "1");
+						stopSearch2.set("facet.sort", "index");
+						stopSearch2.set("facet.range.end", endDateStr);
+						List<String> fqParamsWithoutYear = new ArrayList<String>();
+						List<String> fqParamsWithoutStopPurposeTitle = new ArrayList<String>();
+						List<String> fqParamsWithoutSearchTypeTitle = new ArrayList<String>();
+						ctx.put("siteZone", config().getValue(ConfigKeys.SITE_ZONE));
+						ctx.put("ACS_API_YEAR", config().getValue(ConfigKeys.ACS_API_YEAR));
+						String agencyTitle = ctx.get("agencyTitle");
 	
-							ctx.put("searchTotal", NumberFormat.getNumberInstance(Locale.US).format(numFound));
-	
-							JsonObject stopJson = new JsonObject();
-							stopJson.put("foundNum", numFound);
-							JsonObject facetFields = new JsonObject();
-							stopJson.put("facet_fields", facetFields);
-							JsonObject personRaceTitlesFacets = new JsonObject();
-							facetFields.put("personRaceTitles", personRaceTitlesFacets);
-	//						JsonObject facetRanges = new JsonObject();
-	//						stopJson.put("facet_ranges", facetRanges);
-	//						JsonObject stopDateTimeFacetRanges = new JsonObject();
-	//						facetRanges.put("stopDateTime", stopDateTimeFacetRanges);
-	
-							JsonArray personPurposeTitles = new JsonArray();
-							stopSearch2.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-								facetField.getValues().forEach(value -> {
-									personPurposeTitles.add(value.getName());
-								});
-							});
-							ctx.put("personPurposeTitles", personPurposeTitles);
-	
-							JsonArray personActionTitles = new JsonArray();
-							stopSearch2.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-								facetField.getValues().forEach(value -> {
-									personActionTitles.add(value.getName());
-								});
-							});
-							ctx.put("personActionTitles", personActionTitles);
+						if(agencyTitle != null) {
+							try {
+								stopSearch2.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
+								fqParamsWithoutYear.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
+								fqParamsWithoutStopPurposeTitle.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
+							} catch (UnsupportedEncodingException ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						}
+						Optional.ofNullable((String)ctx.get("stateAbbreviation")).ifPresent(stateAbbreviation -> {
+							try {
+								stopSearch2.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
+								fqParamsWithoutYear.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
+								fqParamsWithoutStopPurposeTitle.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
+							} catch (UnsupportedEncodingException ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						});
+						Optional.ofNullable((String)ctx.get("stopPurposeTitle")).ifPresent(stopPurposeTitle -> {
+							try {
+								stopSearch2.addFilterQuery("stopPurposeTitle_indexed_string:" + ClientUtils.escapeQueryChars(stopPurposeTitle));
+								fqParamsWithoutYear.add("var=stopPurposeTitle:" + URLEncoder.encode(stopPurposeTitle, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=stopPurposeTitle:" + URLEncoder.encode(stopPurposeTitle, "UTF-8"));
+							} catch (UnsupportedEncodingException ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						});
+						Optional.ofNullable((String)ctx.get("stopOfficerId")).ifPresent(stopOfficerId -> {
+							try {
+								stopSearch2.addFilterQuery("stopOfficerId_indexed_string:" + ClientUtils.escapeQueryChars(stopOfficerId));
+								fqParamsWithoutYear.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
+								fqParamsWithoutStopPurposeTitle.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
+							} catch (UnsupportedEncodingException ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						});
+						Optional.ofNullable((String)ctx.get("race")).ifPresent(race -> {
+							try {
+								stopSearch2.addFilterQuery("personRaceTitles_indexed_strings:" + ClientUtils.escapeQueryChars(race));
+								fqParamsWithoutYear.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
+								fqParamsWithoutStopPurposeTitle.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
+							} catch (UnsupportedEncodingException ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						});
+						Optional.ofNullable((String)ctx.get("gender")).ifPresent(gender -> {
+							try {
+								stopSearch2.addFilterQuery("personGenderTitles_indexed_strings:" + ClientUtils.escapeQueryChars(gender));
+								fqParamsWithoutYear.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
+								fqParamsWithoutStopPurposeTitle.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
+							} catch (UnsupportedEncodingException ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						});
+						Optional.ofNullable((String)ctx.get("age")).ifPresent(age -> {
+							try {
+								stopSearch2.addFilterQuery("personAges_indexed_ints:" + ClientUtils.escapeQueryChars(age));
+								fqParamsWithoutYear.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
+								fqParamsWithoutStopPurposeTitle.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
+							} catch (UnsupportedEncodingException ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						});
+						Optional.ofNullable((String)ctx.get("stopYear")).ifPresent(stopYear -> {
+							try {
+								stopSearch2.addFilterQuery("stopYear_indexed_int:" + ClientUtils.escapeQueryChars(stopYear));
+								fqParamsWithoutStopPurposeTitle.add("var=stopYear:" + URLEncoder.encode(stopYear, "UTF-8"));
+								fqParamsWithoutSearchTypeTitle.add("var=stopYear:" + URLEncoder.encode(stopYear, "UTF-8"));
+							} catch (Exception ex) {
+								ExceptionUtils.rethrow(ex);
+							}
+						});
+						ctx.put("fqParamsWithoutYear", StringUtils.join(fqParamsWithoutYear, "&"));
+						ctx.put("fqParamsWithoutStopPurposeTitle", StringUtils.join(fqParamsWithoutStopPurposeTitle, "&"));
+						ctx.put("fqParamsWithoutSearchTypeTitle", StringUtils.join(fqParamsWithoutSearchTypeTitle, "&"));
 		
-							JsonArray personRaceTitles = new JsonArray();
-							stopSearch2.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-								facetField.getValues().forEach(value -> {
-									personRaceTitles.add(value.getName());
-									personRaceTitlesFacets.put(value.getName(), value.getCount());
-								});
-							});
-							ctx.put("personRaceTitles", personRaceTitles);
-		
-							JsonArray personGenderTitles = new JsonArray();
-							stopSearch2.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-								facetField.getValues().forEach(value -> {
-									personGenderTitles.add(value.getName());
-								});
-							});
-							ctx.put("personGenderTitles", personGenderTitles);
-		
-							JsonArray personAges = new JsonArray();
-							stopSearch2.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
-								facetField.getValues().forEach(value -> {
-									personAges.add(value.getName());
-								});
-							});
-							ctx.put("personAges", personAges);
+						SearchList<SiteAgency> agencySearch = new SearchList<SiteAgency>();
+						agencySearch.setStore(true);
+						agencySearch.setQuery("*:*");
+						agencySearch.setC(SiteAgency.class);
+						agencySearch.setRows(1);
+						if(agencyTitle == null)
+							agencySearch.addFilterQuery("agencyTitle_indexed_string:------");
+						else
+							agencySearch.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
+						agencySearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
+							SiteAgency agency = agencySearch.first();
+							if(agency != null && agency.getAgencyTotal() != null) {
+								JsonObject agencyJson = JsonObject.mapFrom(agency);
+								Long agencyTotal = agency.getAgencyTotal();
 	
-							ctx.put("stopJson", stopJson.toString());
+								agencyJson.put("agencyTotalWhite", agency.getAgencyTotalWhite());
+								agencyJson.put("agencyTotalBlack", agency.getAgencyTotalBlack());
+								agencyJson.put("agencyTotalIndigenous", agency.getAgencyTotalIndigenous());
+								agencyJson.put("agencyTotalAsian", agency.getAgencyTotalAsian());
+								agencyJson.put("agencyTotalLatinx", agency.getAgencyTotalLatinx());
+								agencyJson.put("agencyTotalOther", agency.getAgencyTotalOther());
+								agencyJson.put("agencyTotal", agency.getAgencyTotal());
 	
-							ctx.next();
+								agencyJson.put("agencyPercentWhite", agency.getAgencyTotalWhite().doubleValue() / agencyTotal.doubleValue() * 100.0);
+								agencyJson.put("agencyPercentBlack", agency.getAgencyTotalBlack().doubleValue() / agencyTotal.doubleValue() * 100.0);
+								agencyJson.put("agencyPercentIndigenous", agency.getAgencyTotalIndigenous().doubleValue() / agencyTotal.doubleValue() * 100.0);
+								agencyJson.put("agencyPercentAsian", agency.getAgencyTotalAsian().doubleValue() / agencyTotal.doubleValue() * 100.0);
+								agencyJson.put("agencyPercentLatinx", agency.getAgencyTotalLatinx().doubleValue() / agencyTotal.doubleValue() * 100.0);
+								agencyJson.put("agencyPercentOther", agency.getAgencyTotalOther().doubleValue() / agencyTotal.doubleValue() * 100.0);
+								ctx.put("agency", agencyJson);
+							}
+	
+							stopSearch2.setC(TrafficStop.class);
+							stopSearch2.promiseDeepForClass(siteRequest).onSuccess(e -> {
+								Long numFound = stopSearch2.getQueryResponse().getResults().getNumFound();
+		
+								ctx.put("searchTotal", NumberFormat.getNumberInstance(Locale.US).format(numFound));
+		
+								JsonObject stopJson = new JsonObject();
+								stopJson.put("foundNum", numFound);
+								JsonObject facetFields = new JsonObject();
+								stopJson.put("facet_fields", facetFields);
+		//						JsonObject facetRanges = new JsonObject();
+		//						stopJson.put("facet_ranges", facetRanges);
+		//						JsonObject stopDateTimeFacetRanges = new JsonObject();
+		//						facetRanges.put("stopDateTime", stopDateTimeFacetRanges);
+		
+								ctx.put("stopJson", stopJson.toString());
+		
+								ctx.next();
+							}).onFailure(ex -> {
+								LOG.error("Stop search page failed to load stop data. ", ex);
+								ctx.fail(ex);
+							});
 						}).onFailure(ex -> {
 							LOG.error("Stop search page failed to load stop data. ", ex);
 							ctx.fail(ex);

@@ -1,77 +1,103 @@
 package com.opendatapolicing.enus.trafficstop;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import com.opendatapolicing.enus.request.SiteRequestEnUS;
+import com.opendatapolicing.enus.user.SiteUser;
+import com.opendatapolicing.enus.request.api.ApiRequest;
+import com.opendatapolicing.enus.search.SearchResult;
+import com.opendatapolicing.enus.vertx.MailVerticle;
+import com.opendatapolicing.enus.config.ConfigKeys;
+import com.opendatapolicing.enus.base.BaseApiServiceImpl;
+import io.vertx.ext.web.client.WebClient;
+import java.util.Objects;
+import io.vertx.core.WorkerExecutor;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.pgclient.PgPool;
+import io.vertx.ext.auth.authorization.AuthorizationProvider;
+import io.vertx.core.eventbus.DeliveryOptions;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.time.Instant;
+import java.util.stream.Collectors;
+import io.vertx.core.json.Json;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.commons.lang3.StringUtils;
+import java.security.Principal;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.io.PrintWriter;
+import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
+import java.util.Collection;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.util.HashSet;
+import io.vertx.core.Handler;
+import io.vertx.ext.web.RoutingContext;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.PivotField;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.RangeFacet;
-import org.apache.solr.client.solrj.util.ClientUtils;
-import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.util.NamedList;
-import org.apache.solr.util.DateMathParser;
+import io.vertx.ext.web.Router;
+import io.vertx.core.Vertx;
+import io.vertx.ext.reactivestreams.ReactiveReadStream;
+import io.vertx.ext.reactivestreams.ReactiveWriteStream;
+import io.vertx.core.MultiMap;
+import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.opendatapolicing.enus.base.BaseApiServiceImpl;
-import com.opendatapolicing.enus.config.ConfigKeys;
-import com.opendatapolicing.enus.request.SiteRequestEnUS;
-import com.opendatapolicing.enus.request.api.ApiRequest;
-import com.opendatapolicing.enus.search.SearchList;
-
-import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.MultiMap;
-import io.vertx.core.Promise;
-import io.vertx.core.WorkerExecutor;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.authorization.AuthorizationProvider;
-import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.web.api.service.ServiceRequest;
-import io.vertx.ext.web.api.service.ServiceResponse;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
-import io.vertx.pgclient.PgPool;
-import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.Transaction;
 import io.vertx.sqlclient.SqlConnection;
 import io.vertx.sqlclient.Tuple;
+import io.vertx.sqlclient.Row;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.sql.Timestamp;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.AsyncResult;
+import java.net.URLEncoder;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.http.HttpHeaders;
+import org.apache.http.client.utils.URLEncodedUtils;
+import java.nio.charset.Charset;
+import org.apache.http.NameValuePair;
+import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import java.util.HashMap;
+import io.vertx.ext.auth.User;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.net.URLDecoder;
+import org.apache.solr.util.DateMathParser;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.client.solrj.response.PivotField;
+import org.apache.solr.client.solrj.response.RangeFacet;
+import org.apache.solr.client.solrj.response.FacetField;
+import java.util.Map.Entry;
+import java.util.Iterator;
+import java.util.Base64;
+import java.time.ZonedDateTime;
+import org.apache.solr.common.util.SimpleOrderedMap;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import com.opendatapolicing.enus.user.SiteUserEnUSApiServiceImpl;
+import com.opendatapolicing.enus.search.SearchList;
+import com.opendatapolicing.enus.writer.AllWriter;
 
 
 /**
@@ -179,7 +205,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -274,7 +300,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchTrafficStopFuture(o, true).onSuccess(b -> {
-//									LOG.info("Import TrafficStop {} succeeded, modified TrafficStop. ", body.getValue("pk"));
+									LOG.info("Import TrafficStop {} succeeded, modified TrafficStop. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportTrafficStopFuture failed. "), ex);
@@ -375,7 +401,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -459,57 +485,53 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								indexTrafficStop(trafficStop).onSuccess(e -> {
 									promise1.complete(trafficStop);
 								}).onFailure(ex -> {
-									LOG.error(String.format("postTrafficStopFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("postTrafficStopFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postTrafficStopFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postTrafficStopFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("postTrafficStopFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(trafficStop -> {
 				Promise<TrafficStop> promise2 = Promise.promise();
 				refreshTrafficStop(trafficStop).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						trafficStop.apiRequestTrafficStop();
-						eventBus.publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
+					try {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							trafficStop.apiRequestTrafficStop();
+							eventBus.publish("websocketTrafficStop", JsonObject.mapFrom(apiRequest).toString());
+						}
+						promise2.complete(trafficStop);
+					} catch(Exception ex) {
+						LOG.error(String.format("postTrafficStopFuture failed. "), ex);
+						promise.fail(ex);
 					}
-					promise2.complete(trafficStop);
 				}).onFailure(ex -> {
-					LOG.error(String.format("postTrafficStopFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(trafficStop -> {
 				promise.complete(trafficStop);
-				LOG.debug(String.format("postTrafficStopFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postTrafficStopFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -708,12 +730,12 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value TrafficStop.personAges failed", ex);
+						LOG.error(String.format("attributeTrafficStop failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -936,12 +958,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 
 		try {
 			ApiRequest apiRequest = siteRequest.getApiRequest_();
-			LocalDateTime time1 = LocalDateTime.now();
 			pgPool.withTransaction(sqlConnection -> {
-				LocalDateTime time2 = LocalDateTime.now();
-				Long diff = time1.until(time2, ChronoUnit.MILLIS);
-				if(diff > 1000L)
-					LOG.info("PgPool withTransaction time in seconds: {}", time1.until(time2, ChronoUnit.MILLIS)/1000D);
 				Promise<TrafficStop> promise1 = Promise.promise();
 				siteRequest.setSqlConnection(sqlConnection);
 				sqlPATCHTrafficStop(o, inheritPk).onSuccess(trafficStop -> {
@@ -950,49 +967,39 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							indexTrafficStop(trafficStop).onSuccess(e -> {
 								promise1.complete(trafficStop);
 							}).onFailure(ex -> {
-								LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
-				LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(trafficStop -> {
 				Promise<TrafficStop> promise2 = Promise.promise();
 				refreshTrafficStop(trafficStop).onSuccess(a -> {
 					promise2.complete(trafficStop);
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(trafficStop -> {
 				promise.complete(trafficStop);
-				LOG.debug(String.format("patchTrafficStopFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchTrafficStopFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -1171,12 +1178,12 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value TrafficStop.personAges failed", ex);
+						LOG.error(String.format("attributeTrafficStop failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -1687,7 +1694,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
 			sqlConnection.preparedQuery("INSERT INTO TrafficStop(created) VALUES($1) RETURNING pk")
 					.collecting(Collectors.toList())
@@ -1699,8 +1706,9 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				o.setSiteRequest_(siteRequest);
 				promise.complete(o);
 			}).onFailure(ex -> {
-				LOG.error("createTrafficStop failed. ", ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error("createTrafficStop failed. ", ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("createTrafficStop failed. "), ex);
@@ -1969,8 +1977,9 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("defineTrafficStop failed. "), ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("defineTrafficStop failed. "), ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("defineTrafficStop failed. "), ex);
@@ -2000,12 +2009,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
 				String solrRequestUri = String.format("/solr/%s/update%s%s%s", solrCollection, "?overwrite=true&wt=json", softCommit ? "&softCommit=true" : "", commitWithin != null ? ("&commitWithin=" + commitWithin) : "");
 				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
-				LocalDateTime time1 = LocalDateTime.now();
 				webClient.post(solrPort, solrHostName, solrRequestUri).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
-					LocalDateTime time2 = LocalDateTime.now();
-					Long diff = time1.until(time2, ChronoUnit.MILLIS);
-					if(diff > 1000L)
-						LOG.info("Solr POST time in seconds: {}", time1.until(time2, ChronoUnit.MILLIS)/1000D);
 					promise.complete();
 				}).onFailure(ex -> {
 					LOG.error(String.format("indexTrafficStop failed. "), new RuntimeException(ex));
@@ -2048,7 +2052,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);

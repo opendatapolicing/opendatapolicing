@@ -205,7 +205,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -401,7 +401,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -485,57 +485,53 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 								indexSiteState(siteState).onSuccess(e -> {
 									promise1.complete(siteState);
 								}).onFailure(ex -> {
-									LOG.error(String.format("postSiteStateFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("postSiteStateFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postSiteStateFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postSiteStateFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSiteStateFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(siteState -> {
 				Promise<SiteState> promise2 = Promise.promise();
 				refreshSiteState(siteState).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						siteState.apiRequestSiteState();
-						eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
+					try {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							siteState.apiRequestSiteState();
+							eventBus.publish("websocketSiteState", JsonObject.mapFrom(apiRequest).toString());
+						}
+						promise2.complete(siteState);
+					} catch(Exception ex) {
+						LOG.error(String.format("postSiteStateFuture failed. "), ex);
+						promise.fail(ex);
 					}
-					promise2.complete(siteState);
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSiteStateFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(siteState -> {
 				promise.complete(siteState);
-				LOG.debug(String.format("postSiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postSiteStateFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -626,12 +622,12 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SiteState.stateCompleteName failed", ex);
+						LOG.error(String.format("attributeSiteState failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -863,47 +859,39 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							indexSiteState(siteState).onSuccess(e -> {
 								promise1.complete(siteState);
 							}).onFailure(ex -> {
-								LOG.error(String.format("patchSiteStateFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("patchSiteStateFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("patchSiteStateFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSiteStateFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(siteState -> {
 				Promise<SiteState> promise2 = Promise.promise();
 				refreshSiteState(siteState).onSuccess(a -> {
 					promise2.complete(siteState);
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSiteStateFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(siteState -> {
 				promise.complete(siteState);
-				LOG.debug(String.format("patchSiteStateFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchSiteStateFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -986,12 +974,12 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SiteState.stateCompleteName failed", ex);
+						LOG.error(String.format("attributeSiteState failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -1486,7 +1474,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
 			sqlConnection.preparedQuery("INSERT INTO SiteState(created) VALUES($1) RETURNING pk")
 					.collecting(Collectors.toList())
@@ -1498,8 +1486,9 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 				o.setSiteRequest_(siteRequest);
 				promise.complete(o);
 			}).onFailure(ex -> {
-				LOG.error("createSiteState failed. ", ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error("createSiteState failed. ", ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("createSiteState failed. "), ex);
@@ -1768,8 +1757,9 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("defineSiteState failed. "), ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("defineSiteState failed. "), ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("defineSiteState failed. "), ex);
@@ -1842,7 +1832,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);

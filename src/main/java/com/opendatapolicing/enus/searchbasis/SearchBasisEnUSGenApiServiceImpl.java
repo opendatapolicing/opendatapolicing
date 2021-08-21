@@ -205,7 +205,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -401,7 +401,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
@@ -485,57 +485,53 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 								indexSearchBasis(searchBasis).onSuccess(e -> {
 									promise1.complete(searchBasis);
 								}).onFailure(ex -> {
-									LOG.error(String.format("postSearchBasisFuture failed. "), ex);
 									promise1.fail(ex);
 								});
 							}).onFailure(ex -> {
-								LOG.error(String.format("postSearchBasisFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("postSearchBasisFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("postSearchBasisFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSearchBasisFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(searchBasis -> {
 				Promise<SearchBasis> promise2 = Promise.promise();
 				refreshSearchBasis(searchBasis).onSuccess(a -> {
-					ApiRequest apiRequest = siteRequest.getApiRequest_();
-					if(apiRequest != null) {
-						apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-						searchBasis.apiRequestSearchBasis();
-						eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
+					try {
+						ApiRequest apiRequest = siteRequest.getApiRequest_();
+						if(apiRequest != null) {
+							apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
+							searchBasis.apiRequestSearchBasis();
+							eventBus.publish("websocketSearchBasis", JsonObject.mapFrom(apiRequest).toString());
+						}
+						promise2.complete(searchBasis);
+					} catch(Exception ex) {
+						LOG.error(String.format("postSearchBasisFuture failed. "), ex);
+						promise.fail(ex);
 					}
-					promise2.complete(searchBasis);
 				}).onFailure(ex -> {
-					LOG.error(String.format("postSearchBasisFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(searchBasis -> {
 				promise.complete(searchBasis);
-				LOG.debug(String.format("postSearchBasisFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("postSearchBasisFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -599,12 +595,12 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SearchBasis.searchBasisTitle failed", ex);
+						LOG.error(String.format("attributeSearchBasis failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -836,47 +832,39 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							indexSearchBasis(searchBasis).onSuccess(e -> {
 								promise1.complete(searchBasis);
 							}).onFailure(ex -> {
-								LOG.error(String.format("patchSearchBasisFuture failed. "), ex);
 								promise1.fail(ex);
 							});
 						}).onFailure(ex -> {
-							LOG.error(String.format("patchSearchBasisFuture failed. "), ex);
 							promise1.fail(ex);
 						});
 					}).onFailure(ex -> {
-						LOG.error(String.format("patchSearchBasisFuture failed. "), ex);
 						promise1.fail(ex);
 					});
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSearchBasisFuture failed. "), ex);
 					promise1.fail(ex);
 				});
 				return promise1.future();
 			}).onSuccess(a -> {
 				siteRequest.setSqlConnection(null);
 			}).onFailure(ex -> {
+				siteRequest.setSqlConnection(null);
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			}).compose(searchBasis -> {
 				Promise<SearchBasis> promise2 = Promise.promise();
 				refreshSearchBasis(searchBasis).onSuccess(a -> {
 					promise2.complete(searchBasis);
 				}).onFailure(ex -> {
-					LOG.error(String.format("patchSearchBasisFuture failed. "), ex);
 					promise2.fail(ex);
 				});
 				return promise2.future();
 			}).onSuccess(searchBasis -> {
 				promise.complete(searchBasis);
-				LOG.debug(String.format("patchSearchBasisFuture succeeded. "));
 			}).onFailure(ex -> {
 				promise.fail(ex);
-				error(siteRequest, null, ex);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("patchSearchBasisFuture failed. "), ex);
 			promise.fail(ex);
-			error(siteRequest, null, ex);
 		}
 		return promise.future();
 	}
@@ -935,12 +923,12 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				futures2.add(0, Future.future(a -> {
 					sqlConnection.preparedQuery(bSql.toString())
 							.execute(Tuple.tuple(bParams)
-							, b
-					-> {
-						if(b.succeeded())
-							a.handle(Future.succeededFuture());
-						else
-							a.handle(Future.failedFuture(b.cause()));
+							).onSuccess(b -> {
+						a.handle(Future.succeededFuture());
+					}).onFailure(ex -> {
+						RuntimeException ex2 = new RuntimeException("value SearchBasis.searchBasisTitle failed", ex);
+						LOG.error(String.format("attributeSearchBasis failed. "), ex2);
+						a.handle(Future.failedFuture(ex2));
 					});
 				}));
 			}
@@ -1474,7 +1462,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 			SqlConnection sqlConnection = siteRequest.getSqlConnection();
 			String userId = siteRequest.getUserId();
 			Long userKey = siteRequest.getUserKey();
-			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString("siteZone"))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString("siteZone"))));
+			ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
 			sqlConnection.preparedQuery("INSERT INTO SearchBasis(created) VALUES($1) RETURNING pk")
 					.collecting(Collectors.toList())
@@ -1486,8 +1474,9 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				o.setSiteRequest_(siteRequest);
 				promise.complete(o);
 			}).onFailure(ex -> {
-				LOG.error("createSearchBasis failed. ", ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error("createSearchBasis failed. ", ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("createSearchBasis failed. "), ex);
@@ -1756,8 +1745,9 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					promise.fail(ex);
 				}
 			}).onFailure(ex -> {
-				LOG.error(String.format("defineSearchBasis failed. "), ex);
-				promise.fail(ex);
+				RuntimeException ex2 = new RuntimeException(ex);
+				LOG.error(String.format("defineSearchBasis failed. "), ex2);
+				promise.fail(ex2);
 			});
 		} catch(Exception ex) {
 			LOG.error(String.format("defineSearchBasis failed. "), ex);
@@ -1830,7 +1820,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 					JsonObject query = new JsonObject();
 					Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(false);
 					Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
-					if(softCommit);
+					if(softCommit)
 						query.put("softCommit", softCommit);
 					if(commitWithin != null)
 						query.put("commitWithin", commitWithin);
