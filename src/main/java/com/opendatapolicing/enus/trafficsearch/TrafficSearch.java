@@ -75,7 +75,7 @@ public class TrafficSearch extends TrafficSearchGen<BaseModel> {
 		SearchList<TrafficPerson> l = new SearchList<>();
 		if(personId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("inheritPk_indexed_string:" + personId);
+			l.addFilterQuery("inheritPk_indexedstored_string:" + personId);
 			l.setC(TrafficPerson.class);
 			l.setStore(true);
 		}

@@ -352,13 +352,13 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	protected void _personSearch(Promise<SearchList<TrafficPerson>> promise) {
 		SearchList<TrafficPerson> l = new SearchList<>();
 		l.setQuery("*:*");
-		l.addFilterQuery("stopId_indexed_string:" + inheritPk);
+		l.addFilterQuery("stopId_indexedstored_string:" + inheritPk);
 		l.setC(TrafficPerson.class);
 		l.setRows(0);
 		l.setFacet(true);
-		l.addFacetField("personRaceTitle_indexed_string");
-		l.addFacetField("personGenderTitle_indexed_string");
-		l.addFacetField("personAge_indexed_int");
+		l.addFacetField("personRaceTitle_indexedstored_string");
+		l.addFacetField("personGenderTitle_indexedstored_string");
+		l.addFacetField("personAge_indexedstored_int");
 		l.setStore(true);
 		promise.complete(l);
 	}
@@ -369,7 +369,7 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	 * Stored: true
 	 */
 	protected void _personRaceTitles(List<String> l) {
-		FacetField field = personSearch.getQueryResponse().getFacetField("personRaceTitle_indexed_string");
+		FacetField field = personSearch.getQueryResponse().getFacetField("personRaceTitle_indexedstored_string");
 		if(field != null) {
 			for(Count count : field.getValues()) {
 				if(count.getCount() > 0)
@@ -384,7 +384,7 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	 * Stored: true
 	 */
 	protected void _personGenderTitles(List<String> l) {
-		FacetField field = personSearch.getQueryResponse().getFacetField("personGenderTitle_indexed_string");
+		FacetField field = personSearch.getQueryResponse().getFacetField("personGenderTitle_indexedstored_string");
 		if(field != null) {
 			for(Count count : field.getValues()) {
 				if(count.getCount() > 0)
@@ -399,7 +399,7 @@ public class TrafficStop extends TrafficStopGen<BaseModel> {
 	 * Stored: true
 	 */
 	protected void _personAges(List<Integer> l) {
-		FacetField field = personSearch.getQueryResponse().getFacetField("personAge_indexed_int");
+		FacetField field = personSearch.getQueryResponse().getFacetField("personAge_indexedstored_int");
 		if(field != null) {
 			for(Count count : field.getValues()) {
 				if(count.getCount() > 0)

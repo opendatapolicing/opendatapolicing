@@ -73,7 +73,7 @@ public class TrafficPerson extends TrafficPersonGen<BaseModel> {
 		SearchList<TrafficStop> l = new SearchList<>();
 		if(stopId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("inheritPk_indexed_string:" + stopId);
+			l.addFilterQuery("inheritPk_indexedstored_string:" + stopId);
 			l.setC(TrafficStop.class);
 			l.setStore(true);
 		}

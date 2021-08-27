@@ -72,7 +72,7 @@ public class TrafficContraband extends TrafficContrabandGen<BaseModel> {
 		SearchList<TrafficSearch> l = new SearchList<>();
 		if(searchId != null) {
 			l.setQuery("*:*");
-			l.addFilterQuery("inheritPk_indexed_string:" + searchId);
+			l.addFilterQuery("inheritPk_indexedstored_string:" + searchId);
 			l.setC(TrafficSearch.class);
 			l.setStore(true);
 		}
