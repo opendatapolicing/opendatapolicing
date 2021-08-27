@@ -113,18 +113,6 @@ public class BaseModel extends BaseModelGen<Object> {
 	 * {@inheritDoc}
 	 * Indexed: true
 	 * Stored: true
-	 */ 
-	protected void _classCanonicalNames(List<String> l) { 
-		Class<?> cl = getClass();
-		if(!cl.equals(BaseModel.class))
-			l.add(cl.getCanonicalName());
-		l.add(BaseModel.class.getCanonicalName());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * Indexed: true
-	 * Stored: true
 	 * Saves: true
 	 */ 
 	protected void _saves(List<String> l) {

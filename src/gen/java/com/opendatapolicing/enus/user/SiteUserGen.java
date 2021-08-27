@@ -1057,53 +1057,53 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	}
 	public void populateSiteUser(SolrDocument solrDocument) {
 		SiteUser oSiteUser = (SiteUser)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 
 			if(saves.contains("userKey")) {
-				Long userKey = (Long)solrDocument.get("userKey_stored_long");
+				Long userKey = (Long)solrDocument.get("userKey_indexedstored_long");
 				if(userKey != null)
 					oSiteUser.setUserKey(userKey);
 			}
 
 			if(saves.contains("userKeys")) {
-				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_stored_longs");
+				List<Long> userKeys = (List<Long>)solrDocument.get("userKeys_indexedstored_longs");
 				if(userKeys != null)
 					oSiteUser.userKeys.addAll(userKeys);
 			}
 
 			if(saves.contains("userId")) {
-				String userId = (String)solrDocument.get("userId_stored_string");
+				String userId = (String)solrDocument.get("userId_indexedstored_string");
 				if(userId != null)
 					oSiteUser.setUserId(userId);
 			}
 
 			if(saves.contains("userName")) {
-				String userName = (String)solrDocument.get("userName_stored_string");
+				String userName = (String)solrDocument.get("userName_indexedstored_string");
 				if(userName != null)
 					oSiteUser.setUserName(userName);
 			}
 
 			if(saves.contains("userEmail")) {
-				String userEmail = (String)solrDocument.get("userEmail_stored_string");
+				String userEmail = (String)solrDocument.get("userEmail_indexedstored_string");
 				if(userEmail != null)
 					oSiteUser.setUserEmail(userEmail);
 			}
 
 			if(saves.contains("userFirstName")) {
-				String userFirstName = (String)solrDocument.get("userFirstName_stored_string");
+				String userFirstName = (String)solrDocument.get("userFirstName_indexedstored_string");
 				if(userFirstName != null)
 					oSiteUser.setUserFirstName(userFirstName);
 			}
 
 			if(saves.contains("userLastName")) {
-				String userLastName = (String)solrDocument.get("userLastName_stored_string");
+				String userLastName = (String)solrDocument.get("userLastName_indexedstored_string");
 				if(userLastName != null)
 					oSiteUser.setUserLastName(userLastName);
 			}
 
 			if(saves.contains("userFullName")) {
-				String userFullName = (String)solrDocument.get("userFullName_stored_string");
+				String userFullName = (String)solrDocument.get("userFullName_indexedstored_string");
 				if(userFullName != null)
 					oSiteUser.setUserFullName(userFullName);
 			}
@@ -1114,40 +1114,30 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 
 	public void indexSiteUser(SolrInputDocument document) {
 		if(userKey != null) {
-			document.addField("userKey_indexed_long", userKey);
-			document.addField("userKey_stored_long", userKey);
+			document.addField("userKey_indexedstored_long", userKey);
 		}
 		if(userKeys != null) {
 			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_indexed_longs", o);
-			}
-			for(java.lang.Long o : userKeys) {
-				document.addField("userKeys_stored_longs", o);
+				document.addField("userKeys_indexedstored_longs", o);
 			}
 		}
 		if(userId != null) {
-			document.addField("userId_indexed_string", userId);
-			document.addField("userId_stored_string", userId);
+			document.addField("userId_indexedstored_string", userId);
 		}
 		if(userName != null) {
-			document.addField("userName_indexed_string", userName);
-			document.addField("userName_stored_string", userName);
+			document.addField("userName_indexedstored_string", userName);
 		}
 		if(userEmail != null) {
-			document.addField("userEmail_indexed_string", userEmail);
-			document.addField("userEmail_stored_string", userEmail);
+			document.addField("userEmail_indexedstored_string", userEmail);
 		}
 		if(userFirstName != null) {
-			document.addField("userFirstName_indexed_string", userFirstName);
-			document.addField("userFirstName_stored_string", userFirstName);
+			document.addField("userFirstName_indexedstored_string", userFirstName);
 		}
 		if(userLastName != null) {
-			document.addField("userLastName_indexed_string", userLastName);
-			document.addField("userLastName_stored_string", userLastName);
+			document.addField("userLastName_indexedstored_string", userLastName);
 		}
 		if(userFullName != null) {
-			document.addField("userFullName_indexed_string", userFullName);
-			document.addField("userFullName_stored_string", userFullName);
+			document.addField("userFullName_indexedstored_string", userFullName);
 		}
 		super.indexBaseModel(document);
 
@@ -1156,21 +1146,21 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public static String varIndexedSiteUser(String entityVar) {
 		switch(entityVar) {
 			case "userKey":
-				return "userKey_indexed_long";
+				return "userKey_indexedstored_long";
 			case "userKeys":
-				return "userKeys_indexed_longs";
+				return "userKeys_indexedstored_longs";
 			case "userId":
-				return "userId_indexed_string";
+				return "userId_indexedstored_string";
 			case "userName":
-				return "userName_indexed_string";
+				return "userName_indexedstored_string";
 			case "userEmail":
-				return "userEmail_indexed_string";
+				return "userEmail_indexedstored_string";
 			case "userFirstName":
-				return "userFirstName_indexed_string";
+				return "userFirstName_indexedstored_string";
 			case "userLastName":
-				return "userLastName_indexed_string";
+				return "userLastName_indexedstored_string";
 			case "userFullName":
-				return "userFullName_indexed_string";
+				return "userFullName_indexedstored_string";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -1200,16 +1190,16 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
 	public void storeSiteUser(SolrDocument solrDocument) {
 		SiteUser oSiteUser = (SiteUser)this;
 
-		oSiteUser.setUserKey(Optional.ofNullable(solrDocument.get("userKey_stored_long")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("userKeys_stored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		oSiteUser.setUserKey(Optional.ofNullable(solrDocument.get("userKey_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("userKeys_indexedstored_longs")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oSiteUser.addUserKeys(v.toString());
 		});
-		oSiteUser.setUserId(Optional.ofNullable(solrDocument.get("userId_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserName(Optional.ofNullable(solrDocument.get("userName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserEmail(Optional.ofNullable(solrDocument.get("userEmail_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserFirstName(Optional.ofNullable(solrDocument.get("userFirstName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserLastName(Optional.ofNullable(solrDocument.get("userLastName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteUser.setUserFullName(Optional.ofNullable(solrDocument.get("userFullName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserId(Optional.ofNullable(solrDocument.get("userId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserName(Optional.ofNullable(solrDocument.get("userName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserEmail(Optional.ofNullable(solrDocument.get("userEmail_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserFirstName(Optional.ofNullable(solrDocument.get("userFirstName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserLastName(Optional.ofNullable(solrDocument.get("userLastName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteUser.setUserFullName(Optional.ofNullable(solrDocument.get("userFullName_indexedstored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeBaseModel(solrDocument);
 	}

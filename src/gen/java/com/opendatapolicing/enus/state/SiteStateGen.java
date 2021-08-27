@@ -936,47 +936,47 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	}
 	public void populateSiteState(SolrDocument solrDocument) {
 		SiteState oSiteState = (SiteState)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 
 			if(saves.contains("stateKey")) {
-				Long stateKey = (Long)solrDocument.get("stateKey_stored_long");
+				Long stateKey = (Long)solrDocument.get("stateKey_indexedstored_long");
 				if(stateKey != null)
 					oSiteState.setStateKey(stateKey);
 			}
 
 			if(saves.contains("stateName")) {
-				String stateName = (String)solrDocument.get("stateName_stored_string");
+				String stateName = (String)solrDocument.get("stateName_indexedstored_string");
 				if(stateName != null)
 					oSiteState.setStateName(stateName);
 			}
 
 			if(saves.contains("stateAbbreviation")) {
-				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_indexedstored_string");
 				if(stateAbbreviation != null)
 					oSiteState.setStateAbbreviation(stateAbbreviation);
 			}
 
 			if(saves.contains("stateAcsId")) {
-				String stateAcsId = (String)solrDocument.get("stateAcsId_stored_string");
+				String stateAcsId = (String)solrDocument.get("stateAcsId_indexedstored_string");
 				if(stateAcsId != null)
 					oSiteState.setStateAcsId(stateAcsId);
 			}
 
 			if(saves.contains("imageLeft")) {
-				Integer imageLeft = (Integer)solrDocument.get("imageLeft_stored_int");
+				Integer imageLeft = (Integer)solrDocument.get("imageLeft_indexedstored_int");
 				if(imageLeft != null)
 					oSiteState.setImageLeft(imageLeft);
 			}
 
 			if(saves.contains("imageTop")) {
-				Integer imageTop = (Integer)solrDocument.get("imageTop_stored_int");
+				Integer imageTop = (Integer)solrDocument.get("imageTop_indexedstored_int");
 				if(imageTop != null)
 					oSiteState.setImageTop(imageTop);
 			}
 
 			if(saves.contains("stateCompleteName")) {
-				String stateCompleteName = (String)solrDocument.get("stateCompleteName_stored_string");
+				String stateCompleteName = (String)solrDocument.get("stateCompleteName_indexedstored_string");
 				if(stateCompleteName != null)
 					oSiteState.setStateCompleteName(stateCompleteName);
 			}
@@ -987,32 +987,25 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 
 	public void indexSiteState(SolrInputDocument document) {
 		if(stateKey != null) {
-			document.addField("stateKey_indexed_long", stateKey);
-			document.addField("stateKey_stored_long", stateKey);
+			document.addField("stateKey_indexedstored_long", stateKey);
 		}
 		if(stateName != null) {
-			document.addField("stateName_indexed_string", stateName);
-			document.addField("stateName_stored_string", stateName);
+			document.addField("stateName_indexedstored_string", stateName);
 		}
 		if(stateAbbreviation != null) {
-			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
-			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
+			document.addField("stateAbbreviation_indexedstored_string", stateAbbreviation);
 		}
 		if(stateAcsId != null) {
-			document.addField("stateAcsId_indexed_string", stateAcsId);
-			document.addField("stateAcsId_stored_string", stateAcsId);
+			document.addField("stateAcsId_indexedstored_string", stateAcsId);
 		}
 		if(imageLeft != null) {
-			document.addField("imageLeft_indexed_int", imageLeft);
-			document.addField("imageLeft_stored_int", imageLeft);
+			document.addField("imageLeft_indexedstored_int", imageLeft);
 		}
 		if(imageTop != null) {
-			document.addField("imageTop_indexed_int", imageTop);
-			document.addField("imageTop_stored_int", imageTop);
+			document.addField("imageTop_indexedstored_int", imageTop);
 		}
 		if(stateCompleteName != null) {
-			document.addField("stateCompleteName_indexed_string", stateCompleteName);
-			document.addField("stateCompleteName_stored_string", stateCompleteName);
+			document.addField("stateCompleteName_indexedstored_string", stateCompleteName);
 		}
 		super.indexBaseModel(document);
 
@@ -1021,19 +1014,19 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	public static String varIndexedSiteState(String entityVar) {
 		switch(entityVar) {
 			case "stateKey":
-				return "stateKey_indexed_long";
+				return "stateKey_indexedstored_long";
 			case "stateName":
-				return "stateName_indexed_string";
+				return "stateName_indexedstored_string";
 			case "stateAbbreviation":
-				return "stateAbbreviation_indexed_string";
+				return "stateAbbreviation_indexedstored_string";
 			case "stateAcsId":
-				return "stateAcsId_indexed_string";
+				return "stateAcsId_indexedstored_string";
 			case "imageLeft":
-				return "imageLeft_indexed_int";
+				return "imageLeft_indexedstored_int";
 			case "imageTop":
-				return "imageTop_indexed_int";
+				return "imageTop_indexedstored_int";
 			case "stateCompleteName":
-				return "stateCompleteName_indexed_string";
+				return "stateCompleteName_indexedstored_string";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -1063,13 +1056,13 @@ public abstract class SiteStateGen<DEV> extends BaseModel {
 	public void storeSiteState(SolrDocument solrDocument) {
 		SiteState oSiteState = (SiteState)this;
 
-		oSiteState.setStateKey(Optional.ofNullable(solrDocument.get("stateKey_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteState.setStateName(Optional.ofNullable(solrDocument.get("stateName_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteState.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteState.setStateAcsId(Optional.ofNullable(solrDocument.get("stateAcsId_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteState.setImageLeft(Optional.ofNullable(solrDocument.get("imageLeft_stored_int")).map(v -> v.toString()).orElse(null));
-		oSiteState.setImageTop(Optional.ofNullable(solrDocument.get("imageTop_stored_int")).map(v -> v.toString()).orElse(null));
-		oSiteState.setStateCompleteName(Optional.ofNullable(solrDocument.get("stateCompleteName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteState.setStateKey(Optional.ofNullable(solrDocument.get("stateKey_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteState.setStateName(Optional.ofNullable(solrDocument.get("stateName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteState.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteState.setStateAcsId(Optional.ofNullable(solrDocument.get("stateAcsId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteState.setImageLeft(Optional.ofNullable(solrDocument.get("imageLeft_indexedstored_int")).map(v -> v.toString()).orElse(null));
+		oSiteState.setImageTop(Optional.ofNullable(solrDocument.get("imageTop_indexedstored_int")).map(v -> v.toString()).orElse(null));
+		oSiteState.setStateCompleteName(Optional.ofNullable(solrDocument.get("stateCompleteName_indexedstored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeBaseModel(solrDocument);
 	}

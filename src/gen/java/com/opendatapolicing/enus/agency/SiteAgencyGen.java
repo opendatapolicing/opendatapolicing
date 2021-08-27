@@ -1834,89 +1834,89 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 	}
 	public void populateSiteAgency(SolrDocument solrDocument) {
 		SiteAgency oSiteAgency = (SiteAgency)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 
 			if(saves.contains("stateAbbreviation")) {
-				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_indexedstored_string");
 				if(stateAbbreviation != null)
 					oSiteAgency.setStateAbbreviation(stateAbbreviation);
 			}
 
 			if(saves.contains("agencyTitle")) {
-				String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
+				String agencyTitle = (String)solrDocument.get("agencyTitle_indexedstored_string");
 				if(agencyTitle != null)
 					oSiteAgency.setAgencyTitle(agencyTitle);
 			}
 
 			if(saves.contains("agencyAcsId")) {
-				String agencyAcsId = (String)solrDocument.get("agencyAcsId_stored_string");
+				String agencyAcsId = (String)solrDocument.get("agencyAcsId_indexedstored_string");
 				if(agencyAcsId != null)
 					oSiteAgency.setAgencyAcsId(agencyAcsId);
 			}
 
 			if(saves.contains("agencyTotal")) {
-				Long agencyTotal = (Long)solrDocument.get("agencyTotal_stored_long");
+				Long agencyTotal = (Long)solrDocument.get("agencyTotal_indexedstored_long");
 				if(agencyTotal != null)
 					oSiteAgency.setAgencyTotal(agencyTotal);
 			}
 
 			if(saves.contains("agencyTotalWhite")) {
-				Long agencyTotalWhite = (Long)solrDocument.get("agencyTotalWhite_stored_long");
+				Long agencyTotalWhite = (Long)solrDocument.get("agencyTotalWhite_indexedstored_long");
 				if(agencyTotalWhite != null)
 					oSiteAgency.setAgencyTotalWhite(agencyTotalWhite);
 			}
 
 			if(saves.contains("agencyTotalBlack")) {
-				Long agencyTotalBlack = (Long)solrDocument.get("agencyTotalBlack_stored_long");
+				Long agencyTotalBlack = (Long)solrDocument.get("agencyTotalBlack_indexedstored_long");
 				if(agencyTotalBlack != null)
 					oSiteAgency.setAgencyTotalBlack(agencyTotalBlack);
 			}
 
 			if(saves.contains("agencyTotalIndigenous")) {
-				Long agencyTotalIndigenous = (Long)solrDocument.get("agencyTotalIndigenous_stored_long");
+				Long agencyTotalIndigenous = (Long)solrDocument.get("agencyTotalIndigenous_indexedstored_long");
 				if(agencyTotalIndigenous != null)
 					oSiteAgency.setAgencyTotalIndigenous(agencyTotalIndigenous);
 			}
 
 			if(saves.contains("agencyTotalAsian")) {
-				Long agencyTotalAsian = (Long)solrDocument.get("agencyTotalAsian_stored_long");
+				Long agencyTotalAsian = (Long)solrDocument.get("agencyTotalAsian_indexedstored_long");
 				if(agencyTotalAsian != null)
 					oSiteAgency.setAgencyTotalAsian(agencyTotalAsian);
 			}
 
 			if(saves.contains("agencyTotalPacificIslander")) {
-				Long agencyTotalPacificIslander = (Long)solrDocument.get("agencyTotalPacificIslander_stored_long");
+				Long agencyTotalPacificIslander = (Long)solrDocument.get("agencyTotalPacificIslander_indexedstored_long");
 				if(agencyTotalPacificIslander != null)
 					oSiteAgency.setAgencyTotalPacificIslander(agencyTotalPacificIslander);
 			}
 
 			if(saves.contains("agencyTotalLatinx")) {
-				Long agencyTotalLatinx = (Long)solrDocument.get("agencyTotalLatinx_stored_long");
+				Long agencyTotalLatinx = (Long)solrDocument.get("agencyTotalLatinx_indexedstored_long");
 				if(agencyTotalLatinx != null)
 					oSiteAgency.setAgencyTotalLatinx(agencyTotalLatinx);
 			}
 
 			if(saves.contains("agencyTotalMultiracial")) {
-				Long agencyTotalMultiracial = (Long)solrDocument.get("agencyTotalMultiracial_stored_long");
+				Long agencyTotalMultiracial = (Long)solrDocument.get("agencyTotalMultiracial_indexedstored_long");
 				if(agencyTotalMultiracial != null)
 					oSiteAgency.setAgencyTotalMultiracial(agencyTotalMultiracial);
 			}
 
 			if(saves.contains("agencyTotalOther")) {
-				Long agencyTotalOther = (Long)solrDocument.get("agencyTotalOther_stored_long");
+				Long agencyTotalOther = (Long)solrDocument.get("agencyTotalOther_indexedstored_long");
 				if(agencyTotalOther != null)
 					oSiteAgency.setAgencyTotalOther(agencyTotalOther);
 			}
 
 			if(saves.contains("stateId")) {
-				String stateId = (String)solrDocument.get("stateId_stored_string");
+				String stateId = (String)solrDocument.get("stateId_indexedstored_string");
 				if(stateId != null)
 					oSiteAgency.setStateId(stateId);
 			}
 
 			if(saves.contains("stateName")) {
-				String stateName = (String)solrDocument.get("stateName_stored_string");
+				String stateName = (String)solrDocument.get("stateName_indexedstored_string");
 				if(stateName != null)
 					oSiteAgency.setStateName(stateName);
 			}
@@ -1932,60 +1932,46 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 
 	public void indexSiteAgency(SolrInputDocument document) {
 		if(stateAbbreviation != null) {
-			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
-			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
+			document.addField("stateAbbreviation_indexedstored_string", stateAbbreviation);
 		}
 		if(agencyTitle != null) {
-			document.addField("agencyTitle_indexed_string", agencyTitle);
-			document.addField("agencyTitle_stored_string", agencyTitle);
+			document.addField("agencyTitle_indexedstored_string", agencyTitle);
 		}
 		if(agencyAcsId != null) {
-			document.addField("agencyAcsId_indexed_string", agencyAcsId);
-			document.addField("agencyAcsId_stored_string", agencyAcsId);
+			document.addField("agencyAcsId_indexedstored_string", agencyAcsId);
 		}
 		if(agencyTotal != null) {
-			document.addField("agencyTotal_indexed_long", agencyTotal);
-			document.addField("agencyTotal_stored_long", agencyTotal);
+			document.addField("agencyTotal_indexedstored_long", agencyTotal);
 		}
 		if(agencyTotalWhite != null) {
-			document.addField("agencyTotalWhite_indexed_long", agencyTotalWhite);
-			document.addField("agencyTotalWhite_stored_long", agencyTotalWhite);
+			document.addField("agencyTotalWhite_indexedstored_long", agencyTotalWhite);
 		}
 		if(agencyTotalBlack != null) {
-			document.addField("agencyTotalBlack_indexed_long", agencyTotalBlack);
-			document.addField("agencyTotalBlack_stored_long", agencyTotalBlack);
+			document.addField("agencyTotalBlack_indexedstored_long", agencyTotalBlack);
 		}
 		if(agencyTotalIndigenous != null) {
-			document.addField("agencyTotalIndigenous_indexed_long", agencyTotalIndigenous);
-			document.addField("agencyTotalIndigenous_stored_long", agencyTotalIndigenous);
+			document.addField("agencyTotalIndigenous_indexedstored_long", agencyTotalIndigenous);
 		}
 		if(agencyTotalAsian != null) {
-			document.addField("agencyTotalAsian_indexed_long", agencyTotalAsian);
-			document.addField("agencyTotalAsian_stored_long", agencyTotalAsian);
+			document.addField("agencyTotalAsian_indexedstored_long", agencyTotalAsian);
 		}
 		if(agencyTotalPacificIslander != null) {
-			document.addField("agencyTotalPacificIslander_indexed_long", agencyTotalPacificIslander);
-			document.addField("agencyTotalPacificIslander_stored_long", agencyTotalPacificIslander);
+			document.addField("agencyTotalPacificIslander_indexedstored_long", agencyTotalPacificIslander);
 		}
 		if(agencyTotalLatinx != null) {
-			document.addField("agencyTotalLatinx_indexed_long", agencyTotalLatinx);
-			document.addField("agencyTotalLatinx_stored_long", agencyTotalLatinx);
+			document.addField("agencyTotalLatinx_indexedstored_long", agencyTotalLatinx);
 		}
 		if(agencyTotalMultiracial != null) {
-			document.addField("agencyTotalMultiracial_indexed_long", agencyTotalMultiracial);
-			document.addField("agencyTotalMultiracial_stored_long", agencyTotalMultiracial);
+			document.addField("agencyTotalMultiracial_indexedstored_long", agencyTotalMultiracial);
 		}
 		if(agencyTotalOther != null) {
-			document.addField("agencyTotalOther_indexed_long", agencyTotalOther);
-			document.addField("agencyTotalOther_stored_long", agencyTotalOther);
+			document.addField("agencyTotalOther_indexedstored_long", agencyTotalOther);
 		}
 		if(stateId != null) {
-			document.addField("stateId_indexed_string", stateId);
-			document.addField("stateId_stored_string", stateId);
+			document.addField("stateId_indexedstored_string", stateId);
 		}
 		if(stateName != null) {
-			document.addField("stateName_indexed_string", stateName);
-			document.addField("stateName_stored_string", stateName);
+			document.addField("stateName_indexedstored_string", stateName);
 		}
 		if(objectSuggest != null) {
 			document.addField("objectSuggest_suggested", objectSuggest);
@@ -1997,33 +1983,33 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 	public static String varIndexedSiteAgency(String entityVar) {
 		switch(entityVar) {
 			case "stateAbbreviation":
-				return "stateAbbreviation_indexed_string";
+				return "stateAbbreviation_indexedstored_string";
 			case "agencyTitle":
-				return "agencyTitle_indexed_string";
+				return "agencyTitle_indexedstored_string";
 			case "agencyAcsId":
-				return "agencyAcsId_indexed_string";
+				return "agencyAcsId_indexedstored_string";
 			case "agencyTotal":
-				return "agencyTotal_indexed_long";
+				return "agencyTotal_indexedstored_long";
 			case "agencyTotalWhite":
-				return "agencyTotalWhite_indexed_long";
+				return "agencyTotalWhite_indexedstored_long";
 			case "agencyTotalBlack":
-				return "agencyTotalBlack_indexed_long";
+				return "agencyTotalBlack_indexedstored_long";
 			case "agencyTotalIndigenous":
-				return "agencyTotalIndigenous_indexed_long";
+				return "agencyTotalIndigenous_indexedstored_long";
 			case "agencyTotalAsian":
-				return "agencyTotalAsian_indexed_long";
+				return "agencyTotalAsian_indexedstored_long";
 			case "agencyTotalPacificIslander":
-				return "agencyTotalPacificIslander_indexed_long";
+				return "agencyTotalPacificIslander_indexedstored_long";
 			case "agencyTotalLatinx":
-				return "agencyTotalLatinx_indexed_long";
+				return "agencyTotalLatinx_indexedstored_long";
 			case "agencyTotalMultiracial":
-				return "agencyTotalMultiracial_indexed_long";
+				return "agencyTotalMultiracial_indexedstored_long";
 			case "agencyTotalOther":
-				return "agencyTotalOther_indexed_long";
+				return "agencyTotalOther_indexedstored_long";
 			case "stateId":
-				return "stateId_indexed_string";
+				return "stateId_indexedstored_string";
 			case "stateName":
-				return "stateName_indexed_string";
+				return "stateName_indexedstored_string";
 			case "objectSuggest":
 				return "objectSuggest_suggested";
 			default:
@@ -2059,20 +2045,20 @@ public abstract class SiteAgencyGen<DEV> extends BaseModel {
 	public void storeSiteAgency(SolrDocument solrDocument) {
 		SiteAgency oSiteAgency = (SiteAgency)this;
 
-		oSiteAgency.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyAcsId(Optional.ofNullable(solrDocument.get("agencyAcsId_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotal(Optional.ofNullable(solrDocument.get("agencyTotal_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalWhite(Optional.ofNullable(solrDocument.get("agencyTotalWhite_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalBlack(Optional.ofNullable(solrDocument.get("agencyTotalBlack_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalIndigenous(Optional.ofNullable(solrDocument.get("agencyTotalIndigenous_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalAsian(Optional.ofNullable(solrDocument.get("agencyTotalAsian_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalPacificIslander(Optional.ofNullable(solrDocument.get("agencyTotalPacificIslander_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalLatinx(Optional.ofNullable(solrDocument.get("agencyTotalLatinx_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalMultiracial(Optional.ofNullable(solrDocument.get("agencyTotalMultiracial_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setAgencyTotalOther(Optional.ofNullable(solrDocument.get("agencyTotalOther_stored_long")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setStateId(Optional.ofNullable(solrDocument.get("stateId_stored_string")).map(v -> v.toString()).orElse(null));
-		oSiteAgency.setStateName(Optional.ofNullable(solrDocument.get("stateName_stored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyAcsId(Optional.ofNullable(solrDocument.get("agencyAcsId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotal(Optional.ofNullable(solrDocument.get("agencyTotal_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalWhite(Optional.ofNullable(solrDocument.get("agencyTotalWhite_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalBlack(Optional.ofNullable(solrDocument.get("agencyTotalBlack_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalIndigenous(Optional.ofNullable(solrDocument.get("agencyTotalIndigenous_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalAsian(Optional.ofNullable(solrDocument.get("agencyTotalAsian_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalPacificIslander(Optional.ofNullable(solrDocument.get("agencyTotalPacificIslander_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalLatinx(Optional.ofNullable(solrDocument.get("agencyTotalLatinx_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalMultiracial(Optional.ofNullable(solrDocument.get("agencyTotalMultiracial_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setAgencyTotalOther(Optional.ofNullable(solrDocument.get("agencyTotalOther_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setStateId(Optional.ofNullable(solrDocument.get("stateId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oSiteAgency.setStateName(Optional.ofNullable(solrDocument.get("stateName_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		String objectSuggest = (String)solrDocument.get("objectSuggest_suggested");
 		oSiteAgency.setObjectSuggest(objectSuggest);
 

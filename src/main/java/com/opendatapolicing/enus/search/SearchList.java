@@ -139,12 +139,12 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 	protected void _queryResponse(Promise<QueryResponse> promise) {        
 		try {
 			if(this.c != null)
-				solrQuery.addFilterQuery("classCanonicalNames_indexed_strings:" + ClientUtils.escapeQueryChars(this.c.getCanonicalName()));
+				solrQuery.addFilterQuery("classSimpleName_indexedstored_string:" + ClientUtils.escapeQueryChars(this.c.getSimpleName()));
 			if(solrQuery.getQuery() != null) {
 				String solrHostName = siteRequest_.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
 				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
-				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString() + "&suggest=true&terms=true&terms.fl=stopPurposeTitle_indexed_string");
+				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
 				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
 					try {
 						JsonObject json = a.bodyAsJsonObject();
@@ -382,7 +382,7 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			for(SolrDocument solrDocument : solrDocumentList) {
 				try {
 					if(solrDocument != null) {
-						String classCanonicalName = (String)solrDocument.get("classCanonicalName_stored_string");
+						String classCanonicalName = (String)solrDocument.get("classCanonicalName_indexedstored_string");
 						DEV o = (DEV)Class.forName(classCanonicalName).newInstance();
 						MethodUtils.invokeMethod(o, "setSiteRequest_", siteRequest_);
 						if(populate)

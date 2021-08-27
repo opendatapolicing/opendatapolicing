@@ -168,7 +168,7 @@ public class SiteAgency extends SiteAgencyGen<BaseModel> {
 	protected void _stateSearch(Promise<SearchList<SiteState>> promise) {
 		SearchList<SiteState> l = new SearchList<>();
 		l.setQuery("*:*");
-		l.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
+		l.addFilterQuery("stateAbbreviation_indexedstored_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
 		l.setC(SiteState.class);
 		l.setStore(true);
 		promise.complete(l);

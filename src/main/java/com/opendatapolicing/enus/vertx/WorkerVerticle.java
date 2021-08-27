@@ -1149,7 +1149,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 				stateSearch.setQuery("*:*");
 				stateSearch.setC(SiteState.class);
 				stateSearch.setRows(1);
-				stateSearch.addFilterQuery("inheritPk_indexed_string:NC");
+				stateSearch.addFilterQuery("inheritPk_indexedstored_string:NC");
 				stateSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
 					SiteState state = stateSearch.first();
 					if(state != null) {
@@ -1158,7 +1158,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 						stopSearch1.setQuery("*:*");
 						stopSearch1.setC(TrafficStop.class);
 						stopSearch1.setRows(0);
-						stopSearch1.addFacetField("agencyTitle_indexed_string");
+						stopSearch1.addFacetField("agencyTitle_indexedstored_string");
 						stopSearch1.set("facet.offset", 0);
 						stopSearch1.set("facet.limit", FACET_LIMIT);
 						stopSearch1.promiseDeepForClass(siteRequest).onSuccess(d -> {
@@ -1204,11 +1204,11 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		Integer commitWithin = config().getInteger(ConfigKeys.SOLR_WORKER_COMMIT_WITHIN_MILLIS);
 		Promise<Void> promise = Promise.promise();
 		try {
-			FacetField agencyTitleFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
+			FacetField agencyTitleFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexedstored_string")).orElse(new FacetField("agencyTitle_indexedstored_string"));
 			if(agencyTitleFacet.getValueCount() > 0) {
 				List<Future> futures = new ArrayList<>();
 
-				FacetField groupNameFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexed_string")).orElse(new FacetField("agencyTitle_indexed_string"));
+				FacetField groupNameFacet = Optional.ofNullable(stopSearch1.getQueryResponse()).map(r -> r.getFacetField("agencyTitle_indexedstored_string")).orElse(new FacetField("agencyTitle_indexedstored_string"));
 				List<Count> groupNameCounts = Optional.ofNullable(groupNameFacet.getValues()).orElse(Arrays.asList());
 				Integer acsApiYear = config().getInteger(ConfigKeys.ACS_API_YEAR);
 

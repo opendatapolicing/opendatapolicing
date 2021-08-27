@@ -807,11 +807,11 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					agencySearch.setC(SiteAgency.class);
 					agencySearch.setRows(rows.intValue());
 					agencySearch.setFields(Arrays.asList(
-							"agencyName_stored_string"
-							, "stateAbbreviation_stored_string"
-							, "pk_stored_long"
+							"agencyName_indexedstored_string"
+							, "stateAbbreviation_indexedstored_string"
+							, "pk_indexedstored_long"
 							));
-					agencySearch.addSort(SortClause.asc("agencyTitle_indexed_string"));
+					agencySearch.addSort(SortClause.asc("agencyTitle_indexedstored_string"));
 					agencySearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
 						JsonObject agencyLettersMap = new JsonObject();
 						JsonArray agencyLettersArray = new JsonArray();
@@ -869,13 +869,13 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch1.setQuery("*:*");
 					stopSearch1.setC(TrafficStop.class);
 					stopSearch1.setRows(1);
-					stopSearch1.addSort(SortClause.asc("stopDateTime_indexed_date"));
-					stopSearch1.addFacetField("stopYear_indexed_int");
-					stopSearch1.addFacetField("personRaceTitles_indexed_strings");
-					stopSearch1.addFacetField("stopPurposeTitle_indexed_string");
-					stopSearch1.addFacetField("stopActionTitle_indexed_string");
-	//				stopSearch1.addFacetField("personGenderTitles_indexed_strings");
-	//				stopSearch1.addFacetField("personAges_indexed_ints");
+					stopSearch1.addSort(SortClause.asc("stopDateTime_indexedstored_date"));
+					stopSearch1.addFacetField("stopYear_indexedstored_int");
+					stopSearch1.addFacetField("personRaceTitles_indexedstored_strings");
+					stopSearch1.addFacetField("stopPurposeTitle_indexedstored_string");
+					stopSearch1.addFacetField("stopActionTitle_indexedstored_string");
+	//				stopSearch1.addFacetField("personGenderTitles_indexedstored_strings");
+	//				stopSearch1.addFacetField("personAges_indexedstored_ints");
 					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(b -> {
 						List<String> urlParams = new ArrayList<String>();
 						Integer startYear = LocalDateTime.now().getYear();
@@ -886,15 +886,15 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						SearchList<TrafficStop> stopSearch2 = new SearchList<TrafficStop>();
 						stopSearch2.setStore(true);
 						stopSearch2.setQuery("*:*");
-						stopSearch2.setSort("stopDateTime_indexed_date", ORDER.desc);
+						stopSearch2.setSort("stopDateTime_indexedstored_date", ORDER.desc);
 						stopSearch2.setFields(Arrays.asList(
-								"stopDateTime_stored_string"
-								, "personGenderTitles_stored_strings"
-								, "personRaceTitles_stored_strings"
-								, "personAges_stored_ints"
-								, "agencyTitle_stored_string"
-								, "stopOfficerId_stored_string"
-								, "pk_stored_long"
+								"stopDateTime_indexedstored_string"
+								, "personGenderTitles_indexedstored_strings"
+								, "personRaceTitles_indexedstored_strings"
+								, "personAges_indexedstored_ints"
+								, "agencyTitle_indexedstored_string"
+								, "stopOfficerId_indexedstored_string"
+								, "pk_indexedstored_long"
 								));
 						stopSearch2.setFacet(true);
 		
@@ -914,24 +914,24 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							ZonedDateTime endDate = TrafficStop.staticSetStopDateTime(siteRequest, endDateParam);
 							ctx.put("startDateStr", startDate.format(dateFormatter));
 							ctx.put("endDateStr", endDate.format(dateFormatter));
-							stopSearch2.addFilterQuery("stopDateTime_indexed_date:[" + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, startDate)) + " TO " + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, endDate)) + "]");
+							stopSearch2.addFilterQuery("stopDateTime_indexedstored_date:[" + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, startDate)) + " TO " + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, endDate)) + "]");
 							urlParams.add("var=startDate:" + startDateParam);
 							urlParams.add("var=endDate:" + endDateParam);
 						} else if(startDateParam == null && endDateParam != null) {
 							ZonedDateTime endDate = TrafficStop.staticSetStopDateTime(siteRequest, endDateParam);
 							ctx.put("endDateStr", endDate.format(dateFormatter));
-							stopSearch2.addFilterQuery("stopDateTime_indexed_date:[* TO " + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, endDate)) + "]");
+							stopSearch2.addFilterQuery("stopDateTime_indexedstored_date:[* TO " + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, endDate)) + "]");
 							urlParams.add("var=endDate:" + endDateParam);
 						} else if(startDateParam != null && endDateParam == null) {
 							ZonedDateTime startDate = TrafficStop.staticSetStopDateTime(siteRequest, startDateParam);
 							ctx.put("startDateStr", startDate.format(dateFormatter));
-							stopSearch2.addFilterQuery("stopDateTime_indexed_date:[" + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, startDate)) + " TO *]");
+							stopSearch2.addFilterQuery("stopDateTime_indexedstored_date:[" + TrafficStop.staticSolrStrStopDateTime(siteRequest, TrafficStop.staticSolrStopDateTime(siteRequest, startDate)) + " TO *]");
 							urlParams.add("var=startDate:" + startDateParam);
 						}
 		
 						Optional.ofNullable((String)ctx.get("stateAbbreviation")).ifPresent(stateAbbreviation -> {
 							try {
-								stopSearch2.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
+								stopSearch2.addFilterQuery("stateAbbreviation_indexedstored_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
 								urlParams.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
@@ -939,7 +939,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("agencyTitle")).ifPresent(agencyTitle -> {
 							try {
-								stopSearch2.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
+								stopSearch2.addFilterQuery("agencyTitle_indexedstored_string:" + ClientUtils.escapeQueryChars(agencyTitle));
 								urlParams.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
@@ -947,7 +947,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("stopOfficerId")).ifPresent(stopOfficerId -> {
 							try {
-								stopSearch2.addFilterQuery("stopOfficerId_indexed_string:" + ClientUtils.escapeQueryChars(stopOfficerId));
+								stopSearch2.addFilterQuery("stopOfficerId_indexedstored_string:" + ClientUtils.escapeQueryChars(stopOfficerId));
 								urlParams.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
@@ -955,7 +955,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("race")).ifPresent(race -> {
 							try {
-								stopSearch2.addFilterQuery("personRaceTitles_indexed_strings:" + ClientUtils.escapeQueryChars(race));
+								stopSearch2.addFilterQuery("personRaceTitles_indexedstored_strings:" + ClientUtils.escapeQueryChars(race));
 								urlParams.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
@@ -963,7 +963,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("gender")).ifPresent(gender -> {
 							try {
-								stopSearch2.addFilterQuery("personGenderTitles_indexed_strings:" + ClientUtils.escapeQueryChars(gender));
+								stopSearch2.addFilterQuery("personGenderTitles_indexedstored_strings:" + ClientUtils.escapeQueryChars(gender));
 								urlParams.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
@@ -971,7 +971,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("age")).ifPresent(age -> {
 							try {
-								stopSearch2.addFilterQuery("personAges_indexed_ints:" + ClientUtils.escapeQueryChars(age));
+								stopSearch2.addFilterQuery("personAges_indexedstored_ints:" + ClientUtils.escapeQueryChars(age));
 								urlParams.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
 								ExceptionUtils.rethrow(ex);
@@ -979,7 +979,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 	
 						JsonArray personPurposeTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexedstored_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							List<String> fqValues = new ArrayList<>();
 							facetField.getValues().forEach(value -> {
 								JsonObject json = new JsonObject();
@@ -995,13 +995,13 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								}
 							});
 							if(fqValues.size() > 0) {
-								stopSearch2.addFilterQuery("stopPurposeTitle_indexed_string:(\"" + StringUtils.join(fqValues, "\" OR \"") + "\")");
+								stopSearch2.addFilterQuery("stopPurposeTitle_indexedstored_string:(\"" + StringUtils.join(fqValues, "\" OR \"") + "\")");
 							}
 						});
 						ctx.put("personPurposeTitles", personPurposeTitles);
 	
 						JsonArray personActionTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexedstored_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							List<String> fqValues = new ArrayList<>();
 							facetField.getValues().forEach(value -> {
 								JsonObject json = new JsonObject();
@@ -1017,7 +1017,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								}
 							});
 							if(fqValues.size() > 0) {
-								stopSearch2.addFilterQuery("stopActionTitle_indexed_string:(\"" + StringUtils.join(fqValues, "\" OR \"") + "\")");
+								stopSearch2.addFilterQuery("stopActionTitle_indexedstored_string:(\"" + StringUtils.join(fqValues, "\" OR \"") + "\")");
 							}
 						});
 						ctx.put("personActionTitles", personActionTitles);
@@ -1084,7 +1084,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							ctx.put("searchTotal", NumberFormat.getNumberInstance(Locale.US).format(numFound));
 		
 							JsonArray personRaceTitles = new JsonArray();
-							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexedstored_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 								facetField.getValues().forEach(value -> {
 									personRaceTitles.add(value.getName());
 								});
@@ -1092,7 +1092,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							ctx.put("personRaceTitles", personRaceTitles);
 		
 							JsonArray personGenderTitles = new JsonArray();
-							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexedstored_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 								facetField.getValues().forEach(value -> {
 									personGenderTitles.add(value.getName());
 								});
@@ -1100,7 +1100,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 							ctx.put("personGenderTitles", personGenderTitles);
 		
 							JsonArray personAges = new JsonArray();
-							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+							stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexedstored_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 								facetField.getValues().forEach(value -> {
 									personAges.add(value.getName());
 								});
@@ -1150,7 +1150,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 				stateSearch.setStore(true);
 				stateSearch.setQuery("*:*");
 				stateSearch.setC(SiteState.class);
-				stateSearch.addFilterQuery("stateAbbreviation_indexed_string:[* TO *]");
+				stateSearch.addFilterQuery("stateAbbreviation_indexedstored_string:[* TO *]");
 				stateSearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
 					JsonArray states = new JsonArray();
 					ctx.put("states", states);
@@ -1159,11 +1159,11 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch.setStore(true);
 					stopSearch.setQuery("*:*");
 					stopSearch.setC(TrafficStop.class);
-					stopSearch.addFacetField("stateAbbreviation_indexed_string");
+					stopSearch.addFacetField("stateAbbreviation_indexedstored_string");
 					stopSearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
 						stateSearch.getList().stream().forEach(state -> {
 							String stateAbbreviation = state.getStateAbbreviation();
-							Count count = stopSearch.getQueryResponse().getFacetField("stateAbbreviation_indexed_string").getValues().stream().filter(count1 -> count1.getName().equals(stateAbbreviation)).findFirst().orElse(null);
+							Count count = stopSearch.getQueryResponse().getFacetField("stateAbbreviation_indexedstored_string").getValues().stream().filter(count1 -> count1.getName().equals(stateAbbreviation)).findFirst().orElse(null);
 							if(count != null) {
 								Long stopCount = count.getCount();
 								String stopCountStr;
@@ -1213,7 +1213,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 				stateSearch.setStore(true);
 				stateSearch.setQuery("*:*");
 				stateSearch.setC(SiteState.class);
-				stateSearch.addFilterQuery("objectId_indexed_string:" + ClientUtils.escapeQueryChars(stateId));
+				stateSearch.addFilterQuery("objectId_indexedstored_string:" + ClientUtils.escapeQueryChars(stateId));
 				stateSearch.promiseDeepForClass(siteRequest).onSuccess(b -> {
 					SiteState state = stateSearch.first();
 					if(state != null) {
@@ -1225,11 +1225,11 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch1.setQuery("*:*");
 					stopSearch1.setC(TrafficStop.class);
 					stopSearch1.setRows(1);
-					stopSearch1.addSort(SortClause.asc("stopDateTime_indexed_date"));
-					stopSearch1.addFacetField("agencyTitle_indexed_string");
-					stopSearch1.addFacetField("personRaceTitles_indexed_strings");
+					stopSearch1.addSort(SortClause.asc("stopDateTime_indexedstored_date"));
+					stopSearch1.addFacetField("agencyTitle_indexedstored_string");
+					stopSearch1.addFacetField("personRaceTitles_indexedstored_strings");
 					stopSearch1.add("facet.limit", "20");
-					stopSearch1.add("json.facet", "{agencyTitle:\"unique(agencyTitle_indexed_string)\"}");
+					stopSearch1.add("json.facet", "{agencyTitle:\"unique(agencyTitle_indexedstored_string)\"}");
 					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(c -> {
 						TrafficStop beginStop = stopSearch1.first();
 						SearchList<TrafficStop> stopSearch2 = new SearchList<TrafficStop>();
@@ -1237,7 +1237,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						stopSearch2.setQuery("*:*");
 						stopSearch2.setC(TrafficStop.class);
 						stopSearch2.setRows(1);
-						stopSearch2.addSort(SortClause.desc("stopDateTime_indexed_date"));
+						stopSearch2.addSort(SortClause.desc("stopDateTime_indexedstored_date"));
 						stopSearch2.promiseDeepForClass(siteRequest).onSuccess(d -> {
 							TrafficStop endStop = stopSearch2.first();
 							SearchList<TrafficSearch> searchSearch = new SearchList<TrafficSearch>();
@@ -1255,7 +1255,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								Integer agencyCount = (Integer)jsonFacets.get("agencyTitle");
 								ctx.put("agencyCount", NumberFormat.getNumberInstance(Locale.US).format(agencyCount));
 	
-								stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "agencyTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "agencyTitle_indexedstored_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 									List<Count> counts = facetField.getValues();
 									for(Integer i = 0; i < counts.size(); i++) {
 										if(i == 5)
@@ -1271,7 +1271,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 								});
 
 								JsonArray personRaceTitles = new JsonArray();
-								stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+								stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexedstored_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 									facetField.getValues().forEach(value -> {
 										personRaceTitles.add(value.getName());
 									});
@@ -1314,10 +1314,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch1.setQuery("*:*");
 					stopSearch1.setC(TrafficStop.class);
 					stopSearch1.setRows(0);
-					stopSearch1.addFacetField("stopYear_indexed_int");
-					stopSearch1.addFacetField("personRaceTitles_indexed_strings");
-					stopSearch1.addFacetField("stopPurposeTitle_indexed_string");
-					stopSearch1.addFacetField("stopActionTitle_indexed_string");
+					stopSearch1.addFacetField("stopYear_indexedstored_int");
+					stopSearch1.addFacetField("personRaceTitles_indexedstored_strings");
+					stopSearch1.addFacetField("stopPurposeTitle_indexedstored_string");
+					stopSearch1.addFacetField("stopActionTitle_indexedstored_string");
 					stopSearch1.set("facet.mincount", "1");
 					stopSearch1.set("facet.sort", "index");
 
@@ -1325,7 +1325,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					stopSearch1.promiseDeepForClass(siteRequest).onSuccess(d -> {
 
 						JsonArray stopYears = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopYear_indexed_int".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopYear_indexedstored_int".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							facetField.getValues().forEach(value -> {
 								stopYears.add(value.getName());
 							});
@@ -1333,7 +1333,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put("stopYears", stopYears);
 
 						JsonArray stopPurposeTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopPurposeTitle_indexedstored_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							facetField.getValues().forEach(value -> {
 								stopPurposeTitles.add(value.getName());
 							});
@@ -1341,7 +1341,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put("stopPurposeTitles", stopPurposeTitles);
 
 						JsonArray personActionTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexed_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "stopActionTitle_indexedstored_string".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							facetField.getValues().forEach(value -> {
 								personActionTitles.add(value.getName());
 							});
@@ -1349,7 +1349,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put("personActionTitles", personActionTitles);
 	
 						JsonArray personRaceTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personRaceTitles_indexedstored_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							facetField.getValues().forEach(value -> {
 								personRaceTitles.add(value.getName());
 							});
@@ -1357,7 +1357,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put("personRaceTitles", personRaceTitles);
 	
 						JsonArray personGenderTitles = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexed_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personGenderTitles_indexedstored_strings".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							facetField.getValues().forEach(value -> {
 								personGenderTitles.add(value.getName());
 							});
@@ -1365,7 +1365,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put("personGenderTitles", personGenderTitles);
 	
 						JsonArray personAges = new JsonArray();
-						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexed_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
+						stopSearch1.getQueryResponse().getFacetFields().stream().filter(facetField -> "personAges_indexedstored_ints".equals(facetField.getName())).findFirst().ifPresent(facetField -> {
 							facetField.getValues().forEach(value -> {
 								personAges.add(value.getName());
 							});
@@ -1393,7 +1393,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						stopSearch2.setQuery("*:*");
 						stopSearch2.setC(TrafficStop.class);
 						stopSearch2.setRows(0);
-						stopSearch2.addFilterQuery(String.format("stopDateTime_indexed_date:[%s TO %s]", startDateStr, endDateStr));
+						stopSearch2.addFilterQuery(String.format("stopDateTime_indexedstored_date:[%s TO %s]", startDateStr, endDateStr));
 						stopSearch2.set("facet.mincount", "1");
 						stopSearch2.set("facet.sort", "index");
 						stopSearch2.set("facet.range.end", endDateStr);
@@ -1406,7 +1406,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 	
 						if(agencyTitle != null) {
 							try {
-								stopSearch2.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
+								stopSearch2.addFilterQuery("agencyTitle_indexedstored_string:" + ClientUtils.escapeQueryChars(agencyTitle));
 								fqParamsWithoutYear.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
 								fqParamsWithoutStopPurposeTitle.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=agencyTitle:" + URLEncoder.encode(agencyTitle, "UTF-8"));
@@ -1416,7 +1416,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						}
 						Optional.ofNullable((String)ctx.get("stateAbbreviation")).ifPresent(stateAbbreviation -> {
 							try {
-								stopSearch2.addFilterQuery("stateAbbreviation_indexed_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
+								stopSearch2.addFilterQuery("stateAbbreviation_indexedstored_string:" + ClientUtils.escapeQueryChars(stateAbbreviation));
 								fqParamsWithoutYear.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
 								fqParamsWithoutStopPurposeTitle.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=stateAbbreviation:" + URLEncoder.encode(stateAbbreviation, "UTF-8"));
@@ -1426,7 +1426,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("stopPurposeTitle")).ifPresent(stopPurposeTitle -> {
 							try {
-								stopSearch2.addFilterQuery("stopPurposeTitle_indexed_string:" + ClientUtils.escapeQueryChars(stopPurposeTitle));
+								stopSearch2.addFilterQuery("stopPurposeTitle_indexedstored_string:" + ClientUtils.escapeQueryChars(stopPurposeTitle));
 								fqParamsWithoutYear.add("var=stopPurposeTitle:" + URLEncoder.encode(stopPurposeTitle, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=stopPurposeTitle:" + URLEncoder.encode(stopPurposeTitle, "UTF-8"));
 							} catch (UnsupportedEncodingException ex) {
@@ -1435,7 +1435,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("stopOfficerId")).ifPresent(stopOfficerId -> {
 							try {
-								stopSearch2.addFilterQuery("stopOfficerId_indexed_string:" + ClientUtils.escapeQueryChars(stopOfficerId));
+								stopSearch2.addFilterQuery("stopOfficerId_indexedstored_string:" + ClientUtils.escapeQueryChars(stopOfficerId));
 								fqParamsWithoutYear.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
 								fqParamsWithoutStopPurposeTitle.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=stopOfficerId:" + URLEncoder.encode(stopOfficerId, "UTF-8"));
@@ -1445,7 +1445,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("race")).ifPresent(race -> {
 							try {
-								stopSearch2.addFilterQuery("personRaceTitles_indexed_strings:" + ClientUtils.escapeQueryChars(race));
+								stopSearch2.addFilterQuery("personRaceTitles_indexedstored_strings:" + ClientUtils.escapeQueryChars(race));
 								fqParamsWithoutYear.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
 								fqParamsWithoutStopPurposeTitle.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=race:" + URLEncoder.encode(race, "UTF-8"));
@@ -1455,7 +1455,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("gender")).ifPresent(gender -> {
 							try {
-								stopSearch2.addFilterQuery("personGenderTitles_indexed_strings:" + ClientUtils.escapeQueryChars(gender));
+								stopSearch2.addFilterQuery("personGenderTitles_indexedstored_strings:" + ClientUtils.escapeQueryChars(gender));
 								fqParamsWithoutYear.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
 								fqParamsWithoutStopPurposeTitle.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=gender:" + URLEncoder.encode(gender, "UTF-8"));
@@ -1465,7 +1465,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("age")).ifPresent(age -> {
 							try {
-								stopSearch2.addFilterQuery("personAges_indexed_ints:" + ClientUtils.escapeQueryChars(age));
+								stopSearch2.addFilterQuery("personAges_indexedstored_ints:" + ClientUtils.escapeQueryChars(age));
 								fqParamsWithoutYear.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
 								fqParamsWithoutStopPurposeTitle.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=age:" + URLEncoder.encode(age, "UTF-8"));
@@ -1475,7 +1475,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						});
 						Optional.ofNullable((String)ctx.get("stopYear")).ifPresent(stopYear -> {
 							try {
-								stopSearch2.addFilterQuery("stopYear_indexed_int:" + ClientUtils.escapeQueryChars(stopYear));
+								stopSearch2.addFilterQuery("stopYear_indexedstored_int:" + ClientUtils.escapeQueryChars(stopYear));
 								fqParamsWithoutStopPurposeTitle.add("var=stopYear:" + URLEncoder.encode(stopYear, "UTF-8"));
 								fqParamsWithoutSearchTypeTitle.add("var=stopYear:" + URLEncoder.encode(stopYear, "UTF-8"));
 							} catch (Exception ex) {
@@ -1492,9 +1492,9 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						agencySearch.setC(SiteAgency.class);
 						agencySearch.setRows(1);
 						if(agencyTitle == null)
-							agencySearch.addFilterQuery("agencyTitle_indexed_string:------");
+							agencySearch.addFilterQuery("agencyTitle_indexedstored_string:------");
 						else
-							agencySearch.addFilterQuery("agencyTitle_indexed_string:" + ClientUtils.escapeQueryChars(agencyTitle));
+							agencySearch.addFilterQuery("agencyTitle_indexedstored_string:" + ClientUtils.escapeQueryChars(agencyTitle));
 						agencySearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
 							SiteAgency agency = agencySearch.first();
 							if(agency != null && agency.getAgencyTotal() != null) {

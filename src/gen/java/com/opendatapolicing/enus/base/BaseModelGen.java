@@ -655,98 +655,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		return classSimpleName == null ? "" : classSimpleName;
 	}
 
-	/////////////////////////
-	// classCanonicalNames //
-	/////////////////////////
-
-	/**	 The entity classCanonicalNames
-	 *	Il est construit avant d'être initialisé avec le constructeur par défaut List<String>(). 
-	 */
-	@JsonProperty
-	@JsonFormat(shape = JsonFormat.Shape.ARRAY)
-	@JsonInclude(Include.NON_NULL)
-	protected List<String> classCanonicalNames = new ArrayList<String>();
-	@JsonIgnore
-	public Wrap<List<String>> classCanonicalNamesWrap = new Wrap<List<String>>().var("classCanonicalNames").o(classCanonicalNames);
-
-	/**	<br/> The entity classCanonicalNames
-	 *  It is constructed before being initialized with the constructor by default List<String>(). 
-	 * <br/><a href="http://localhost:8983/solr/computate/select?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:com.opendatapolicing.enus.base.BaseModel&fq=classeEtendGen_indexed_boolean:true&fq=entiteVar_enUS_indexed_string:classCanonicalNames">Find the entity classCanonicalNames in Solr</a>
-	 * <br/>
-	 * @param classCanonicalNames is the entity already constructed. 
-	 **/
-	protected abstract void _classCanonicalNames(List<String> l);
-
-	public List<String> getClassCanonicalNames() {
-		return classCanonicalNames;
-	}
-
-	public void setClassCanonicalNames(List<String> classCanonicalNames) {
-		this.classCanonicalNames = classCanonicalNames;
-		this.classCanonicalNamesWrap.alreadyInitialized = true;
-	}
-	public static String staticSetClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-	public BaseModel addClassCanonicalNames(String...objets) {
-		for(String o : objets) {
-			addClassCanonicalNames(o);
-		}
-		return (BaseModel)this;
-	}
-	public BaseModel addClassCanonicalNames(String o) {
-		if(o != null && !classCanonicalNames.contains(o))
-			this.classCanonicalNames.add(o);
-		return (BaseModel)this;
-	}
-	@JsonIgnore
-	public void setClassCanonicalNames(JsonArray objets) {
-		classCanonicalNames.clear();
-		for(int i = 0; i < objets.size(); i++) {
-			String o = objets.getString(i);
-			addClassCanonicalNames(o);
-		}
-	}
-	protected BaseModel classCanonicalNamesInit() {
-		if(!classCanonicalNamesWrap.alreadyInitialized) {
-			_classCanonicalNames(classCanonicalNames);
-		}
-		classCanonicalNamesWrap.alreadyInitialized(true);
-		return (BaseModel)this;
-	}
-
-	public static String staticSolrClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
-		return o;
-	}
-
-	public static String staticSolrStrClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
-		return o == null ? null : o.toString();
-	}
-
-	public static String staticSolrFqClassCanonicalNames(SiteRequestEnUS siteRequest_, String o) {
-		return BaseModel.staticSolrStrClassCanonicalNames(siteRequest_, BaseModel.staticSolrClassCanonicalNames(siteRequest_, BaseModel.staticSetClassCanonicalNames(siteRequest_, o)));
-	}
-
-	public List<String> solrClassCanonicalNames() {
-		List<String> l = new ArrayList<String>();
-		for(String o : classCanonicalNames) {
-			l.add(BaseModel.staticSolrClassCanonicalNames(siteRequest_, o));
-		}
-		return l;
-	}
-
-	public String strClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
-	}
-
-	public List<String> sqlClassCanonicalNames() {
-		return classCanonicalNames;
-	}
-
-	public String jsonClassCanonicalNames() {
-		return classCanonicalNames == null ? "" : classCanonicalNames.toString();
-	}
-
 	///////////
 	// saves //
 	///////////
@@ -1019,7 +927,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				modifiedInit();
 				classCanonicalNameInit();
 				classSimpleNameInit();
-				classCanonicalNamesInit();
 				savesInit();
 				objectTitleInit();
 				objectIdInit();
@@ -1091,8 +998,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				return oBaseModel.classCanonicalName;
 			case "classSimpleName":
 				return oBaseModel.classSimpleName;
-			case "classCanonicalNames":
-				return oBaseModel.classCanonicalNames;
 			case "saves":
 				return oBaseModel.saves;
 			case "objectTitle":
@@ -1152,8 +1057,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSetClassCanonicalName(siteRequest_, o);
 		case "classSimpleName":
 			return BaseModel.staticSetClassSimpleName(siteRequest_, o);
-		case "classCanonicalNames":
-			return BaseModel.staticSetClassCanonicalNames(siteRequest_, o);
 		case "saves":
 			return BaseModel.staticSetSaves(siteRequest_, o);
 		case "objectTitle":
@@ -1188,8 +1091,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSolrClassCanonicalName(siteRequest_, (String)o);
 		case "classSimpleName":
 			return BaseModel.staticSolrClassSimpleName(siteRequest_, (String)o);
-		case "classCanonicalNames":
-			return BaseModel.staticSolrClassCanonicalNames(siteRequest_, (String)o);
 		case "saves":
 			return BaseModel.staticSolrSaves(siteRequest_, (String)o);
 		case "objectTitle":
@@ -1224,8 +1125,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSolrStrClassCanonicalName(siteRequest_, (String)o);
 		case "classSimpleName":
 			return BaseModel.staticSolrStrClassSimpleName(siteRequest_, (String)o);
-		case "classCanonicalNames":
-			return BaseModel.staticSolrStrClassCanonicalNames(siteRequest_, (String)o);
 		case "saves":
 			return BaseModel.staticSolrStrSaves(siteRequest_, (String)o);
 		case "objectTitle":
@@ -1260,8 +1159,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 			return BaseModel.staticSolrFqClassCanonicalName(siteRequest_, o);
 		case "classSimpleName":
 			return BaseModel.staticSolrFqClassSimpleName(siteRequest_, o);
-		case "classCanonicalNames":
-			return BaseModel.staticSolrFqClassCanonicalNames(siteRequest_, o);
 		case "saves":
 			return BaseModel.staticSolrFqSaves(siteRequest_, o);
 		case "objectTitle":
@@ -1352,89 +1249,68 @@ public abstract class BaseModelGen<DEV> extends Object {
 	}
 	public void populateBaseModel(SolrDocument solrDocument) {
 		BaseModel oBaseModel = (BaseModel)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 		}
 	}
 
 	public void indexBaseModel(SolrInputDocument document) {
 		if(pk != null) {
-			document.addField("pk_indexed_long", pk);
-			document.addField("pk_stored_long", pk);
+			document.addField("pk_indexedstored_long", pk);
 		}
 		if(inheritPk != null) {
-			document.addField("inheritPk_indexed_string", inheritPk);
-			document.addField("inheritPk_stored_string", inheritPk);
+			document.addField("inheritPk_indexedstored_string", inheritPk);
 		}
 		if(id != null) {
 			document.addField("id", id);
 		}
 		if(created != null) {
-			document.addField("created_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
-			document.addField("created_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
+			document.addField("created_indexedstored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(created.toInstant(), ZoneId.of("UTC"))));
 		}
 		if(modified != null) {
-			document.addField("modified_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
-			document.addField("modified_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
+			document.addField("modified_indexedstored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(modified.toInstant(), ZoneId.of("UTC"))));
 		}
 		if(classCanonicalName != null) {
-			document.addField("classCanonicalName_indexed_string", classCanonicalName);
-			document.addField("classCanonicalName_stored_string", classCanonicalName);
+			document.addField("classCanonicalName_indexedstored_string", classCanonicalName);
 		}
 		if(classSimpleName != null) {
-			document.addField("classSimpleName_indexed_string", classSimpleName);
-			document.addField("classSimpleName_stored_string", classSimpleName);
-		}
-		if(classCanonicalNames != null) {
-			for(java.lang.String o : classCanonicalNames) {
-				document.addField("classCanonicalNames_indexed_strings", o);
-			}
-			for(java.lang.String o : classCanonicalNames) {
-				document.addField("classCanonicalNames_stored_strings", o);
-			}
+			document.addField("classSimpleName_indexedstored_string", classSimpleName);
 		}
 		if(saves != null) {
 			for(java.lang.String o : saves) {
-				document.addField("saves_indexed_strings", o);
-			}
-			for(java.lang.String o : saves) {
-				document.addField("saves_stored_strings", o);
+				document.addField("saves_indexedstored_strings", o);
 			}
 		}
 		if(objectTitle != null) {
-			document.addField("objectTitle_indexed_string", objectTitle);
-			document.addField("objectTitle_stored_string", objectTitle);
+			document.addField("objectTitle_indexedstored_string", objectTitle);
 		}
 		if(objectId != null) {
-			document.addField("objectId_indexed_string", objectId);
-			document.addField("objectId_stored_string", objectId);
+			document.addField("objectId_indexedstored_string", objectId);
 		}
 	}
 
 	public static String varIndexedBaseModel(String entityVar) {
 		switch(entityVar) {
 			case "pk":
-				return "pk_indexed_long";
+				return "pk_indexedstored_long";
 			case "inheritPk":
-				return "inheritPk_indexed_string";
+				return "inheritPk_indexedstored_string";
 			case "id":
 				return "id";
 			case "created":
-				return "created_indexed_date";
+				return "created_indexedstored_date";
 			case "modified":
-				return "modified_indexed_date";
+				return "modified_indexedstored_date";
 			case "classCanonicalName":
-				return "classCanonicalName_indexed_string";
+				return "classCanonicalName_indexedstored_string";
 			case "classSimpleName":
-				return "classSimpleName_indexed_string";
-			case "classCanonicalNames":
-				return "classCanonicalNames_indexed_strings";
+				return "classSimpleName_indexedstored_string";
 			case "saves":
-				return "saves_indexed_strings";
+				return "saves_indexedstored_strings";
 			case "objectTitle":
-				return "objectTitle_indexed_string";
+				return "objectTitle_indexedstored_string";
 			case "objectId":
-				return "objectId_indexed_string";
+				return "objectId_indexedstored_string";
 			default:
 				return null;
 		}
@@ -1464,22 +1340,19 @@ public abstract class BaseModelGen<DEV> extends Object {
 	public void storeBaseModel(SolrDocument solrDocument) {
 		BaseModel oBaseModel = (BaseModel)this;
 
-		oBaseModel.setPk(Optional.ofNullable(solrDocument.get("pk_stored_long")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setInheritPk(Optional.ofNullable(solrDocument.get("inheritPk_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setPk(Optional.ofNullable(solrDocument.get("pk_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setInheritPk(Optional.ofNullable(solrDocument.get("inheritPk_indexedstored_string")).map(v -> v.toString()).orElse(null));
 		String id = (String)solrDocument.get("id");
 		oBaseModel.setId(id);
-		oBaseModel.setCreated(Optional.ofNullable(solrDocument.get("created_stored_date")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setModified(Optional.ofNullable(solrDocument.get("modified_stored_date")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_stored_string")).map(v -> v.toString()).orElse(null));
-		Optional.ofNullable((List<?>)solrDocument.get("classCanonicalNames_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-			oBaseModel.addClassCanonicalNames(v.toString());
-		});
-		Optional.ofNullable((List<?>)solrDocument.get("saves_stored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+		oBaseModel.setCreated(Optional.ofNullable(solrDocument.get("created_indexedstored_date")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setModified(Optional.ofNullable(solrDocument.get("modified_indexedstored_date")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setClassCanonicalName(Optional.ofNullable(solrDocument.get("classCanonicalName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setClassSimpleName(Optional.ofNullable(solrDocument.get("classSimpleName_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		Optional.ofNullable((List<?>)solrDocument.get("saves_indexedstored_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
 			oBaseModel.addSaves(v.toString());
 		});
-		oBaseModel.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oBaseModel.setObjectId(Optional.ofNullable(solrDocument.get("objectId_stored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setObjectTitle(Optional.ofNullable(solrDocument.get("objectTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oBaseModel.setObjectId(Optional.ofNullable(solrDocument.get("objectId_indexedstored_string")).map(v -> v.toString()).orElse(null));
 	}
 
 	//////////////////
@@ -1505,8 +1378,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				apiRequest.addVars("classCanonicalName");
 			if(!Objects.equals(classSimpleName, original.getClassSimpleName()))
 				apiRequest.addVars("classSimpleName");
-			if(!Objects.equals(classCanonicalNames, original.getClassCanonicalNames()))
-				apiRequest.addVars("classCanonicalNames");
 			if(!Objects.equals(saves, original.getSaves()))
 				apiRequest.addVars("saves");
 			if(!Objects.equals(objectTitle, original.getObjectTitle()))
@@ -1521,7 +1392,7 @@ public abstract class BaseModelGen<DEV> extends Object {
 	//////////////
 
 	@Override public int hashCode() {
-		return Objects.hash(pk, inheritPk, id, created, modified, classCanonicalName, classSimpleName, classCanonicalNames, saves, objectTitle, objectId);
+		return Objects.hash(pk, inheritPk, id, created, modified, classCanonicalName, classSimpleName, saves, objectTitle, objectId);
 	}
 
 	////////////
@@ -1541,7 +1412,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 				&& Objects.equals( modified, that.modified )
 				&& Objects.equals( classCanonicalName, that.classCanonicalName )
 				&& Objects.equals( classSimpleName, that.classSimpleName )
-				&& Objects.equals( classCanonicalNames, that.classCanonicalNames )
 				&& Objects.equals( saves, that.saves )
 				&& Objects.equals( objectTitle, that.objectTitle )
 				&& Objects.equals( objectId, that.objectId );
@@ -1561,7 +1431,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 		sb.append( ", modified: " ).append(modified);
 		sb.append( ", classCanonicalName: \"" ).append(classCanonicalName).append( "\"" );
 		sb.append( ", classSimpleName: \"" ).append(classSimpleName).append( "\"" );
-		sb.append( ", classCanonicalNames: " ).append(classCanonicalNames);
 		sb.append( ", saves: " ).append(saves);
 		sb.append( ", objectTitle: \"" ).append(objectTitle).append( "\"" );
 		sb.append( ", objectId: \"" ).append(objectId).append( "\"" );
@@ -1577,7 +1446,6 @@ public abstract class BaseModelGen<DEV> extends Object {
 	public static final String VAR_modified = "modified";
 	public static final String VAR_classCanonicalName = "classCanonicalName";
 	public static final String VAR_classSimpleName = "classSimpleName";
-	public static final String VAR_classCanonicalNames = "classCanonicalNames";
 	public static final String VAR_saves = "saves";
 	public static final String VAR_objectTitle = "objectTitle";
 	public static final String VAR_objectId = "objectId";

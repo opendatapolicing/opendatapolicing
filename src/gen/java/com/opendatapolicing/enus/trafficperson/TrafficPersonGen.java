@@ -3206,197 +3206,197 @@ public abstract class TrafficPersonGen<DEV> extends BaseModel {
 	}
 	public void populateTrafficPerson(SolrDocument solrDocument) {
 		TrafficPerson oTrafficPerson = (TrafficPerson)this;
-		saves = (List<String>)solrDocument.get("saves_stored_strings");
+		saves = (List<String>)solrDocument.get("saves_indexedstored_strings");
 		if(saves != null) {
 
 			if(saves.contains("personKey")) {
-				Long personKey = (Long)solrDocument.get("personKey_stored_long");
+				Long personKey = (Long)solrDocument.get("personKey_indexedstored_long");
 				if(personKey != null)
 					oTrafficPerson.setPersonKey(personKey);
 			}
 
 			if(saves.contains("stopId")) {
-				String stopId = (String)solrDocument.get("stopId_stored_string");
+				String stopId = (String)solrDocument.get("stopId_indexedstored_string");
 				if(stopId != null)
 					oTrafficPerson.setStopId(stopId);
 			}
 
 			if(saves.contains("stateAbbreviation")) {
-				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_stored_string");
+				String stateAbbreviation = (String)solrDocument.get("stateAbbreviation_indexedstored_string");
 				if(stateAbbreviation != null)
 					oTrafficPerson.setStateAbbreviation(stateAbbreviation);
 			}
 
 			if(saves.contains("agencyTitle")) {
-				String agencyTitle = (String)solrDocument.get("agencyTitle_stored_string");
+				String agencyTitle = (String)solrDocument.get("agencyTitle_indexedstored_string");
 				if(agencyTitle != null)
 					oTrafficPerson.setAgencyTitle(agencyTitle);
 			}
 
 			if(saves.contains("stopDateTime")) {
-				Date stopDateTime = (Date)solrDocument.get("stopDateTime_stored_date");
+				Date stopDateTime = (Date)solrDocument.get("stopDateTime_indexedstored_date");
 				if(stopDateTime != null)
 					oTrafficPerson.setStopDateTime(stopDateTime);
 			}
 
 			if(saves.contains("stopPurposeNum")) {
-				Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_stored_int");
+				Integer stopPurposeNum = (Integer)solrDocument.get("stopPurposeNum_indexedstored_int");
 				if(stopPurposeNum != null)
 					oTrafficPerson.setStopPurposeNum(stopPurposeNum);
 			}
 
 			if(saves.contains("stopPurposeTitle")) {
-				String stopPurposeTitle = (String)solrDocument.get("stopPurposeTitle_stored_string");
+				String stopPurposeTitle = (String)solrDocument.get("stopPurposeTitle_indexedstored_string");
 				if(stopPurposeTitle != null)
 					oTrafficPerson.setStopPurposeTitle(stopPurposeTitle);
 			}
 
 			if(saves.contains("stopActionNum")) {
-				Integer stopActionNum = (Integer)solrDocument.get("stopActionNum_stored_int");
+				Integer stopActionNum = (Integer)solrDocument.get("stopActionNum_indexedstored_int");
 				if(stopActionNum != null)
 					oTrafficPerson.setStopActionNum(stopActionNum);
 			}
 
 			if(saves.contains("stopActionTitle")) {
-				String stopActionTitle = (String)solrDocument.get("stopActionTitle_stored_string");
+				String stopActionTitle = (String)solrDocument.get("stopActionTitle_indexedstored_string");
 				if(stopActionTitle != null)
 					oTrafficPerson.setStopActionTitle(stopActionTitle);
 			}
 
 			if(saves.contains("stopDriverArrest")) {
-				Boolean stopDriverArrest = (Boolean)solrDocument.get("stopDriverArrest_stored_boolean");
+				Boolean stopDriverArrest = (Boolean)solrDocument.get("stopDriverArrest_indexedstored_boolean");
 				if(stopDriverArrest != null)
 					oTrafficPerson.setStopDriverArrest(stopDriverArrest);
 			}
 
 			if(saves.contains("stopPassengerArrest")) {
-				Boolean stopPassengerArrest = (Boolean)solrDocument.get("stopPassengerArrest_stored_boolean");
+				Boolean stopPassengerArrest = (Boolean)solrDocument.get("stopPassengerArrest_indexedstored_boolean");
 				if(stopPassengerArrest != null)
 					oTrafficPerson.setStopPassengerArrest(stopPassengerArrest);
 			}
 
 			if(saves.contains("stopEncounterForce")) {
-				Boolean stopEncounterForce = (Boolean)solrDocument.get("stopEncounterForce_stored_boolean");
+				Boolean stopEncounterForce = (Boolean)solrDocument.get("stopEncounterForce_indexedstored_boolean");
 				if(stopEncounterForce != null)
 					oTrafficPerson.setStopEncounterForce(stopEncounterForce);
 			}
 
 			if(saves.contains("stopEngageForce")) {
-				Boolean stopEngageForce = (Boolean)solrDocument.get("stopEngageForce_stored_boolean");
+				Boolean stopEngageForce = (Boolean)solrDocument.get("stopEngageForce_indexedstored_boolean");
 				if(stopEngageForce != null)
 					oTrafficPerson.setStopEngageForce(stopEngageForce);
 			}
 
 			if(saves.contains("stopOfficerInjury")) {
-				Boolean stopOfficerInjury = (Boolean)solrDocument.get("stopOfficerInjury_stored_boolean");
+				Boolean stopOfficerInjury = (Boolean)solrDocument.get("stopOfficerInjury_indexedstored_boolean");
 				if(stopOfficerInjury != null)
 					oTrafficPerson.setStopOfficerInjury(stopOfficerInjury);
 			}
 
 			if(saves.contains("stopDriverInjury")) {
-				Boolean stopDriverInjury = (Boolean)solrDocument.get("stopDriverInjury_stored_boolean");
+				Boolean stopDriverInjury = (Boolean)solrDocument.get("stopDriverInjury_indexedstored_boolean");
 				if(stopDriverInjury != null)
 					oTrafficPerson.setStopDriverInjury(stopDriverInjury);
 			}
 
 			if(saves.contains("stopPassengerInjury")) {
-				Boolean stopPassengerInjury = (Boolean)solrDocument.get("stopPassengerInjury_stored_boolean");
+				Boolean stopPassengerInjury = (Boolean)solrDocument.get("stopPassengerInjury_indexedstored_boolean");
 				if(stopPassengerInjury != null)
 					oTrafficPerson.setStopPassengerInjury(stopPassengerInjury);
 			}
 
 			if(saves.contains("stopOfficerId")) {
-				String stopOfficerId = (String)solrDocument.get("stopOfficerId_stored_string");
+				String stopOfficerId = (String)solrDocument.get("stopOfficerId_indexedstored_string");
 				if(stopOfficerId != null)
 					oTrafficPerson.setStopOfficerId(stopOfficerId);
 			}
 
 			if(saves.contains("stopLocationId")) {
-				String stopLocationId = (String)solrDocument.get("stopLocationId_stored_string");
+				String stopLocationId = (String)solrDocument.get("stopLocationId_indexedstored_string");
 				if(stopLocationId != null)
 					oTrafficPerson.setStopLocationId(stopLocationId);
 			}
 
 			if(saves.contains("stopCityId")) {
-				String stopCityId = (String)solrDocument.get("stopCityId_stored_string");
+				String stopCityId = (String)solrDocument.get("stopCityId_indexedstored_string");
 				if(stopCityId != null)
 					oTrafficPerson.setStopCityId(stopCityId);
 			}
 
 			if(saves.contains("personAge")) {
-				Integer personAge = (Integer)solrDocument.get("personAge_stored_int");
+				Integer personAge = (Integer)solrDocument.get("personAge_indexedstored_int");
 				if(personAge != null)
 					oTrafficPerson.setPersonAge(personAge);
 			}
 
 			if(saves.contains("personTypeId")) {
-				String personTypeId = (String)solrDocument.get("personTypeId_stored_string");
+				String personTypeId = (String)solrDocument.get("personTypeId_indexedstored_string");
 				if(personTypeId != null)
 					oTrafficPerson.setPersonTypeId(personTypeId);
 			}
 
 			if(saves.contains("personTypeTitle")) {
-				String personTypeTitle = (String)solrDocument.get("personTypeTitle_stored_string");
+				String personTypeTitle = (String)solrDocument.get("personTypeTitle_indexedstored_string");
 				if(personTypeTitle != null)
 					oTrafficPerson.setPersonTypeTitle(personTypeTitle);
 			}
 
 			if(saves.contains("personTypeDriver")) {
-				Boolean personTypeDriver = (Boolean)solrDocument.get("personTypeDriver_stored_boolean");
+				Boolean personTypeDriver = (Boolean)solrDocument.get("personTypeDriver_indexedstored_boolean");
 				if(personTypeDriver != null)
 					oTrafficPerson.setPersonTypeDriver(personTypeDriver);
 			}
 
 			if(saves.contains("personTypePassenger")) {
-				Boolean personTypePassenger = (Boolean)solrDocument.get("personTypePassenger_stored_boolean");
+				Boolean personTypePassenger = (Boolean)solrDocument.get("personTypePassenger_indexedstored_boolean");
 				if(personTypePassenger != null)
 					oTrafficPerson.setPersonTypePassenger(personTypePassenger);
 			}
 
 			if(saves.contains("personGenderId")) {
-				String personGenderId = (String)solrDocument.get("personGenderId_stored_string");
+				String personGenderId = (String)solrDocument.get("personGenderId_indexedstored_string");
 				if(personGenderId != null)
 					oTrafficPerson.setPersonGenderId(personGenderId);
 			}
 
 			if(saves.contains("personGenderTitle")) {
-				String personGenderTitle = (String)solrDocument.get("personGenderTitle_stored_string");
+				String personGenderTitle = (String)solrDocument.get("personGenderTitle_indexedstored_string");
 				if(personGenderTitle != null)
 					oTrafficPerson.setPersonGenderTitle(personGenderTitle);
 			}
 
 			if(saves.contains("personGenderFemale")) {
-				Boolean personGenderFemale = (Boolean)solrDocument.get("personGenderFemale_stored_boolean");
+				Boolean personGenderFemale = (Boolean)solrDocument.get("personGenderFemale_indexedstored_boolean");
 				if(personGenderFemale != null)
 					oTrafficPerson.setPersonGenderFemale(personGenderFemale);
 			}
 
 			if(saves.contains("personGenderMale")) {
-				Boolean personGenderMale = (Boolean)solrDocument.get("personGenderMale_stored_boolean");
+				Boolean personGenderMale = (Boolean)solrDocument.get("personGenderMale_indexedstored_boolean");
 				if(personGenderMale != null)
 					oTrafficPerson.setPersonGenderMale(personGenderMale);
 			}
 
 			if(saves.contains("personEthnicityId")) {
-				String personEthnicityId = (String)solrDocument.get("personEthnicityId_stored_string");
+				String personEthnicityId = (String)solrDocument.get("personEthnicityId_indexedstored_string");
 				if(personEthnicityId != null)
 					oTrafficPerson.setPersonEthnicityId(personEthnicityId);
 			}
 
 			if(saves.contains("personEthnicityTitle")) {
-				String personEthnicityTitle = (String)solrDocument.get("personEthnicityTitle_stored_string");
+				String personEthnicityTitle = (String)solrDocument.get("personEthnicityTitle_indexedstored_string");
 				if(personEthnicityTitle != null)
 					oTrafficPerson.setPersonEthnicityTitle(personEthnicityTitle);
 			}
 
 			if(saves.contains("personRaceId")) {
-				String personRaceId = (String)solrDocument.get("personRaceId_stored_string");
+				String personRaceId = (String)solrDocument.get("personRaceId_indexedstored_string");
 				if(personRaceId != null)
 					oTrafficPerson.setPersonRaceId(personRaceId);
 			}
 
 			if(saves.contains("personRaceTitle")) {
-				String personRaceTitle = (String)solrDocument.get("personRaceTitle_stored_string");
+				String personRaceTitle = (String)solrDocument.get("personRaceTitle_indexedstored_string");
 				if(personRaceTitle != null)
 					oTrafficPerson.setPersonRaceTitle(personRaceTitle);
 			}
@@ -3407,132 +3407,100 @@ public abstract class TrafficPersonGen<DEV> extends BaseModel {
 
 	public void indexTrafficPerson(SolrInputDocument document) {
 		if(personKey != null) {
-			document.addField("personKey_indexed_long", personKey);
-			document.addField("personKey_stored_long", personKey);
+			document.addField("personKey_indexedstored_long", personKey);
 		}
 		if(stopId != null) {
-			document.addField("stopId_indexed_string", stopId);
-			document.addField("stopId_stored_string", stopId);
+			document.addField("stopId_indexedstored_string", stopId);
 		}
 		if(stateAbbreviation != null) {
-			document.addField("stateAbbreviation_indexed_string", stateAbbreviation);
-			document.addField("stateAbbreviation_stored_string", stateAbbreviation);
+			document.addField("stateAbbreviation_indexedstored_string", stateAbbreviation);
 		}
 		if(agencyTitle != null) {
-			document.addField("agencyTitle_indexed_string", agencyTitle);
-			document.addField("agencyTitle_stored_string", agencyTitle);
+			document.addField("agencyTitle_indexedstored_string", agencyTitle);
 		}
 		if(stopDateTime != null) {
-			document.addField("stopDateTime_indexed_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
-			document.addField("stopDateTime_stored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
+			document.addField("stopDateTime_indexedstored_date", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(ZonedDateTime.ofInstant(stopDateTime.toInstant(), ZoneId.of("UTC"))));
 		}
 		if(stopPurposeNum != null) {
-			document.addField("stopPurposeNum_indexed_int", stopPurposeNum);
-			document.addField("stopPurposeNum_stored_int", stopPurposeNum);
+			document.addField("stopPurposeNum_indexedstored_int", stopPurposeNum);
 		}
 		if(stopPurposeTitle != null) {
-			document.addField("stopPurposeTitle_indexed_string", stopPurposeTitle);
-			document.addField("stopPurposeTitle_stored_string", stopPurposeTitle);
+			document.addField("stopPurposeTitle_indexedstored_string", stopPurposeTitle);
 		}
 		if(stopActionNum != null) {
-			document.addField("stopActionNum_indexed_int", stopActionNum);
-			document.addField("stopActionNum_stored_int", stopActionNum);
+			document.addField("stopActionNum_indexedstored_int", stopActionNum);
 		}
 		if(stopActionTitle != null) {
-			document.addField("stopActionTitle_indexed_string", stopActionTitle);
-			document.addField("stopActionTitle_stored_string", stopActionTitle);
+			document.addField("stopActionTitle_indexedstored_string", stopActionTitle);
 		}
 		if(stopDriverArrest != null) {
-			document.addField("stopDriverArrest_indexed_boolean", stopDriverArrest);
-			document.addField("stopDriverArrest_stored_boolean", stopDriverArrest);
+			document.addField("stopDriverArrest_indexedstored_boolean", stopDriverArrest);
 		}
 		if(stopPassengerArrest != null) {
-			document.addField("stopPassengerArrest_indexed_boolean", stopPassengerArrest);
-			document.addField("stopPassengerArrest_stored_boolean", stopPassengerArrest);
+			document.addField("stopPassengerArrest_indexedstored_boolean", stopPassengerArrest);
 		}
 		if(stopEncounterForce != null) {
-			document.addField("stopEncounterForce_indexed_boolean", stopEncounterForce);
-			document.addField("stopEncounterForce_stored_boolean", stopEncounterForce);
+			document.addField("stopEncounterForce_indexedstored_boolean", stopEncounterForce);
 		}
 		if(stopEngageForce != null) {
-			document.addField("stopEngageForce_indexed_boolean", stopEngageForce);
-			document.addField("stopEngageForce_stored_boolean", stopEngageForce);
+			document.addField("stopEngageForce_indexedstored_boolean", stopEngageForce);
 		}
 		if(stopOfficerInjury != null) {
-			document.addField("stopOfficerInjury_indexed_boolean", stopOfficerInjury);
-			document.addField("stopOfficerInjury_stored_boolean", stopOfficerInjury);
+			document.addField("stopOfficerInjury_indexedstored_boolean", stopOfficerInjury);
 		}
 		if(stopDriverInjury != null) {
-			document.addField("stopDriverInjury_indexed_boolean", stopDriverInjury);
-			document.addField("stopDriverInjury_stored_boolean", stopDriverInjury);
+			document.addField("stopDriverInjury_indexedstored_boolean", stopDriverInjury);
 		}
 		if(stopPassengerInjury != null) {
-			document.addField("stopPassengerInjury_indexed_boolean", stopPassengerInjury);
-			document.addField("stopPassengerInjury_stored_boolean", stopPassengerInjury);
+			document.addField("stopPassengerInjury_indexedstored_boolean", stopPassengerInjury);
 		}
 		if(stopOfficerId != null) {
-			document.addField("stopOfficerId_indexed_string", stopOfficerId);
-			document.addField("stopOfficerId_stored_string", stopOfficerId);
+			document.addField("stopOfficerId_indexedstored_string", stopOfficerId);
 		}
 		if(stopLocationId != null) {
-			document.addField("stopLocationId_indexed_string", stopLocationId);
-			document.addField("stopLocationId_stored_string", stopLocationId);
+			document.addField("stopLocationId_indexedstored_string", stopLocationId);
 		}
 		if(stopCityId != null) {
-			document.addField("stopCityId_indexed_string", stopCityId);
-			document.addField("stopCityId_stored_string", stopCityId);
+			document.addField("stopCityId_indexedstored_string", stopCityId);
 		}
 		if(personAge != null) {
-			document.addField("personAge_indexed_int", personAge);
-			document.addField("personAge_stored_int", personAge);
+			document.addField("personAge_indexedstored_int", personAge);
 		}
 		if(personTypeId != null) {
-			document.addField("personTypeId_indexed_string", personTypeId);
-			document.addField("personTypeId_stored_string", personTypeId);
+			document.addField("personTypeId_indexedstored_string", personTypeId);
 		}
 		if(personTypeTitle != null) {
-			document.addField("personTypeTitle_indexed_string", personTypeTitle);
-			document.addField("personTypeTitle_stored_string", personTypeTitle);
+			document.addField("personTypeTitle_indexedstored_string", personTypeTitle);
 		}
 		if(personTypeDriver != null) {
-			document.addField("personTypeDriver_indexed_boolean", personTypeDriver);
-			document.addField("personTypeDriver_stored_boolean", personTypeDriver);
+			document.addField("personTypeDriver_indexedstored_boolean", personTypeDriver);
 		}
 		if(personTypePassenger != null) {
-			document.addField("personTypePassenger_indexed_boolean", personTypePassenger);
-			document.addField("personTypePassenger_stored_boolean", personTypePassenger);
+			document.addField("personTypePassenger_indexedstored_boolean", personTypePassenger);
 		}
 		if(personGenderId != null) {
-			document.addField("personGenderId_indexed_string", personGenderId);
-			document.addField("personGenderId_stored_string", personGenderId);
+			document.addField("personGenderId_indexedstored_string", personGenderId);
 		}
 		if(personGenderTitle != null) {
-			document.addField("personGenderTitle_indexed_string", personGenderTitle);
-			document.addField("personGenderTitle_stored_string", personGenderTitle);
+			document.addField("personGenderTitle_indexedstored_string", personGenderTitle);
 		}
 		if(personGenderFemale != null) {
-			document.addField("personGenderFemale_indexed_boolean", personGenderFemale);
-			document.addField("personGenderFemale_stored_boolean", personGenderFemale);
+			document.addField("personGenderFemale_indexedstored_boolean", personGenderFemale);
 		}
 		if(personGenderMale != null) {
-			document.addField("personGenderMale_indexed_boolean", personGenderMale);
-			document.addField("personGenderMale_stored_boolean", personGenderMale);
+			document.addField("personGenderMale_indexedstored_boolean", personGenderMale);
 		}
 		if(personEthnicityId != null) {
-			document.addField("personEthnicityId_indexed_string", personEthnicityId);
-			document.addField("personEthnicityId_stored_string", personEthnicityId);
+			document.addField("personEthnicityId_indexedstored_string", personEthnicityId);
 		}
 		if(personEthnicityTitle != null) {
-			document.addField("personEthnicityTitle_indexed_string", personEthnicityTitle);
-			document.addField("personEthnicityTitle_stored_string", personEthnicityTitle);
+			document.addField("personEthnicityTitle_indexedstored_string", personEthnicityTitle);
 		}
 		if(personRaceId != null) {
-			document.addField("personRaceId_indexed_string", personRaceId);
-			document.addField("personRaceId_stored_string", personRaceId);
+			document.addField("personRaceId_indexedstored_string", personRaceId);
 		}
 		if(personRaceTitle != null) {
-			document.addField("personRaceTitle_indexed_string", personRaceTitle);
-			document.addField("personRaceTitle_stored_string", personRaceTitle);
+			document.addField("personRaceTitle_indexedstored_string", personRaceTitle);
 		}
 		super.indexBaseModel(document);
 
@@ -3541,69 +3509,69 @@ public abstract class TrafficPersonGen<DEV> extends BaseModel {
 	public static String varIndexedTrafficPerson(String entityVar) {
 		switch(entityVar) {
 			case "personKey":
-				return "personKey_indexed_long";
+				return "personKey_indexedstored_long";
 			case "stopId":
-				return "stopId_indexed_string";
+				return "stopId_indexedstored_string";
 			case "stateAbbreviation":
-				return "stateAbbreviation_indexed_string";
+				return "stateAbbreviation_indexedstored_string";
 			case "agencyTitle":
-				return "agencyTitle_indexed_string";
+				return "agencyTitle_indexedstored_string";
 			case "stopDateTime":
-				return "stopDateTime_indexed_date";
+				return "stopDateTime_indexedstored_date";
 			case "stopPurposeNum":
-				return "stopPurposeNum_indexed_int";
+				return "stopPurposeNum_indexedstored_int";
 			case "stopPurposeTitle":
-				return "stopPurposeTitle_indexed_string";
+				return "stopPurposeTitle_indexedstored_string";
 			case "stopActionNum":
-				return "stopActionNum_indexed_int";
+				return "stopActionNum_indexedstored_int";
 			case "stopActionTitle":
-				return "stopActionTitle_indexed_string";
+				return "stopActionTitle_indexedstored_string";
 			case "stopDriverArrest":
-				return "stopDriverArrest_indexed_boolean";
+				return "stopDriverArrest_indexedstored_boolean";
 			case "stopPassengerArrest":
-				return "stopPassengerArrest_indexed_boolean";
+				return "stopPassengerArrest_indexedstored_boolean";
 			case "stopEncounterForce":
-				return "stopEncounterForce_indexed_boolean";
+				return "stopEncounterForce_indexedstored_boolean";
 			case "stopEngageForce":
-				return "stopEngageForce_indexed_boolean";
+				return "stopEngageForce_indexedstored_boolean";
 			case "stopOfficerInjury":
-				return "stopOfficerInjury_indexed_boolean";
+				return "stopOfficerInjury_indexedstored_boolean";
 			case "stopDriverInjury":
-				return "stopDriverInjury_indexed_boolean";
+				return "stopDriverInjury_indexedstored_boolean";
 			case "stopPassengerInjury":
-				return "stopPassengerInjury_indexed_boolean";
+				return "stopPassengerInjury_indexedstored_boolean";
 			case "stopOfficerId":
-				return "stopOfficerId_indexed_string";
+				return "stopOfficerId_indexedstored_string";
 			case "stopLocationId":
-				return "stopLocationId_indexed_string";
+				return "stopLocationId_indexedstored_string";
 			case "stopCityId":
-				return "stopCityId_indexed_string";
+				return "stopCityId_indexedstored_string";
 			case "personAge":
-				return "personAge_indexed_int";
+				return "personAge_indexedstored_int";
 			case "personTypeId":
-				return "personTypeId_indexed_string";
+				return "personTypeId_indexedstored_string";
 			case "personTypeTitle":
-				return "personTypeTitle_indexed_string";
+				return "personTypeTitle_indexedstored_string";
 			case "personTypeDriver":
-				return "personTypeDriver_indexed_boolean";
+				return "personTypeDriver_indexedstored_boolean";
 			case "personTypePassenger":
-				return "personTypePassenger_indexed_boolean";
+				return "personTypePassenger_indexedstored_boolean";
 			case "personGenderId":
-				return "personGenderId_indexed_string";
+				return "personGenderId_indexedstored_string";
 			case "personGenderTitle":
-				return "personGenderTitle_indexed_string";
+				return "personGenderTitle_indexedstored_string";
 			case "personGenderFemale":
-				return "personGenderFemale_indexed_boolean";
+				return "personGenderFemale_indexedstored_boolean";
 			case "personGenderMale":
-				return "personGenderMale_indexed_boolean";
+				return "personGenderMale_indexedstored_boolean";
 			case "personEthnicityId":
-				return "personEthnicityId_indexed_string";
+				return "personEthnicityId_indexedstored_string";
 			case "personEthnicityTitle":
-				return "personEthnicityTitle_indexed_string";
+				return "personEthnicityTitle_indexedstored_string";
 			case "personRaceId":
-				return "personRaceId_indexed_string";
+				return "personRaceId_indexedstored_string";
 			case "personRaceTitle":
-				return "personRaceTitle_indexed_string";
+				return "personRaceTitle_indexedstored_string";
 			default:
 				return BaseModel.varIndexedBaseModel(entityVar);
 		}
@@ -3633,38 +3601,38 @@ public abstract class TrafficPersonGen<DEV> extends BaseModel {
 	public void storeTrafficPerson(SolrDocument solrDocument) {
 		TrafficPerson oTrafficPerson = (TrafficPerson)this;
 
-		oTrafficPerson.setPersonKey(Optional.ofNullable(solrDocument.get("personKey_stored_long")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopId(Optional.ofNullable(solrDocument.get("stopId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_stored_date")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_stored_int")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopPurposeTitle(Optional.ofNullable(solrDocument.get("stopPurposeTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopActionNum(Optional.ofNullable(solrDocument.get("stopActionNum_stored_int")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopActionTitle(Optional.ofNullable(solrDocument.get("stopActionTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopDriverArrest(Optional.ofNullable(solrDocument.get("stopDriverArrest_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopPassengerArrest(Optional.ofNullable(solrDocument.get("stopPassengerArrest_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopEncounterForce(Optional.ofNullable(solrDocument.get("stopEncounterForce_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopEngageForce(Optional.ofNullable(solrDocument.get("stopEngageForce_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopOfficerInjury(Optional.ofNullable(solrDocument.get("stopOfficerInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopDriverInjury(Optional.ofNullable(solrDocument.get("stopDriverInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopPassengerInjury(Optional.ofNullable(solrDocument.get("stopPassengerInjury_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopOfficerId(Optional.ofNullable(solrDocument.get("stopOfficerId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopLocationId(Optional.ofNullable(solrDocument.get("stopLocationId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setStopCityId(Optional.ofNullable(solrDocument.get("stopCityId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonAge(Optional.ofNullable(solrDocument.get("personAge_stored_int")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonTypeId(Optional.ofNullable(solrDocument.get("personTypeId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonTypeTitle(Optional.ofNullable(solrDocument.get("personTypeTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonTypeDriver(Optional.ofNullable(solrDocument.get("personTypeDriver_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonTypePassenger(Optional.ofNullable(solrDocument.get("personTypePassenger_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonGenderId(Optional.ofNullable(solrDocument.get("personGenderId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonGenderTitle(Optional.ofNullable(solrDocument.get("personGenderTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonGenderFemale(Optional.ofNullable(solrDocument.get("personGenderFemale_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonGenderMale(Optional.ofNullable(solrDocument.get("personGenderMale_stored_boolean")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonEthnicityId(Optional.ofNullable(solrDocument.get("personEthnicityId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonEthnicityTitle(Optional.ofNullable(solrDocument.get("personEthnicityTitle_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonRaceId(Optional.ofNullable(solrDocument.get("personRaceId_stored_string")).map(v -> v.toString()).orElse(null));
-		oTrafficPerson.setPersonRaceTitle(Optional.ofNullable(solrDocument.get("personRaceTitle_stored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonKey(Optional.ofNullable(solrDocument.get("personKey_indexedstored_long")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopId(Optional.ofNullable(solrDocument.get("stopId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStateAbbreviation(Optional.ofNullable(solrDocument.get("stateAbbreviation_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setAgencyTitle(Optional.ofNullable(solrDocument.get("agencyTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopDateTime(Optional.ofNullable(solrDocument.get("stopDateTime_indexedstored_date")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopPurposeNum(Optional.ofNullable(solrDocument.get("stopPurposeNum_indexedstored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopPurposeTitle(Optional.ofNullable(solrDocument.get("stopPurposeTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopActionNum(Optional.ofNullable(solrDocument.get("stopActionNum_indexedstored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopActionTitle(Optional.ofNullable(solrDocument.get("stopActionTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopDriverArrest(Optional.ofNullable(solrDocument.get("stopDriverArrest_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopPassengerArrest(Optional.ofNullable(solrDocument.get("stopPassengerArrest_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopEncounterForce(Optional.ofNullable(solrDocument.get("stopEncounterForce_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopEngageForce(Optional.ofNullable(solrDocument.get("stopEngageForce_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopOfficerInjury(Optional.ofNullable(solrDocument.get("stopOfficerInjury_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopDriverInjury(Optional.ofNullable(solrDocument.get("stopDriverInjury_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopPassengerInjury(Optional.ofNullable(solrDocument.get("stopPassengerInjury_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopOfficerId(Optional.ofNullable(solrDocument.get("stopOfficerId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopLocationId(Optional.ofNullable(solrDocument.get("stopLocationId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setStopCityId(Optional.ofNullable(solrDocument.get("stopCityId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonAge(Optional.ofNullable(solrDocument.get("personAge_indexedstored_int")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonTypeId(Optional.ofNullable(solrDocument.get("personTypeId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonTypeTitle(Optional.ofNullable(solrDocument.get("personTypeTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonTypeDriver(Optional.ofNullable(solrDocument.get("personTypeDriver_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonTypePassenger(Optional.ofNullable(solrDocument.get("personTypePassenger_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonGenderId(Optional.ofNullable(solrDocument.get("personGenderId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonGenderTitle(Optional.ofNullable(solrDocument.get("personGenderTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonGenderFemale(Optional.ofNullable(solrDocument.get("personGenderFemale_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonGenderMale(Optional.ofNullable(solrDocument.get("personGenderMale_indexedstored_boolean")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonEthnicityId(Optional.ofNullable(solrDocument.get("personEthnicityId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonEthnicityTitle(Optional.ofNullable(solrDocument.get("personEthnicityTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonRaceId(Optional.ofNullable(solrDocument.get("personRaceId_indexedstored_string")).map(v -> v.toString()).orElse(null));
+		oTrafficPerson.setPersonRaceTitle(Optional.ofNullable(solrDocument.get("personRaceTitle_indexedstored_string")).map(v -> v.toString()).orElse(null));
 
 		super.storeBaseModel(solrDocument);
 	}
