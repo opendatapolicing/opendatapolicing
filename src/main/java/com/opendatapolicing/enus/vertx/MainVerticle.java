@@ -256,7 +256,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						List<Future> futures = new ArrayList<>();
 	
 						DeploymentOptions deploymentOptions = new DeploymentOptions();
-//						deploymentOptions.setInstances(siteInstances);
 						deploymentOptions.setConfig(config);
 			
 						DeploymentOptions mailVerticleDeploymentOptions = new DeploymentOptions();
@@ -282,13 +281,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						}).onFailure(ex -> {
 							LOG.error("Failed to start main verticle. ", ex);
 						});
-
-//						vertx.deployVerticle(MainVerticle.class, deploymentOptions).onSuccess(a -> {
-//							vertx.deployVerticle(WorkerVerticle.class, workerVerticleDeploymentOptions);
-//							LOG.info("Started main verticle. ");
-//						}).onFailure(ex -> {
-//							LOG.error("Failed to start main verticle. ", ex);
-//						});
 					} catch (Throwable ex) {
 						LOG.error("Creating clustered Vertx failed. ", ex);
 						ExceptionUtils.rethrow(ex);
@@ -309,8 +301,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			LOG.error("Creating clustered Vertx failed. ", ex);
 			ExceptionUtils.rethrow(ex);
 		});
-//		Vertx vertx = Vertx.vertx(vertxOptions);
-//		runner.accept(vertx);
 	}
 
 	/**	
@@ -323,23 +313,21 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 		try {
 			Future<Void> promiseSteps = configureWebClient().compose(a ->
-//				configureData().compose(b -> 
-					configureOpenApi().compose(d -> 
-						configureHealthChecks().compose(e -> 
-							configureSharedWorkerExecutor().compose(f -> 
-								configureWebsockets().compose(g -> 
-									configureEmail().compose(h -> 
-										configureApi().compose(i -> 
-											configureUi().compose(j -> 
-												startServer()
-											)
+				configureOpenApi().compose(d -> 
+					configureHealthChecks().compose(e -> 
+						configureSharedWorkerExecutor().compose(f -> 
+							configureWebsockets().compose(g -> 
+								configureEmail().compose(h -> 
+									configureApi().compose(i -> 
+										configureUi().compose(j -> 
+											startServer()
 										)
 									)
 								)
 							)
 						)
 					)
-//				)
+				)
 			);
 			promiseSteps.onComplete(startPromise);
 		} catch (Exception ex) {
@@ -362,50 +350,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 
 		return promise.future();
 	}
-//
-//	/**	
-//	 * 
-//	 * Val.ConnectionError.enUS:Could not open the database client connection. 
-//	 * Val.ConnectionSuccess.enUS:The database client connection was successful. 
-//	 * 
-//	 * Val.InitError.enUS:Could not initialize the database tables. 
-//	 * Val.InitSuccess.enUS:The database tables were created successfully. 
-//	 * 
-//	 *	Configure shared database connections across the cluster for massive scaling of the application. 
-//	 *	Return a promise that configures a shared database client connection. 
-//	 *	Load the database configuration into a shared io.vertx.ext.jdbc.JDBCClient for a scalable, clustered datasource connection pool. 
-//	 *	Initialize the database tables if not already created for the first time. 
-//	 **/
-//	private Future<Void> configureData() {
-//		Promise<Void> promise = Promise.promise();
-//		try {
-//			PgConnectOptions pgOptions = new PgConnectOptions();
-//			pgOptions.setPort(config().getInteger(ConfigKeys.JDBC_PORT));
-//			pgOptions.setHost(config().getString(ConfigKeys.JDBC_HOST));
-//			pgOptions.setDatabase(config().getString(ConfigKeys.JDBC_DATABASE));
-//			pgOptions.setUser(config().getString(ConfigKeys.JDBC_USERNAME));
-//			pgOptions.setPassword(config().getString(ConfigKeys.JDBC_PASSWORD));
-//			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME)).ifPresent(idleTimeout -> pgOptions.setIdleTimeout(idleTimeout));
-//			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-//			Optional.ofNullable(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT)).ifPresent(connectTimeout -> pgOptions.setConnectTimeout(connectTimeout));
-//
-//			PoolOptions poolOptions = new PoolOptions();
-//			jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE);
-//			jdbcMaxWaitQueueSize = config().getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE);
-//			poolOptions.setMaxSize(jdbcMaxPoolSize);
-//			poolOptions.setMaxWaitQueueSize(jdbcMaxWaitQueueSize);
-//
-//			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
-//
-//			LOG.info(configureDataInitSuccess);
-//			promise.complete();
-//		} catch (Exception ex) {
-//			LOG.error(configureDataInitError, ex);
-//			promise.fail(ex);
-//		}
-//
-//		return promise.future();
-//	}
 
 	/**	
 	 * 
@@ -637,7 +581,6 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			healthCheckHandler.register("database", 2000, a -> {
 				pgPool.preparedQuery("select current_timestamp").execute(selectCAsync -> {
 					if(selectCAsync.succeeded()) {
-//						a.complete(Status.OK(new JsonObject().put("jdbcMaxPoolSize", jdbcMaxPoolSize).put("jdbcMaxWaitQueueSize", jdbcMaxWaitQueueSize)));
 						a.complete(Status.OK(new JsonObject()));
 					} else {
 						LOG.error(configureHealthChecksErrorDatabase, a.future().cause());
@@ -1587,8 +1530,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 		return promise.future();
 	}
 
-	public Future<SearchList<TrafficStop>> putVarsInRoutingContext(RoutingContext ctx) {
-		Promise<SearchList<TrafficStop>> promise = Promise.promise();
+	public Future<Void> putVarsInRoutingContext(RoutingContext ctx) {
+		Promise<Void> promise = Promise.promise();
 		try {
 			for(Entry<String, String> entry : ctx.queryParams()) {
 				String paramName = entry.getKey();
@@ -1603,6 +1546,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put(entityVar, valueIndexed);
 						break;
 				}
+				promise.complete();
 			}
 		} catch(Exception ex) {
 			LOG.error(String.format("putVarsInRoutingContext failed. "), ex);

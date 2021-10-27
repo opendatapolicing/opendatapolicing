@@ -106,10 +106,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 		try {
 			configureWebClient().compose(a -> 
-//				configureData().compose(b -> 
-					configureSharedWorkerExecutor().compose(c -> 
-						configureEmail().compose(d -> 
-							importData().compose(e -> 
+				configureSharedWorkerExecutor().compose(c -> 
+					configureEmail().compose(d -> 
+						importData().compose(e -> 
 //								syncDbToSolr().compose(f -> 
 									syncFtp().compose(g -> 
 										refreshAllData()
@@ -140,50 +139,6 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 		return promise.future();
 	}
-//
-//	/**	
-//	 * 
-//	 * Val.ConnectionError.enUS:Could not open the database client connection. 
-//	 * Val.ConnectionSuccess.enUS:The database client connection was successful. 
-//	 * 
-//	 * Val.InitError.enUS:Could not initialize the database tables. 
-//	 * Val.InitSuccess.enUS:The database tables were created successfully. 
-//	 * 
-//	 *	Configure shared database connections across the cluster for massive scaling of the application. 
-//	 *	Return a promise that configures a shared database client connection. 
-//	 *	Load the database configuration into a shared io.vertx.ext.jdbc.JDBCClient for a scalable, clustered datasource connection pool. 
-//	 *	Initialize the database tables if not already created for the first time. 
-//	 **/
-//	private Future<Void> configureData() {
-//		Promise<Void> promise = Promise.promise();
-//		try {
-//			PgConnectOptions pgOptions = new PgConnectOptions();
-//			pgOptions.setPort(config().getInteger(ConfigKeys.JDBC_PORT));
-//			pgOptions.setHost(config().getString(ConfigKeys.JDBC_HOST));
-//			pgOptions.setDatabase(config().getString(ConfigKeys.JDBC_DATABASE));
-//			pgOptions.setUser(config().getString(ConfigKeys.JDBC_USERNAME));
-//			pgOptions.setPassword(config().getString(ConfigKeys.JDBC_PASSWORD));
-//			pgOptions.setIdleTimeout(config().getInteger(ConfigKeys.JDBC_MAX_IDLE_TIME, 10));
-//			pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-//			pgOptions.setConnectTimeout(config().getInteger(ConfigKeys.JDBC_CONNECT_TIMEOUT, 5));
-//
-//			PoolOptions poolOptions = new PoolOptions();
-//			jdbcMaxPoolSize = config().getInteger(ConfigKeys.JDBC_MAX_POOL_SIZE, 1);
-//			jdbcMaxWaitQueueSize = config().getInteger(ConfigKeys.JDBC_MAX_WAIT_QUEUE_SIZE, 10);
-//			poolOptions.setMaxSize(jdbcMaxPoolSize);
-//			poolOptions.setMaxWaitQueueSize(jdbcMaxWaitQueueSize);
-//
-//			pgPool = PgPool.pool(vertx, pgOptions, poolOptions);
-//
-//			LOG.info(configureDataInitSuccess);
-//			promise.complete();
-//		} catch (Exception ex) {
-//			LOG.error(configureDataInitError, ex);
-//			promise.fail(ex);
-//		}
-//
-//		return promise.future();
-//	}
 
 	/**	
 	 * Val.Fail.enUS:Could not configure the shared worker executor. 
@@ -346,7 +301,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 		String stateAbbreviation = "NC";
 		if(config().getBoolean(ConfigKeys.ENABLE_FTP_SYNC, false)) {
 			LOG.info(syncFtpStarted);
-			Long millis = 1000L * config().getInteger(ConfigKeys.TIMER_FTP_SYNC_IN_SECONDS, 10);
+			Long millis = 1000L * config().getLong(ConfigKeys.TIMER_FTP_SYNC_IN_SECONDS, 10L);
 			vertx.setTimer(millis, a -> {
 				workerExecutor.executeBlocking(blockingCodeHandler -> {
 					syncFtpDownloadExtract().onSuccess(b -> {

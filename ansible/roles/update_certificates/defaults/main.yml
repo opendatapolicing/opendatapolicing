@@ -1,0 +1,37 @@
+---
+
+####################
+## SSL/TLS defaults #
+#####################
+
+# The keystore alias.
+SSL_ALIAS: "{{PROJECT_DOMAIN_NAME_ENUS}}"
+# The keystore directory.
+SSL_KEYSTORE_PATH: /opt/keystore
+# The keystore properties filename.
+SSL_PROPERTIES_FILENAME: "{{PROJECT_SSL_PROPERTIES_FILENAME}}"
+# The keystore filename.
+SSL_JKS_FILENAME: "{{SSL_ALIAS}}.jks"
+# The keystore path.
+SSL_JKS_PATH: "{{SSL_KEYSTORE_PATH}}/{{SSL_JKS_FILENAME}}"
+# The JCEKS filename.
+SSL_JCEKS_FILENAME: "{{SSL_ALIAS}}.jceks"
+# The JCEKS path.
+SSL_JCEKS_PATH: "{{SSL_KEYSTORE_PATH}}/{{SSL_JCEKS_FILENAME}}"
+# The certificate filename.
+SSL_CRT_FILENAME: "{{SSL_ALIAS}}.crt"
+# The certificate path.
+SSL_CRT_PATH: "{{SSL_KEYSTORE_PATH}}/{{SSL_CRT_FILENAME}}"
+# The private key filename.
+SSL_KEY_FILENAME: "{{SSL_ALIAS}}.key"
+# The private key path.
+SSL_KEY_PATH: "{{SSL_KEYSTORE_PATH}}/{{SSL_KEY_FILENAME}}"
+# The p12 file password.
+SSL_P12_PASSWORD: "..."
+# The keystore file password.
+SSL_JKS_PASSWORD: "{{SSL_P12_PASSWORD}}"
+# The keystore file base64 encoded (base64 -w 0 /opt/keystore/computate.org.jks).
+SSL_JKS_BASE64: "{{ lookup('file', '{{ SSL_JKS_PATH }}') | b64encode }}"
+# The jceks file base64 encoded (base64 -w 0 /opt/keystore/computate.org.jceks).
+SSL_JCEKS_BASE64: "{{ lookup('file', '{{ SSL_JCEKS_PATH }}') | b64encode }}"
+

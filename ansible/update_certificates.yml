@@ -1,0 +1,8 @@
+---
+- name: Update certificates on OpenShift
+  hosts: localhost
+  connection: local
+  vars_files:
+    - "/usr/local/src/opendatapolicing-ansible/vaults/{{ VAULT_ID }}/vault"
+  roles:
+    - update_certificates

@@ -41,7 +41,19 @@ spec:
       containers:
         - env:
             - name: ZK_HOSTNAME
-              value: {{ZOOKEEPER_HOST_NAME}}
+              value: "{{ZOOKEEPER_HOST_NAME}}"
+            - name: SOLR_INCLUDE
+              value: "/usr/share/solr/solr.in.sh"
+            - name: SOLR_HOST
+              value: "{{ SOLR_HOST_NAME }}"
+            - name: SOLR_HEAP
+              value: "2048M"
+            - name: ENABLE_REMOTE_JMX_OPTS
+              value: "true"
+            - name: RMI_PORT
+              value: "18983"
+            - name: OOM
+              value: "exit"
           imagePullPolicy: Always
           name: computate-solr
           ports:
