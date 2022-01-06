@@ -1546,8 +1546,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						ctx.put(entityVar, valueIndexed);
 						break;
 				}
-				promise.complete();
 			}
+			promise.complete();
 		} catch(Exception ex) {
 			LOG.error(String.format("putVarsInRoutingContext failed. "), ex);
 			promise.fail(ex);
