@@ -1,3 +1,24 @@
+
+### Build the container with podman
+
+```bash
+cd ~/.local/src/TLC
+podman build -t computateorg/opendatapolicing:latest .
+```
+
+### Push the container up to quay.io
+```bash
+podman login quay.io
+podman push computateorg/opendatapolicing:latest quay.io/computateorg/opendatapolicing:latest
+```
+
+### Run the container for local development
+
+```bash
+podman run --rm -it --entrypoint /bin/bash computateorg/opendatapolicing:latest
+java $JAVA_OPTS -cp .:* com.opendatapolicing.enus.vertx.MainVerticle
+```
+
 # Setup opendatapolicing development environment on MacOSX or Linux (Fedora, RHEL, CentOS)
 
 ## Install dependencies on Linux

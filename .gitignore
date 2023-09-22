@@ -1,6 +1,7 @@
 .classpath
 .project
 .settings
+.flattened-pom.xml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
