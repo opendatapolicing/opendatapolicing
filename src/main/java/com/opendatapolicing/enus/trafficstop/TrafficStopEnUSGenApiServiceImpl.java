@@ -300,7 +300,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchTrafficStopFuture(o, true).onSuccess(b -> {
-									LOG.info("Import TrafficStop {} succeeded, modified TrafficStop. ", body.getValue("pk"));
+									LOG.debug("Import TrafficStop {} succeeded, modified TrafficStop. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportTrafficStopFuture failed. "), ex);
@@ -311,7 +311,7 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							}
 						} else {
 							postTrafficStopFuture(siteRequest, true).onSuccess(b -> {
-								LOG.info("Import TrafficStop {} succeeded, created new TrafficStop. ", body.getValue("pk"));
+								LOG.debug("Import TrafficStop {} succeeded, created new TrafficStop. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportTrafficStopFuture failed. "), ex);

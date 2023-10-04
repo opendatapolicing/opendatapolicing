@@ -300,7 +300,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchSiteAgencyFuture(o, true).onSuccess(b -> {
-									LOG.info("Import SiteAgency {} succeeded, modified SiteAgency. ", body.getValue("pk"));
+									LOG.debug("Import SiteAgency {} succeeded, modified SiteAgency. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);
@@ -311,7 +311,7 @@ public class SiteAgencyEnUSGenApiServiceImpl extends BaseApiServiceImpl implemen
 							}
 						} else {
 							postSiteAgencyFuture(siteRequest, true).onSuccess(b -> {
-								LOG.info("Import SiteAgency {} succeeded, created new SiteAgency. ", body.getValue("pk"));
+								LOG.debug("Import SiteAgency {} succeeded, created new SiteAgency. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportSiteAgencyFuture failed. "), ex);

@@ -300,7 +300,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchTrafficContrabandFuture(o, true).onSuccess(b -> {
-									LOG.info("Import TrafficContraband {} succeeded, modified TrafficContraband. ", body.getValue("pk"));
+									LOG.debug("Import TrafficContraband {} succeeded, modified TrafficContraband. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportTrafficContrabandFuture failed. "), ex);
@@ -311,7 +311,7 @@ public class TrafficContrabandEnUSGenApiServiceImpl extends BaseApiServiceImpl i
 							}
 						} else {
 							postTrafficContrabandFuture(siteRequest, true).onSuccess(b -> {
-								LOG.info("Import TrafficContraband {} succeeded, created new TrafficContraband. ", body.getValue("pk"));
+								LOG.debug("Import TrafficContraband {} succeeded, created new TrafficContraband. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportTrafficContrabandFuture failed. "), ex);

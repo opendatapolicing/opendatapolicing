@@ -300,7 +300,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchTrafficPersonFuture(o, true).onSuccess(b -> {
-									LOG.info("Import TrafficPerson {} succeeded, modified TrafficPerson. ", body.getValue("pk"));
+									LOG.debug("Import TrafficPerson {} succeeded, modified TrafficPerson. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportTrafficPersonFuture failed. "), ex);
@@ -311,7 +311,7 @@ public class TrafficPersonEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							}
 						} else {
 							postTrafficPersonFuture(siteRequest, true).onSuccess(b -> {
-								LOG.info("Import TrafficPerson {} succeeded, created new TrafficPerson. ", body.getValue("pk"));
+								LOG.debug("Import TrafficPerson {} succeeded, created new TrafficPerson. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportTrafficPersonFuture failed. "), ex);

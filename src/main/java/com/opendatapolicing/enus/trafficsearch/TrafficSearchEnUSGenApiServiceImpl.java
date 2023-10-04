@@ -300,7 +300,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchTrafficSearchFuture(o, true).onSuccess(b -> {
-									LOG.info("Import TrafficSearch {} succeeded, modified TrafficSearch. ", body.getValue("pk"));
+									LOG.debug("Import TrafficSearch {} succeeded, modified TrafficSearch. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);
@@ -311,7 +311,7 @@ public class TrafficSearchEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 							}
 						} else {
 							postTrafficSearchFuture(siteRequest, true).onSuccess(b -> {
-								LOG.info("Import TrafficSearch {} succeeded, created new TrafficSearch. ", body.getValue("pk"));
+								LOG.debug("Import TrafficSearch {} succeeded, created new TrafficSearch. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportTrafficSearchFuture failed. "), ex);

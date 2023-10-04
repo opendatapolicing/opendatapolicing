@@ -300,7 +300,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchSiteStateFuture(o, true).onSuccess(b -> {
-									LOG.info("Import SiteState {} succeeded, modified SiteState. ", body.getValue("pk"));
+									LOG.debug("Import SiteState {} succeeded, modified SiteState. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportSiteStateFuture failed. "), ex);
@@ -311,7 +311,7 @@ public class SiteStateEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
 							}
 						} else {
 							postSiteStateFuture(siteRequest, true).onSuccess(b -> {
-								LOG.info("Import SiteState {} succeeded, created new SiteState. ", body.getValue("pk"));
+								LOG.debug("Import SiteState {} succeeded, created new SiteState. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportSiteStateFuture failed. "), ex);

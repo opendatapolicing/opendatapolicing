@@ -300,7 +300,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							if(body2.size() > 0) {
 								siteRequest.setJsonObject(body2);
 								patchSearchBasisFuture(o, true).onSuccess(b -> {
-									LOG.info("Import SearchBasis {} succeeded, modified SearchBasis. ", body.getValue("pk"));
+									LOG.debug("Import SearchBasis {} succeeded, modified SearchBasis. ", body.getValue("pk"));
 									eventHandler.handle(Future.succeededFuture());
 								}).onFailure(ex -> {
 									LOG.error(String.format("putimportSearchBasisFuture failed. "), ex);
@@ -311,7 +311,7 @@ public class SearchBasisEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 							}
 						} else {
 							postSearchBasisFuture(siteRequest, true).onSuccess(b -> {
-								LOG.info("Import SearchBasis {} succeeded, created new SearchBasis. ", body.getValue("pk"));
+								LOG.debug("Import SearchBasis {} succeeded, created new SearchBasis. ", body.getValue("pk"));
 								eventHandler.handle(Future.succeededFuture());
 							}).onFailure(ex -> {
 								LOG.error(String.format("putimportSearchBasisFuture failed. "), ex);
