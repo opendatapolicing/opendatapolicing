@@ -1437,7 +1437,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 						agencySearch.setC(SiteAgency.class);
 						agencySearch.setRows(1);
 						if(agencyTitle == null)
-							agencySearch.addFilterQuery("agencyTitle_indexedstored_string:------");
+							agencySearch.addFilterQuery("agencyTitle_indexedstored_string:______");
 						else
 							agencySearch.addFilterQuery("agencyTitle_indexedstored_string:" + ClientUtils.escapeQueryChars(agencyTitle));
 						agencySearch.promiseDeepForClass(siteRequest).onSuccess(c -> {
