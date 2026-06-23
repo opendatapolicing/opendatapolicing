@@ -2011,8 +2011,8 @@ public class TrafficStopEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
 				Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
 				String solrRequestUri = String.format("/solr/%s/update%s%s%s", solrCollection, "?overwrite=true&wt=json", softCommit ? "&softCommit=true" : "", commitWithin != null ? ("&commitWithin=" + commitWithin) : "");
 				JsonArray json = new JsonArray().add(new JsonObject(document.toMap(new HashMap<String, Object>())));
-      String solrUsername = siteRequest.getConfig().getString("SOLR_USERNAME");
-      String solrPassword = siteRequest.getConfig().getString("SOLR_PASSWORD");
+        String solrUsername = siteRequest.getConfig().getString("SOLR_USERNAME");
+        String solrPassword = siteRequest.getConfig().getString("SOLR_PASSWORD");
 				webClient.post(solrPort, solrHostName, solrRequestUri).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).putHeader("Content-Type", "application/json").expect(ResponsePredicate.SC_OK).sendBuffer(json.toBuffer()).onSuccess(b -> {
 					promise.complete();
 				}).onFailure(ex -> {

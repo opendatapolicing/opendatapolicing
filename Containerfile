@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/openjdk-21:latest
+FROM registry.access.redhat.com/ubi9/openjdk-11:latest
 
 MAINTAINER Christopher Tate <computate@computate.org>
 
