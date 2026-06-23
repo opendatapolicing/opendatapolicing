@@ -76,6 +76,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.spi.cluster.ClusterManager;
+import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
 import io.vertx.ext.auth.authorization.AuthorizationProvider;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
@@ -598,7 +599,9 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 					Integer solrPort = config().getInteger(ConfigKeys.SOLR_PORT);
 					String solrCollection = config().getString(ConfigKeys.SOLR_COLLECTION);
 					String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, query.toQueryString());
-					webClient.get(solrPort, solrHostName, solrRequestUri).send().onSuccess(b -> {
+        String solrUsername = config().getString("SOLR_USERNAME");
+        String solrPassword = config().getString("SOLR_PASSWORD");
+					webClient.get(solrPort, solrHostName, solrRequestUri).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).send().onSuccess(b -> {
 						try {
 							a.complete(Status.OK());
 						} catch(Exception ex) {

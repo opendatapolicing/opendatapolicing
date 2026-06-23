@@ -35,6 +35,7 @@ import com.opendatapolicing.enus.wrap.Wrap;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
 
 /** 
  * Keyword: classSimpleNameSearchList
@@ -82,7 +83,9 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
 				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
-				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
+        String solrUsername = siteRequest_.getConfig().getString("SOLR_USERNAME");
+        String solrPassword = siteRequest_.getConfig().getString("SOLR_PASSWORD");
+				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).send().onSuccess(a -> {
 					JsonObject json = a.bodyAsJsonObject();
 					Map<String, Object> map = json.getMap();
 					QueryResponse r = generateSolrQueryResponse(map);
@@ -114,7 +117,9 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 			Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 			String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
 			String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
-			siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
+        String solrUsername = siteRequest_.getConfig().getString("SOLR_USERNAME");
+        String solrPassword = siteRequest_.getConfig().getString("SOLR_PASSWORD");
+			siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).send().onSuccess(a -> {
 				JsonObject json = a.bodyAsJsonObject();
 				Map<String, Object> map = json.getMap();
 				QueryResponse r = generateSolrQueryResponse(map);
@@ -145,7 +150,9 @@ public class SearchList<DEV> extends SearchListGen<DEV> {
 				Integer solrPort = siteRequest_.getConfig().getInteger(ConfigKeys.SOLR_PORT);
 				String solrCollection = siteRequest_.getConfig().getString(ConfigKeys.SOLR_COLLECTION);
 				String solrRequestUri = String.format("/solr/%s/select%s", solrCollection, solrQuery.toQueryString());
-				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).send().onSuccess(a -> {
+        String solrUsername = siteRequest_.getConfig().getString("SOLR_USERNAME");
+        String solrPassword = siteRequest_.getConfig().getString("SOLR_PASSWORD");
+				siteRequest_.getWebClient().get(solrPort, solrHostName, solrRequestUri).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).send().onSuccess(a -> {
 					try {
 						JsonObject json = a.bodyAsJsonObject();
 						JsonObject error = Optional.ofNullable(json.getJsonObject("error")).orElse(null);
