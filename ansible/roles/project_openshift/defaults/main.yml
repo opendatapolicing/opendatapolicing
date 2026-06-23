@@ -225,7 +225,7 @@ AUTH_RESOURCE: example.com
 # The Auth secret.
 AUTH_SECRET: "..."
 # The Auth URL.
-AUTH_URL: https://sso.example.com/auth
+AUTH_URL: https://sso.example.com
 
 # The number of Vert.X verticle instances
 SITE_INSTANCES: 5

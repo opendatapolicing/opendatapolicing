@@ -416,7 +416,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
 			Boolean authSsl = config().getBoolean(ConfigKeys.AUTH_SSL);
 			String authHostName = config().getString(ConfigKeys.AUTH_HOST_NAME);
 			Integer authPort = config().getInteger(ConfigKeys.AUTH_PORT);
-			String authUrl = String.format("%s://%s%s/auth", (authSsl ? "https" : "http"), authHostName, (authPort == 443 || authPort == 80 ? "" : ":" + authPort));
+			String authUrl = String.format("%s://%s%s", (authSsl ? "https" : "http"), authHostName, (authPort == 443 || authPort == 80 ? "" : ":" + authPort));
 			oauth2ClientOptions.setSite(authUrl + "/realms/" + config().getString(ConfigKeys.AUTH_REALM));
 			oauth2ClientOptions.setTenant(config().getString(ConfigKeys.AUTH_REALM));
 			oauth2ClientOptions.setClientID(config().getString(ConfigKeys.AUTH_RESOURCE));

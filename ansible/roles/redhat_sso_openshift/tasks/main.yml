@@ -89,7 +89,7 @@
     validate_certs: false
 - name: "Create Token for SSO"
   uri:
-    url: "{{ SSO_SITE_BASE_URL }}/auth/realms/master/protocol/openid-connect/token"
+    url: "{{ SSO_SITE_BASE_URL }}/realms/master/protocol/openid-connect/token"
     method: POST
     body_format: form-urlencoded
     body:
@@ -100,7 +100,7 @@
   register: SSO_TOKEN
 - name: "Update SSO Realm"
   uri:
-    url: "{{ SSO_SITE_BASE_URL }}/auth/admin/realms/{{ AUTH_REALM }}"
+    url: "{{ SSO_SITE_BASE_URL }}/admin/realms/{{ AUTH_REALM }}"
     method: PUT
     body_format: json
     body: "{{ lookup('template', 'redhat_sso_realm.json') }}"
@@ -114,7 +114,7 @@
 - name: Create or update SSO client
   keycloak_client:
     auth_client_id: admin-cli
-    auth_keycloak_url: "{{ SSO_SITE_BASE_URL }}/auth"
+    auth_keycloak_url: "{{ SSO_SITE_BASE_URL }}"
     auth_realm: "master"
     realm: "{{ AUTH_REALM }}"
     auth_username: "{{ SSO_ADMIN_USERNAME }}"

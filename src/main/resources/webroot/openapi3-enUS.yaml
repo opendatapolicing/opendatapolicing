@@ -4754,7 +4754,7 @@ components:
       scheme: basic
     openIdConnect:
       type: openIdConnect
-      openIdConnectUrl: https://sso.computate.org/auth/realms/COMPUTATE.ORG/.well-known/openid-configuration
+      openIdConnectUrl: https://sso.computate.org/realms/COMPUTATE.ORG/.well-known/openid-configuration
   requestBodies:
     AdminSearchSiteAgencyResponse:
       content:
